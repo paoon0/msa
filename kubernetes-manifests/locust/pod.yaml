@@ -1,0 +1,48 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: istio-envoy
+  namespace: exp
+  labels:
+    release: prometheus-grafana
+spec:
+  selector:
+    matchLabels:
+      app: paymentservice
+  podMetricsEndpoints:
+  - port: http-envoy-prom
+    path: /stats/prometheus
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: istio-envoy2
+  namespace: exp
+  labels:
+    release: prometheus-grafana
+spec:
+  selector:
+    matchLabels:
+      app: checkoutservice
+  podMetricsEndpoints:
+  - port: http-envoy-prom
+    path: /stats/prometheus
+
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: istio-envoy3
+  namespace: exp
+  labels:
+    release: prometheus-grafana
+spec:
+  selector:
+    matchLabels:
+      app: emailservice
+  podMetricsEndpoints:
+  - port: http-envoy-prom
+    path: /stats/prometheus
