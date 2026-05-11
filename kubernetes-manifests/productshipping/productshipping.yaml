@@ -24,6 +24,13 @@ spec:
       app: shippingservice
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+        sidecar.istio.io/proxyCPU: "30m"
+        sidecar.istio.io/proxyCPULimit: "50m"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /stats/prometheus
+        prometheus.io/port: "15090"
       labels:
         app: shippingservice
         app-type: dual-service
@@ -61,10 +68,10 @@ spec:
             port: 50051
         resources:
           requests:
-            cpu: 100m
+            cpu: 40m
             memory: 64Mi
           limits:
-            cpu: 200m
+            cpu: 70m
             memory: 128Mi
 
       - name: productcatalog
@@ -91,10 +98,10 @@ spec:
             port: 3550
         resources:
           requests:
-            cpu: 100m
+            cpu: 40m
             memory: 64Mi
           limits:
-            cpu: 200m
+            cpu: 70m
             memory: 128Mi
 ---
 apiVersion: v1

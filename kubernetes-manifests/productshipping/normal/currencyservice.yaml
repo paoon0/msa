@@ -15,26 +15,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: recommendationservice
+  name: currencyservice
   labels:
-    app: recommendationservice
+    app: currencyservice
 spec:
   selector:
     matchLabels:
-      app: recommendationservice
+      app: currencyservice
   template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "false"
-        sidecar.istio.io/proxyCPU: "30m"
-        sidecar.istio.io/proxyCPULimit: "50m"
-        prometheus.io/scrape: "true"
-        prometheus.io/path: /stats/prometheus
-        prometheus.io/port: "15090"
       labels:
-        app: recommendationservice
+        app: currencyservice
     spec:
-      serviceAccountName: recommendationservice
+      serviceAccountName: currencyservice
       terminationGracePeriodSeconds: 5
       securityContext:
         fsGroup: 1000
@@ -42,7 +37,7 @@ spec:
         runAsNonRoot: true
         runAsUser: 1000
       containers:
-      - name: recommendation
+      - name: server
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -50,48 +45,45 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice:v0.10.3
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice:v0.10.3
         ports:
-        - containerPort: 8080
-        readinessProbe:
-          periodSeconds: 5
-          grpc:
-            port: 8080
-        livenessProbe:
-          periodSeconds: 30
-          grpc:
-            port: 8080
+        - name: grpc
+          containerPort: 7000
         env:
         - name: PORT
-          value: "8080"
-        - name: PRODUCT_CATALOG_SERVICE_ADDR
-          value: "productcatalogservice:3550"
+          value: "7000"
         - name: DISABLE_PROFILER
           value: "1"
+        readinessProbe:
+          grpc:
+            port: 7000
+        livenessProbe:
+          grpc:
+            port: 7000
         resources:
           requests:
-            cpu: 40m
-            memory: 220Mi
+            cpu: 100m
+            memory: 64Mi
           limits:
-            cpu: 180m
-            memory: 450Mi
+            cpu: 200m
+            memory: 128Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: recommendationservice
+  name: currencyservice
   labels:
-    app: recommendationservice
+    app: currencyservice
 spec:
   type: ClusterIP
   selector:
-    app: recommendationservice
+    app: currencyservice
   ports:
   - name: grpc
-    port: 8080
-    targetPort: 8080
+    port: 7000
+    targetPort: 7000
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: recommendationservice
+  name: currencyservice

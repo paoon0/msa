@@ -26,8 +26,8 @@ spec:
     metadata:
       annotations:
         sidecar.istio.io/inject: "false"
-        sidecar.istio.io/proxyCPU: "30m"
-        sidecar.istio.io/proxyCPULimit: "50m"
+        sidecar.istio.io/proxyCPU: "50m"
+        sidecar.istio.io/proxyCPULimit: "80m"
         prometheus.io/scrape: "true"
         prometheus.io/path: /stats/prometheus
         prometheus.io/port: "15090"
