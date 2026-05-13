@@ -83,20 +83,20 @@ spec:
           privileged: false
           readOnlyRootFilesystem: true
         #image: us-central1-docker.pkg.dev/google-samples/microservices-demo/loadgenerator:v0.10.3
-        image: mizuki0118/mylocust:latest3
+        image: mizuki0118/mylocust:latest5
         env:
         - name: FRONTEND_ADDR
           value: "frontend:80"
         - name: USERS
-          value: "100"
+          value: "5"
         - name: RATE
           value: "1"
         resources:
           requests:
-            cpu: 80m
+            cpu: 150m
             memory: 512Mi
           limits:
-            cpu: 150m
+            cpu: 200m
             memory: 1024Mi
 ---
 apiVersion: v1
