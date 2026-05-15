@@ -85,5 +85,4 @@ class UserBehavior(TaskSet):
 
 class WebsiteUser(FastHttpUser):
     tasks = [UserBehavior]
-    #1秒当たり3回のリクエストを目標に
     wait_time = constant_throughput(1)

@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kubelet-custom
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      k8s-app: kubelet
+  endpoints:
+  - port: https-metrics
+    scheme: https
+    tlsConfig:
+      insecureSkipVerify: true
