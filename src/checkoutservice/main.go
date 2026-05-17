@@ -20,6 +20,7 @@ import (
 	"net"
 	"os"
 	"time"
+	"net/http"
 
 	"cloud.google.com/go/profiler"
 	"github.com/google/uuid"
@@ -28,6 +29,10 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/prometheus/client_golang/prometheus"
+    "github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	pb "github.com/GoogleCloudPlatform/microservices-demo/src/checkoutservice/genproto"
 	money "github.com/GoogleCloudPlatform/microservices-demo/src/checkoutservice/money"
@@ -43,6 +48,15 @@ import (
 const (
 	listenPort  = "5050"
 	usdCurrency = "USD"
+)
+
+var grpcLatency = promauto.NewHistogramVec(
+    prometheus.HistogramOpts{
+        Name:    "grpc_client_latency_seconds",
+        Help:    "Latency of grpc calls",
+        Buckets: prometheus.DefBuckets,
+    },
+    []string{"source", "destination", "method"},
 )
 
 var log *logrus.Logger
@@ -84,6 +98,10 @@ type checkoutService struct {
 }
 
 func main() {
+	go func() {
+    http.Handle("/metrics", promhttp.Handler())
+    log.Fatal(http.ListenAndServe(":9464", nil))
+	}()
 	ctx := context.Background()
 	if os.Getenv("ENABLE_TRACING") == "1" {
 		log.Info("Tracing enabled.")
@@ -375,11 +393,37 @@ func (cs *checkoutService) chargeCard(ctx context.Context, amount *pb.Money, pay
 	return paymentResp.GetTransactionId(), nil
 }
 
-func (cs *checkoutService) sendOrderConfirmation(ctx context.Context, email string, order *pb.OrderResult) error {
+/*func (cs *checkoutService) sendOrderConfirmation(ctx context.Context, email string, order *pb.OrderResult) error {
 	_, err := pb.NewEmailServiceClient(cs.emailSvcConn).SendOrderConfirmation(ctx, &pb.SendOrderConfirmationRequest{
 		Email: email,
 		Order: order})
 	return err
+}*/
+func (cs *checkoutService) sendOrderConfirmation(
+    ctx context.Context,
+    email string,
+    order *pb.OrderResult,
+) error {
+
+    start := time.Now()
+
+    _, err := pb.NewEmailServiceClient(cs.emailSvcConn).
+        SendOrderConfirmation(
+            ctx,
+            &pb.SendOrderConfirmationRequest{
+                Email: email,
+                Order: order,
+            })
+
+    duration := time.Since(start).Seconds()
+
+    grpcLatency.WithLabelValues(
+        "checkoutservice",
+        "emailservice",
+        "SendOrderConfirmation",
+    ).Observe(duration)
+
+    return err
 }
 
 func (cs *checkoutService) shipOrder(ctx context.Context, address *pb.Address, items []*pb.CartItem) (string, error) {

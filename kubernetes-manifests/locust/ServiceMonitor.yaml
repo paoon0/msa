@@ -1,14 +1,13 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: kubelet-custom
-  namespace: monitoring
+  name: checkoutservice-monitor
 spec:
   selector:
     matchLabels:
-      k8s-app: kubelet
+      app: checkoutservice
+
   endpoints:
-  - port: https-metrics
-    scheme: https
-    tlsConfig:
-      insecureSkipVerify: true
+  - port: metrics
+    interval: 5s
+    path: /metrics
