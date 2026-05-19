@@ -104,10 +104,10 @@ spec:
           #   value: "" # This value would look like "http://123.123.123"
           resources:
             requests:
-              cpu: 40m
+              cpu: 100m
               memory: 64Mi
             limits:
-              cpu: 130m
+              cpu: 200m
               memory: 128Mi
 ---
 apiVersion: v1

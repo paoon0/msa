@@ -95,7 +95,7 @@ spec:
           value: "1"
 
         - name: RUN_TIME
-          value: "6m"
+          value: "13m"
 
         resources:
           requests:
