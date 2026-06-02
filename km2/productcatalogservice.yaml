@@ -61,10 +61,10 @@ spec:
             port: 3550
         resources:
           requests:
-            cpu: 320m
+            cpu: 600m
             memory: 64Mi
           limits:
-            cpu: 700m
+            cpu: 1000m
             memory: 128Mi
 ---
 apiVersion: v1

@@ -137,9 +137,9 @@ spec:
         resources:
           limits:
             memory: 256Mi
-            cpu: 300m
+            cpu: 500m
           requests:
-            cpu: 150m
+            cpu: 300m
             memory: 200Mi
       volumes:
       - name: redis-data
