@@ -4,7 +4,8 @@ metadata:
   name: istio-envoy
   namespace: exp
   labels:
-    release: prometheus-grafana
+    #release: prometheus-grafana
+    release: monitoring
 spec:
   selector:
     matchLabels:
@@ -21,7 +22,7 @@ metadata:
   name: istio-envoy2
   namespace: exp
   labels:
-    release: prometheus-grafana
+    release: monitoring
 spec:
   selector:
     matchLabels:
@@ -38,7 +39,7 @@ metadata:
   name: istio-envoy3
   namespace: exp
   labels:
-    release: prometheus-grafana
+    release: monitoring
 spec:
   selector:
     matchLabels:

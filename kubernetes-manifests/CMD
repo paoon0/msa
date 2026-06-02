@@ -8,9 +8,14 @@ kubectl describe nodes
 
 https://snapshots.raintank.io/dashboard/snapshot/TILGNz5DANSSoUsnBZ1cZ94XorA0D8bC?orgId=0&from=1762363341683&to=1762363440445
 
+linux 1
 username admin
 password QVQxRMbgDUj3ullOz1sLepPR1UmG3q3dWKLauJeg
  password 0106
+
+windows 
+admin
+iilyksZ91MUz9QOp6Vjj00wn9GqtVSUczQOObF9D
 
 
 sum by (pod) (
@@ -75,3 +80,6 @@ sum(
 microk8s stop
 microk8s refresh-certs --cert ca.crt
 microk8s start
+
+#helm install monitoring prometheus-community/kube-prometheus-stack -n monitoring
+helmのインストール

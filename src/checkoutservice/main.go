@@ -100,6 +100,7 @@ type checkoutService struct {
 func main() {
 	go func() {
     http.Handle("/metrics", promhttp.Handler())
+	log.Info("metrics server started on :9464")
     log.Fatal(http.ListenAndServe(":9464", nil))
 	}()
 	ctx := context.Background()
