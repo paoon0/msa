@@ -1,0 +1,89 @@
+kubectl label namespace default istio-injection=enabled
+kubectl port-forward pod/frontend-59cb85ff56-7djwr 8080:8080
+service.default.svc.cluster.local
+kubectl port-forward svc/locust 8089:8089
+
+cd microservices-demo/kubernetes-manifests/
+kubectl describe nodes
+
+https://snapshots.raintank.io/dashboard/snapshot/TILGNz5DANSSoUsnBZ1cZ94XorA0D8bC?orgId=0&from=1762363341683&to=1762363440445
+
+linux 1
+username admin
+password QVQxRMbgDUj3ullOz1sLepPR1UmG3q3dWKLauJeg
+ password 0106
+
+windows 
+admin
+iilyksZ91MUz9QOp6Vjj00wn9GqtVSUczQOObF9D
+
+linux2
+admin
+Rd0aujPPi5lDVlF8fCVEgZhGarzVHlu4yxnIHXyO
+
+
+sum by (pod) (
+  rate(container_cpu_usage_seconds_total{
+    namespace="exp",
+    pod=~"(paymentservice|emailservice|checkoutservice)-.*"
+  }[5m])
+)
+
+
+
+http://localhost:3000/dashboard/snapshot/bMSjXkdKrpFtmVKxweXQG5h8bs5KaUxw　
+３つまとめの合計 
+http://localhost:3000/dashboard/snapshot/7gm9v9XYEtuiQ8EkSWM6KHUBXZMLqRqw 
+クラスター全体入り　両方５分平均
+http://localhost:3000/dashboard/snapshot/qm9r0PSd8uBWVM8jq0ra4hjhjxXXS2er
+クラスター全体１H平均
+
+http://localhost:3000/dashboard/snapshot/IYBbSm0FwaDVvSPtWrEqeKhOuWRw9Mel
+3つバラバラと合計
+http://localhost:3000/dashboard/snapshot/GLVAzqPHZQ2UIxK1ACmTLnCRWlVIWirD
+クラスター全体入り
+
+http://localhost:3000/dashboard/snapshot/KEraOXISzsRumTEpTvKUspJoaTTsClCA
+クラスター全体入り
+http://localhost:3000/dashboard/snapshot/EX0mNxBKa2OQKLhCkm3PV7dA4sRrpPpg
+outmailと全体入り
+http://localhost:3000/dashboard/snapshot/nvhytLHCtAaJXVpZe0g1riNzs1EADRca
+クラスター全体１ｈ平均
+
+http://localhost:3000/dashboard/snapshot/oYw9nXLmSoxBcYM7Baaq8bsrRk9gHU0F
+outpyと全体入り これが少し遅い
+http://localhost:3000/dashboard/snapshot/1FgiWxQZekZOWtB6uMeh7SVWzgP3I391
+クラスター全体入り
+http://localhost:3000/dashboard/snapshot/CYPa6ZylUheHWFyA5Yu6XqrLOGAAObnF
+クラスター全体１ｈ平均
+
+これがリクエスト数
+sum by (pod) (
+  rate(http_requests_total[5m])
+)
+pod間通信量
+sum by (pod) (
+  rate(container_network_receive_bytes_total[5m])
+)
+
+
+
+microk8s config | sudo tee ~/.kube/config > /dev/null 
+.kube/config 書き換えた
+
+sum(
+  rate(
+    istio_requests_total{
+      reporter="destination",
+      source_workload="checkoutservice",
+      destination_workload="emailservice"
+    }[5m]
+  )
+)
+#TO CONNECT OUTSIDE WIFI
+microk8s stop
+microk8s refresh-certs --cert ca.crt
+microk8s start
+
+#helm install monitoring prometheus-community/kube-prometheus-stack -n monitoring
+helmのインストール

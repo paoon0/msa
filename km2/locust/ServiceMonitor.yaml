@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: checkoutservice-monitor
+  namespace: exp
+  labels:
+    release: prometheus-grafana
+spec:
+  selector:
+    matchLabels:
+      app: checkoutservice
+
+  endpoints:
+  - port: metrics
+    interval: 5s
+    path: /metrics

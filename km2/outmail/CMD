@@ -1,0 +1,4 @@
+kubectl label namespace default istio-injection=enabled
+kubectl port-forward pod/frontend-59cb85ff56-7djwr 8080:8080
+service.default.svc.cluster.local
+kubectl port-forward svc/locust 8089:8089
