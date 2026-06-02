@@ -17,6 +17,10 @@ windows
 admin
 iilyksZ91MUz9QOp6Vjj00wn9GqtVSUczQOObF9D
 
+linux2
+admin
+Rd0aujPPi5lDVlF8fCVEgZhGarzVHlu4yxnIHXyO
+
 
 sum by (pod) (
   rate(container_cpu_usage_seconds_total{

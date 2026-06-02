@@ -1,3 +1,0 @@
-maxuser 100
-start 50
-run time 3m
