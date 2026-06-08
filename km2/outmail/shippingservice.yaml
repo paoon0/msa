@@ -61,10 +61,10 @@ spec:
             port: 50051
         resources:
           requests:
-            cpu: 40m
+            cpu: 320m
             memory: 64Mi
           limits:
-            cpu: 70m
+            cpu: 560m
             memory: 128Mi
 ---
 apiVersion: v1

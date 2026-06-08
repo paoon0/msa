@@ -89,7 +89,7 @@ spec:
           value: "frontend:80"
 
         - name: USERS
-          value: "4"
+          value: "100"
 
         - name: RATE
           value: "1"
@@ -99,11 +99,11 @@ spec:
 
         resources:
           requests:
-            cpu: 150m
+            cpu: 600m
             memory: 512Mi
 
           limits:
-            cpu: 200m
+            cpu: 900m
             memory: 1024Mi
 
 ---

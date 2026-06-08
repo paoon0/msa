@@ -26,8 +26,8 @@ spec:
     metadata:
       annotations:
         sidecar.istio.io/inject: "true"
-        sidecar.istio.io/proxyCPU: "30m"
-        sidecar.istio.io/proxyCPULimit: "50m"
+        sidecar.istio.io/proxyCPU: "240m"
+        sidecar.istio.io/proxyCPULimit: "400m"
         prometheus.io/scrape: "true"
         prometheus.io/path: /stats/prometheus
         prometheus.io/port: "15090"
@@ -66,10 +66,10 @@ spec:
             port: 50051
         resources:
           requests:
-            cpu: 40m
+            cpu: 200m
             memory: 64Mi
           limits:
-            cpu: 100m
+            cpu: 300m
             memory: 128Mi
 ---
 apiVersion: v1

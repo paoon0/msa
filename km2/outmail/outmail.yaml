@@ -27,8 +27,8 @@ spec:
     metadata:
       annotations:
         sidecar.istio.io/inject: "true"
-        sidecar.istio.io/proxyCPU: "80m"
-        sidecar.istio.io/proxyCPULimit: "150m"
+        sidecar.istio.io/proxyCPU: "640m"
+        sidecar.istio.io/proxyCPULimit: "1200m"
         prometheus.io/scrape: "true"
         prometheus.io/path: /stats/prometheus
         prometheus.io/port: "15090"
@@ -85,10 +85,10 @@ spec:
             value: "cartservice:7070"
           resources:
             requests:
-              cpu: 100m
+              cpu: 800m
               memory: 64Mi
             limits:
-              cpu: 150m
+              cpu: 1200m
               memory: 128Mi
 
 
@@ -122,10 +122,10 @@ spec:
             timeoutSeconds: 50
           resources:
             requests:
-              cpu: 40m
+              cpu: 200m
               memory: 64Mi
             limits:
-              cpu: 100m
+              cpu: 300m
               memory: 128Mi
 ---
 #podにトラフィックを流すために必要
