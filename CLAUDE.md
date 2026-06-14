@@ -7,20 +7,26 @@
 私が修士研究で利用しているGoogle Cloud の **Online Boutique** (`microservices-demo`) のフォークです。サービス間を gRPC で通信する 11 サービス構成の EC デモアプリです。アップストリームのデモはそのまま残っていますが、このフォークでの実際の作業は `km2/` 配下にある **負荷テストとサービストポロジの実験** であり、ローカルクラスタ (MicroK8s) 上で Prometheus/Grafana 監視と組み合わせて実行します。
 
 アプリケーション自体についてのみ問われた場合は、アップストリームのレイアウト (`src/<service>`、`protos/demo.proto`、`kubernetes-manifests/`、`release/`) が当てはまります。ここでの日常的な変更のほとんどは `km2/` と `kubernetes-manifests`と`src/loadgenerator2/` で発生します。
+現在のところ利用していないディレクトリは、'.deploystack/','docs','helm-chart','istio-manifests','kustomize','protos','terraform'。
+'istio/'は変更していませんが、いつでもサイドカープロキシを挿入できる状態にあります。
 
-研究では、計算資源が多いものと少ないもの、計2つのマシンを利用しています。
+また本研究は、Kubernetesのpodに含まれるアプリケーションコンテナを、部分的にまとめることで、細分化された状態よりも計算資源の利用効率が高くなることを発見するための研究です。
+
+そのため計算資源が多いものと少ないもの、計2つのマシンを利用して実験を行えるようにしています。
+
 
 km2/には、計算資源が豊富なマシン用のマニフェスト、
 kubernetes-manifests/には、計算資源が少ないマシン用のマニフェストが入っています。
 
+
 ## 実験環境のセットアップ (`km2/`)
 
-`km2/` はマニフェストを手作業で編集したコピーで、アップストリームの公開イメージの代わりに **独自ビルドのイメージ** をデプロイします。
+`km2/`,`kubernetes-manifests/` はマニフェストを手作業で編集したコピーで、アップストリームの公開イメージの代わりに **独自ビルドのイメージ** をデプロイします。
 - `mizuki0118/mygo:exp` — `src/` から再ビルドした Go サービス (例: checkoutservice)。
 - `mizuki0118/mylocust:run1` — 負荷生成ツール。`src/loadgenerator2/` からビルド
   (注意: **`loadgenerator` ではなく `loadgenerator2`** — 使用しているのは `2` のディレクトリ)。
 
-`km2/kustomization.yaml` がコアサービスをデプロイします。`loadgenerator.yaml` は `batch/v1` の **Job** (Deployment ではない) で、固定の `RUN_TIME` だけ実行して終了します。kustomize 経由ではなく、個別に適用します。
+全ディレクトリの`kustomization.yaml`は利用せず、ディレクトリ単位でapplyしている。
 
 ### トポロジのバリアント (実験の本題)
 
