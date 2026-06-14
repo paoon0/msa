@@ -89,7 +89,7 @@ spec:
           value: "frontend:80"
 
         - name: USERS
-          value: "100"
+          value: "80"
 
         - name: RATE
           value: "1"
