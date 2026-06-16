@@ -1,0 +1,2 @@
+ts,topology,t0,t1,window_s,reqs,rps,node_cores_raw,app_cpu_s_adj,node_cpu_s_adj,app_cpu_per_req_mCPUs,node_cpu_per_req_mCPUs,net_cpu_per_req_mCPUs,baseline_cores,app_baseline_cores
+2026-06-15T22:42:47,sep_u80,1781530335,1781530935,600,47239,78.73,4.1048,2134.673,2008.850,45.189,42.525,-2.664,0.7567,0.0166

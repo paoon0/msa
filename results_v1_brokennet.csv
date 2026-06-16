@@ -1,0 +1,3 @@
+ts,topology,t0,t1,window_s,reqs,rps,app_cpu_s,node_cpu_s_adj,app_cpu_per_req_mCPUs,node_cpu_per_req_mCPUs,net_cpu_per_req_mCPUs,baseline_cores
+2026-06-15T03:01:28,separated,1781459393,1781459993,600,47663,79.44,1997.264,1989.270,41.904,41.736,-0.168,0.7432
+2026-06-15T03:24:59,colocated,1781460660,1781461260,600,47774,79.62,2053.419,1953.220,42.982,40.885,-2.097,0.6991
