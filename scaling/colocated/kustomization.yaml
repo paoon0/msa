@@ -22,9 +22,9 @@ resources:
  - emailservice.yaml
  - frontend.yaml
 # - loadgenerator.yaml # During development, the loadgenerator module inside skaffold.yaml will be used.
-# reco+payment は集約版では 1 Pod に同居 → pair-reco-payment.yaml が両者を定義
+# reco+payment は集約版では 1 Pod に同居 → reccomail.yaml が両者を定義
 # (旧 paymentservice.yaml / recommendationservice.yaml は削除済み)
- - pair-reco-payment.yaml
+ - recopay.yaml
  - productcatalogservice.yaml
  - shippingservice.yaml
 # components:

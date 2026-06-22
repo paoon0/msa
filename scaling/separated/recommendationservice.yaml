@@ -33,7 +33,7 @@ spec:
         runAsNonRoot: true
         runAsUser: 1000
       containers:
-      - name: server
+      - name: recommend
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -101,9 +101,12 @@ spec:
   minReplicas: 1
   maxReplicas: 6          # 単一ノードの容量に合わせて調整
   metrics:
-  - type: Resource
-    resource:
+  # Envoy 注入で Pod は2コンテナ。Pod平均(Envoy込み)で判断すると集約版と信号が
+  # 揃わないので、アプリコンテナ recommend の使用率だけで発火させる(集約版と一致)。
+  - type: ContainerResource
+    containerResource:
       name: cpu
+      container: recommend
       target:
         type: Utilization
         averageUtilization: 70

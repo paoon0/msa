@@ -25,7 +25,7 @@ spec:
   template:
     metadata:
       annotations:
-        sidecar.istio.io/inject: "true"
+        sidecar.istio.io/inject: "false"
         sidecar.istio.io/proxyCPU: "400m"
         sidecar.istio.io/proxyCPULimit: "800m"
         prometheus.io/scrape: "true"

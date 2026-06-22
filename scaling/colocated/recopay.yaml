@@ -16,14 +16,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pair-reco-payment
+  name: reco-payment
   labels:
-    app: pair-reco-payment
+    app: reco-payment
 spec:
   # replicas は指定しない(HPA が管理する)
   selector:
     matchLabels:
-      app: pair-reco-payment
+      app: reco-payment
   template:
     metadata:
       annotations:
@@ -37,9 +37,9 @@ spec:
         prometheus.io/path: /stats/prometheus
         prometheus.io/port: "15090"
       labels:
-        app: pair-reco-payment
+        app: reco-payment
     spec:
-      serviceAccountName: pair-reco-payment
+      serviceAccountName: reco-payment
       terminationGracePeriodSeconds: 5
       securityContext:
         fsGroup: 1000
@@ -48,7 +48,7 @@ spec:
         runAsUser: 1000
       containers:
       # ---- コンテナ1: recommendationservice ----
-      - name: server
+      - name: recommend
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -122,7 +122,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: pair-reco-payment        # ★同居 Pod を指す
+    app: reco-payment        # ★同居 Pod を指す
   ports:
   - name: grpc
     port: 8080
@@ -138,7 +138,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: pair-reco-payment        # ★同じ同居 Pod を指す(ポート違いで両 Service が同居)
+    app: reco-payment        # ★同じ同居 Pod を指す(ポート違いで両 Service が同居)
   ports:
   - name: grpc
     port: 50051
@@ -147,7 +147,7 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: pair-reco-payment
+  name: reco-payment
 ---
 # ---- 結合 HPA: Pod ごと一緒にスケール ----
 #   ContainerResource を 2 本並べる → HPA は各メトリクスの desired の最大を採用
@@ -156,19 +156,19 @@ metadata:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: pair-reco-payment
+  name: reco-payment
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: pair-reco-payment
+    name: reco-payment
   minReplicas: 1
   maxReplicas: 6
   metrics:
   - type: ContainerResource
     containerResource:
       name: cpu
-      container: server           # recommendation の必要枚数 a(t)
+      container: recommend           # recommendation の必要枚数 a(t)
       target:
         type: Utilization
         averageUtilization: 70
