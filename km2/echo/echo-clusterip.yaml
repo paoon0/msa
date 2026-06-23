@@ -1,0 +1,22 @@
+# 分離アーム：Fortio ドライバが別 Pod から ClusterIP(Service 名)経由でエコーサーバを叩く。
+# 経路 = アプリ → veth → bridge → conntrack/iptables(kube-proxy) → veth → サーバ Pod。
+# 計測前に echo-server.yaml を apply し Ready を待つこと。
+apiVersion: v1
+kind: Pod
+metadata:
+  name: echo-clusterip
+  namespace: exp
+  labels: { app: echo-clusterip }
+spec:
+  restartPolicy: Never
+  containers:
+    - name: fortio
+      image: fortio/fortio:latest
+      args:
+        - "load"
+        - "-grpc"               # gRPC モード
+        - "-ping"               # PingServer を叩く(処理ほぼゼロ)
+        - "-qps=200"            # 低負荷に固定（CPU 競合で経路差が濁るのを防ぐ）
+        - "-c=1"                # 並列度1＝キュー遅延を排し純粋な往復時間を測る
+        - "-n=30000"            # 総リクエスト数
+        - "echo-server:8079"    # ← ClusterIP 経路

@@ -1,0 +1,34 @@
+# 集約アーム：Fortio ドライバとエコーサーバを「同じ Pod の2コンテナ」にし、localhost で叩く。
+# 経路 = アプリ → loopback(lo) → サーバ。veth/bridge/conntrack を通らない。
+# fortio server はネイティブサイドカー(initContainer + restartPolicy: Always)で先に起動させ、
+# startupProbe で 8079 が listen してから ドライバ(本体コンテナ)を開始する。ドライバ終了で Pod は Completed。
+apiVersion: v1
+kind: Pod
+metadata:
+  name: echo-localhost
+  namespace: exp
+  labels: { app: echo-localhost }
+spec:
+  restartPolicy: Never
+  initContainers:
+    - name: fortio-server
+      image: fortio/fortio:latest
+      args: ["server", "-grpc-port", "8079"]
+      restartPolicy: Always       # ← ネイティブサイドカー(k8s 1.29+)。本体より先に起動・常駐
+      ports:
+        - { containerPort: 8079 }
+      startupProbe:               # 8079 が listen するまで本体(ドライバ)を待たせる
+        tcpSocket: { port: 8079 }
+        periodSeconds: 1
+        failureThreshold: 30
+  containers:
+    - name: fortio
+      image: fortio/fortio:latest
+      args:
+        - "load"
+        - "-grpc"
+        - "-ping"
+        - "-qps=200"
+        - "-c=1"
+        - "-n=30000"
+        - "localhost:8079"        # ← loopback 経路
