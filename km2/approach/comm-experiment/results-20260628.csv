@@ -1,0 +1,17 @@
+cycle,arm,emailaddr,dst,p50_ms,p90_ms,p99_ms,mean_ms,reqps
+1,separated,clusterip,emailservice,1.919,7.578,84.832,4.972,78.8936170212766
+1,separated,clusterip,paymentservice,1.476,4.239,85.2,4.727,78.8936170212766
+1,colocated,localhost,emailservice,1.35,3.636,18.837,2.378,79.72765957446809
+1,colocated,localhost,paymentservice,1.101,2.501,11.434,1.571,79.72765957446809
+2,separated,clusterip,emailservice,1.832,7.134,70.774,4.566,79.66382978723405
+2,separated,clusterip,paymentservice,1.284,3.665,12.465,2.37,79.66382978723405
+2,colocated,localhost,emailservice,1.789,5.916,17.699,2.923,79.70638297872341
+2,colocated,localhost,paymentservice,1.315,3.641,9.257,1.984,79.70638297872341
+3,separated,clusterip,emailservice,2.077,7.793,77.854,5.338,65.9404255319149
+3,separated,clusterip,paymentservice,1.503,5.029,87.712,4.971,65.9404255319149
+3,colocated,localhost,emailservice,3.476,20.468,173.323,12.517,65.93191489361702
+3,colocated,localhost,paymentservice,2.828,642.527,3912.522,236.715,67.2936170212766
+4,separated,clusterip,emailservice,1.736,5.465,23.589,2.933,78.67234042553191
+4,separated,clusterip,paymentservice,1.24,3.082,7.255,1.628,78.67234042553191
+4,colocated,localhost,emailservice,2.53,8.706,70.279,5.194,79.70212765957447
+4,colocated,localhost,paymentservice,1.718,4.763,11.592,2.361,79.71063829787234

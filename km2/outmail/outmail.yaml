@@ -51,7 +51,7 @@ spec:
             privileged: false
             readOnlyRootFilesystem: true
           #image: us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice:v0.10.3
-          image: mizuki0118/mygo:exp
+          image: mizuki0118/mygo:bunpupaymail
           #checkoutserviceは5050に存在
           ports:
             - name: grpc

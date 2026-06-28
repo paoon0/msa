@@ -1,0 +1,64 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: loadgenerator
+  labels:
+    app: loadgenerator
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app: loadgenerator
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: loadgenerator
+      terminationGracePeriodSeconds: 5
+      restartPolicy: Never
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      initContainers:
+      - name: frontend-check
+        image: busybox:latest
+        command:
+        - /bin/sh
+        - -exc
+        - |
+          for i in $(seq 1 12); do
+            STATUSCODE=$(wget --server-response http://${FRONTEND_ADDR} 2>&1 | awk '/^  HTTP/{print $2}')
+            if [ "$STATUSCODE" -eq 200 ]; then echo "Frontend reachable."; exit 0; fi
+            sleep 5
+          done
+          exit 1
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: ["ALL"] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        env:
+        - name: FRONTEND_ADDR
+          value: "frontend:80"
+      containers:
+      - name: main
+        image: mizuki0118/mylocust:run1
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: ["ALL"] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        env:
+        - name: FRONTEND_ADDR
+          value: "frontend:80"
+        - name: USERS
+          value: "80"
+        - name: RATE
+          value: "1"
+        - name: RUN_TIME
+          value: "6m"
+        resources:
+          requests: { cpu: 600m, memory: 512Mi }
+          limits: { cpu: 900m, memory: 1024Mi }

@@ -39,6 +39,14 @@ startupProbe で listen 待ち→ドライバ終了で Pod Completed。マニフ
 - **Istio レバー:** outmail は inject=true。localhost 経路は iptables がループバックを捕捉せず **Envoy を通らない**が、ClusterIP 経路は **Envoy2枚+mTLS** を通る→Istio注入下では差が増幅し見えやすい(未注入=純カーネル差で echo と整合)。
 - PromQL: `histogram_quantile(0.99, rate(grpc_client_latency_seconds_bucket{destination="..."}[5m]))` と 平均=`rate(_sum)/rate(_count)`。
 
+**2026-06-28 本走結果(自動・8走=分離/同居 交互4サイクル, 各6分80users, Istio未注入, exp ns):結論=co-location の通信短縮効果は検出限界以下。**
+イメージ `mizuki0118/mygo:bunpupaymail`(細バケット+payment計測込み, 別PCでビルド済)。分離=`km2/checkoutservice.yaml`(EMAIL=emailservice:5000), 同居=`km2/outmail/outmail.yaml`(EMAIL=localhost:8080)。payment は両アームとも ClusterIP のまま=**ラン内対照群**。cycle3 は loadgen Error+throughput 79→66rps+payment p99=3912ms の異常走で除外。
+- **絶対値は罠:** email 同居 mean −15.8%/p99 −40% に見えるが、**経路不変の payment 対照も mean −32%/p99 −69% "改善"** = ラン間共通ノイズ。mean のラン間ばらつき 2〜3ms が通信差(サブms)を覆う。
+- **ノイズ除去後:** email/payment ラン内比 p50 −1.6%/p90 −10.9%/mean +8.5%(向き不定)。**DiD(mean)=+0.278ms**(email変化−0.659 − payment変化−0.936)=正味効果なし(むしろ微負)。
+- **収穫=payment 対照群設計が "偽の勝ち" を棄却できた。** echo(処理ゼロ)で p99 −16% が見えたのと整合: 実サービスでは処理(ms)+ノイズが µs 通信差を隠す([[coloc-resource-efficiency-study]] の物理予測どおり)。
+- **次の感度up:** ①ペイロード掃引(locust アイテム数↑) ②Istio注入(Envoy2+mTLS で増幅) ③案②=予約CPU/req へ転換 ④反復増+背景負荷固定でσ低減。
+- 自動化資産: `scratchpad/orchestrate.sh`(apply→rollout→loadgen→Prometheus分位点をCSV追記, port-forward 9091), `loadgen-run.yaml`(RUN_TIME可変)。Grafana は CrashLoopBackOff だが Prometheus 直クエリで代替可。
+
 **記憶の置き場所:** `/home/mizuki/.claude/projects/.../memory` は repo の `.claude/memory` への **symlink**(実体1つ)。手動同期不要、git commit で共有。
 
 関連: [[coloc-resource-efficiency-study]] [[related-work-coloc]] [[exact-window-measurement]]
