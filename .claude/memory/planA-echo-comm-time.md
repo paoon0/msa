@@ -30,4 +30,15 @@ startupProbe で listen 待ち→ドライバ終了で Pod Completed。マニフ
 **次の一手:** ①負荷スイープ(qps↑で飽和近く→ClusterIP側の softirq/conntrack CPU が効き差拡大か)
 ②ペイロード増 ③CPU/req(案②, [[coloc-resource-efficiency-study]])へ接続 ④Istio注入版で差の上限。
 
+**2026-06-27〜28 進展: echo を使わず "本物の" outmail/paymail で通信差を可視化する段階へ。**
+障害=checkout の `grpcLatency`(`src/checkoutservice/main.go` `sendOrderConfirmation`)が測る値は **通信+email処理(Jinja2 ms が支配)**、かつヒストグラムが `DefBuckets`(最小5ms)で µs 盲目。
+- **実装済み(要 `docker build mygo:exp`+`rollout restart` で反映, ローカルに go 無し):**
+  ①バケットを `prometheus.ExponentialBuckets(50e-6, 1.5, 30)`(50µs〜約6.4s)に変更=分布が見えるように。
+  ②`chargeCard` に payment 計測を追加(同一 `grpcLatency`, `destination="paymentservice"`, `method="Charge"`)。payment は処理が軽い(Go・カード検証のみ)ので email より「測定時間≒通信時間」に近く差が出やすい見込み。
+- **可視化3手法:** (A)ペイロード掃引=locust の addToCart アイテム数で email/payment へのメッセージを膨らませ通信分を ms 域へ押上げ(低コスト初手)。(B)分解法 `T通信≒RTT−サーバ処理`: 相手側に処理時間メトリクスを足し `_sum/_count` で **真の平均(バケット非依存)** を取って引く→処理スパイクが相殺し平均でも頑健。(C)負荷掃引。
+- **Istio レバー:** outmail は inject=true。localhost 経路は iptables がループバックを捕捉せず **Envoy を通らない**が、ClusterIP 経路は **Envoy2枚+mTLS** を通る→Istio注入下では差が増幅し見えやすい(未注入=純カーネル差で echo と整合)。
+- PromQL: `histogram_quantile(0.99, rate(grpc_client_latency_seconds_bucket{destination="..."}[5m]))` と 平均=`rate(_sum)/rate(_count)`。
+
+**記憶の置き場所:** `/home/mizuki/.claude/projects/.../memory` は repo の `.claude/memory` への **symlink**(実体1つ)。手動同期不要、git commit で共有。
+
 関連: [[coloc-resource-efficiency-study]] [[related-work-coloc]] [[exact-window-measurement]]

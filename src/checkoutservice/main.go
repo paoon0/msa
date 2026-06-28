@@ -52,9 +52,12 @@ const (
 
 var grpcLatency = promauto.NewHistogramVec(
     prometheus.HistogramOpts{
-        Name:    "grpc_client_latency_seconds",
-        Help:    "Latency of grpc calls",
-        Buckets: prometheus.DefBuckets,
+        Name: "grpc_client_latency_seconds",
+        Help: "Latency of grpc calls",
+        // DefBuckets は最小 5ms で µs 級の通信差が潰れる。
+        // 50µs を起点に係数 1.5 で 30 本（50µs 〜 約 6.4s）にし、
+        // email 処理(ms 域)と localhost/ClusterIP の通信差(µs 域)の両方を解像する。
+        Buckets: prometheus.ExponentialBuckets(50e-6, 1.5, 30),
     },
     []string{"source", "destination", "method"},
 )
@@ -385,9 +388,18 @@ func (cs *checkoutService) convertCurrency(ctx context.Context, from *pb.Money, 
 }
 
 func (cs *checkoutService) chargeCard(ctx context.Context, amount *pb.Money, paymentInfo *pb.CreditCardInfo) (string, error) {
+	start := time.Now()
 	paymentResp, err := pb.NewPaymentServiceClient(cs.paymentSvcConn).Charge(ctx, &pb.ChargeRequest{
 		Amount:     amount,
 		CreditCard: paymentInfo})
+	duration := time.Since(start).Seconds()
+
+	grpcLatency.WithLabelValues(
+		"checkoutservice",
+		"paymentservice",
+		"Charge",
+	).Observe(duration)
+
 	if err != nil {
 		return "", fmt.Errorf("could not charge the card: %+v", err)
 	}
