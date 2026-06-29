@@ -2,7 +2,7 @@
 
 - [Bundling merit question](bundling-merit-question.md) — 【研究の核】Pod集約は通信短縮だけでなく何のメリットを生むか(多軸)+束数スイープ設計
 - [Megapod latency experiment](megapod-latency-experiment.md) — 全部入りPod vs 分離の1リクエスト遅延=低負荷では正味差なし。CPU/reqへ転換中。km2/all/ 資産と実装の罠
-- [Softirq CPU metric](softirq-cpu-metric.md) — 【現行・主指標】通信コストはnode softirqモードCPUで測る(userノイズ回避)。スモークでmega softirq/req −51%、app対照は不変
+- [Softirq CPU metric](softirq-cpu-metric.md) — 【現行・主指標】通信コストはnode softirqモードCPUで測る(userノイズ回避)。本走3cyc: normal1.18/paymail1.22(同居のみ)/outmail1.18(email軽ホップlocalhost)/mega0.56(全localhost,−52%)=用量反応(重ホップ束ねるほど効く)。outpy測定中
 
 - [echo comm-time](planA-echo-comm-time.md) — 【現行】エコー法で localhost vs ClusterIP の通信差を確認(p99 −16%, 3/3)
 - [Co-location resource-efficiency study](coloc-resource-efficiency-study.md) — なぜ通信時間に差が出ないか & 資源効率指標への転換

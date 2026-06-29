@@ -1,0 +1,67 @@
+================ OUTPY START 2026-06-30T08:53:33+09:00 ns=exp users=80 rate=1 warmup=3m measure=5m cycles=3 ================
+---- 既存トポロジを全削除 ----
+---- deploy OUTPY (payment を checkout に同居・localhost・Istio無し) ----
+deployment.apps/adservice created
+service/adservice created
+serviceaccount/adservice created
+deployment.apps/cartservice created
+service/cartservice created
+serviceaccount/cartservice created
+deployment.apps/redis-cart created
+service/redis-cart created
+deployment.apps/currencyservice created
+service/currencyservice created
+serviceaccount/currencyservice created
+deployment.apps/emailservice created
+service/emailservice created
+serviceaccount/emailservice created
+deployment.apps/frontend created
+service/frontend created
+service/frontend-external created
+serviceaccount/frontend created
+deployment.apps/checkoutservice created
+service/checkoutservice created
+serviceaccount/checkoutservice created
+deployment.apps/productcatalogservice created
+service/productcatalogservice created
+serviceaccount/productcatalogservice created
+deployment.apps/recommendationservice created
+service/recommendationservice created
+serviceaccount/recommendationservice created
+deployment.apps/shippingservice created
+service/shippingservice created
+serviceaccount/shippingservice created
+deployment.apps/frontend patched (no change)
+deployment.apps/checkoutservice patched
+deployment.apps/cartservice patched (no change)
+deployment.apps/redis-cart patched
+deployment.apps/productcatalogservice patched (no change)
+deployment.apps/currencyservice patched (no change)
+deployment.apps/emailservice patched
+deployment.apps/shippingservice patched (no change)
+deployment.apps/recommendationservice patched (no change)
+deployment.apps/adservice patched (no change)
+Waiting for deployment "frontend" rollout to finish: 0 of 1 updated replicas are available...
+deployment "frontend" successfully rolled out
+Waiting for deployment "checkoutservice" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "checkoutservice" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "checkoutservice" rollout to finish: 1 old replicas are pending termination...
+deployment "checkoutservice" successfully rolled out
+Waiting for deployment "cartservice" rollout to finish: 0 of 1 updated replicas are available...
+deployment "cartservice" successfully rolled out
+deployment "redis-cart" successfully rolled out
+deployment "productcatalogservice" successfully rolled out
+deployment "currencyservice" successfully rolled out
+deployment "emailservice" successfully rolled out
+deployment "shippingservice" successfully rolled out
+deployment "recommendationservice" successfully rolled out
+Waiting for deployment "adservice" rollout to finish: 0 of 1 updated replicas are available...
+deployment "adservice" successfully rolled out
+================ CYCLE 1/3 2026-06-30T08:54:10+09:00 ================
+---- 2026-06-30T08:54:10+09:00 ウォームアップ (負荷 3m, users 80 rate 1) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T08:54:16+09:00 loadgen pod=loadgenerator-4cpwb main開始=2026-06-29T23:54:13Z
+  2026-06-30T08:57:14+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-06-30T08:57:15+09:00 アイドル基線(温まったアイドル: ドレイン 30s + 窓 2m) ----

@@ -49,7 +49,7 @@ spec:
                # - ALL
             privileged: false
             readOnlyRootFilesystem: true
-          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/checkoutservice:v0.10.3
+          image: mizuki0118/mygo:bunpupaymail
           ports:
           #checkoutserviceは5050に存在
           - containerPort: 5050
@@ -78,10 +78,10 @@ spec:
             value: "cartservice:7070"
           resources:
             requests:
-              cpu: 50m
+              cpu: 800m
               memory: 64Mi
             limits:
-              cpu: 150m
+              cpu: 1200m
               memory: 128Mi
 
         - name: payment
@@ -116,10 +116,10 @@ spec:
             failureThreshold: 5
           resources:
             requests:
-              cpu: 40m
+              cpu: 200m
               memory: 64Mi
             limits:
-              cpu: 130m
+              cpu: 300m
               memory: 128Mi
 ---
 #これはcheckoutのpodにトラフィックを流すために必要
