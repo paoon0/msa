@@ -82,16 +82,17 @@ spec:
         - name: FRONTEND_ADDR
           value: "frontend:80"
         - name: USERS
-          value: "100"
+          value: "80"
         - name: RATE
           value: "1"
         resources:
           requests:
-            cpu: 80m
-            memory: 256Mi
-          limits:
-            cpu: 150m
+            cpu: 600m
             memory: 512Mi
+
+          limits:
+            cpu: 900m
+            memory: 1024Mi
 ---
 apiVersion: v1
 kind: ServiceAccount

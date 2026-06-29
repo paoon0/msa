@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # ============================================================================
-# paymail(email+payment を1Podに同居) の softirq を測る(単独)。
+# outmail(emailservice を checkout の Pod 内へ同居し localhost で到達) の softirq を測る(単独)。
 # normal / mega は測り直さず、本走 results-cpu.csv(compare.sh, USERS=80: normal≈1.18 / mega≈0.56)と並べる。
-# paymail: email+payment を1Pod(paymentservice)に同居。ただし checkout は依然
-#   paymentservice:50051 / :5000 = ClusterIP で呼ぶ(localhost化していない)→通信経路は normal と同じ。
-#   「Podにまとめるだけ」で softirq が減るかを数値化する(予想:減らない)。
+# outmail: email を checkout の Pod に同居し、checkout は EMAIL_SERVICE_ADDR=localhost:8080 で到達
+#   (=email ホップだけ loopback 化)。payment 等は依然 ClusterIP。
+#   「1ホップだけ localhost 化」で softirq が部分的に減るかを数値化する(予想:normal と mega の間)。
 # 公平のため Istio無しに揃える(normal/mega と同条件)。条件は本走(compare.sh)に一致:
 #   CYCLES=3 WARMUP=3m MEASURE=5m USERS=80 RATE=1(rps≈208)、基線 settle30s/窓2m。
-# 念のため結果CSVは毎回新規。出力: km2/all/results-paymail.csv
+# 念のため結果CSVは毎回新規。出力: km2/all/results-outmail.csv
 # ============================================================================
 set -u
 NS=exp
@@ -20,22 +20,22 @@ BASE_SETTLE=${BASE_SETTLE:-30}
 BASE_WIN=${BASE_WIN:-2m}
 ALL=$REPO/km2/all/all.yaml
 LOAD=$REPO/km2/all/loadgen-csv.yaml
-LOADGEN=/tmp/loadgen-paymail.yaml
-CSV=${CSV:-$REPO/km2/all/results-paymail.csv}
-LOG=${LOG:-$REPO/km2/all/paymail.log}
+LOADGEN=/tmp/loadgen-outmail.yaml
+CSV=${CSV:-$REPO/km2/all/results-outmail.csv}
+LOG=${LOG:-$REPO/km2/all/outmail.log}
 ROLLOUT_TIMEOUT=300s
 LOAD_WAIT_MAX=120
 MARKER_POLL_MAX=${MARKER_POLL_MAX:-160}
 
 NORMAL=(frontend checkoutservice cartservice productcatalogservice currencyservice \
         paymentservice shippingservice emailservice recommendationservice adservice)
-PAYMAIL_DEPLOYS=(frontend checkoutservice cartservice redis-cart productcatalogservice \
+OUTMAIL_DEPLOYS=(frontend checkoutservice cartservice redis-cart productcatalogservice \
         currencyservice paymentservice shippingservice recommendationservice adservice)
 PROM="http://prometheus-grafana-kube-pr-prometheus.monitoring.svc:9090"
 
 CYCLES=${CYCLES:-3}
 exec > >(tee -a "$LOG") 2>&1
-echo "================ PAYMAIL START $(date -Is) ns=$NS users=$LG_USERS rate=$LG_RATE warmup=$WARMUP measure=$MEASURE cycles=$CYCLES ================"
+echo "================ OUTMAIL START $(date -Is) ns=$NS users=$LG_USERS rate=$LG_RATE warmup=$WARMUP measure=$MEASURE cycles=$CYCLES ================"
 echo "cycle,arm,reqcount,fails,p50_ms,p90_ms,p99_ms,avg_ms,rps,softirq_cores,base_softirq,system_cores,base_system,app_cores,base_app,node_cores,base_node,softirq_mc_per_req,system_mc_per_req,app_mc_per_req,node_mc_per_req" > "$CSV"
 
 setup_promq() {
@@ -49,21 +49,21 @@ prom_scalar() {
 }
 setup_promq
 
-# 既存(normal/mega)の残骸を全消ししてから paymail を張る
+# 既存(normal/mega)の残骸を全消ししてから outmail を張る
 echo "---- 既存トポロジを全削除 ----"
 kubectl delete -f "$ALL" -n "$NS" --ignore-not-found >/dev/null 2>&1
 for f in "${NORMAL[@]}"; do kubectl delete -f "$REPO/km2/$f.yaml" -n "$NS" --ignore-not-found >/dev/null 2>&1; done
 for i in $(seq 1 40); do [ -z "$(kubectl get deploy -n "$NS" -o name 2>/dev/null)" ] && break; sleep 3; done
 
-echo "---- deploy PAYMAIL (email+payment 同居・Istio無し) ----"
-for y in "$REPO"/km2/paymail/*.yaml; do
+echo "---- deploy OUTMAIL (email を checkout に同居・localhost・Istio無し) ----"
+for y in "$REPO"/km2/outmail/*.yaml; do
   case "$y" in *kustomization.yaml|*loadgenerator.yaml) continue;; esac
   kubectl apply -f "$y" -n "$NS"
 done
-for d in "${PAYMAIL_DEPLOYS[@]}"; do
+for d in "${OUTMAIL_DEPLOYS[@]}"; do
   kubectl patch deploy/"$d" -n "$NS" --type=merge -p '{"spec":{"template":{"metadata":{"annotations":{"sidecar.istio.io/inject":"false"}}}}}' || true
 done
-for d in "${PAYMAIL_DEPLOYS[@]}"; do kubectl rollout status deploy/"$d" -n "$NS" --timeout="$ROLLOUT_TIMEOUT" || true; done
+for d in "${OUTMAIL_DEPLOYS[@]}"; do kubectl rollout status deploy/"$d" -n "$NS" --timeout="$ROLLOUT_TIMEOUT" || true; done
 
 measure_baseline() {
   echo "---- $(date -Is) アイドル基線(温まったアイドル: ドレイン ${BASE_SETTLE}s + 窓 ${BASE_WIN}) ----"
@@ -117,9 +117,9 @@ run_load() { # run_time capture
   fi
   kubectl delete job loadgenerator -n "$NS" --ignore-not-found >/dev/null 2>&1
   [ "$capture" != "1" ] && { echo "  ウォームアップ完了(捨て)"; return; }
-  local logfile="$REPO/km2/all/last-logs-paymail.txt"
+  local logfile="$REPO/km2/all/last-logs-outmail.txt"
   printf '%s\n' "$logs" > "$logfile"
-  python3 - "${CYC:-1}" "paymail" "$CSV" "$logfile" \
+  python3 - "${CYC:-1}" "outmail" "$CSV" "$logfile" \
            "$softirq_cores" "${BASE_SOFTIRQ:-NA}" "$system_cores" "${BASE_SYSTEM:-NA}" \
            "$app_cores" "${BASE_APP:-NA}" "$node_cores" "${BASE_NODE:-NA}" <<'PY'
 import sys,csv,io
@@ -160,5 +160,5 @@ for CYC in $(seq 1 "$CYCLES"); do
 done
 
 kubectl delete pod promq -n "$NS" --ignore-not-found >/dev/null 2>&1
-echo "================ PAYMAIL DONE $(date -Is) ================"
+echo "================ OUTMAIL DONE $(date -Is) ================"
 column -s, -t "$CSV" 2>/dev/null || cat "$CSV"

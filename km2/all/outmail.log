@@ -1,0 +1,108 @@
+================ OUTMAIL START 2026-06-30T08:10:13+09:00 ns=exp users=80 rate=1 warmup=3m measure=5m cycles=3 ================
+---- 既存トポロジを全削除 ----
+---- deploy OUTMAIL (email を checkout に同居・localhost・Istio無し) ----
+deployment.apps/adservice created
+service/adservice created
+serviceaccount/adservice created
+deployment.apps/cartservice created
+service/cartservice created
+serviceaccount/cartservice created
+deployment.apps/redis-cart created
+service/redis-cart created
+deployment.apps/currencyservice created
+service/currencyservice created
+serviceaccount/currencyservice created
+deployment.apps/frontend created
+service/frontend created
+service/frontend-external created
+serviceaccount/frontend created
+deployment.apps/checkoutservice created
+service/checkoutservice created
+serviceaccount/checkoutservice created
+deployment.apps/paymentservice created
+service/paymentservice created
+serviceaccount/paymentservice created
+deployment.apps/productcatalogservice created
+service/productcatalogservice created
+serviceaccount/productcatalogservice created
+deployment.apps/recommendationservice created
+service/recommendationservice created
+serviceaccount/recommendationservice created
+deployment.apps/shippingservice created
+service/shippingservice created
+serviceaccount/shippingservice created
+deployment.apps/frontend patched (no change)
+deployment.apps/checkoutservice patched (no change)
+deployment.apps/cartservice patched (no change)
+deployment.apps/redis-cart patched (no change)
+deployment.apps/productcatalogservice patched (no change)
+deployment.apps/currencyservice patched (no change)
+deployment.apps/paymentservice patched
+deployment.apps/shippingservice patched (no change)
+deployment.apps/recommendationservice patched (no change)
+deployment.apps/adservice patched (no change)
+Waiting for deployment "frontend" rollout to finish: 0 of 1 updated replicas are available...
+deployment "frontend" successfully rolled out
+Waiting for deployment "checkoutservice" rollout to finish: 0 of 1 updated replicas are available...
+deployment "checkoutservice" successfully rolled out
+deployment "cartservice" successfully rolled out
+deployment "redis-cart" successfully rolled out
+deployment "productcatalogservice" successfully rolled out
+deployment "currencyservice" successfully rolled out
+deployment "paymentservice" successfully rolled out
+deployment "shippingservice" successfully rolled out
+deployment "recommendationservice" successfully rolled out
+deployment "adservice" successfully rolled out
+================ CYCLE 1/3 2026-06-30T08:11:06+09:00 ================
+---- 2026-06-30T08:11:06+09:00 ウォームアップ (負荷 3m, users 80 rate 1) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T08:11:12+09:00 loadgen pod=loadgenerator-6zdvg main開始=2026-06-29T23:11:09Z
+  2026-06-30T08:14:11+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-06-30T08:14:11+09:00 アイドル基線(温まったアイドル: ドレイン 30s + 窓 2m) ----
+  2026-06-30T08:16:42+09:00 base: softirq=0.005888888888889217 system=0.13722222222222372 app=0.019660310398261976 node=0.41288888888890807 cores
+---- 2026-06-30T08:16:42+09:00 本計測 (負荷 5m, users 80 rate 1) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T08:16:48+09:00 loadgen pod=loadgenerator-x5wnn main開始=2026-06-29T23:16:44Z
+  2026-06-30T08:21:47+09:00 負荷完了(試行 58)
+  2026-06-30T08:21:48+09:00 CPU: softirq=0.2584444444444443 system=0.8266296296296296 app=2.7192420526937826 node=3.7451111111111075 cores
+  -> 記録: 1,outmail,62375,0,35,110,560,59.477106282313066,208.45631252738616,0.2584444444444443,0.005888888888889217,0.8266296296296296,0.13722222222222372,2.7192420526937826,0.019660310398261976,3.7451111111111075,0.41288888888890807,1.212,3.307,12.95,15.985
+================ CYCLE 2/3 2026-06-30T08:21:48+09:00 ================
+---- 2026-06-30T08:21:48+09:00 ウォームアップ (負荷 3m, users 80 rate 1) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T08:22:00+09:00 loadgen pod=loadgenerator-gp7ct main開始=2026-06-29T23:21:57Z
+  2026-06-30T08:24:59+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-06-30T08:24:59+09:00 アイドル基線(温まったアイドル: ドレイン 30s + 窓 2m) ----
+  2026-06-30T08:27:30+09:00 base: softirq=0.006444444444444267 system=0.1663333333333336 app=0.01745954422089015 node=0.5904444444444515 cores
+---- 2026-06-30T08:27:30+09:00 本計測 (負荷 5m, users 80 rate 1) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T08:27:36+09:00 loadgen pod=loadgenerator-nd4rf main開始=2026-06-29T23:27:33Z
+  2026-06-30T08:32:35+09:00 負荷完了(試行 58)
+  2026-06-30T08:32:36+09:00 CPU: softirq=0.2434444444444448 system=0.7891481481481477 app=2.762815024077661 node=3.5906666666666656 cores
+  -> 記録: 2,outmail,62094,0,46,150,700,75.67701551241613,207.52668697290102,0.2434444444444448,0.006444444444444267,0.7891481481481477,0.1663333333333336,2.762815024077661,0.01745954422089015,3.5906666666666656,0.5904444444444515,1.142,3.001,13.229,14.457
+================ CYCLE 3/3 2026-06-30T08:32:36+09:00 ================
+---- 2026-06-30T08:32:36+09:00 ウォームアップ (負荷 3m, users 80 rate 1) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T08:32:48+09:00 loadgen pod=loadgenerator-94k4l main開始=2026-06-29T23:32:44Z
+  2026-06-30T08:35:47+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-06-30T08:35:47+09:00 アイドル基線(温まったアイドル: ドレイン 30s + 窓 2m) ----
+  2026-06-30T08:38:18+09:00 base: softirq=0.005888888888888743 system=0.16877777777777775 app=0.015996592949183805 node=0.6260000000000088 cores
+---- 2026-06-30T08:38:18+09:00 本計測 (負荷 5m, users 80 rate 1) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T08:38:24+09:00 loadgen pod=loadgenerator-pvpl5 main開始=2026-06-29T23:38:21Z
+  2026-06-30T08:43:23+09:00 負荷完了(試行 58)
+  2026-06-30T08:43:24+09:00 CPU: softirq=0.2501481481481482 system=0.8127777777777779 app=2.7154051995021744 node=3.711666666666667 cores
+  -> 記録: 3,outmail,62159,0,34,110,600,59.387066626131215,207.75333954894523,0.2501481481481482,0.005888888888888743,0.8127777777777779,0.16877777777777775,2.7154051995021744,0.015996592949183805,3.711666666666667,0.6260000000000088,1.176,3.1,12.993,14.853
+================ OUTMAIL DONE 2026-06-30T08:43:55+09:00 ================
+cycle  arm      reqcount  fails  p50_ms  p90_ms  p99_ms  avg_ms              rps                 softirq_cores       base_softirq          system_cores        base_system          app_cores           base_app              node_cores          base_node            softirq_mc_per_req  system_mc_per_req  app_mc_per_req  node_mc_per_req
+1      outmail  62375     0      35      110     560     59.477106282313066  208.45631252738616  0.2584444444444443  0.005888888888889217  0.8266296296296296  0.13722222222222372  2.7192420526937826  0.019660310398261976  3.7451111111111075  0.41288888888890807  1.212               3.307              12.95           15.985
+2      outmail  62094     0      46      150     700     75.67701551241613   207.52668697290102  0.2434444444444448  0.006444444444444267  0.7891481481481477  0.1663333333333336   2.762815024077661   0.01745954422089015   3.5906666666666656  0.5904444444444515   1.142               3.001              13.229          14.457
+3      outmail  62159     0      34      110     600     59.387066626131215  207.75333954894523  0.2501481481481482  0.005888888888888743  0.8127777777777779  0.16877777777777775  2.7154051995021744  0.015996592949183805  3.711666666666667   0.6260000000000088   1.176               3.1                12.993          14.853

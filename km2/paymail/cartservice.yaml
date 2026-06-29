@@ -53,10 +53,10 @@ spec:
           value: "redis-cart:6379"
         resources:
           requests:
-            cpu: 70m
+            cpu: 560m
             memory: 64Mi
           limits:
-            cpu: 120m
+            cpu: 960m
             memory: 128Mi
         readinessProbe:
           initialDelaySeconds: 15
@@ -137,9 +137,9 @@ spec:
         resources:
           limits:
             memory: 256Mi
-            cpu: 60m
+            cpu: 500m
           requests:
-            cpu: 30m
+            cpu: 300m
             memory: 200Mi
       volumes:
       - name: redis-data

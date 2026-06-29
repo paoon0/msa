@@ -72,10 +72,10 @@ spec:
             timeoutSeconds: 50
           resources:
             requests:
-              cpu: 40m
+              cpu: 200m
               memory: 64Mi
             limits:
-              cpu: 130m
+              cpu: 300m
               memory: 128Mi
 
         - name: payment
@@ -110,10 +110,10 @@ spec:
             failureThreshold: 5
           resources:
             requests:
-              cpu: 40m
+              cpu: 200m
               memory: 64Mi
             limits:
-              cpu: 130m
+              cpu: 300m
               memory: 128Mi
 ---
 #podにトラフィックを流すために必要
