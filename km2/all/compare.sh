@@ -38,9 +38,28 @@ NORMAL_DEPLOYS=(frontend checkoutservice cartservice redis-cart productcatalogse
 ISTIO_SVCS=(checkoutservice paymentservice emailservice)   # megapod と公平にするため false 化
 # -------------------------------------------
 
+PROM="http://prometheus-grafana-kube-pr-prometheus.monitoring.svc:9090"
+
 exec > >(tee -a "$LOG") 2>&1
 echo "================ START $(date -Is) ns=$NS cycles=$CYCLES warmup=$WARMUP measure=$MEASURE ================"
-[ -f "$CSV" ] || echo "cycle,arm,reqcount,fails,p50_ms,p90_ms,p99_ms,avg_ms,rps" > "$CSV"
+[ -f "$CSV" ] || echo "cycle,arm,reqcount,fails,p50_ms,p90_ms,p99_ms,avg_ms,rps,node_cores,app_cores,node_mc_per_req,app_mc_per_req" > "$CSV"
+
+# Prometheus を叩く常駐 curl Pod を立てる(port-forward はこの環境で落ちるため exec 方式)
+setup_promq() {
+  kubectl delete pod promq -n "$NS" --ignore-not-found >/dev/null 2>&1
+  kubectl run promq -n "$NS" --image=curlimages/curl:latest --restart=Never \
+    --command -- sleep 86400 >/dev/null 2>&1
+  for i in $(seq 1 30); do
+    [ "$(kubectl get pod promq -n "$NS" -o jsonpath='{.status.phase}' 2>/dev/null)" = "Running" ] && break
+    sleep 2
+  done
+}
+# PromQL スカラーを返す(失敗時 NA)
+prom_scalar() {
+  kubectl exec promq -n "$NS" -- curl -s "$PROM/api/v1/query" --data-urlencode "query=$1" 2>/dev/null \
+    | python3 -c "import sys,json;r=json.load(sys.stdin).get('data',{}).get('result',[]);print(r[0]['value'][1] if r else 'NA')" 2>/dev/null
+}
+setup_promq
 
 deploy_normal() {
   echo "---- deploy NORMAL (分離・Istio無し) ----"
@@ -100,6 +119,13 @@ run_load() { # cycle arm run_time capture(1=記録/0=捨て)
     [ "$st" = "Failed" ] && { echo "  loadgen FAILED"; break; }
     sleep 5
   done
+  if [ "$capture" = "1" ]; then
+    # 本計測窓のCPUを取得(rate窓 = 本計測長 $rt)。loadgen/promq 自身は app から除外。
+    local node_cores app_cores
+    node_cores=$(prom_scalar "sum(rate(node_cpu_seconds_total{mode!=\"idle\"}[$rt]))")
+    app_cores=$(prom_scalar "sum(rate(container_cpu_usage_seconds_total{namespace=\"$NS\",container!=\"\",container!=\"POD\",pod!~\"loadgenerator.*\",pod!~\"promq.*\"}[$rt]))")
+    echo "  $(date -Is) CPU: node=${node_cores} cores / app=${app_cores} cores (window=$rt)"
+  fi
   kubectl delete job loadgenerator -n "$NS" --ignore-not-found >/dev/null 2>&1
   if [ "$capture" != "1" ]; then
     echo "  ウォームアップ完了(結果は捨てる)"
@@ -108,11 +134,14 @@ run_load() { # cycle arm run_time capture(1=記録/0=捨て)
   # 本計測のみ CSV へ記録(ファイル渡し: python3 - のヒアドキュメントが stdin を占有するため)
   local logfile="$REPO/km2/all/last-logs-$arm.txt"
   printf '%s\n' "$logs" > "$logfile"
-  python3 - "$cyc" "$arm" "$CSV" "$logfile" <<'PY'
+  python3 - "$cyc" "$arm" "$CSV" "$logfile" "$node_cores" "$app_cores" <<'PY'
 import sys,csv,io
-cyc,arm,out,logfile=sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4]
+cyc,arm,out,logfile,node_cores,app_cores=sys.argv[1:7]
 data=open(logfile,encoding='utf-8',errors='replace').read()
 b,e="@@@CSV_BEGIN@@@","@@@CSV_END@@@"
+def fnum(x):
+    try: return float(x)
+    except: return None
 if b in data and e in data:
     block=data.split(b,1)[1].split(e,1)[0].strip()
     rows=list(csv.reader(io.StringIO(block)))
@@ -123,8 +152,13 @@ if b in data and e in data:
         r=agg[0]
         def g(name,default="NA"):
             i=idx(name); return r[i] if i is not None and i<len(r) else default
+        rps=fnum(g("Requests/s")); nc=fnum(node_cores); ac=fnum(app_cores)
+        # CPU/req = cores / (req/s) * 1000 = ミリコア秒/リクエスト
+        node_mc=round(nc/rps*1000,3) if (nc and rps) else "NA"
+        app_mc =round(ac/rps*1000,3) if (ac and rps) else "NA"
         rec=[cyc,arm,g("Request Count"),g("Failure Count"),
-             g("50%"),g("90%"),g("99%"),g("Average Response Time"),g("Requests/s")]
+             g("50%"),g("90%"),g("99%"),g("Average Response Time"),g("Requests/s"),
+             node_cores,app_cores,node_mc,app_mc]
         with open(out,"a",newline="") as f: csv.writer(f).writerow(rec)
         print("  -> 記録:", ",".join(map(str,rec)))
     else:
@@ -144,5 +178,6 @@ for c in $(seq 1 $CYCLES); do
   deploy_mega;   run_arm "$c" mega
 done
 
+kubectl delete pod promq -n "$NS" --ignore-not-found >/dev/null 2>&1
 echo "================ DONE $(date -Is) ================"
 column -s, -t "$CSV" 2>/dev/null || cat "$CSV"

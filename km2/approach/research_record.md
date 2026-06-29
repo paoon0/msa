@@ -6,6 +6,43 @@
 
 ---
 
+## 2026-06-29 ── 全部入りPod(megapod) vs 分離：1リクエスト遅延に正味差なし（低負荷）
+
+### 何をしたか
+Online Boutique の全11コンテナを1 Pod に同居させた **megapod**（`km2/all/all.yaml`）と、通常の分離構成
+（1 Pod 1 サービス、両アームとも **Istio 無し**に揃えた純パッキング比較）で、**1リクエストの
+エンドツーエンド応答時間**を比較。計測は locust のクライアント側応答時間（`--csv` の Aggregated 行）。
+自動化は `km2/all/compare.sh`（normal↔mega を ウォームアップ→本計測 で交互、env で `CYCLES/WARMUP/MEASURE`)。
+- megapod のポート衝突回避: email 8080→8081 / reco 8080→8082 / shipping 50051→50052、全 `*_SERVICE_ADDR` を localhost 化。
+- per-コンテナ requests は分離と同一（=詰め方だけ変えた公平比較）。実験 ns=`exp`、単一ノード。
+
+### 結果（3サイクル × 各 4分ウォームアップ+7分本計測、~215rps）
+| arm | p50 | p90 | p99 | avg | rps |
+|---|---|---|---|---|---|
+| normal | 51.0 | 150.0 | 666.7 | 80.7 | 215.9 |
+| mega | 53.0 | 146.7 | 803.3 | 81.0 | 215.3 |
+
+- **最安定指標 avg はほぼ同一（80.7 vs 81.0）**。p50 も誤差内。
+- **p99 はラン間ノイズに埋没**：normal 単独で 420→780→800 と振れ、mega(730–860)と範囲が重なる。
+  支配的ばらつきは arm 間でなく**サイクル間**＝本物の効果ではなくノイズの兆候。
+- → 当初 cycle1 単独で見えた「mega 速い」は撤回。**低負荷・単一ノードでは µs〜数百µs の通信差が
+  ms 規模の処理＋スケジューリング揺らぎに埋もれる**（`related_work.md` の物理と整合）。
+- per-endpoint では深いツリーの `/cart/checkout` の裾が最も動くが noisy。
+
+### つまずき（すべて対処済み・`compare.sh`/`loadgen-csv.yaml` に反映）
+- frontend は `SHOPPING_ASSISTANT_SERVICE_ADDR` 未設定で panic（機能無効でも値が必須）。
+- loadgen の CSV は **終了直後の `kubectl logs` が空読みになる** → keep-alive `sleep` で Pod を生かし、
+  生存中にポーリングして読む。
+- 前段ウォームアップの**残存 Pod を掴むと warmup 値を誤記録** → 残存 Pod 消滅待ち＋最新 Pod 採用で解決。
+- `python3 - <<'PY'` はヒアドキュメントが stdin を占有 → ログは pipe でなくファイル渡し。
+
+### 次の一手
+低負荷では遅延に差が出ない → 主指標を **CPU/req（資源効率）** へ転換中（`compare.sh` に Prometheus 取得を統合、
+在クラスタ curl Pod 経由＝port-forward はこの環境で落ちるため）。あわせて **①負荷を飽和近くまで上げる**、
+**②Istio 注入で Envoy 税を増幅** が必要。CPU/req 本走は未実施（統合のスモーク中に中断）。
+
+---
+
 ## 2026-06-24 〜 06-25 ── 通信時間の確認（エコー法）：差は実在した
 
 ### 目的
