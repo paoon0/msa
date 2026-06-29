@@ -1,0 +1,130 @@
+================ START 2026-06-29T22:50:01+09:00 ns=exp cycles=1 warmup=20s measure=1m ================
+---- deploy NORMAL (分離・Istio無し) ----
+service "frontend" deleted
+service "frontend-external" deleted
+service "checkoutservice" deleted
+deployment.apps/frontend configured
+service/frontend created
+service/frontend-external created
+serviceaccount/frontend unchanged
+deployment.apps/checkoutservice configured
+service/checkoutservice created
+serviceaccount/checkoutservice unchanged
+deployment.apps/cartservice unchanged
+service/cartservice unchanged
+serviceaccount/cartservice unchanged
+deployment.apps/redis-cart unchanged
+service/redis-cart unchanged
+deployment.apps/productcatalogservice configured
+service/productcatalogservice unchanged
+serviceaccount/productcatalogservice unchanged
+deployment.apps/currencyservice unchanged
+service/currencyservice unchanged
+serviceaccount/currencyservice unchanged
+deployment.apps/paymentservice configured
+service/paymentservice unchanged
+serviceaccount/paymentservice unchanged
+deployment.apps/shippingservice unchanged
+service/shippingservice unchanged
+serviceaccount/shippingservice unchanged
+deployment.apps/emailservice configured
+service/emailservice unchanged
+serviceaccount/emailservice unchanged
+deployment.apps/recommendationservice unchanged
+service/recommendationservice unchanged
+serviceaccount/recommendationservice unchanged
+deployment.apps/adservice unchanged
+service/adservice unchanged
+serviceaccount/adservice unchanged
+deployment.apps/checkoutservice patched
+deployment.apps/paymentservice patched
+deployment.apps/emailservice patched
+deployment "frontend" successfully rolled out
+Waiting for deployment "checkoutservice" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "checkoutservice" rollout to finish: 1 old replicas are pending termination...
+deployment "checkoutservice" successfully rolled out
+deployment "cartservice" successfully rolled out
+deployment "redis-cart" successfully rolled out
+deployment "productcatalogservice" successfully rolled out
+deployment "currencyservice" successfully rolled out
+Waiting for deployment "paymentservice" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "paymentservice" rollout to finish: 1 old replicas are pending termination...
+deployment "paymentservice" successfully rolled out
+deployment "shippingservice" successfully rolled out
+deployment "emailservice" successfully rolled out
+deployment "recommendationservice" successfully rolled out
+deployment "adservice" successfully rolled out
+---- 2026-06-29T22:50:11+09:00 arm=normal アイドル基線測定 (無負荷: settle 10s + 窓 1m) ----
+  2026-06-29T22:51:22+09:00 base: node=0.9139999999999997 app=0.014305789863993924 cores (無負荷)
+---- 2026-06-29T22:51:22+09:00 cycle 1 arm=normal ウォームアップ (負荷 20s) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-29T22:51:28+09:00 loadgen pod=loadgenerator-v9kqw main開始=2026-06-29T13:51:24Z
+  2026-06-29T22:51:49+09:00 負荷完了・マーカー検出(試行 5)
+  ウォームアップ完了(結果は捨てる)
+---- 2026-06-29T22:51:49+09:00 cycle 1 arm=normal 本計測 (負荷 1m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-29T22:52:01+09:00 loadgen pod=loadgenerator-tlk9s main開始=2026-06-29T13:51:58Z
+  2026-06-29T22:52:59+09:00 負荷完了・マーカー検出(試行 12)
+  2026-06-29T22:52:59+09:00 CPU: node=2.366333333333334 cores / app=1.0951553546564499 cores (window=1m) / base node=0.9139999999999997 app=0.014305789863993924
+  -> 記録: 1,normal,5426,0,52,120,170,62.275993235902305,91.60295907793822,2.366333333333334,1.0951553546564499,0.9139999999999997,0.014305789863993924,15.855,11.799,4.056
+---- deploy MEGA (全部入り) ----
+deployment.apps "frontend" deleted
+service "frontend" deleted
+service "frontend-external" deleted
+serviceaccount "frontend" deleted
+deployment.apps "checkoutservice" deleted
+service "checkoutservice" deleted
+serviceaccount "checkoutservice" deleted
+deployment.apps "cartservice" deleted
+service "cartservice" deleted
+serviceaccount "cartservice" deleted
+deployment.apps "redis-cart" deleted
+service "redis-cart" deleted
+deployment.apps "productcatalogservice" deleted
+service "productcatalogservice" deleted
+serviceaccount "productcatalogservice" deleted
+deployment.apps "currencyservice" deleted
+service "currencyservice" deleted
+serviceaccount "currencyservice" deleted
+deployment.apps "paymentservice" deleted
+service "paymentservice" deleted
+serviceaccount "paymentservice" deleted
+deployment.apps "shippingservice" deleted
+service "shippingservice" deleted
+serviceaccount "shippingservice" deleted
+deployment.apps "emailservice" deleted
+service "emailservice" deleted
+serviceaccount "emailservice" deleted
+deployment.apps "recommendationservice" deleted
+service "recommendationservice" deleted
+serviceaccount "recommendationservice" deleted
+deployment.apps "adservice" deleted
+service "adservice" deleted
+serviceaccount "adservice" deleted
+deployment.apps/megapod created
+service/frontend created
+service/frontend-external created
+service/checkoutservice created
+Waiting for deployment "megapod" rollout to finish: 0 of 1 updated replicas are available...
+deployment "megapod" successfully rolled out
+---- 2026-06-29T22:53:26+09:00 arm=mega アイドル基線測定 (無負荷: settle 10s + 窓 1m) ----
+  2026-06-29T22:54:37+09:00 base: node=0.4693333333333327 app=0.020566099353120735 cores (無負荷)
+---- 2026-06-29T22:54:37+09:00 cycle 1 arm=mega ウォームアップ (負荷 20s) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-29T22:54:43+09:00 loadgen pod=loadgenerator-vz9v7 main開始=2026-06-29T13:54:40Z
+  2026-06-29T22:55:04+09:00 負荷完了・マーカー検出(試行 5)
+  ウォームアップ完了(結果は捨てる)
+---- 2026-06-29T22:55:04+09:00 cycle 1 arm=mega 本計測 (負荷 1m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-29T22:55:16+09:00 loadgen pod=loadgenerator-mvchs main開始=2026-06-29T13:55:13Z
+  2026-06-29T22:56:14+09:00 負荷完了・マーカー検出(試行 12)
+  2026-06-29T22:56:14+09:00 CPU: node=2.6763333333333343 cores / app=1.146728084164549 cores (window=1m) / base node=0.4693333333333327 app=0.020566099353120735
+  -> 記録: 1,mega,5451,0,35,68,97,38.849977449460006,92.09803035989914,2.6763333333333343,1.146728084164549,0.4693333333333327,0.020566099353120735,23.964,12.228,11.736
+================ DONE 2026-06-29T22:56:45+09:00 ================
+cycle  arm     reqcount  fails  p50_ms  p90_ms  p99_ms  avg_ms              rps                node_cores          app_cores           base_node           base_app              node_mc_per_req  app_mc_per_req  comm_mc_per_req
+1      normal  5426      0      52      120     170     62.275993235902305  91.60295907793822  2.366333333333334   1.0951553546564499  0.9139999999999997  0.014305789863993924  15.855           11.799          4.056
+1      mega    5451      0      35      68      97      38.849977449460006  92.09803035989914  2.6763333333333343  1.146728084164549   0.4693333333333327  0.020566099353120735  23.964           12.228          11.736

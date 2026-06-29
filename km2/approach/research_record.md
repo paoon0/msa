@@ -6,6 +6,58 @@
 
 ---
 
+## 2026-06-30 ── softirq CPU/req：co-location で通信スタックCPUが約半減（−52%、3サイクル再現）
+
+### 転機：主指標を「node全体CPU」→「softirq モードCPU」へ
+前回 CPU/req に転換したが、**node 全体CPUは背景ノイズに支配されて使えない**ことが判明した。
+- ノード `mizuki-nuc12wshi7` は単一ノードのワークステーション。無負荷の node非idle CPU を3回測ると
+  **0.41 / 0.71 / 0.72 cores とドリフト**（range 0.3）。分解すると非idleの**約75%が非Kubernetes背景**
+  （`kubelite`=MicroK8s制御系・**VS Code**・Claude/kubectl/python の計測ツール・dqlite/calico）。
+- 鍵＝**CPU時間はモード別に別カウンタ**（`/proc/stat`）。背景ノイズは全部 **user** モード（計算）。
+  **通信のkernel処理（NAT/conntrack/bridge）は softirq モード**で、しかも**どのコンテナcgroupにも
+  計上されない**（送信スレッドは手を離し、ksoftirqd 等が非同期処理→ノード単位 softirq カウンタへ）。
+- 実測（モード分解, 無負荷）：**softirq 0.0053⇄0.0056（不動）** に対し user 0.27⇄0.49（大揺れ）。
+  負荷をかけると softirq 0.005→0.255（50倍）。→ **softirq を見れば user ノイズと物理的に隔離**できる。
+  これは `mpstat -P ALL` の %soft 列を見るのと同じ標準手法（MeshInsight arXiv:2207.00592 はさらに
+  perf/flamegraph で関数分解）。
+- 補足：コンテナ別CPU(cgroup)は安定だが**通信コストが入っていない**（softirqはcgroup外）→
+  app CPU は経路差を映さず「対照群（公平性チェック）」にしかならない。主指標にはできない。
+
+### 方法
+`km2/all/compare.sh` に softirq/system 取得を配線（CSV 22列）。各アームで
+ウォームアップ→**温まったアイドル基線（softirq含む）**→本計測。
+`softirq_mc_per_req =（負荷時 softirq − 無負荷 softirq）/ rps × 1000`。
+`CYCLES=3 WARMUP=3m MEASURE=5m`、結果 `km2/all/results-cpu.csv`。
+
+### 結果（3サイクル, ~208rps, exp ns, Istio無し）
+| 指標 | normal（分離） | mega（同居） | 差 |
+|---|---|---|---|
+| **softirq/req【主】** | **1.181 ± 0.023** | **0.564 ± 0.017** | **−52.2%** |
+| system/req | 3.197 ± 0.058 | 2.996 ± 0.165 | −6.3% |
+| app/req【対照】 | 13.256 ± 0.268 | 12.465 ± 0.539 | −6.0% |
+| node全体/req | 15.862 ± 0.365 | 14.385 ± 0.940 | −9.3% |
+
+- **softirq の差 0.617 mc/req は、アーム内のサイクル間ばらつき(sd≈0.020)の 31 倍**＝圧倒的有意・3サイクル一貫。
+- 指標が超安定（node全体 ±0.4〜0.9 と対照的）＝softirq が user ノイズから隔離されている証拠。
+- **対照群 app/req は −6%** にとどまる（softirqの−52%と桁違いに小）＝差は通信由来、比較は公平。
+- 絶対量：208rps で softirq は normal 0.246→mega 0.117 cores ＝ **約0.13コア節約（半減）**。
+
+### 解釈と限界
+- 結論：**Pod 同居で「リクエストあたり通信スタックCPU（softirq）が約半減」**。研究が目指した
+  資源効率メリットを、初めてノイズに埋もれずクリーンに実証。エコー法の p99 −16%（別手法・独立）とも整合。
+- 限界（論文に明記）：①単一ノード・Istio無し・低負荷ゆえ**絶対量は小**（0.13コア）。主張は「半減」で
+  総CPU大幅減ではない。②softirq はノード単位ゆえ**アプリ分を直接は分離できない**→「経路だけ変えた
+  A/B の差＋無負荷基線差引」で取り出す準実験。③app 対照が完全フラットでなく −6%（syscall/serialize の
+  一部が同居で軽くなる、system −6% と整合）。
+
+### 次の一手
+1. **ヌル対照**（normal vs normal で softirq差≈0）でノイズ床を正式確認。
+2. `/proc/softirqs` の NET_RX/NET_TX 件数で「ネットワーク種別の softirq」と裏取り。
+3. **Istio 注入**で Envoy 税を増幅（差の上限）。
+4. **同居数スイープ**（outmail→paymail→…→all）で横軸＝束数 vs softirq/req。
+
+---
+
 ## 2026-06-29 ── 全部入りPod(megapod) vs 分離：1リクエスト遅延に正味差なし（低負荷）
 
 ### 何をしたか

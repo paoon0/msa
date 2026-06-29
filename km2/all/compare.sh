@@ -22,10 +22,12 @@ REPO=/home/mizuki/ダウンロード/msa
 CYCLES=${CYCLES:-3}                      # normal/mega を交互に何サイクル
 WARMUP=${WARMUP:-5m}                     # 捨てるウォームアップ負荷の長さ
 MEASURE=${MEASURE:-10m}                  # 記録する本計測負荷の長さ
+BASE_SETTLE=${BASE_SETTLE:-30}           # デプロイ後、起動CPUスパイクが収まるまでの待ち(秒・無負荷)
+BASE_WIN=${BASE_WIN:-2m}                 # アイドル基線の rate 窓(node-exporter のスクレイプ間隔を十分カバー)
 ALL=$REPO/km2/all/all.yaml
 LOAD=$REPO/km2/all/loadgen-csv.yaml      # テンプレ(RUN_TIME はここから差し替える)
 LOADGEN=/tmp/loadgen-gen.yaml            # RUN_TIME を差し込んだ実行用マニフェスト
-CSV=${CSV:-$REPO/km2/all/results-compare.csv}
+CSV=${CSV:-$REPO/km2/all/results-cpu.csv}
 LOG=${LOG:-$REPO/km2/all/compare.log}
 ROLLOUT_TIMEOUT=300s
 LOAD_WAIT_MAX=120                        # main 起動待ちの最大ループ(×5s)
@@ -42,7 +44,7 @@ PROM="http://prometheus-grafana-kube-pr-prometheus.monitoring.svc:9090"
 
 exec > >(tee -a "$LOG") 2>&1
 echo "================ START $(date -Is) ns=$NS cycles=$CYCLES warmup=$WARMUP measure=$MEASURE ================"
-[ -f "$CSV" ] || echo "cycle,arm,reqcount,fails,p50_ms,p90_ms,p99_ms,avg_ms,rps,node_cores,app_cores,node_mc_per_req,app_mc_per_req" > "$CSV"
+[ -f "$CSV" ] || echo "cycle,arm,reqcount,fails,p50_ms,p90_ms,p99_ms,avg_ms,rps,node_cores,app_cores,base_node,base_app,node_mc_per_req,app_mc_per_req,comm_mc_per_req,softirq_cores,system_cores,base_softirq,base_system,softirq_mc_per_req,system_mc_per_req" > "$CSV"
 
 # Prometheus を叩く常駐 curl Pod を立てる(port-forward はこの環境で落ちるため exec 方式)
 setup_promq() {
@@ -60,6 +62,28 @@ prom_scalar() {
     | python3 -c "import sys,json;r=json.load(sys.stdin).get('data',{}).get('result',[]);print(r[0]['value'][1] if r else 'NA')" 2>/dev/null
 }
 setup_promq
+
+# 無負荷のアイドル基線CPUを測る(アーム別)。本計測の (負荷時CPU − 基線CPU)/req に使う。
+# 低負荷では基線ドリフトが per-req 信号を覆うため必須。重要: 呼び出しは "ウォームアップ後" に行う。
+# デプロイ直後(冷えた状態)で測ると起動CPUスパイクが基線を膨らませ、アーム間ドリフトが出て
+# 信号(数 mc/req)を覆う。実証(baseline-probe): normal の基線は settle10s=0.914→settle30s=0.560
+# →5分温め後=0.389 と落ち着くほど下がり、温め後は mega(0.401)とほぼ一致(差0.012)=ドリフト消失。
+# 結果は BASE_NODE / BASE_APP に格納。
+measure_baseline() { # arm
+  local arm=$1
+  echo "---- $(date -Is) arm=$arm アイドル基線測定 (ウォームアップ後の温まったアイドル: ドレイン ${BASE_SETTLE}s + 窓 ${BASE_WIN}) ----"
+  sleep "$BASE_SETTLE"          # 直前ウォームアップ負荷のドレイン(in-flight/conntrack)を待つ
+  # rate 窓ぶん無負荷で寝かせてからクエリ(窓全体が無負荷データになるように)
+  local win_s=$BASE_WIN; case "$win_s" in *m) win_s=$(( ${win_s%m} * 60 ));; *s) win_s=${win_s%s};; esac
+  sleep "$win_s"
+  BASE_NODE=$(prom_scalar "sum(rate(node_cpu_seconds_total{mode!=\"idle\"}[$BASE_WIN]))")
+  BASE_APP=$(prom_scalar "sum(rate(container_cpu_usage_seconds_total{namespace=\"$NS\",container!=\"\",container!=\"POD\",pod!~\"loadgenerator.*\",pod!~\"promq.*\"}[$BASE_WIN]))")
+  # 主指標 softirq(通信kernel)・副指標 system。背景ノイズは user モードに居るので両者は影響を受けない。
+  # softirq の無負荷基線は ~0.005cores と微小・安定(=基線ドリフト問題が無い)。
+  BASE_SOFTIRQ=$(prom_scalar "sum(rate(node_cpu_seconds_total{mode=\"softirq\"}[$BASE_WIN]))")
+  BASE_SYSTEM=$(prom_scalar "sum(rate(node_cpu_seconds_total{mode=\"system\"}[$BASE_WIN]))")
+  echo "  $(date -Is) base: node=${BASE_NODE} app=${BASE_APP} softirq=${BASE_SOFTIRQ} system=${BASE_SYSTEM} cores (無負荷)"
+}
 
 deploy_normal() {
   echo "---- deploy NORMAL (分離・Istio無し) ----"
@@ -121,10 +145,12 @@ run_load() { # cycle arm run_time capture(1=記録/0=捨て)
   done
   if [ "$capture" = "1" ]; then
     # 本計測窓のCPUを取得(rate窓 = 本計測長 $rt)。loadgen/promq 自身は app から除外。
-    local node_cores app_cores
+    local node_cores app_cores softirq_cores system_cores
     node_cores=$(prom_scalar "sum(rate(node_cpu_seconds_total{mode!=\"idle\"}[$rt]))")
     app_cores=$(prom_scalar "sum(rate(container_cpu_usage_seconds_total{namespace=\"$NS\",container!=\"\",container!=\"POD\",pod!~\"loadgenerator.*\",pod!~\"promq.*\"}[$rt]))")
-    echo "  $(date -Is) CPU: node=${node_cores} cores / app=${app_cores} cores (window=$rt)"
+    softirq_cores=$(prom_scalar "sum(rate(node_cpu_seconds_total{mode=\"softirq\"}[$rt]))")
+    system_cores=$(prom_scalar "sum(rate(node_cpu_seconds_total{mode=\"system\"}[$rt]))")
+    echo "  $(date -Is) CPU: node=${node_cores} app=${app_cores} softirq=${softirq_cores} system=${system_cores} cores (window=$rt) / base softirq=${BASE_SOFTIRQ:-NA} system=${BASE_SYSTEM:-NA}"
   fi
   kubectl delete job loadgenerator -n "$NS" --ignore-not-found >/dev/null 2>&1
   if [ "$capture" != "1" ]; then
@@ -134,9 +160,10 @@ run_load() { # cycle arm run_time capture(1=記録/0=捨て)
   # 本計測のみ CSV へ記録(ファイル渡し: python3 - のヒアドキュメントが stdin を占有するため)
   local logfile="$REPO/km2/all/last-logs-$arm.txt"
   printf '%s\n' "$logs" > "$logfile"
-  python3 - "$cyc" "$arm" "$CSV" "$logfile" "$node_cores" "$app_cores" <<'PY'
+  python3 - "$cyc" "$arm" "$CSV" "$logfile" "$node_cores" "$app_cores" "${BASE_NODE:-NA}" "${BASE_APP:-NA}" \
+           "$softirq_cores" "$system_cores" "${BASE_SOFTIRQ:-NA}" "${BASE_SYSTEM:-NA}" <<'PY'
 import sys,csv,io
-cyc,arm,out,logfile,node_cores,app_cores=sys.argv[1:7]
+cyc,arm,out,logfile,node_cores,app_cores,base_node,base_app,softirq_cores,system_cores,base_softirq,base_system=sys.argv[1:13]
 data=open(logfile,encoding='utf-8',errors='replace').read()
 b,e="@@@CSV_BEGIN@@@","@@@CSV_END@@@"
 def fnum(x):
@@ -153,12 +180,18 @@ if b in data and e in data:
         def g(name,default="NA"):
             i=idx(name); return r[i] if i is not None and i<len(r) else default
         rps=fnum(g("Requests/s")); nc=fnum(node_cores); ac=fnum(app_cores)
-        # CPU/req = cores / (req/s) * 1000 = ミリコア秒/リクエスト
-        node_mc=round(nc/rps*1000,3) if (nc and rps) else "NA"
-        app_mc =round(ac/rps*1000,3) if (ac and rps) else "NA"
+        bn=fnum(base_node); ba=fnum(base_app)
+        sc=fnum(softirq_cores); syc=fnum(system_cores); bsi=fnum(base_softirq); bsy=fnum(base_system)
+        # アイドル基線を差し引いた「負荷由来の増分CPU」を req で割る = ミリコア秒/リクエスト
+        # 主指標 softirq_mc(通信kernel/req)・副 system_mc。node_mc/app_mc は参考(app=対照群)。
+        def mc(load,base):
+            return round((load-base)/rps*1000,3) if (load is not None and base is not None and rps) else "NA"
+        node_mc=mc(nc,bn); app_mc=mc(ac,ba); softirq_mc=mc(sc,bsi); system_mc=mc(syc,bsy)
+        comm_mc=round(node_mc-app_mc,3) if (node_mc!="NA" and app_mc!="NA") else "NA"
         rec=[cyc,arm,g("Request Count"),g("Failure Count"),
              g("50%"),g("90%"),g("99%"),g("Average Response Time"),g("Requests/s"),
-             node_cores,app_cores,node_mc,app_mc]
+             node_cores,app_cores,base_node,base_app,node_mc,app_mc,comm_mc,
+             softirq_cores,system_cores,base_softirq,base_system,softirq_mc,system_mc]
         with open(out,"a",newline="") as f: csv.writer(f).writerow(rec)
         print("  -> 記録:", ",".join(map(str,rec)))
     else:
@@ -169,8 +202,9 @@ PY
 }
 
 run_arm() { # cycle arm
-  run_load "$1" "$2" "$WARMUP"  0   # ウォームアップ(捨て)
-  run_load "$1" "$2" "$MEASURE" 1   # 本計測(記録)
+  run_load "$1" "$2" "$WARMUP"  0   # ウォームアップ(捨て): JIT/キャッシュ/接続を温める
+  measure_baseline "$2"             # 温まったアイドル基線(負荷ドレイン後) → BASE_NODE/BASE_APP
+  run_load "$1" "$2" "$MEASURE" 1   # 本計測(記録, 基線差引でCPU/req算出)
 }
 
 for c in $(seq 1 $CYCLES); do

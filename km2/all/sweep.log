@@ -1,0 +1,515 @@
+================ SWEEP START 2026-06-30T02:24:23+09:00 ns=exp levels=[80 160 240 360] rate=40 warmup=2m measure=3m ================
+######## 2026-06-30T02:24:25+09:00 SWEEP level USERS=80 (rate=40) ########
+---- deploy NORMAL (分離・Istio無し) ----
+deployment.apps "megapod" deleted
+service "frontend" deleted
+service "frontend-external" deleted
+service "checkoutservice" deleted
+deployment.apps/frontend created
+service/frontend created
+service/frontend-external created
+serviceaccount/frontend created
+deployment.apps/checkoutservice created
+service/checkoutservice created
+serviceaccount/checkoutservice created
+deployment.apps/cartservice created
+service/cartservice created
+serviceaccount/cartservice created
+deployment.apps/redis-cart created
+service/redis-cart created
+deployment.apps/productcatalogservice created
+service/productcatalogservice created
+serviceaccount/productcatalogservice created
+deployment.apps/currencyservice created
+service/currencyservice created
+serviceaccount/currencyservice created
+deployment.apps/paymentservice created
+service/paymentservice created
+serviceaccount/paymentservice created
+deployment.apps/shippingservice created
+service/shippingservice created
+serviceaccount/shippingservice created
+deployment.apps/emailservice created
+service/emailservice created
+serviceaccount/emailservice created
+deployment.apps/recommendationservice created
+service/recommendationservice created
+serviceaccount/recommendationservice created
+deployment.apps/adservice created
+service/adservice created
+serviceaccount/adservice created
+deployment.apps/checkoutservice patched
+deployment.apps/paymentservice patched
+deployment.apps/emailservice patched
+Waiting for deployment "frontend" rollout to finish: 0 of 1 updated replicas are available...
+deployment "frontend" successfully rolled out
+deployment "checkoutservice" successfully rolled out
+Waiting for deployment "cartservice" rollout to finish: 0 of 1 updated replicas are available...
+deployment "cartservice" successfully rolled out
+deployment "redis-cart" successfully rolled out
+deployment "productcatalogservice" successfully rolled out
+deployment "currencyservice" successfully rolled out
+deployment "paymentservice" successfully rolled out
+deployment "shippingservice" successfully rolled out
+deployment "emailservice" successfully rolled out
+deployment "recommendationservice" successfully rolled out
+Waiting for deployment "adservice" rollout to finish: 0 of 1 updated replicas are available...
+deployment "adservice" successfully rolled out
+---- 2026-06-30T02:25:01+09:00 arm=normal users=80 ウォームアップ (負荷 2m, rate 40) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T02:25:07+09:00 loadgen pod=loadgenerator-pnw5v main開始=2026-06-29T17:25:03Z
+  2026-06-30T02:27:07+09:00 負荷完了・マーカー検出(試行 24)
+  ウォームアップ完了(捨て)
+---- 2026-06-30T02:27:08+09:00 arm=normal users=80 アイドル基線(温まったアイドル: ドレイン 30s + 窓 2m) ----
+  2026-06-30T02:29:38+09:00 base: softirq=0.00599999999999999 system=0.19488888888888972 app=0.017947561717517102 node=0.634555555555557 cores
+---- 2026-06-30T02:29:38+09:00 arm=normal users=80 本計測 (負荷 3m, rate 40) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T02:29:44+09:00 loadgen pod=loadgenerator-l25rf main開始=2026-06-29T17:29:41Z
+  2026-06-30T02:32:43+09:00 負荷完了・マーカー検出(試行 35)
+  2026-06-30T02:32:44+09:00 CPU: softirq=0.2518666666666667 system=0.8472000000000004 app=2.894174774478788 node=3.973800000000001 cores (window=3m)
+  -> 記録: 80,normal,42816,0,90,200,750,110.119842107345,238.5657300040939,0.2518666666666667,0.00599999999999999,0.8472000000000004,0.19488888888888972,2.894174774478788,0.017947561717517102,3.973800000000001,0.634555555555557,1.031,2.734,12.056,13.997
+---- deploy MEGA (全部入り) ----
+deployment.apps "frontend" deleted
+service "frontend" deleted
+service "frontend-external" deleted
+serviceaccount "frontend" deleted
+deployment.apps "checkoutservice" deleted
+service "checkoutservice" deleted
+serviceaccount "checkoutservice" deleted
+deployment.apps "cartservice" deleted
+service "cartservice" deleted
+serviceaccount "cartservice" deleted
+deployment.apps "redis-cart" deleted
+service "redis-cart" deleted
+deployment.apps "productcatalogservice" deleted
+service "productcatalogservice" deleted
+serviceaccount "productcatalogservice" deleted
+deployment.apps "currencyservice" deleted
+service "currencyservice" deleted
+serviceaccount "currencyservice" deleted
+deployment.apps "paymentservice" deleted
+service "paymentservice" deleted
+serviceaccount "paymentservice" deleted
+deployment.apps "shippingservice" deleted
+service "shippingservice" deleted
+serviceaccount "shippingservice" deleted
+deployment.apps "emailservice" deleted
+service "emailservice" deleted
+serviceaccount "emailservice" deleted
+deployment.apps "recommendationservice" deleted
+service "recommendationservice" deleted
+serviceaccount "recommendationservice" deleted
+deployment.apps "adservice" deleted
+service "adservice" deleted
+serviceaccount "adservice" deleted
+deployment.apps/megapod created
+service/frontend created
+service/frontend-external created
+service/checkoutservice created
+Waiting for deployment "megapod" rollout to finish: 0 of 1 updated replicas are available...
+deployment "megapod" successfully rolled out
+---- 2026-06-30T02:33:16+09:00 arm=mega users=80 ウォームアップ (負荷 2m, rate 40) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T02:33:22+09:00 loadgen pod=loadgenerator-dpsjs main開始=2026-06-29T17:33:19Z
+  2026-06-30T02:35:23+09:00 負荷完了・マーカー検出(試行 24)
+  ウォームアップ完了(捨て)
+---- 2026-06-30T02:35:23+09:00 arm=mega users=80 アイドル基線(温まったアイドル: ドレイン 30s + 窓 2m) ----
+  2026-06-30T02:37:54+09:00 base: softirq=0.005000000000000109 system=0.18766666666666618 app=0.01927018636255739 node=0.6577777777777695 cores
+---- 2026-06-30T02:37:54+09:00 arm=mega users=80 本計測 (負荷 3m, rate 40) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T02:38:00+09:00 loadgen pod=loadgenerator-6dzj7 main開始=2026-06-29T17:37:57Z
+  2026-06-30T02:40:58+09:00 負荷完了・マーカー検出(試行 35)
+  2026-06-30T02:40:59+09:00 CPU: softirq=0.11466666666666651 system=0.7722666666666664 app=2.4997579343702117 node=3.5888 cores (window=3m)
+  -> 記録: 80,mega,42858,0,110,200,360,118.16426527933655,238.88340210856754,0.11466666666666651,0.005000000000000109,0.7722666666666664,0.18766666666666618,2.4997579343702117,0.01927018636255739,3.5888,0.6577777777777695,0.459,2.447,10.384,12.27
+######## 2026-06-30T02:40:59+09:00 SWEEP level USERS=160 (rate=40) ########
+---- deploy NORMAL (分離・Istio無し) ----
+deployment.apps "megapod" deleted
+service "frontend" deleted
+service "frontend-external" deleted
+service "checkoutservice" deleted
+deployment.apps/frontend created
+service/frontend created
+service/frontend-external created
+serviceaccount/frontend created
+deployment.apps/checkoutservice created
+service/checkoutservice created
+serviceaccount/checkoutservice created
+deployment.apps/cartservice created
+service/cartservice created
+serviceaccount/cartservice created
+deployment.apps/redis-cart created
+service/redis-cart created
+deployment.apps/productcatalogservice created
+service/productcatalogservice created
+serviceaccount/productcatalogservice created
+deployment.apps/currencyservice created
+service/currencyservice created
+serviceaccount/currencyservice created
+deployment.apps/paymentservice created
+service/paymentservice created
+serviceaccount/paymentservice created
+deployment.apps/shippingservice created
+service/shippingservice created
+serviceaccount/shippingservice created
+deployment.apps/emailservice created
+service/emailservice created
+serviceaccount/emailservice created
+deployment.apps/recommendationservice created
+service/recommendationservice created
+serviceaccount/recommendationservice created
+deployment.apps/adservice created
+service/adservice created
+serviceaccount/adservice created
+deployment.apps/checkoutservice patched
+deployment.apps/paymentservice patched
+deployment.apps/emailservice patched
+Waiting for deployment "frontend" rollout to finish: 0 of 1 updated replicas are available...
+deployment "frontend" successfully rolled out
+deployment "checkoutservice" successfully rolled out
+Waiting for deployment "cartservice" rollout to finish: 0 of 1 updated replicas are available...
+deployment "cartservice" successfully rolled out
+deployment "redis-cart" successfully rolled out
+deployment "productcatalogservice" successfully rolled out
+deployment "currencyservice" successfully rolled out
+deployment "paymentservice" successfully rolled out
+deployment "shippingservice" successfully rolled out
+deployment "emailservice" successfully rolled out
+deployment "recommendationservice" successfully rolled out
+Waiting for deployment "adservice" rollout to finish: 0 of 1 updated replicas are available...
+deployment "adservice" successfully rolled out
+---- 2026-06-30T02:41:36+09:00 arm=normal users=160 ウォームアップ (負荷 2m, rate 40) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T02:41:42+09:00 loadgen pod=loadgenerator-zn48b main開始=2026-06-29T17:41:38Z
+  2026-06-30T02:43:43+09:00 負荷完了・マーカー検出(試行 24)
+  ウォームアップ完了(捨て)
+---- 2026-06-30T02:43:43+09:00 arm=normal users=160 アイドル基線(温まったアイドル: ドレイン 30s + 窓 2m) ----
+  2026-06-30T02:46:14+09:00 base: softirq=0.005444444444444545 system=0.19300000000000192 app=0.01959620075952347 node=0.6742222222222256 cores
+---- 2026-06-30T02:46:14+09:00 arm=normal users=160 本計測 (負荷 3m, rate 40) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T02:46:20+09:00 loadgen pod=loadgenerator-mkcqb main開始=2026-06-29T17:46:16Z
+  2026-06-30T02:49:19+09:00 負荷完了・マーカー検出(試行 35)
+  2026-06-30T02:49:20+09:00 CPU: softirq=0.38699999999999984 system=1.2612 app=4.984318699043644 node=6.339333333333332 cores (window=3m)
+  -> 記録: 160,normal,85333,0,170,330,500,180.96294615835743,475.6635515304462,0.38699999999999984,0.005444444444444545,1.2612,0.19300000000000192,4.984318699043644,0.01959620075952347,6.339333333333332,0.6742222222222256,0.802,2.246,10.437,11.91
+---- deploy MEGA (全部入り) ----
+deployment.apps "frontend" deleted
+service "frontend" deleted
+service "frontend-external" deleted
+serviceaccount "frontend" deleted
+deployment.apps "checkoutservice" deleted
+service "checkoutservice" deleted
+serviceaccount "checkoutservice" deleted
+deployment.apps "cartservice" deleted
+service "cartservice" deleted
+serviceaccount "cartservice" deleted
+deployment.apps "redis-cart" deleted
+service "redis-cart" deleted
+deployment.apps "productcatalogservice" deleted
+service "productcatalogservice" deleted
+serviceaccount "productcatalogservice" deleted
+deployment.apps "currencyservice" deleted
+service "currencyservice" deleted
+serviceaccount "currencyservice" deleted
+deployment.apps "paymentservice" deleted
+service "paymentservice" deleted
+serviceaccount "paymentservice" deleted
+deployment.apps "shippingservice" deleted
+service "shippingservice" deleted
+serviceaccount "shippingservice" deleted
+deployment.apps "emailservice" deleted
+service "emailservice" deleted
+serviceaccount "emailservice" deleted
+deployment.apps "recommendationservice" deleted
+service "recommendationservice" deleted
+serviceaccount "recommendationservice" deleted
+deployment.apps "adservice" deleted
+service "adservice" deleted
+serviceaccount "adservice" deleted
+deployment.apps/megapod created
+service/frontend created
+service/frontend-external created
+service/checkoutservice created
+Waiting for deployment "megapod" rollout to finish: 0 of 1 updated replicas are available...
+deployment "megapod" successfully rolled out
+---- 2026-06-30T02:49:47+09:00 arm=mega users=160 ウォームアップ (負荷 2m, rate 40) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T02:49:53+09:00 loadgen pod=loadgenerator-f8w2j main開始=2026-06-29T17:49:50Z
+  2026-06-30T02:51:54+09:00 負荷完了・マーカー検出(試行 24)
+  ウォームアップ完了(捨て)
+---- 2026-06-30T02:51:54+09:00 arm=mega users=160 アイドル基線(温まったアイドル: ドレイン 30s + 窓 2m) ----
+  2026-06-30T02:54:25+09:00 base: softirq=0.004888888888888626 system=0.19055555555555498 app=0.018622876034250495 node=0.6575555555555573 cores
+---- 2026-06-30T02:54:25+09:00 arm=mega users=160 本計測 (負荷 3m, rate 40) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T02:54:31+09:00 loadgen pod=loadgenerator-hk29l main開始=2026-06-29T17:54:28Z
+  2026-06-30T02:57:30+09:00 負荷完了・マーカー検出(試行 35)
+  2026-06-30T02:57:31+09:00 CPU: softirq=0.19706666666666658 system=1.1732666666666656 app=4.68089762748956 node=5.896466666666667 cores (window=3m)
+  -> 記録: 160,mega,84525,0,160,340,570,177.26852980591212,470.98973080745674,0.19706666666666658,0.004888888888888626,1.1732666666666656,0.19055555555555498,4.68089762748956,0.018622876034250495,5.896466666666667,0.6575555555555573,0.408,2.086,9.899,11.123
+######## 2026-06-30T02:57:31+09:00 SWEEP level USERS=240 (rate=40) ########
+---- deploy NORMAL (分離・Istio無し) ----
+deployment.apps "megapod" deleted
+service "frontend" deleted
+service "frontend-external" deleted
+service "checkoutservice" deleted
+deployment.apps/frontend created
+service/frontend created
+service/frontend-external created
+serviceaccount/frontend created
+deployment.apps/checkoutservice created
+service/checkoutservice created
+serviceaccount/checkoutservice created
+deployment.apps/cartservice created
+service/cartservice created
+serviceaccount/cartservice created
+deployment.apps/redis-cart created
+service/redis-cart created
+deployment.apps/productcatalogservice created
+service/productcatalogservice created
+serviceaccount/productcatalogservice created
+deployment.apps/currencyservice created
+service/currencyservice created
+serviceaccount/currencyservice created
+deployment.apps/paymentservice created
+service/paymentservice created
+serviceaccount/paymentservice created
+deployment.apps/shippingservice created
+service/shippingservice created
+serviceaccount/shippingservice created
+deployment.apps/emailservice created
+service/emailservice created
+serviceaccount/emailservice created
+deployment.apps/recommendationservice created
+service/recommendationservice created
+serviceaccount/recommendationservice created
+deployment.apps/adservice created
+service/adservice created
+serviceaccount/adservice created
+deployment.apps/checkoutservice patched
+deployment.apps/paymentservice patched
+deployment.apps/emailservice patched
+Waiting for deployment "frontend" rollout to finish: 0 of 1 updated replicas are available...
+deployment "frontend" successfully rolled out
+deployment "checkoutservice" successfully rolled out
+Waiting for deployment "cartservice" rollout to finish: 0 of 1 updated replicas are available...
+deployment "cartservice" successfully rolled out
+deployment "redis-cart" successfully rolled out
+deployment "productcatalogservice" successfully rolled out
+deployment "currencyservice" successfully rolled out
+deployment "paymentservice" successfully rolled out
+deployment "shippingservice" successfully rolled out
+deployment "emailservice" successfully rolled out
+deployment "recommendationservice" successfully rolled out
+Waiting for deployment "adservice" rollout to finish: 0 of 1 updated replicas are available...
+deployment "adservice" successfully rolled out
+---- 2026-06-30T02:58:06+09:00 arm=normal users=240 ウォームアップ (負荷 2m, rate 40) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T02:58:13+09:00 loadgen pod=loadgenerator-7ddxf main開始=2026-06-29T17:58:09Z
+  2026-06-30T03:00:14+09:00 負荷完了・マーカー検出(試行 24)
+  ウォームアップ完了(捨て)
+---- 2026-06-30T03:00:14+09:00 arm=normal users=240 アイドル基線(温まったアイドル: ドレイン 30s + 窓 2m) ----
+  2026-06-30T03:02:45+09:00 base: softirq=0.005777777777777969 system=0.19222222222222263 app=0.018830914041020816 node=0.6637777777777739 cores
+---- 2026-06-30T03:02:45+09:00 arm=normal users=240 本計測 (負荷 3m, rate 40) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T03:02:51+09:00 loadgen pod=loadgenerator-gfr9b main開始=2026-06-29T18:02:47Z
+  2026-06-30T03:05:50+09:00 負荷完了・マーカー検出(試行 35)
+  2026-06-30T03:05:51+09:00 CPU: softirq=0.34440000000000015 system=1.0934666666666661 app=5.022543595600622 node=6.362266666666666 cores (window=3m)
+  -> 記録: 240,normal,106664,0,360,560,950,385.55051853209125,594.8512287509009,0.34440000000000015,0.005777777777777969,1.0934666666666661,0.19222222222222263,5.022543595600622,0.018830914041020816,6.362266666666666,0.6637777777777739,0.569,1.515,8.412,9.58
+---- deploy MEGA (全部入り) ----
+deployment.apps "frontend" deleted
+service "frontend" deleted
+service "frontend-external" deleted
+serviceaccount "frontend" deleted
+deployment.apps "checkoutservice" deleted
+service "checkoutservice" deleted
+serviceaccount "checkoutservice" deleted
+deployment.apps "cartservice" deleted
+service "cartservice" deleted
+serviceaccount "cartservice" deleted
+deployment.apps "redis-cart" deleted
+service "redis-cart" deleted
+deployment.apps "productcatalogservice" deleted
+service "productcatalogservice" deleted
+serviceaccount "productcatalogservice" deleted
+deployment.apps "currencyservice" deleted
+service "currencyservice" deleted
+serviceaccount "currencyservice" deleted
+deployment.apps "paymentservice" deleted
+service "paymentservice" deleted
+serviceaccount "paymentservice" deleted
+deployment.apps "shippingservice" deleted
+service "shippingservice" deleted
+serviceaccount "shippingservice" deleted
+deployment.apps "emailservice" deleted
+service "emailservice" deleted
+serviceaccount "emailservice" deleted
+deployment.apps "recommendationservice" deleted
+service "recommendationservice" deleted
+serviceaccount "recommendationservice" deleted
+deployment.apps "adservice" deleted
+service "adservice" deleted
+serviceaccount "adservice" deleted
+deployment.apps/megapod created
+service/frontend created
+service/frontend-external created
+service/checkoutservice created
+Waiting for deployment "megapod" rollout to finish: 0 of 1 updated replicas are available...
+deployment "megapod" successfully rolled out
+---- 2026-06-30T03:06:23+09:00 arm=mega users=240 ウォームアップ (負荷 2m, rate 40) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T03:06:29+09:00 loadgen pod=loadgenerator-4rbzr main開始=2026-06-29T18:06:26Z
+  2026-06-30T03:08:30+09:00 負荷完了・マーカー検出(試行 24)
+  ウォームアップ完了(捨て)
+---- 2026-06-30T03:08:30+09:00 arm=mega users=240 アイドル基線(温まったアイドル: ドレイン 30s + 窓 2m) ----
+  2026-06-30T03:11:01+09:00 base: softirq=0.005222222222222209 system=0.19377777777777616 app=0.0196310347090193 node=0.6793333333333365 cores
+---- 2026-06-30T03:11:01+09:00 arm=mega users=240 本計測 (負荷 3m, rate 40) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T03:11:07+09:00 loadgen pod=loadgenerator-jvg6p main開始=2026-06-29T18:11:04Z
+  2026-06-30T03:14:07+09:00 負荷完了・マーカー検出(試行 35)
+  2026-06-30T03:14:08+09:00 CPU: softirq=0.19640000000000019 system=1.1266666666666652 app=4.765714350236827 node=6.269866666666665 cores (window=3m)
+  -> 記録: 240,mega,104076,0,390,580,760,395.04293669147665,580.6414892535702,0.19640000000000019,0.005222222222222209,1.1266666666666652,0.19377777777777616,4.765714350236827,0.0196310347090193,6.269866666666665,0.6793333333333365,0.329,1.607,8.174,9.628
+######## 2026-06-30T03:14:08+09:00 SWEEP level USERS=360 (rate=40) ########
+---- deploy NORMAL (分離・Istio無し) ----
+deployment.apps "megapod" deleted
+service "frontend" deleted
+service "frontend-external" deleted
+service "checkoutservice" deleted
+deployment.apps/frontend created
+service/frontend created
+service/frontend-external created
+serviceaccount/frontend created
+deployment.apps/checkoutservice created
+service/checkoutservice created
+serviceaccount/checkoutservice created
+deployment.apps/cartservice created
+service/cartservice created
+serviceaccount/cartservice created
+deployment.apps/redis-cart created
+service/redis-cart created
+deployment.apps/productcatalogservice created
+service/productcatalogservice created
+serviceaccount/productcatalogservice created
+deployment.apps/currencyservice created
+service/currencyservice created
+serviceaccount/currencyservice created
+deployment.apps/paymentservice created
+service/paymentservice created
+serviceaccount/paymentservice created
+deployment.apps/shippingservice created
+service/shippingservice created
+serviceaccount/shippingservice created
+deployment.apps/emailservice created
+service/emailservice created
+serviceaccount/emailservice created
+deployment.apps/recommendationservice created
+service/recommendationservice created
+serviceaccount/recommendationservice created
+deployment.apps/adservice created
+service/adservice created
+serviceaccount/adservice created
+deployment.apps/checkoutservice patched
+deployment.apps/paymentservice patched
+deployment.apps/emailservice patched
+Waiting for deployment "frontend" rollout to finish: 0 of 1 updated replicas are available...
+deployment "frontend" successfully rolled out
+deployment "checkoutservice" successfully rolled out
+Waiting for deployment "cartservice" rollout to finish: 0 of 1 updated replicas are available...
+deployment "cartservice" successfully rolled out
+deployment "redis-cart" successfully rolled out
+deployment "productcatalogservice" successfully rolled out
+deployment "currencyservice" successfully rolled out
+deployment "paymentservice" successfully rolled out
+deployment "shippingservice" successfully rolled out
+deployment "emailservice" successfully rolled out
+deployment "recommendationservice" successfully rolled out
+Waiting for deployment "adservice" rollout to finish: 0 of 1 updated replicas are available...
+deployment "adservice" successfully rolled out
+---- 2026-06-30T03:14:42+09:00 arm=normal users=360 ウォームアップ (負荷 2m, rate 40) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T03:14:48+09:00 loadgen pod=loadgenerator-nrmnh main開始=2026-06-29T18:14:45Z
+  2026-06-30T03:16:50+09:00 負荷完了・マーカー検出(試行 24)
+  ウォームアップ完了(捨て)
+---- 2026-06-30T03:16:50+09:00 arm=normal users=360 アイドル基線(温まったアイドル: ドレイン 30s + 窓 2m) ----
+  2026-06-30T03:19:21+09:00 base: softirq=0.004666666666666764 system=0.2050000000000005 app=0.01852127229202599 node=0.740444444444442 cores
+---- 2026-06-30T03:19:21+09:00 arm=normal users=360 本計測 (負荷 3m, rate 40) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T03:19:27+09:00 loadgen pod=loadgenerator-5fxfn main開始=2026-06-29T18:19:23Z
+  2026-06-30T03:22:26+09:00 負荷完了・マーカー検出(試行 35)
+  2026-06-30T03:22:27+09:00 CPU: softirq=0.3653902562598329 system=1.1468360843710828 app=5.2664884784843045 node=6.73068718167515 cores (window=3m)
+  -> 記録: 360,normal,121418,0,500,690,990,516.0055672161166,676.6577496217235,0.3653902562598329,0.004666666666666764,1.1468360843710828,0.2050000000000005,5.2664884784843045,0.01852127229202599,6.73068718167515,0.740444444444442,0.533,1.392,7.756,8.853
+---- deploy MEGA (全部入り) ----
+deployment.apps "frontend" deleted
+service "frontend" deleted
+service "frontend-external" deleted
+serviceaccount "frontend" deleted
+deployment.apps "checkoutservice" deleted
+service "checkoutservice" deleted
+serviceaccount "checkoutservice" deleted
+deployment.apps "cartservice" deleted
+service "cartservice" deleted
+serviceaccount "cartservice" deleted
+deployment.apps "redis-cart" deleted
+service "redis-cart" deleted
+deployment.apps "productcatalogservice" deleted
+service "productcatalogservice" deleted
+serviceaccount "productcatalogservice" deleted
+deployment.apps "currencyservice" deleted
+service "currencyservice" deleted
+serviceaccount "currencyservice" deleted
+deployment.apps "paymentservice" deleted
+service "paymentservice" deleted
+serviceaccount "paymentservice" deleted
+deployment.apps "shippingservice" deleted
+service "shippingservice" deleted
+serviceaccount "shippingservice" deleted
+deployment.apps "emailservice" deleted
+service "emailservice" deleted
+serviceaccount "emailservice" deleted
+deployment.apps "recommendationservice" deleted
+service "recommendationservice" deleted
+serviceaccount "recommendationservice" deleted
+deployment.apps "adservice" deleted
+service "adservice" deleted
+serviceaccount "adservice" deleted
+deployment.apps/megapod created
+service/frontend created
+service/frontend-external created
+service/checkoutservice created
+Waiting for deployment "megapod" rollout to finish: 0 of 1 updated replicas are available...
+deployment "megapod" successfully rolled out
+---- 2026-06-30T03:22:59+09:00 arm=mega users=360 ウォームアップ (負荷 2m, rate 40) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T03:23:05+09:00 loadgen pod=loadgenerator-5g2v4 main開始=2026-06-29T18:23:02Z
+  2026-06-30T03:25:06+09:00 負荷完了・マーカー検出(試行 24)
+  ウォームアップ完了(捨て)
+---- 2026-06-30T03:25:06+09:00 arm=mega users=360 アイドル基線(温まったアイドル: ドレイン 30s + 窓 2m) ----
+  2026-06-30T03:27:37+09:00 base: softirq=0.004666666666666527 system=0.19444444444444695 app=0.01913916450130014 node=0.6772222222222314 cores
+---- 2026-06-30T03:27:37+09:00 arm=mega users=360 本計測 (負荷 3m, rate 40) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-06-30T03:27:43+09:00 loadgen pod=loadgenerator-lt524 main開始=2026-06-29T18:27:40Z
+  2026-06-30T03:30:42+09:00 負荷完了・マーカー検出(試行 35)
+  2026-06-30T03:30:43+09:00 CPU: softirq=0.18973333333333334 system=1.0442000000000007 app=4.873575936430869 node=6.0963333333333285 cores (window=3m)
+  -> 記録: 360,mega,108762,0,540,810,1300,575.7262959534878,605.5688860381798,0.18973333333333334,0.004666666666666527,1.0442000000000007,0.19444444444444695,4.873575936430869,0.01913916450130014,6.0963333333333285,0.6772222222222314,0.306,1.403,8.016,8.949
+================ SWEEP DONE 2026-06-30T03:31:14+09:00 ================
+users  arm     reqcount  fails  p50_ms  p90_ms  p99_ms  avg_ms              rps                 softirq_cores        base_softirq          system_cores        base_system          app_cores           base_app              node_cores          base_node           softirq_mc_per_req  system_mc_per_req  app_mc_per_req  node_mc_per_req
+80     normal  42816     0      90      200     750     110.119842107345    238.5657300040939   0.2518666666666667   0.00599999999999999   0.8472000000000004  0.19488888888888972  2.894174774478788   0.017947561717517102  3.973800000000001   0.634555555555557   1.031               2.734              12.056          13.997
+80     mega    42858     0      110     200     360     118.16426527933655  238.88340210856754  0.11466666666666651  0.005000000000000109  0.7722666666666664  0.18766666666666618  2.4997579343702117  0.01927018636255739   3.5888              0.6577777777777695  0.459               2.447              10.384          12.27
+160    normal  85333     0      170     330     500     180.96294615835743  475.6635515304462   0.38699999999999984  0.005444444444444545  1.2612              0.19300000000000192  4.984318699043644   0.01959620075952347   6.339333333333332   0.6742222222222256  0.802               2.246              10.437          11.91
+160    mega    84525     0      160     340     570     177.26852980591212  470.98973080745674  0.19706666666666658  0.004888888888888626  1.1732666666666656  0.19055555555555498  4.68089762748956    0.018622876034250495  5.896466666666667   0.6575555555555573  0.408               2.086              9.899           11.123
+240    normal  106664    0      360     560     950     385.55051853209125  594.8512287509009   0.34440000000000015  0.005777777777777969  1.0934666666666661  0.19222222222222263  5.022543595600622   0.018830914041020816  6.362266666666666   0.6637777777777739  0.569               1.515              8.412           9.58
+240    mega    104076    0      390     580     760     395.04293669147665  580.6414892535702   0.19640000000000019  0.005222222222222209  1.1266666666666652  0.19377777777777616  4.765714350236827   0.0196310347090193    6.269866666666665   0.6793333333333365  0.329               1.607              8.174           9.628
+360    normal  121418    0      500     690     990     516.0055672161166   676.6577496217235   0.3653902562598329   0.004666666666666764  1.1468360843710828  0.2050000000000005   5.2664884784843045  0.01852127229202599   6.73068718167515    0.740444444444442   0.533               1.392              7.756           8.853
+360    mega    108762    0      540     810     1300    575.7262959534878   605.5688860381798   0.18973333333333334  0.004666666666666527  1.0442000000000007  0.19444444444444695  4.873575936430869   0.01913916450130014   6.0963333333333285  0.6772222222222314  0.306               1.403              8.016           8.949

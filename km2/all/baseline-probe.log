@@ -1,0 +1,30 @@
+================ PROBE START 2026-06-29T23:02:48+09:00 warm=5m win=2m ================
+---- mega は既稼働。温まった基線を測定 ----
+  2026-06-29T23:05:23+09:00 [mega/warm] base node=0.40066666666666656 app=0.01854946839511508 cores
+---- normal デプロイ(分離・Istio無し) ----
+Waiting for deployment "frontend" rollout to finish: 0 of 1 updated replicas are available...
+deployment "frontend" successfully rolled out
+deployment "checkoutservice" successfully rolled out
+Waiting for deployment "cartservice" rollout to finish: 0 of 1 updated replicas are available...
+deployment "cartservice" successfully rolled out
+deployment "redis-cart" successfully rolled out
+deployment "productcatalogservice" successfully rolled out
+deployment "currencyservice" successfully rolled out
+deployment "paymentservice" successfully rolled out
+deployment "shippingservice" successfully rolled out
+deployment "emailservice" successfully rolled out
+deployment "recommendationservice" successfully rolled out
+Waiting for deployment "adservice" rollout to finish: 0 of 1 updated replicas are available...
+deployment "adservice" successfully rolled out
+---- normal 冷えた直後の基線 ----
+  2026-06-29T23:08:29+09:00 [normal/cold] base node=0.5604444444444444 app=0.02007451984701073 cores
+---- normal 5分温め ----
+  2026-06-29T23:08:29+09:00 温め負荷 5m 開始
+  2026-06-29T23:13:34+09:00 温め完了
+---- normal 温まった基線 ----
+  2026-06-29T23:16:04+09:00 [normal/warm] base node=0.388888888888889 app=0.019393562958159995 cores
+================ PROBE DONE 2026-06-29T23:16:35+09:00 ================
+arm     phase  node_cores           app_cores
+mega    warm   0.40066666666666656  0.01854946839511508
+normal  cold   0.5604444444444444   0.02007451984701073
+normal  warm   0.388888888888889    0.019393562958159995
