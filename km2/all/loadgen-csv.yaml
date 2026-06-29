@@ -1,0 +1,96 @@
+# 計測用 loadgenerator — locust を headless で走らせ、--csv で全走集計を出力し、
+# 終了後に *_stats.csv を stdout へ吐き出す (Job 完了後も kubectl logs から回収できるように)。
+#
+# locust の _stats.csv "Aggregated" 行が「1リクエストにかかる時間」の本体:
+#   列: Type,Name,Request Count,Failure Count,Median,Average,Min,Max,AvgContent,
+#       Requests/s,Failures/s, 50%,66%,75%,80%,90%,95%,98%,99%,99.9%,99.99%,100%   (時間は ms)
+#
+# 注意:
+#  - readOnlyRootFilesystem:true なので、書き込み先 /out と /tmp を emptyDir でマウント。
+#  - USERS / RATE / RUN_TIME で負荷を調整。通常版・全部入りで同一値にして比較する。
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: loadgenerator
+  labels:
+    app: loadgenerator
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app: loadgenerator
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: loadgenerator
+      terminationGracePeriodSeconds: 5
+      restartPolicy: Never
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      volumes:
+      - name: out
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
+      initContainers:
+      - name: frontend-check
+        image: busybox:latest
+        command:
+        - /bin/sh
+        - -exc
+        - |
+          for i in $(seq 1 24); do
+            STATUSCODE=$(wget --server-response http://${FRONTEND_ADDR} 2>&1 | awk '/^  HTTP/{print $2}')
+            if [ "$STATUSCODE" = "200" ]; then echo "Frontend reachable."; exit 0; fi
+            echo "Attempt $i: frontend not ready (status=$STATUSCODE)"; sleep 5
+          done
+          echo "Failed to reach frontend"; exit 1
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: ["ALL"] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        env:
+        - { name: FRONTEND_ADDR, value: "frontend:80" }
+      containers:
+      - name: main
+        image: mizuki0118/mylocust:run1
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: ["ALL"] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        command:
+        - /bin/sh
+        - -c
+        - |
+          locust --host="http://${FRONTEND_ADDR}" --headless \
+                 -u "${USERS:-80}" -r "${RATE:-1}" --run-time "${RUN_TIME:-6m}" \
+                 --csv=/out/lg --only-summary
+          echo "@@@CSV_BEGIN@@@"
+          cat /out/lg_stats.csv
+          echo "@@@CSV_END@@@"
+          # CSV を吐いた後も Pod を生かしておく(終了直後の kubectl logs 空読みレース回避)。
+          # 取得側(compare.sh)がマーカーを読んだら job を削除して止める。
+          echo "keeping pod alive for log scrape..."
+          sleep 600
+        volumeMounts:
+        - { name: out, mountPath: /out }
+        - { name: tmp, mountPath: /tmp }
+        env:
+        - { name: FRONTEND_ADDR, value: "frontend:80" }
+        - { name: USERS,    value: "80" }
+        - { name: RATE,     value: "1" }
+        - { name: RUN_TIME, value: "30s" }   # クイック確認用(本走は 6m に戻す)
+        resources:
+          requests: { cpu: 600m, memory: 512Mi }
+          limits:   { cpu: 900m, memory: 1024Mi }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: loadgenerator

@@ -1,0 +1,336 @@
+# ============================================================================
+# 全部入り Pod (megapod) — Online Boutique の全 11 コンテナを 1 Pod に同居させる。
+#
+# 目的: 「まとめる数」を最大化した上端アーム。すべてのサービス間 gRPC が localhost
+#       (ループバック) になり、ClusterIP 経路 (veth+bridge+conntrack/iptables、
+#       Istio 下では Envoy 2 枚) を一切通らなくなる。分離構成 (1 Pod 1 サービス) と
+#       比較して、通信時間・総CPU・p99・飽和スループットがどう変わるかを測る。
+#
+# 設計上のポイント:
+#  - 1 Pod 内はコンテナ全員が同一ネットワーク名前空間 (= 同一 localhost) を共有するため、
+#    ポートが衝突してはいけない。元構成で衝突する組を振り直した:
+#       emailservice         8080 -> 8081
+#       recommendationservice 8080 -> 8082
+#       shippingservice      50051 -> 50052
+#    (frontend=8080, payment=50051 は据え置き。残りはもともと一意)
+#  - 全サービスの *_SERVICE_ADDR を "localhost:<port>" に書き換え (全ホップ localhost 化)。
+#  - per-コンテナの requests/limits は分離構成の原本のまま。変えたのは「詰め方」だけなので、
+#    分離 vs 全部入りを公平に比較できる (確保した総 CPU は同じ、Pod 数と Envoy 数だけ違う)。
+#  - Istio: 既定は inject:false (純カーネル差を見る基準条件)。
+#    Istio 条件で測るときは下の annotation を "true" にして再 apply する
+#    (全部入りでは Envoy が 1 枚で済み、localhost 通信は Envoy を素通りする)。
+#
+# 使い方 (分離構成を撤去してから):
+#   kubectl delete -f km2/checkoutservice.yaml -f km2/emailservice.yaml ... (個別)  ※または別 ns
+#   kubectl apply -f km2/all/all.yaml
+#   kubectl apply -f km2/loadgenerator.yaml      # 負荷 (FRONTEND_ADDR=frontend:80 のまま使える)
+#   kubectl port-forward deployment/megapod 8080:8080
+# ============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: megapod
+  labels:
+    app: megapod
+spec:
+  selector:
+    matchLabels:
+      app: megapod
+  template:
+    metadata:
+      annotations:
+        # ▼ Istio 条件で測るときは "true" に変える (全部入りは Envoy 1 枚)
+        sidecar.istio.io/inject: "false"
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /stats/prometheus
+        prometheus.io/port: "15090"
+      labels:
+        app: megapod
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      volumes:
+      - name: redis-data
+        emptyDir: {}
+      containers:
+
+      # ---------------------------------------------------------------- frontend (HTTP 8080)
+      - name: frontend
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend:v0.10.3
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          initialDelaySeconds: 10
+          httpGet:
+            path: "/_healthz"
+            port: 8080
+            httpHeaders:
+            - { name: "Cookie", value: "shop_session-id=x-readiness-probe" }
+        livenessProbe:
+          initialDelaySeconds: 10
+          httpGet:
+            path: "/_healthz"
+            port: 8080
+            httpHeaders:
+            - { name: "Cookie", value: "shop_session-id=x-liveness-probe" }
+        env:
+        - { name: PORT, value: "8080" }
+        - { name: PRODUCT_CATALOG_SERVICE_ADDR, value: "localhost:3550" }
+        - { name: CURRENCY_SERVICE_ADDR,        value: "localhost:7000" }
+        - { name: CART_SERVICE_ADDR,            value: "localhost:7070" }
+        - { name: RECOMMENDATION_SERVICE_ADDR,  value: "localhost:8082" }   # remapped
+        - { name: SHIPPING_SERVICE_ADDR,        value: "localhost:50052" }  # remapped
+        - { name: CHECKOUT_SERVICE_ADDR,        value: "localhost:5050" }
+        - { name: AD_SERVICE_ADDR,              value: "localhost:9555" }
+        # 機能は無効だが frontend の mustMapEnv が「存在」を必須にするため値だけ設定
+        - { name: SHOPPING_ASSISTANT_SERVICE_ADDR, value: "localhost:80" }
+        - { name: ENABLE_PROFILER, value: "0" }
+        resources:
+          requests: { cpu: 1000m, memory: 128Mi }
+          limits:   { cpu: 1600m, memory: 256Mi }
+
+      # ---------------------------------------------------------------- checkout (gRPC 5050 + metrics 9464)
+      - name: checkout
+        image: mizuki0118/mygo:bunpupaymail            # 細バケット+payment計測入りの自前イメージ
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        ports:
+        - { name: grpc,    containerPort: 5050 }
+        - { name: metrics, containerPort: 9464 }
+        readinessProbe: { grpc: { port: 5050 } }
+        livenessProbe:  { grpc: { port: 5050 } }
+        env:
+        - { name: PORT, value: "5050" }
+        - { name: PRODUCT_CATALOG_SERVICE_ADDR, value: "localhost:3550" }
+        - { name: SHIPPING_SERVICE_ADDR,        value: "localhost:50052" }  # remapped
+        - { name: PAYMENT_SERVICE_ADDR,         value: "localhost:50051" }
+        - { name: EMAIL_SERVICE_ADDR,           value: "localhost:8081" }   # remapped
+        - { name: CURRENCY_SERVICE_ADDR,        value: "localhost:7000" }
+        - { name: CART_SERVICE_ADDR,            value: "localhost:7070" }
+        resources:
+          requests: { cpu: 800m, memory: 64Mi }
+          limits:   { cpu: 1200m, memory: 128Mi }
+
+      # ---------------------------------------------------------------- cartservice (gRPC 7070)
+      - name: cartservice
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice:v0.10.3
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        ports:
+        - containerPort: 7070
+        env:
+        - { name: REDIS_ADDR, value: "localhost:6379" }
+        readinessProbe: { initialDelaySeconds: 15, grpc: { port: 7070 } }
+        livenessProbe:  { initialDelaySeconds: 50, periodSeconds: 30, grpc: { port: 7070 } }
+        resources:
+          requests: { cpu: 560m, memory: 64Mi }
+          limits:   { cpu: 960m, memory: 128Mi }
+
+      # ---------------------------------------------------------------- redis-cart (TCP 6379)
+      - name: redis
+        image: redis:alpine
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        ports:
+        - containerPort: 6379
+        readinessProbe: { periodSeconds: 5, tcpSocket: { port: 6379 } }
+        livenessProbe:  { periodSeconds: 5, tcpSocket: { port: 6379 } }
+        volumeMounts:
+        - { mountPath: /data, name: redis-data }
+        resources:
+          requests: { cpu: 300m, memory: 200Mi }
+          limits:   { cpu: 500m, memory: 256Mi }
+
+      # ---------------------------------------------------------------- productcatalogservice (gRPC 3550)
+      - name: productcatalogservice
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice:v0.10.3
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        ports:
+        - containerPort: 3550
+        env:
+        - { name: PORT, value: "3550" }
+        - { name: DISABLE_PROFILER, value: "1" }
+        readinessProbe: { grpc: { port: 3550 } }
+        livenessProbe:  { grpc: { port: 3550 } }
+        resources:
+          requests: { cpu: 600m, memory: 64Mi }
+          limits:   { cpu: 1000m, memory: 128Mi }
+
+      # ---------------------------------------------------------------- currencyservice (gRPC 7000)
+      - name: currencyservice
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice:v0.10.3
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        ports:
+        - { name: grpc, containerPort: 7000 }
+        env:
+        - { name: PORT, value: "7000" }
+        - { name: DISABLE_PROFILER, value: "1" }
+        readinessProbe: { grpc: { port: 7000 } }
+        livenessProbe:  { grpc: { port: 7000 } }
+        resources:
+          requests: { cpu: 800m, memory: 64Mi }
+          limits:   { cpu: 1600m, memory: 128Mi }
+
+      # ---------------------------------------------------------------- paymentservice (gRPC 50051)
+      - name: paymentservice
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice:v0.10.3
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        ports:
+        - containerPort: 50051
+        env:
+        - { name: PORT, value: "50051" }
+        - { name: DISABLE_PROFILER, value: "1" }
+        readinessProbe: { grpc: { port: 50051 } }
+        livenessProbe:  { grpc: { port: 50051 } }
+        resources:
+          requests: { cpu: 200m, memory: 64Mi }
+          limits:   { cpu: 300m, memory: 128Mi }
+
+      # ---------------------------------------------------------------- shippingservice (gRPC 50052 ← 50051)
+      - name: shippingservice
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice:v0.10.3
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        ports:
+        - containerPort: 50052
+        env:
+        - { name: PORT, value: "50052" }                # remapped to avoid payment 50051
+        - { name: DISABLE_PROFILER, value: "1" }
+        readinessProbe: { periodSeconds: 5, grpc: { port: 50052 } }
+        livenessProbe:  { grpc: { port: 50052 } }
+        resources:
+          requests: { cpu: 320m, memory: 64Mi }
+          limits:   { cpu: 560m, memory: 128Mi }
+
+      # ---------------------------------------------------------------- emailservice (gRPC 8081 ← 8080)
+      - name: emailservice
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice:v0.10.3
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        ports:
+        - containerPort: 8081
+        env:
+        - { name: PORT, value: "8081" }                 # remapped to avoid frontend 8080
+        - { name: DISABLE_PROFILER, value: "1" }
+        readinessProbe: { periodSeconds: 5,  grpc: { port: 8081 } }
+        livenessProbe:  { periodSeconds: 30, grpc: { port: 8081 } }
+        resources:
+          requests: { cpu: 200m, memory: 64Mi }
+          limits:   { cpu: 300m, memory: 128Mi }
+
+      # ---------------------------------------------------------------- recommendationservice (gRPC 8082 ← 8080)
+      - name: recommendationservice
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice:v0.10.3
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        ports:
+        - containerPort: 8082
+        env:
+        - { name: PORT, value: "8082" }                 # remapped to avoid frontend 8080
+        - { name: PRODUCT_CATALOG_SERVICE_ADDR, value: "localhost:3550" }
+        - { name: DISABLE_PROFILER, value: "1" }
+        readinessProbe: { periodSeconds: 5,  grpc: { port: 8082 } }
+        livenessProbe:  { periodSeconds: 30, grpc: { port: 8082 } }
+        resources:
+          requests: { cpu: 1200m, memory: 220Mi }
+          limits:   { cpu: 1600m, memory: 450Mi }
+
+      # ---------------------------------------------------------------- adservice (gRPC 9555)
+      - name: adservice
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        ports:
+        - containerPort: 9555
+        env:
+        - { name: PORT, value: "9555" }
+        readinessProbe: { initialDelaySeconds: 20, periodSeconds: 15, grpc: { port: 9555 } }
+        livenessProbe:  { initialDelaySeconds: 50, periodSeconds: 30, grpc: { port: 9555 } }
+        resources:
+          requests: { cpu: 300m, memory: 100Mi }
+          limits:   { cpu: 500m, memory: 200Mi }
+---
+# frontend を外から (loadgenerator / port-forward) 叩くための Service。
+# loadgenerator.yaml は FRONTEND_ADDR=frontend:80 のままで届く。
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app: megapod
+spec:
+  type: ClusterIP
+  selector:
+    app: megapod
+  ports:
+  - { name: http, port: 80, targetPort: 8080 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-external
+  labels:
+    app: megapod
+spec:
+  type: LoadBalancer
+  selector:
+    app: megapod
+  ports:
+  - { name: http, port: 80, targetPort: 8080 }
+---
+# checkout の metrics(9464)を既存の ServiceMonitor(selector app=checkoutservice)に拾わせるための Service。
+# grpc_client_latency_seconds(通信時間メトリクス)はここから Prometheus がスクレイプする。
+apiVersion: v1
+kind: Service
+metadata:
+  name: checkoutservice
+  labels:
+    app: checkoutservice
+spec:
+  type: ClusterIP
+  selector:
+    app: megapod
+  ports:
+  - { name: grpc,    port: 5050, targetPort: 5050 }
+  - { name: metrics, port: 9464, targetPort: 9464 }

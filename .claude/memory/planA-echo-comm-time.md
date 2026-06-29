@@ -1,15 +1,16 @@
 ---
 name: plana-echo-comm-time
-description: 案①(エコー法で localhost vs ClusterIP の通信時間差を確認)の手法と初回結果。案Bは保留。
+description: エコー法で localhost vs ClusterIP の通信時間差を確認する手法と初回結果。
 metadata: 
   node_type: memory
   type: project
   originSessionId: 03f972f9-2813-47a4-98bb-6d36bc73ef35
 ---
 
-2026-06-24〜25、方針転換。需要相関 ρ を軸にした案B([[coloc-tradeoff-model]] / [[coloc-experiment-design]])は
-**保留**し、原点の「Pod 同居で通信が速くなるか」を最小実験で確認する案①へ戻った。
-案Bの計画書は `km2/approach/research_plan_B_coloc_tradeoff.md` に保存(消すな)。現 `research_plan.md` は案①。
+研究の核は「**1 つの Pod に複数コンテナ(直接通信するサービス)をまとめることが資源低減・性能向上に
+つながるか否か**」。2026-06-24〜25 はその原点として「Pod 同居で通信が速くなるか」を最小実験で確認した。
+現 `research_plan.md` がこのフェーズの計画書。
+（※需要相関 ρ を軸にした旧「案B(トレードオフ τ モデル)」は 2026-06-29 にユーザ指示で完全停止・関連ファイル削除済み。サイドカー同居をメリット前提で精緻化する方向は採らない。）
 
 **エコー法(なぜこの形か):** 以前 checkout→email で差が出なかったのは、測定時間に email の重い処理
 (Jinja2, ms級)が混じり通信差(数十µs)が埋もれたため。→ **処理ゼロの gRPC ping** を相手にして

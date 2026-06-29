@@ -13,6 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#mizuki0118/mylocust:run1で利用
 
 import random
 from locust import FastHttpUser, TaskSet, between ,task, constant_throughput
