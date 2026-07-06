@@ -1,0 +1,315 @@
+================ HPACOMPARE START 2026-07-06T23:01:40+09:00 levels=[80 240 480] rate=40 warmup=3m measure=3m HPA=70%/1-4 ================
+################ ARM=front4 2026-07-06T23:01:43+09:00 ################
+---- deploy FRONT4(束ね) ----
+  HPA: frontend(4) 
+======== [front4] USERS=80 2026-07-06T23:02:35+09:00 ========
+---- 2026-07-06T23:02:35+09:00 [front4] users=80 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-06T23:05:42+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-06T23:05:42+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006444444444444582 app=0.017097168965251593 node=0.8608888888888095
+---- 2026-07-06T23:08:13+09:00 [front4] users=80 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+================ HPACOMPARE START 2026-07-06T23:15:33+09:00 levels=[80 240 480] rate=40 warmup=3m measure=3m HPA=70%/1-4 ================
+################ ARM=front3 2026-07-06T23:15:33+09:00 ################
+---- deploy FRONT3(束ね=frontend+reco+catalog) ----
+  HPA: frontend(4) 
+======== [front3] USERS=80 2026-07-06T23:16:23+09:00 ========
+---- 2026-07-06T23:16:23+09:00 [front3] users=80 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-06T23:19:31+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-06T23:19:31+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.004999999999999557 app=0.017343924620794936 node=0.7375555555555021
+---- 2026-07-06T23:22:02+09:00 [front3] users=80 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-06T23:25:10+09:00 負荷完了(試行 35)
+  2026-07-06T23:25:11+09:00 CPU: softirq=0.19913333333333202 app=2.826681471226056 node=3.9256000000000513 | scale_replicas=1 [frontend=1 ]
+  -> 記録: front3 users 80 softirq/req 0.809 scale_reps 1
+======== [front3] USERS=240 2026-07-06T23:25:11+09:00 ========
+---- 2026-07-06T23:25:11+09:00 [front3] users=240 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-06T23:28:26+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-06T23:28:26+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.005888888888888901 app=0.02038844876057207 node=0.7868888888890375
+---- 2026-07-06T23:30:57+09:00 [front3] users=240 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-06T23:34:02+09:00 負荷完了(試行 34)
+  2026-07-06T23:34:03+09:00 CPU: softirq=0.39393333333333275 app=6.3291774290318035 node=7.743133333333351 | scale_replicas=2 [frontend=2 ]
+  -> 記録: front3 users 240 softirq/req 0.545 scale_reps 2
+======== [front3] USERS=480 2026-07-06T23:34:03+09:00 ========
+---- 2026-07-06T23:34:03+09:00 [front3] users=480 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-06T23:37:17+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-06T23:37:17+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.00588888888888669 app=0.024586599847369286 node=0.7233333333333481
+---- 2026-07-06T23:39:48+09:00 [front3] users=480 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-06T23:42:56+09:00 負荷完了(試行 34)
+  2026-07-06T23:42:57+09:00 CPU: softirq=0.6154666666666674 app=9.192857485732803 node=11.136866666666675 | scale_replicas=4 [frontend=4 ]
+  -> 記録: front3 users 480 softirq/req 0.631 scale_reps 4
+################ ARM=normal 2026-07-06T23:42:57+09:00 ################
+---- deploy NORMAL(分離) ----
+  HPA: frontend(4) productcatalogservice(4) recommendationservice(4) 
+======== [normal] USERS=80 2026-07-06T23:43:52+09:00 ========
+---- 2026-07-06T23:43:52+09:00 [normal] users=80 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-06T23:47:00+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-06T23:47:00+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.0059999999999970684 app=0.019221014964334555 node=0.7291111111109175
+---- 2026-07-06T23:49:31+09:00 [normal] users=80 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-06T23:52:38+09:00 負荷完了(試行 35)
+  2026-07-06T23:52:40+09:00 CPU: softirq=0.22446666666666487 app=2.448294912092276 node=3.479933333333366 | scale_replicas=4 [frontend=2 recommendationservice=1 productcatalogservice=1 ]
+  -> 記録: normal users 80 softirq/req 0.911 scale_reps 4
+======== [normal] USERS=240 2026-07-06T23:52:40+09:00 ========
+---- 2026-07-06T23:52:40+09:00 [normal] users=240 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-06T23:55:55+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-06T23:55:55+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.0057777777777775745 app=0.020304960081425384 node=0.7511111111110723
+---- 2026-07-06T23:58:26+09:00 [normal] users=240 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T00:01:35+09:00 負荷完了(試行 35)
+  2026-07-07T00:01:37+09:00 CPU: softirq=0.5878666666666676 app=6.454393943772122 node=7.88360000000002 | scale_replicas=8 [frontend=3 recommendationservice=2 productcatalogservice=3 ]
+  -> 記録: normal users 240 softirq/req 0.941 scale_reps 8
+======== [normal] USERS=480 2026-07-07T00:01:37+09:00 ========
+---- 2026-07-07T00:01:37+09:00 [normal] users=480 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T00:04:47+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-07T00:04:47+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.0058888888888873215 app=0.019181016331630118 node=0.8946666666665538
+---- 2026-07-07T00:07:18+09:00 [normal] users=480 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T00:10:23+09:00 負荷完了(試行 34)
+  2026-07-07T00:10:24+09:00 CPU: softirq=0.5999999999999986 app=6.684098387209174 node=8.430466666666693 | scale_replicas=8 [frontend=3 recommendationservice=2 productcatalogservice=3 ]
+  -> 記録: normal users 480 softirq/req 0.905 scale_reps 8
+================ HPACOMPARE DONE 2026-07-07T00:10:55+09:00 ================
+arm     users  reqcount  fails  p50_ms  p90_ms  p99_ms  avg_ms              rps                 softirq_cores        base_softirq           app_cores           base_app              node_cores          base_node           softirq_mc_per_req  app_mc_per_req  node_mc_per_req  scale_replicas  scale_detail
+front3  80     43078     0      56      150     390     76.85110632749348   240.09847800703264  0.19913333333333202  0.004999999999999557   2.826681471226056   0.017343924620794936  3.9256000000000513  0.7375555555555021  0.809               11.701          13.278           1               frontend=1
+front3  240    127273    0      130     240     580     154.09451094578898  711.9007750005867   0.39393333333333275  0.005888888888888901   6.3291774290318035  0.02038844876057207   7.743133333333351   0.7868888888890375  0.545               8.862           9.771            2               frontend=2
+front3  480    173269    0      49      1400    1700    470.7868600213226   965.4853533536146   0.6154666666666674   0.00588888888888669    9.192857485732803   0.024586599847369286  11.136866666666675  0.7233333333333481  0.631               9.496           10.786           4               frontend=4
+normal  80     42920     0      66      130     780     83.94329877062134   239.87775343492933  0.22446666666666487  0.0059999999999970684  2.448294912092276   0.019221014964334555  3.479933333333366   0.7291111111109175  0.911               10.126          11.468           4               frontend=2 recommendationservice=1 productcatalogservice=1
+normal  240    110577    0      350     490     720     373.1055403960141   618.4192837098686   0.5878666666666676   0.0057777777777775745  6.454393943772122   0.020304960081425384  7.88360000000002    0.7511111111110723  0.941               10.404          11.533           8               frontend=3 recommendationservice=2 productcatalogservice=3
+normal  480    117518    0      700     830     1100    705.0578177685921   656.2823315955443   0.5999999999999986   0.0058888888888873215  6.684098387209174   0.019181016331630118  8.430466666666693   0.8946666666665538  0.905               10.156          11.483           8               frontend=3 recommendationservice=2 productcatalogservice=3
+================ HPACOMPARE START 2026-07-07T00:23:58+09:00 levels=[240 480] rate=40 warmup=3m measure=3m HPA=70%/1-4 ================
+################ CYCLE 1/3 ARM=front3 2026-07-07T00:24:03+09:00 ################
+---- deploy FRONT3(束ね=frontend+reco+catalog) ----
+  HPA: frontend(4) 
+======== [cyc1 front3] USERS=240 2026-07-07T00:24:54+09:00 ========
+---- 2026-07-07T00:24:54+09:00 [front3] users=240 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T00:27:57+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-07T00:27:57+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.0059999999999980165 app=0.02013456668971535 node=0.7685555555554865
+---- 2026-07-07T00:30:29+09:00 [front3] users=240 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T00:33:33+09:00 負荷完了(試行 34)
+  2026-07-07T00:33:34+09:00 CPU: softirq=0.43580000000000074 app=6.3236505613756595 node=7.892866666666606 | scale_replicas=2 [frontend=2 ]
+  -> 記録: cyc1 front3 users 240 softirq/req 0.608 scale_reps 2
+======== [cyc1 front3] USERS=480 2026-07-07T00:33:34+09:00 ========
+---- 2026-07-07T00:33:34+09:00 [front3] users=480 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T00:36:48+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-07T00:36:48+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.005888888888889848 app=0.023436819724628022 node=0.7095555555553739
+---- 2026-07-07T00:39:19+09:00 [front3] users=480 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T00:42:26+09:00 負荷完了(試行 34)
+  2026-07-07T00:42:27+09:00 CPU: softirq=0.6068666666666668 app=8.898052904530545 node=10.8558666666667 | scale_replicas=3 [frontend=3 ]
+  -> 記録: cyc1 front3 users 480 softirq/req 0.622 scale_reps 3
+################ CYCLE 1/3 ARM=normal 2026-07-07T00:42:28+09:00 ################
+---- deploy NORMAL(分離) ----
+  HPA: frontend(4) productcatalogservice(4) recommendationservice(4) 
+======== [cyc1 normal] USERS=240 2026-07-07T00:43:22+09:00 ========
+---- 2026-07-07T00:43:22+09:00 [normal] users=240 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T00:46:30+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-07T00:46:31+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.0062222222222206676 app=0.02347817369169604 node=0.6522222222222296
+---- 2026-07-07T00:49:02+09:00 [normal] users=240 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T00:52:06+09:00 負荷完了(試行 34)
+  2026-07-07T00:52:07+09:00 CPU: softirq=0.5851333333333318 app=6.46879036075388 node=7.9191333333333445 | scale_replicas=8 [frontend=3 recommendationservice=2 productcatalogservice=3 ]
+  -> 記録: cyc1 normal users 240 softirq/req 0.929 scale_reps 8
+======== [cyc1 normal] USERS=480 2026-07-07T00:52:07+09:00 ========
+---- 2026-07-07T00:52:07+09:00 [normal] users=480 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T00:55:18+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-07T00:55:18+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.005777777777776943 app=0.023098448588223363 node=0.7270000000000775
+---- 2026-07-07T00:57:49+09:00 [normal] users=480 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T01:00:58+09:00 負荷完了(試行 35)
+  2026-07-07T01:00:59+09:00 CPU: softirq=0.598800000000001 app=6.428030383605147 node=7.873200000000032 | scale_replicas=8 [frontend=3 recommendationservice=2 productcatalogservice=3 ]
+  -> 記録: cyc1 normal users 480 softirq/req 0.904 scale_reps 8
+################ CYCLE 2/3 ARM=front3 2026-07-07T01:01:00+09:00 ################
+---- deploy FRONT3(束ね=frontend+reco+catalog) ----
+  HPA: frontend(4) 
+======== [cyc2 front3] USERS=240 2026-07-07T01:01:50+09:00 ========
+---- 2026-07-07T01:01:50+09:00 [front3] users=240 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T01:04:59+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-07T01:05:00+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006555555555554645 app=0.02432097649822616 node=0.6961111111111452
+---- 2026-07-07T01:07:31+09:00 [front3] users=240 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T01:10:35+09:00 負荷完了(試行 34)
+  2026-07-07T01:10:36+09:00 CPU: softirq=0.4024666666666678 app=6.135871934927994 node=7.570933333333391 | scale_replicas=2 [frontend=2 ]
+  -> 記録: cyc2 front3 users 240 softirq/req 0.562 scale_reps 2
+======== [cyc2 front3] USERS=480 2026-07-07T01:10:36+09:00 ========
+---- 2026-07-07T01:10:36+09:00 [front3] users=480 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T01:13:49+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-07T01:13:49+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006222222222221299 app=0.02543898490020127 node=0.6636666666667292
+---- 2026-07-07T01:16:21+09:00 [front3] users=480 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T01:19:28+09:00 負荷完了(試行 34)
+  2026-07-07T01:19:29+09:00 CPU: softirq=0.5929333333333339 app=8.612537705036432 node=10.855533333333305 | scale_replicas=4 [frontend=4 ]
+  -> 記録: cyc2 front3 users 480 softirq/req 0.614 scale_reps 4
+################ CYCLE 2/3 ARM=normal 2026-07-07T01:19:29+09:00 ################
+---- deploy NORMAL(分離) ----
+  HPA: frontend(4) productcatalogservice(4) recommendationservice(4) 
+======== [cyc2 normal] USERS=240 2026-07-07T01:20:31+09:00 ========
+---- 2026-07-07T01:20:31+09:00 [normal] users=240 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T01:23:40+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-07T01:23:40+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006444444444440477 app=0.022137668755682155 node=0.6538888888888896
+---- 2026-07-07T01:26:11+09:00 [normal] users=240 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T01:29:20+09:00 負荷完了(試行 35)
+  2026-07-07T01:29:22+09:00 CPU: softirq=0.5823999999999989 app=6.449862250791549 node=7.783333333333302 | scale_replicas=8 [frontend=3 recommendationservice=2 productcatalogservice=3 ]
+  -> 記録: cyc2 normal users 240 softirq/req 0.976 scale_reps 8
+======== [cyc2 normal] USERS=480 2026-07-07T01:29:22+09:00 ========
+---- 2026-07-07T01:29:22+09:00 [normal] users=480 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T01:32:32+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-07T01:32:32+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006333333333333257 app=0.021556085302656052 node=0.6895555555555327
+---- 2026-07-07T01:35:04+09:00 [normal] users=480 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T01:38:13+09:00 負荷完了(試行 35)
+  2026-07-07T01:38:14+09:00 CPU: softirq=0.5984666666666657 app=6.718577569703486 node=8.001733333333375 | scale_replicas=8 [frontend=3 recommendationservice=2 productcatalogservice=3 ]
+  -> 記録: cyc2 normal users 480 softirq/req 0.929 scale_reps 8
+################ CYCLE 3/3 ARM=front3 2026-07-07T01:38:14+09:00 ################
+---- deploy FRONT3(束ね=frontend+reco+catalog) ----
+  HPA: frontend(4) 
+======== [cyc3 front3] USERS=240 2026-07-07T01:39:05+09:00 ========
+---- 2026-07-07T01:39:05+09:00 [front3] users=240 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T01:42:14+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-07T01:42:14+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.00533333333333164 app=0.02040133915032946 node=0.7391111111109069
+---- 2026-07-07T01:44:45+09:00 [front3] users=240 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T01:47:49+09:00 負荷完了(試行 34)
+  2026-07-07T01:47:50+09:00 CPU: softirq=0.44073333333333264 app=6.4929312222234055 node=7.973199999999951 | scale_replicas=3 [frontend=3 ]
+  -> 記録: cyc3 front3 users 240 softirq/req 0.616 scale_reps 3
+======== [cyc3 front3] USERS=480 2026-07-07T01:47:51+09:00 ========
+---- 2026-07-07T01:47:51+09:00 [front3] users=480 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T01:51:04+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-07T01:51:05+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006555555555555909 app=0.02706182242639736 node=0.7071111111110688
+---- 2026-07-07T01:53:36+09:00 [front3] users=480 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T01:59:55+09:00 負荷完了(試行 34)
+  2026-07-07T01:59:56+09:00 CPU: softirq=0.2898666666666668 app=4.932554593568878 node=6.456733333333309 | scale_replicas=2 [frontend=2 ]
+  -> 記録: cyc3 front3 users 480 softirq/req 0.447 scale_reps 2
+################ CYCLE 3/3 ARM=normal 2026-07-07T01:59:57+09:00 ################
+---- deploy NORMAL(分離) ----
+  HPA: frontend(4) productcatalogservice(4) recommendationservice(4) 
+======== [cyc3 normal] USERS=240 2026-07-07T02:00:50+09:00 ========
+---- 2026-07-07T02:00:50+09:00 [normal] users=240 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T02:03:59+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-07T02:03:59+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006222222222220983 app=0.02276685284497437 node=0.6851111111111313
+---- 2026-07-07T02:06:31+09:00 [normal] users=240 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T02:09:35+09:00 負荷完了(試行 34)
+  2026-07-07T02:09:36+09:00 CPU: softirq=0.619266666666667 app=6.700018982744202 node=8.12186666666673 | scale_replicas=8 [frontend=3 recommendationservice=2 productcatalogservice=3 ]
+  -> 記録: cyc3 normal users 240 softirq/req 0.894 scale_reps 8
+======== [cyc3 normal] USERS=480 2026-07-07T02:09:36+09:00 ========
+---- 2026-07-07T02:09:36+09:00 [normal] users=480 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T02:12:47+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-07T02:12:48+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006222222222223511 app=0.021348842370659732 node=0.7481111111110592
+---- 2026-07-07T02:15:19+09:00 [normal] users=480 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-07T02:18:23+09:00 負荷完了(試行 34)
+  2026-07-07T02:18:25+09:00 CPU: softirq=0.6364000000000002 app=6.8924029922701955 node=8.39993333333336 | scale_replicas=8 [frontend=3 recommendationservice=2 productcatalogservice=3 ]
+  -> 記録: cyc3 normal users 480 softirq/req 0.915 scale_reps 8
+================ HPACOMPARE DONE 2026-07-07T02:18:56+09:00 ================
+cycle  arm     users  reqcount  fails  p50_ms  p90_ms  p99_ms  avg_ms              rps                softirq_cores        base_softirq           app_cores           base_app              node_cores          base_node           softirq_mc_per_req  app_mc_per_req  node_mc_per_req  scale_replicas  scale_detail
+1      front3  240    126228    0      50      190     740     87.83868795985033   706.6833852400081  0.43580000000000074  0.0059999999999980165  6.3236505613756595  0.02013456668971535   7.892866666666606   0.7685555555554865  0.608               8.92            10.081           2               frontend=2
+1      front3  480    173417    0      57      1400    1800    470.3832954893307   965.4905336099049  0.6068666666666668   0.005888888888889848   8.898052904530545   0.023436819724628022  10.8558666666667    0.7095555555553739  0.622               9.192           10.509           3               frontend=3
+1      normal  240    111644    0      350     480     850     372.3696040747043   623.2200292759067  0.5851333333333318   0.0062222222222206676  6.46879036075388    0.02347817369169604   7.9191333333333445  0.6522222222222296  0.929               10.342          11.66            8               frontend=3 recommendationservice=2 productcatalogservice=3
+1      normal  480    117551    0      690     870     1200    703.4559354370994   655.9125313358957  0.598800000000001    0.005777777777776943   6.428030383605147   0.023098448588223363  7.873200000000032   0.7270000000000775  0.904               9.765           10.895           8               frontend=3 recommendationservice=2 productcatalogservice=3
+2      front3  240    125875    0      100     270     760     139.04617483228054  704.1679720985077  0.4024666666666678   0.006555555555554645   6.135871934927994   0.02432097649822616   7.570933333333391   0.6961111111111452  0.562               8.679           9.763            2               frontend=2
+2      front3  480    171855    0      70      1400    1800    475.0860140743394   956.0362828877188  0.5929333333333339   0.006222222222221299   8.612537705036432   0.02543898490020127   10.855533333333305  0.6636666666667292  0.614               8.982           10.661           4               frontend=4
+2      normal  240    105713    0      360     540     930     394.80635879680733  589.8182095113518  0.5823999999999989   0.006444444444440477   6.449862250791549   0.022137668755682155  7.783333333333302   0.6538888888888896  0.976               10.898          12.088           8               frontend=3 recommendationservice=2 productcatalogservice=3
+2      normal  480    114304    0      700     910     1200    724.7415835625472   637.6302866742601  0.5984666666666657   0.006333333333333257   6.718577569703486   0.021556085302656052  8.001733333333375   0.6895555555555327  0.929               10.503          11.468           8               frontend=3 recommendationservice=2 productcatalogservice=3
+3      front3  240    126396    0      43      180     680     83.15894561479155   707.0748467936418  0.44073333333333264  0.00533333333333164    6.4929312222234055  0.02040133915032946   7.973199999999951   0.7391111111109069  0.616               9.154           10.231           3               frontend=3
+3      front3  480    113782    0      700     1000    1400    728.9151492298032   634.0155517872023  0.2898666666666668   0.006555555555555909   4.932554593568878   0.02706182242639736   6.456733333333309   0.7071111111110688  0.447               7.737           9.069            2               frontend=2
+3      normal  240    122894    0      310     360     810     288.2192413289082   686.036590760391   0.619266666666667    0.006222222222220983   6.700018982744202   0.02276685284497437   8.12186666666673    0.6851111111111313  0.894               9.733           10.84            8               frontend=3 recommendationservice=2 productcatalogservice=3
+3      normal  480    123460    0      670     750     1300    670.9206924961321   689.0652886964058  0.6364000000000002   0.006222222222223511   6.8924029922701955  0.021348842370659732  8.39993333333336    0.7481111111110592  0.915               9.972           11.105           8               frontend=3 recommendationservice=2 productcatalogservice=3

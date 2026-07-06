@@ -1,0 +1,4 @@
+users,arm,reqcount,fails,p50_ms,p90_ms,p99_ms,avg_ms,rps,softirq_cores,base_softirq,system_cores,base_system,app_cores,base_app,node_cores,base_node,softirq_mc_per_req,system_mc_per_req,app_mc_per_req,node_mc_per_req,total_replicas
+80,normal,42925,0,74,120,780,91.63449093311901,239.24786060396266,,NA,,NA,,NA,,NA,NA,NA,NA,NA,11
+240,normal,116093,0,330,450,850,342.75783450277015,647.6237125869246,,NA,,NA,,NA,,NA,NA,NA,NA,NA,19
+480,normal,162647,0,330,1200,1400,496.50229216822265,908.6720935897237,,NA,,NA,,NA,,NA,NA,NA,NA,NA,28
