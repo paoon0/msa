@@ -1,0 +1,163 @@
+# frontreco: frontend + recommendationservice を 1 Pod に同居させ、frontend は
+#   RECOMMENDATION_SERVICE_ADDR=localhost:8090 で到達する(=frontend↔reco を loopback 化)。
+#   他ホップ(productcatalog/currency/cart/shipping/checkout/ad)は従来どおり ClusterIP。
+# reco は frontend からしか呼ばれない(reco→catalog は reco が client 側)ので、
+#   recommendationservice Service は作らない(outmail の email と同じ)。
+# ポート競合回避: frontend も reco も既定 8080 なので reco を 8080→8090 に remap
+#   (PORT=8090 / containerPort 8090 / probe 8090、frontend 側 ADDR も localhost:8090)。
+# resources は all.yaml と同値(公平比較)。
+# 【バイト vs パケット の判別実験】reco はパケット中(≒cart, 2050pkts/s)だがバイト大(544KB/s, 266B/pkt)。
+#   softirq 削減がパケット(=cart並み)に沿うかバイト(=catalog寄り)に沿うかで、駆動因子を判定する。
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: frontend
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: server
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend:v0.10.3
+          ports:
+          - containerPort: 8080
+          readinessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              path: "/_healthz"
+              port: 8080
+              httpHeaders:
+              - name: "Cookie"
+                value: "shop_session-id=x-readiness-probe"
+          livenessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              path: "/_healthz"
+              port: 8080
+              httpHeaders:
+              - name: "Cookie"
+                value: "shop_session-id=x-liveness-probe"
+          env:
+          - name: PORT
+            value: "8080"
+          - name: PRODUCT_CATALOG_SERVICE_ADDR
+            value: "productcatalogservice:3550"
+          - name: CURRENCY_SERVICE_ADDR
+            value: "currencyservice:7000"
+          - name: CART_SERVICE_ADDR
+            value: "cartservice:7070"
+          - name: RECOMMENDATION_SERVICE_ADDR
+            value: "localhost:8090"            # ← 同居先 localhost(remap 8090。frontend↔reco を loopback 化)
+          - name: SHIPPING_SERVICE_ADDR
+            value: "shippingservice:50051"
+          - name: CHECKOUT_SERVICE_ADDR
+            value: "checkoutservice:5050"
+          - name: AD_SERVICE_ADDR
+            value: "adservice:9555"
+          - name: SHOPPING_ASSISTANT_SERVICE_ADDR
+            value: "shoppingassistantservice:80"
+          - name: ENABLE_PROFILER
+            value: "0"
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 128Mi
+            limits:
+              cpu: 1600m
+              memory: 256Mi
+
+        - name: recommendation
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice:v0.10.3
+          ports:
+          - containerPort: 8090
+          env:
+          - name: PORT
+            value: "8090"                      # ← remap(既定 8080 は frontend と競合するため)
+          - name: PRODUCT_CATALOG_SERVICE_ADDR
+            value: "productcatalogservice:3550" # reco→catalog は ClusterIP のまま
+          - name: DISABLE_PROFILER
+            value: "1"
+          readinessProbe:
+            periodSeconds: 5
+            grpc:
+              port: 8090
+          livenessProbe:
+            periodSeconds: 30
+            grpc:
+              port: 8090
+          resources:
+            requests:
+              cpu: 1200m
+              memory: 220Mi
+            limits:
+              cpu: 1600m
+              memory: 450Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-external
+  labels:
+    app: frontend
+spec:
+  type: LoadBalancer
+  selector:
+    app: frontend
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: frontend
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: recommendationservice

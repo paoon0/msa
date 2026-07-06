@@ -1,0 +1,173 @@
+# frontcatalog: frontend + productcatalogservice を 1 Pod に同居させ、frontend は
+#   PRODUCT_CATALOG_SERVICE_ADDR=localhost:3550 で到達する(=最重ホップ frontend↔productcatalog を loopback 化)。
+#   他のホップ(currency/cart/recommendation/shipping/checkout/ad)は従来どおり ClusterIP。
+# productcatalog は recommendation / checkout からも呼ばれるため、productcatalogservice Service を
+#   この Pod(app=frontend) に向けて、それらが ClusterIP 経由で到達できるようにする。
+# ポート競合なし(frontend 8080 / productcatalog 3550)。resources は all.yaml と同値(公平比較)。
+# 用量反応の「効く点」を取るための重ホップ・バリアント。
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: frontend
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: server
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend:v0.10.3
+          ports:
+          - containerPort: 8080
+          readinessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              path: "/_healthz"
+              port: 8080
+              httpHeaders:
+              - name: "Cookie"
+                value: "shop_session-id=x-readiness-probe"
+          livenessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              path: "/_healthz"
+              port: 8080
+              httpHeaders:
+              - name: "Cookie"
+                value: "shop_session-id=x-liveness-probe"
+          env:
+          - name: PORT
+            value: "8080"
+          - name: PRODUCT_CATALOG_SERVICE_ADDR
+            value: "localhost:3550"          # ← 同居先 localhost(最重ホップを loopback 化)
+          - name: CURRENCY_SERVICE_ADDR
+            value: "currencyservice:7000"
+          - name: CART_SERVICE_ADDR
+            value: "cartservice:7070"
+          - name: RECOMMENDATION_SERVICE_ADDR
+            value: "recommendationservice:8080"
+          - name: SHIPPING_SERVICE_ADDR
+            value: "shippingservice:50051"
+          - name: CHECKOUT_SERVICE_ADDR
+            value: "checkoutservice:5050"
+          - name: AD_SERVICE_ADDR
+            value: "adservice:9555"
+          - name: SHOPPING_ASSISTANT_SERVICE_ADDR
+            value: "shoppingassistantservice:80"
+          - name: ENABLE_PROFILER
+            value: "0"
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 128Mi
+            limits:
+              cpu: 1600m
+              memory: 256Mi
+
+        - name: productcatalog
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice:v0.10.3
+          ports:
+          - containerPort: 3550
+          env:
+          - name: PORT
+            value: "3550"
+          - name: DISABLE_PROFILER
+            value: "1"
+          readinessProbe:
+            grpc:
+              port: 3550
+          livenessProbe:
+            grpc:
+              port: 3550
+          resources:
+            requests:
+              cpu: 600m
+              memory: 64Mi
+            limits:
+              cpu: 1000m
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-external
+  labels:
+    app: frontend
+spec:
+  type: LoadBalancer
+  selector:
+    app: frontend
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+---
+# productcatalog は frontend Pod 内に居るので、Service のセレクタを app=frontend に向ける。
+# これで recommendation / checkout は productcatalogservice:3550(ClusterIP) で従来どおり到達できる。
+apiVersion: v1
+kind: Service
+metadata:
+  name: productcatalogservice
+  labels:
+    app: productcatalogservice
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend
+  ports:
+  - name: grpc
+    port: 3550
+    targetPort: 3550
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: frontend
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: productcatalogservice

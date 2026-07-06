@@ -1,0 +1,7 @@
+================ REPLICASWEEP START 2026-07-06T21:04:18+09:00 ns=exp users=80 rate=1 warmup=3m measure=5m replicas=[1 2 3] ================
+---- 既存トポロジ全削除 → normal(分離) を張る ----
+================ REPLICAS=1 2026-07-06T21:05:01+09:00 ================
+---- 2026-07-06T21:05:04+09:00 rep=1 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-06T21:05:10+09:00 loadgen pod=loadgenerator-mn5j7

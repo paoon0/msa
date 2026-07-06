@@ -1,0 +1,209 @@
+# frontcart: frontend + cartservice + redis を 1 Pod に同居させ、2ホップを loopback 化する:
+#   ① frontend → cart      : CART_SERVICE_ADDR=localhost:7070
+#   ② cart     → redis     : REDIS_ADDR=localhost:6379
+#   他ホップ(productcatalog/currency/reco/shipping/checkout/ad)は従来どおり ClusterIP。
+# cart は checkout からも呼ばれるため、cartservice Service を app=frontend Pod に向ける
+#   (checkout は cartservice:7070 の ClusterIP で従来どおり到達)。
+# redis は同居先の cart しか使わない(localhost)ので redis-cart Service は作らない。
+# ポート競合なし(frontend 8080 / cart 7070 / redis 6379)。resources は all.yaml と同値(公平比較)。
+# 用量反応: cart(~2147pkts/s)+redis(~834pkts/s)を loopback 化 → frontcatalog より軽いが ad より重い中間点。
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: frontend
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: server
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend:v0.10.3
+          ports:
+          - containerPort: 8080
+          readinessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              path: "/_healthz"
+              port: 8080
+              httpHeaders:
+              - name: "Cookie"
+                value: "shop_session-id=x-readiness-probe"
+          livenessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              path: "/_healthz"
+              port: 8080
+              httpHeaders:
+              - name: "Cookie"
+                value: "shop_session-id=x-liveness-probe"
+          env:
+          - name: PORT
+            value: "8080"
+          - name: PRODUCT_CATALOG_SERVICE_ADDR
+            value: "productcatalogservice:3550"
+          - name: CURRENCY_SERVICE_ADDR
+            value: "currencyservice:7000"
+          - name: CART_SERVICE_ADDR
+            value: "localhost:7070"           # ← 同居先 localhost(frontend→cart を loopback 化)
+          - name: RECOMMENDATION_SERVICE_ADDR
+            value: "recommendationservice:8080"
+          - name: SHIPPING_SERVICE_ADDR
+            value: "shippingservice:50051"
+          - name: CHECKOUT_SERVICE_ADDR
+            value: "checkoutservice:5050"
+          - name: AD_SERVICE_ADDR
+            value: "adservice:9555"
+          - name: SHOPPING_ASSISTANT_SERVICE_ADDR
+            value: "shoppingassistantservice:80"
+          - name: ENABLE_PROFILER
+            value: "0"
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 128Mi
+            limits:
+              cpu: 1600m
+              memory: 256Mi
+
+        - name: cartservice
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice:v0.10.3
+          ports:
+          - containerPort: 7070
+          env:
+          - name: REDIS_ADDR
+            value: "localhost:6379"           # ← 同居先 localhost(cart→redis を loopback 化)
+          readinessProbe:
+            initialDelaySeconds: 15
+            grpc:
+              port: 7070
+          livenessProbe:
+            initialDelaySeconds: 50
+            periodSeconds: 30
+            grpc:
+              port: 7070
+          resources:
+            requests:
+              cpu: 560m
+              memory: 64Mi
+            limits:
+              cpu: 960m
+              memory: 128Mi
+
+        - name: redis
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          image: redis:alpine
+          ports:
+          - containerPort: 6379
+          readinessProbe:
+            periodSeconds: 5
+            tcpSocket:
+              port: 6379
+          livenessProbe:
+            periodSeconds: 5
+            tcpSocket:
+              port: 6379
+          volumeMounts:
+          - mountPath: /data
+            name: redis-data
+          resources:
+            limits:
+              memory: 256Mi
+              cpu: 500m
+            requests:
+              cpu: 300m
+              memory: 200Mi
+      volumes:
+      - name: redis-data
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-external
+  labels:
+    app: frontend
+spec:
+  type: LoadBalancer
+  selector:
+    app: frontend
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+---
+# cart は frontend Pod 内に居るので、Service のセレクタを app=frontend に向ける。
+# これで checkout は cartservice:7070(ClusterIP) で従来どおり到達できる。
+apiVersion: v1
+kind: Service
+metadata:
+  name: cartservice
+  labels:
+    app: cartservice
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend
+  ports:
+  - name: grpc
+    port: 7070
+    targetPort: 7070
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: frontend
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cartservice
