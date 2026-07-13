@@ -51,7 +51,7 @@ setup_promq
 echo "---- 既存トポロジ全削除(HPAも) → front4 を張る ----"
 kubectl delete hpa --all -n "$NS" >/dev/null 2>&1
 kubectl delete -f "$ALL" -n "$NS" --ignore-not-found >/dev/null 2>&1
-for f in "${NORMAL[@]}"; do kubectl delete -f "$REPO/km2/$f.yaml" -n "$NS" --ignore-not-found >/dev/null 2>&1; done
+for f in "${NORMAL[@]}"; do kubectl delete -f "$REPO/km2/normal/$f.yaml" -n "$NS" --ignore-not-found >/dev/null 2>&1; done
 for i in $(seq 1 40); do [ -z "$(kubectl get deploy -n "$NS" -o name 2>/dev/null)" ] && break; sleep 3; done
 
 echo "---- deploy FRONT4 (frontend+reco+catalog+cart+redis 同居・全内部localhost・HPA同梱・Istio無し) ----"

@@ -1,0 +1,65 @@
+================ LATENCY-SWEEP START 2026-07-13T21:50:18+09:00 arms=[normal f3perc] loads=[1 10 40 120 240 480] ================
+---- deploy normal ----
+======== [normal] users=1 2026-07-13T21:51:09+09:00 ========
+  -> [normal u1] rps=3.0256568878044843 agg_p50=17 product=19 cart=16 checkout=16(p99 22)
+     hop_p50=[emailservice=1;paymentservice=2]
+     hot=[adservice=3%;cartservice=2%;frontend=2%;currencyservice=2%;redis-cart=2%;paymentservice=1%]
+======== [normal] users=10 2026-07-13T21:53:46+09:00 ========
+  -> [normal u10] rps=30.095226623530895 agg_p50=28 product=30 cart=33 checkout=21(p99 57)
+     hop_p50=[emailservice=2;paymentservice=2]
+     hot=[adservice=17%;frontend=17%;productcatalogservice=15%;cartservice=9%;recommendationservice=9%;paymentservice=8%]
+======== [normal] users=40 2026-07-13T21:56:31+09:00 ========
+  -> [normal u40] rps=119.94512516086517 agg_p50=53 product=44 cart=70 checkout=48(p99 550)
+     hop_p50=[paymentservice=1;emailservice=2]
+     hot=[productcatalogservice=45%;frontend=45%;cartservice=31%;recommendationservice=23%;currencyservice=22%;adservice=21%]
+======== [normal] users=120 2026-07-13T21:59:12+09:00 ========
+  -> [normal u120] rps=356.21077463224105 agg_p50=100 product=91 cart=150 checkout=95(p99 310)
+     hop_p50=[emailservice=2;paymentservice=2]
+     hot=[frontend=107%;productcatalogservice=105%;recommendationservice=67%;cartservice=59%;currencyservice=58%;checkoutservice=41%]
+======== [normal] users=240 2026-07-13T22:01:53+09:00 ========
+  -> [normal u240] rps=590.4611478534866 agg_p50=360 product=397 cart=380 checkout=340(p99 1100)
+     hop_p50=[emailservice=1;paymentservice=1]
+     hot=[productcatalogservice=159%;recommendationservice=94%;frontend=87%;cartservice=83%;currencyservice=78%;frontend=74%]
+======== [normal] users=480 2026-07-13T22:04:38+09:00 ========
+  -> [normal u480] rps=710.9839992517174 agg_p50=650 product=640 cart=660 checkout=660(p99 1300)
+     hop_p50=[emailservice=1;paymentservice=1]
+     hot=[productcatalogservice=134%;recommendationservice=106%;currencyservice=103%;cartservice=94%;frontend=67%;shippingservice=64%]
+---- deploy f3perc ----
+======== [f3perc] users=1 2026-07-13T22:08:04+09:00 ========
+  -> [f3perc u1] rps=3.02578885293978 agg_p50=17 product=19 cart=16 checkout=16(p99 22)
+     hop_p50=[emailservice=1;paymentservice=2]
+     hot=[adservice=3%;currencyservice=2%;cartservice=2%;redis-cart=2%;frontend=1%;paymentservice=1%]
+======== [f3perc] users=10 2026-07-13T22:10:39+09:00 ========
+  -> [f3perc u10] rps=30.248695033171426 agg_p50=24 product=27 cart=27 checkout=18(p99 48)
+     hop_p50=[paymentservice=2;emailservice=2]
+     hot=[adservice=17%;cartservice=11%;frontend=8%;paymentservice=7%;currencyservice=7%;checkoutservice=4%]
+======== [f3perc] users=40 2026-07-13T22:13:20+09:00 ========
+  -> [f3perc u40] rps=118.61678575664149 agg_p50=54 product=49 cart=66 checkout=44(p99 160)
+     hop_p50=[emailservice=2;paymentservice=1]
+     hot=[frontend=31%;cartservice=25%;adservice=20%;currencyservice=19%;shippingservice=12%;paymentservice=11%]
+======== [f3perc] users=120 2026-07-13T22:16:01+09:00 ========
+  -> [f3perc u120] rps=349.3368607722889 agg_p50=140 product=98 cart=200 checkout=140(p99 980)
+     hop_p50=[emailservice=3;paymentservice=2]
+     hot=[frontend=79%;cartservice=62%;currencyservice=50%;checkoutservice=34%;shippingservice=33%;paymentservice=23%]
+======== [f3perc] users=240 2026-07-13T22:18:46+09:00 ========
+  -> [f3perc u240] rps=706.3519239274235 agg_p50=78 product=64 cart=96 checkout=76(p99 210)
+     hop_p50=[emailservice=2;paymentservice=2]
+     hot=[cartservice=86%;currencyservice=82%;frontend=71%;frontend=65%;paymentservice=61%;shippingservice=58%]
+======== [f3perc] users=480 2026-07-13T22:21:30+09:00 ========
+  -> [f3perc u480] rps=1172.2528510029292 agg_p50=310 product=218 cart=440 checkout=280(p99 760)
+     hop_p50=[emailservice=12;paymentservice=6]
+     hot=[cartservice=130%;currencyservice=125%;checkoutservice=84%;paymentservice=83%;frontend=81%;frontend=81%]
+================ LATENCY-SWEEP DONE 2026-07-13T22:24:13+09:00 ================
+arm     users  rps                 fails  agg_p50  agg_p90  agg_p99  product_p50  cart_p50  checkout_p50  checkout_p99  hop_p50                           hop_p9
+normal  1      3.0256568878044843  0      17       21       23       19           16        16            22            emailservice=1;paymentservice=2   emails
+normal  10     30.095226623530895  0      28       43       920      30           33        21            57            emailservice=2;paymentservice=2   emails
+normal  40     119.94512516086517  0      53       120      780      44           70        48            550           paymentservice=1;emailservice=2   emails
+normal  120    356.21077463224105  0      100      250      480      91           150       95            310           emailservice=2;paymentservice=2   emails
+normal  240    590.4611478534866   0      360      520      870      397          380       340           1100          emailservice=1;paymentservice=1   emails
+normal  480    710.9839992517174   0      650      740      1200     640          660       660           1300          emailservice=1;paymentservice=1   emails
+f3perc  1      3.02578885293978    0      17       20       23       19           16        16            22            emailservice=1;paymentservice=2   emails
+f3perc  10     30.248695033171426  8      24       37       65       27           27        18            48            paymentservice=2;emailservice=2   emails
+f3perc  40     118.61678575664149  0      54       99       920      49           66        44            160           emailservice=2;paymentservice=1   paymen
+f3perc  120    349.3368607722889   0      140      300      900      98           200       140           980           emailservice=3;paymentservice=2   paymen
+f3perc  240    706.3519239274235   0      78       150      660      64           96        76            210           emailservice=2;paymentservice=2   emails
+f3perc  480    1172.2528510029292  0      310      500      860      218          440       280           760           emailservice=12;paymentservice=6  paymen

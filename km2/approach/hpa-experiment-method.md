@@ -62,7 +62,7 @@ kubectl exec promq -n exp -- curl -s \
 
 ## 3. トポロジ（マニフェスト）
 
-- **normal（分離）**: `km2/frontend.yaml`, `km2/recommendationservice.yaml`, `km2/productcatalogservice.yaml`, `km2/cartservice.yaml`(cart+redis), `km2/checkoutservice.yaml` ほか各サービスを個別apply。
+- **normal（分離）**: `km2/normal/frontend.yaml`, `km2/normal/recommendationservice.yaml`, `km2/normal/productcatalogservice.yaml`, `km2/normal/cartservice.yaml`(cart+redis), `km2/normal/checkoutservice.yaml` ほか各サービスを個別apply。
 - **front3（束ね）**: `km2/frontrecocatalogcart/` ディレクトリ。
   - `frontrecocatalogcart.yaml` = frontend+recommendation+productcatalog を1 Podに同居（3コンテナ）。
     - frontend の env: `PRODUCT_CATALOG_SERVICE_ADDR=localhost:3550`, `RECOMMENDATION_SERVICE_ADDR=localhost:8090`。他はClusterIP。

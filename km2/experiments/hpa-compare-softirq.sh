@@ -70,9 +70,9 @@ deploy_normal() {
   echo "---- deploy NORMAL(分離) ----"
   kubectl delete hpa --all -n "$NS" >/dev/null 2>&1
   kubectl delete -f "$REPO/km2/all/all.yaml" -n "$NS" --ignore-not-found >/dev/null 2>&1
-  for f in "${NORMAL[@]}"; do kubectl delete -f "$REPO/km2/$f.yaml" -n "$NS" --ignore-not-found >/dev/null 2>&1; done
+  for f in "${NORMAL[@]}"; do kubectl delete -f "$REPO/km2/normal/$f.yaml" -n "$NS" --ignore-not-found >/dev/null 2>&1; done
   for i in $(seq 1 40); do [ -z "$(kubectl get deploy -n "$NS" -o name 2>/dev/null)" ] && break; sleep 3; done
-  for f in "${NORMAL[@]}"; do kubectl apply -f "$REPO/km2/$f.yaml" -n "$NS" >/dev/null; done
+  for f in "${NORMAL[@]}"; do kubectl apply -f "$REPO/km2/normal/$f.yaml" -n "$NS" >/dev/null; done
   for d in "${NORMAL[@]}" redis-cart; do
     kubectl patch deploy/"$d" -n "$NS" --type=merge -p '{"spec":{"template":{"metadata":{"annotations":{"sidecar.istio.io/inject":"false"}}}}}' >/dev/null 2>&1 || true
   done
@@ -83,7 +83,7 @@ deploy_front3() {
   echo "---- deploy FRONT3(束ね=frontend+reco+catalog) ----"
   kubectl delete hpa --all -n "$NS" >/dev/null 2>&1
   kubectl delete -f "$REPO/km2/all/all.yaml" -n "$NS" --ignore-not-found >/dev/null 2>&1
-  for f in "${NORMAL[@]}"; do kubectl delete -f "$REPO/km2/$f.yaml" -n "$NS" --ignore-not-found >/dev/null 2>&1; done
+  for f in "${NORMAL[@]}"; do kubectl delete -f "$REPO/km2/normal/$f.yaml" -n "$NS" --ignore-not-found >/dev/null 2>&1; done
   for i in $(seq 1 40); do [ -z "$(kubectl get deploy -n "$NS" -o name 2>/dev/null)" ] && break; sleep 3; done
   for y in "$REPO"/km2/frontrecocatalogcart/*.yaml; do
     case "$y" in *kustomization.yaml|*loadgenerator.yaml) continue;; esac

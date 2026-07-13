@@ -4,7 +4,7 @@
 
 ## これは何か
 `mizuki0118/mygo:bunpupaymail`（checkout を細バケット化＋payment計測追加したイメージ）で、
-- 分離アーム … `km2/checkoutservice.yaml`（EMAIL=`emailservice:5000` = ClusterIP）
+- 分離アーム … `km2/normal/checkoutservice.yaml`（EMAIL=`emailservice:5000` = ClusterIP）
 - 同居アーム … `km2/outmail/outmail.yaml`（EMAIL=`localhost:8080`）
 を交互に走らせ、checkout→email / checkout→payment のレイテンシ分布を比較した。
 payment は両アームとも ClusterIP のまま＝**ラン内対照群**（ラン間ノイズの推定に使う）。

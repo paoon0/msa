@@ -1,0 +1,318 @@
+================ HPAPERCONT START 2026-07-13T22:43:49+09:00 arms=[f3avg f3perc normal] levels=[240 480] rate=40 warmup=3m measure=3m HPA=70%/1-8 SCALE_ALL=1 ================
+################ CYCLE 1/3 ARM=f3avg 2026-07-13T22:43:49+09:00 ################
+---- deploy f3avg ----
+  HPA: adservice         Deployment/adservice         cpu: <unknown>/70%   1     8     1     15s|cartservice       Deployment/cartservice       cpu: <unknown>/70%   1     8     1     16s|checkoutservice   Deployment/checkoutservice   cpu: 0%/70%          1     8     1     16s|currencyservice   Deployment/currencyservice   cpu: 0%/70%          1     8     1     16s|emailservice      Deployment/emailservice      cpu: <unknown>/70%   1     8     1     16s|frontend          Deployment/frontend          cpu: <unknown>/70%   1     8     1     16s|paymentservice    Deployment/paymentservice    cpu: 0%/70%          1     8     1     16s|shippingservice   Deployment/shippingservice   cpu: 0%/70%          1     8     1     16s|
+======== [cyc1 f3avg] USERS=240 2026-07-13T22:44:41+09:00 ========
+---- 2026-07-13T22:44:41+09:00 [f3avg] users=240 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-13T22:47:50+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-13T22:47:50+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.007333333333332347 app=0.033032743444821495 node=0.5223333333333366
+---- 2026-07-13T22:50:21+09:00 [f3avg] users=240 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-13T22:53:30+09:00 負荷完了(試行 34)
+  2026-07-13T22:53:32+09:00 CPU: softirq=0.4257333333333334 app=6.276180836986841 node=7.661933333333287 | scale_replicas=12 [frontend=2 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=1 ] cont_mc=[productcatalog=448;recommendation=681;server=852]
+  HPA: adservice         Deployment/adservice         cpu: 32%/70%   1     8     1     9m6s|cartservice       Deployment/cartservice       cpu: 55%/70%   1     8     2     9m7s|checkoutservice   Deployment/checkoutservice   cpu: 56%/70%   1     8     1     9m7s|currencyservice   Deployment/currencyservice   cpu: 44%/70%   1     8     2     9m7s|emailservice      Deployment/emailservice      cpu: 54%/70%   1     8     2     9m7s|frontend          Deployment/frontend          cpu: 71%/70%   1     8     2     9m7s|paymentservice    Deployment/paymentservice    cpu: 65%/70%   1     8     1     9m7s|shippingservice   Deployment/shippingservice   cpu: 58%/70%   1     8     1     9m7s|
+  -> 記録: cyc1 f3avg users 240 softirq/req 0.597 scale_reps 12 cont_mc productcatalog=448;recommendation=681;server=852
+======== [cyc1 f3avg] USERS=480 2026-07-13T22:53:33+09:00 ========
+---- 2026-07-13T22:53:33+09:00 [f3avg] users=480 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-13T22:56:46+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-13T22:56:46+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.007111111111114748 app=0.03724094726081045 node=0.5203333333332386
+---- 2026-07-13T22:59:17+09:00 [f3avg] users=480 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-13T23:05:09+09:00 負荷完了(試行 35)
+  2026-07-13T23:05:12+09:00 CPU: softirq=0.28946666666666676 app=5.25446403819529 node=6.411733333333343 | scale_replicas=12 [frontend=2 checkoutservice=1 cartservice=2 currencyservice=1 paymentservice=2 shippingservice=1 emailservice=2 adservice=1 ] cont_mc=[productcatalog=352;recommendation=564;server=798]
+  HPA: adservice         Deployment/adservice         cpu: 30%/70%   1     8     1     20m|cartservice       Deployment/cartservice       cpu: 38%/70%   1     8     2     20m|checkoutservice   Deployment/checkoutservice   cpu: 46%/70%   1     8     1     20m|currencyservice   Deployment/currencyservice   cpu: 61%/70%   1     8     1     20m|emailservice      Deployment/emailservice      cpu: 37%/70%   1     8     2     20m|frontend          Deployment/frontend          cpu: 61%/70%   1     8     2     20m|paymentservice    Deployment/paymentservice    cpu: 13%/70%   1     8     2     20m|shippingservice   Deployment/shippingservice   cpu: 40%/70%   1     8     1     20m|
+  -> 記録: cyc1 f3avg users 480 softirq/req 0.433 scale_reps 12 cont_mc productcatalog=352;recommendation=564;server=798
+################ CYCLE 1/3 ARM=f3perc 2026-07-13T23:05:12+09:00 ################
+---- deploy f3perc ----
+  HPA: adservice         Deployment/adservice         cpu: <unknown>/70%                                   1     8     1     15s|cartservice       Deployment/cartservice       cpu: <unknown>/70%                                   1     8     1     16s|checkoutservice   Deployment/checkoutservice   cpu: 0%/70%                                          1     8     1     16s|currencyservice   Deployment/currencyservice   cpu: 0%/70%                                          1     8     1     16s|emailservice      Deployment/emailservice      cpu: 1%/70%                                          1     8     1     15s|frontend          Deployment/frontend          cpu: <unknown>/70%, cpu: <unknown>/70% + 1 more...   1     8     1     16s|paymentservice    Deployment/paymentservice    cpu: 0%/70%                                          1     8     1     16s|shippingservice   Deployment/shippingservice   cpu: 0%/70%                                          1     8     1     15s|
+======== [cyc1 f3perc] USERS=240 2026-07-13T23:06:03+09:00 ========
+---- 2026-07-13T23:06:03+09:00 [f3perc] users=240 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-13T23:09:12+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-13T23:09:12+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006444444444446793 app=0.03744172496811636 node=0.48933333333333817
+---- 2026-07-13T23:11:43+09:00 [f3perc] users=240 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-13T23:14:47+09:00 負荷完了(試行 34)
+  2026-07-13T23:14:50+09:00 CPU: softirq=0.4300666666666658 app=6.5318188570319045 node=8.110866666666661 | scale_replicas=14 [frontend=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=2 ] cont_mc=[productcatalog=334;recommendation=499;server=631]
+  HPA: adservice         Deployment/adservice         cpu: 16%/70%                             1     8     2     9m2s|cartservice       Deployment/cartservice       cpu: 55%/70%                             1     8     2     9m3s|checkoutservice   Deployment/checkoutservice   cpu: 54%/70%                             1     8     1     9m3s|currencyservice   Deployment/currencyservice   cpu: 44%/70%                             1     8     2     9m3s|emailservice      Deployment/emailservice      cpu: 66%/70%                             1     8     2     9m2s|frontend          Deployment/frontend          cpu: 62%/70%, cpu: 41%/70% + 1 more...   1     8     3     9m3s|paymentservice    Deployment/paymentservice    cpu: 55%/70%                             1     8     1     9m3s|shippingservice   Deployment/shippingservice   cpu: 53%/70%                             1     8     1     9m2s|
+  -> 記録: cyc1 f3perc users 240 softirq/req 0.596 scale_reps 14 cont_mc productcatalog=334;recommendation=499;server=631
+======== [cyc1 f3perc] USERS=480 2026-07-13T23:14:50+09:00 ========
+---- 2026-07-13T23:14:50+09:00 [f3perc] users=480 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-13T23:18:04+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-13T23:18:04+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006777777777780455 app=0.03785897395578274 node=0.49288888888890675
+---- 2026-07-13T23:20:35+09:00 [f3perc] users=480 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-13T23:26:16+09:00 負荷完了(試行 34)
+  2026-07-13T23:26:18+09:00 CPU: softirq=0.28346666666666653 app=5.180224677310802 node=6.388466666666677 | scale_replicas=12 [frontend=3 checkoutservice=1 cartservice=2 currencyservice=1 paymentservice=1 shippingservice=1 emailservice=2 adservice=1 ] cont_mc=[productcatalog=224;recommendation=384;server=533]
+  HPA: adservice         Deployment/adservice         cpu: 26%/70%                             1     8     1     20m|cartservice       Deployment/cartservice       cpu: 39%/70%                             1     8     2     20m|checkoutservice   Deployment/checkoutservice   cpu: 45%/70%                             1     8     1     20m|currencyservice   Deployment/currencyservice   cpu: 60%/70%                             1     8     1     20m|emailservice      Deployment/emailservice      cpu: 35%/70%                             1     8     2     20m|frontend          Deployment/frontend          cpu: 53%/70%, cpu: 31%/70% + 1 more...   1     8     3     20m|paymentservice    Deployment/paymentservice    cpu: 27%/70%                             1     8     1     20m|shippingservice   Deployment/shippingservice   cpu: 36%/70%                             1     8     1     20m|
+  -> 記録: cyc1 f3perc users 480 softirq/req 0.407 scale_reps 12 cont_mc productcatalog=224;recommendation=384;server=533
+################ CYCLE 1/3 ARM=normal 2026-07-13T23:26:18+09:00 ################
+---- deploy normal ----
+  HPA: adservice               Deployment/adservice               cpu: <unknown>/70%   1     8     1     15s|cartservice             Deployment/cartservice             cpu: <unknown>/70%   1     8     1     15s|checkoutservice         Deployment/checkoutservice         cpu: 0%/70%          1     8     1     16s|currencyservice         Deployment/currencyservice         cpu: 0%/70%          1     8     1     15s|emailservice            Deployment/emailservice            cpu: 1%/70%          1     8     1     15s|frontend                Deployment/frontend                cpu: 0%/70%          1     8     1     16s|paymentservice          Deployment/paymentservice          cpu: 1%/70%          1     8     1     15s|productcatalogservice   Deployment/productcatalogservice   cpu: 0%/70%          1     8     1     16s|recommendationservice   Deployment/recommendationservice   cpu: 0%/70%          1     8     1     16s|shippingservice         Deployment/shippingservice         cpu: 0%/70%          1     8     1     15s|
+======== [cyc1 normal] USERS=240 2026-07-13T23:27:12+09:00 ========
+---- 2026-07-13T23:27:12+09:00 [normal] users=240 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-13T23:30:21+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-13T23:30:21+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006333333333330099 app=0.031820863302949164 node=0.5325555555554478
+---- 2026-07-13T23:32:52+09:00 [normal] users=240 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-13T23:35:57+09:00 負荷完了(試行 34)
+  2026-07-13T23:35:59+09:00 CPU: softirq=0.6310666666666668 app=6.729177871069602 node=8.269599999999958 | scale_replicas=20 [frontend=3 recommendationservice=2 productcatalogservice=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=2 shippingservice=1 emailservice=2 adservice=2 ] cont_mc=[server=681]
+  HPA: adservice               Deployment/adservice               cpu: 15%/70%   1     8     2     9m2s|cartservice             Deployment/cartservice             cpu: 52%/70%   1     8     2     9m2s|checkoutservice         Deployment/checkoutservice         cpu: 59%/70%   1     8     1     9m3s|currencyservice         Deployment/currencyservice         cpu: 53%/70%   1     8     2     9m2s|emailservice            Deployment/emailservice            cpu: 56%/70%   1     8     2     9m2s|frontend                Deployment/frontend                cpu: 67%/70%   1     8     3     9m3s|paymentservice          Deployment/paymentservice          cpu: 37%/70%   1     8     2     9m2s|productcatalogservice   Deployment/productcatalogservice   cpu: 58%/70%   1     8     3     9m3s|recommendationservice   Deployment/recommendationservice   cpu: 53%/70%   1     8     2     9m3s|shippingservice         Deployment/shippingservice         cpu: 68%/70%   1     8     1     9m2s|
+  -> 記録: cyc1 normal users 240 softirq/req 0.902 scale_reps 20 cont_mc server=681
+======== [cyc1 normal] USERS=480 2026-07-13T23:36:00+09:00 ========
+---- 2026-07-13T23:36:00+09:00 [normal] users=480 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-13T23:39:11+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-13T23:39:11+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006666666666663129 app=0.030024157257109343 node=0.47766666666667185
+---- 2026-07-13T23:41:42+09:00 [normal] users=480 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-13T23:44:46+09:00 負荷完了(試行 34)
+  2026-07-13T23:44:49+09:00 CPU: softirq=0.6528 app=7.067563010891731 node=8.518599999999939 | scale_replicas=19 [frontend=3 recommendationservice=2 productcatalogservice=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=2 shippingservice=1 emailservice=2 adservice=1 ] cont_mc=[server=651]
+  HPA: adservice               Deployment/adservice               cpu: 29%/70%   1     8     1     17m|cartservice             Deployment/cartservice             cpu: 66%/70%   1     8     2     17m|checkoutservice         Deployment/checkoutservice         cpu: 66%/70%   1     8     1     17m|currencyservice         Deployment/currencyservice         cpu: 53%/70%   1     8     2     17m|emailservice            Deployment/emailservice            cpu: 54%/70%   1     8     2     17m|frontend                Deployment/frontend                cpu: 66%/70%   1     8     3     17m|paymentservice          Deployment/paymentservice          cpu: 40%/70%   1     8     2     17m|productcatalogservice   Deployment/productcatalogservice   cpu: 62%/70%   1     8     3     17m|recommendationservice   Deployment/recommendationservice   cpu: 53%/70%   1     8     2     17m|shippingservice         Deployment/shippingservice         cpu: 68%/70%   1     8     1     17m|
+  -> 記録: cyc1 normal users 480 softirq/req 0.919 scale_reps 19 cont_mc server=651
+################ CYCLE 2/3 ARM=f3avg 2026-07-13T23:44:49+09:00 ################
+---- deploy f3avg ----
+  HPA: adservice         Deployment/adservice         cpu: <unknown>/70%   1     8     1     15s|cartservice       Deployment/cartservice       cpu: <unknown>/70%   1     8     1     15s|checkoutservice   Deployment/checkoutservice   cpu: 0%/70%          1     8     1     16s|currencyservice   Deployment/currencyservice   cpu: 0%/70%          1     8     1     15s|emailservice      Deployment/emailservice      cpu: 1%/70%          1     8     1     15s|frontend          Deployment/frontend          cpu: <unknown>/70%   1     8     1     16s|paymentservice    Deployment/paymentservice    cpu: 5%/70%          1     8     1     15s|shippingservice   Deployment/shippingservice   cpu: 0%/70%          1     8     1     15s|
+======== [cyc2 f3avg] USERS=240 2026-07-13T23:45:40+09:00 ========
+---- 2026-07-13T23:45:40+09:00 [f3avg] users=240 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-13T23:48:49+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-13T23:48:49+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006777777777780455 app=0.032203583290890195 node=0.5039999999999529
+---- 2026-07-13T23:51:20+09:00 [f3avg] users=240 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-13T23:54:24+09:00 負荷完了(試行 34)
+  2026-07-13T23:54:26+09:00 CPU: softirq=0.42820000000000047 app=6.362303930404635 node=7.642133333333329 | scale_replicas=12 [frontend=2 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=1 ] cont_mc=[productcatalog=491;recommendation=698;server=878]
+  HPA: adservice         Deployment/adservice         cpu: 30%/70%   1     8     1     9m1s|cartservice       Deployment/cartservice       cpu: 47%/70%   1     8     2     9m1s|checkoutservice   Deployment/checkoutservice   cpu: 54%/70%   1     8     1     9m2s|currencyservice   Deployment/currencyservice   cpu: 46%/70%   1     8     2     9m1s|emailservice      Deployment/emailservice      cpu: 59%/70%   1     8     2     9m1s|frontend          Deployment/frontend          cpu: 73%/70%   1     8     2     9m2s|paymentservice    Deployment/paymentservice    cpu: 62%/70%   1     8     1     9m1s|shippingservice   Deployment/shippingservice   cpu: 60%/70%   1     8     1     9m1s|
+  -> 記録: cyc2 f3avg users 240 softirq/req 0.604 scale_reps 12 cont_mc productcatalog=491;recommendation=698;server=878
+======== [cyc2 f3avg] USERS=480 2026-07-13T23:54:27+09:00 ========
+---- 2026-07-13T23:54:27+09:00 [f3avg] users=480 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-13T23:57:40+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-13T23:57:40+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.007000000000002475 app=0.03584122825680246 node=0.5040000000000106
+---- 2026-07-14T00:00:11+09:00 [f3avg] users=480 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T00:06:03+09:00 負荷完了(試行 35)
+  2026-07-14T00:06:05+09:00 CPU: softirq=0.27713333333333023 app=5.109411437832835 node=6.319866666666637 | scale_replicas=11 [frontend=2 checkoutservice=1 cartservice=2 currencyservice=1 paymentservice=1 shippingservice=1 emailservice=2 adservice=1 ] cont_mc=[productcatalog=343;recommendation=548;server=799]
+  HPA: adservice         Deployment/adservice         cpu: 30%/70%   1     8     1     20m|cartservice       Deployment/cartservice       cpu: 31%/70%   1     8     2     20m|checkoutservice   Deployment/checkoutservice   cpu: 43%/70%   1     8     1     20m|currencyservice   Deployment/currencyservice   cpu: 59%/70%   1     8     1     20m|emailservice      Deployment/emailservice      cpu: 33%/70%   1     8     2     20m|frontend          Deployment/frontend          cpu: 60%/70%   1     8     2     20m|paymentservice    Deployment/paymentservice    cpu: 22%/70%   1     8     1     20m|shippingservice   Deployment/shippingservice   cpu: 37%/70%   1     8     1     20m|
+  -> 記録: cyc2 f3avg users 480 softirq/req 0.417 scale_reps 11 cont_mc productcatalog=343;recommendation=548;server=799
+################ CYCLE 2/3 ARM=f3perc 2026-07-14T00:06:06+09:00 ################
+---- deploy f3perc ----
+  HPA: adservice         Deployment/adservice         cpu: <unknown>/70%                                   1     8     1     15s|cartservice       Deployment/cartservice       cpu: <unknown>/70%                                   1     8     1     16s|checkoutservice   Deployment/checkoutservice   cpu: 0%/70%                                          1     8     1     16s|currencyservice   Deployment/currencyservice   cpu: 0%/70%                                          1     8     1     16s|emailservice      Deployment/emailservice      cpu: 1%/70%                                          1     8     1     15s|frontend          Deployment/frontend          cpu: <unknown>/70%, cpu: <unknown>/70% + 1 more...   1     8     1     16s|paymentservice    Deployment/paymentservice    cpu: 0%/70%                                          1     8     1     16s|shippingservice   Deployment/shippingservice   cpu: 0%/70%                                          1     8     1     16s|
+======== [cyc2 f3perc] USERS=240 2026-07-14T00:06:57+09:00 ========
+---- 2026-07-14T00:06:57+09:00 [f3perc] users=240 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T00:10:05+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-14T00:10:06+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.007222222222224495 app=0.03475908824771771 node=0.49033333333340656
+---- 2026-07-14T00:12:37+09:00 [f3perc] users=240 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T00:15:40+09:00 負荷完了(試行 34)
+  2026-07-14T00:15:43+09:00 CPU: softirq=0.45320000000000316 app=6.791437328703147 node=8.033666666666695 | scale_replicas=13 [frontend=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=1 ] cont_mc=[productcatalog=348;recommendation=478;server=639]
+  HPA: adservice         Deployment/adservice         cpu: 32%/70%                             1     8     1     9m1s|cartservice       Deployment/cartservice       cpu: 51%/70%                             1     8     2     9m2s|checkoutservice   Deployment/checkoutservice   cpu: 57%/70%                             1     8     1     9m2s|currencyservice   Deployment/currencyservice   cpu: 46%/70%                             1     8     2     9m2s|emailservice      Deployment/emailservice      cpu: 56%/70%                             1     8     2     9m1s|frontend          Deployment/frontend          cpu: 65%/70%, cpu: 39%/70% + 1 more...   1     8     3     9m2s|paymentservice    Deployment/paymentservice    cpu: 61%/70%                             1     8     1     9m2s|shippingservice   Deployment/shippingservice   cpu: 60%/70%                             1     8     1     9m2s|
+  -> 記録: cyc2 f3perc users 240 softirq/req 0.628 scale_reps 13 cont_mc productcatalog=348;recommendation=478;server=639
+======== [cyc2 f3perc] USERS=480 2026-07-14T00:15:43+09:00 ========
+---- 2026-07-14T00:15:43+09:00 [f3perc] users=480 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T00:18:57+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-14T00:18:57+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.007666666666671062 app=0.03545736796597506 node=0.48677777777774794
+---- 2026-07-14T00:21:28+09:00 [f3perc] users=480 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T00:27:20+09:00 負荷完了(試行 35)
+  2026-07-14T00:27:23+09:00 CPU: softirq=0.27953333333333186 app=5.030969629298996 node=6.269933333333355 | scale_replicas=12 [frontend=3 checkoutservice=1 cartservice=2 currencyservice=1 paymentservice=1 shippingservice=1 emailservice=2 adservice=1 ] cont_mc=[productcatalog=222;recommendation=377;server=511]
+  HPA: adservice         Deployment/adservice         cpu: 28%/70%                             1     8     1     20m|cartservice       Deployment/cartservice       cpu: 34%/70%                             1     8     2     20m|checkoutservice   Deployment/checkoutservice   cpu: 44%/70%                             1     8     1     20m|currencyservice   Deployment/currencyservice   cpu: 55%/70%                             1     8     1     20m|emailservice      Deployment/emailservice      cpu: 32%/70%                             1     8     2     20m|frontend          Deployment/frontend          cpu: 51%/70%, cpu: 31%/70% + 1 more...   1     8     3     20m|paymentservice    Deployment/paymentservice    cpu: 26%/70%                             1     8     1     20m|shippingservice   Deployment/shippingservice   cpu: 35%/70%                             1     8     1     20m|
+  -> 記録: cyc2 f3perc users 480 softirq/req 0.426 scale_reps 12 cont_mc productcatalog=222;recommendation=377;server=511
+################ CYCLE 2/3 ARM=normal 2026-07-14T00:27:23+09:00 ################
+---- deploy normal ----
+  HPA: adservice               Deployment/adservice               cpu: <unknown>/70%   1     8     1     16s|cartservice             Deployment/cartservice             cpu: 1%/70%          1     8     1     16s|checkoutservice         Deployment/checkoutservice         cpu: 0%/70%          1     8     1     16s|currencyservice         Deployment/currencyservice         cpu: 0%/70%          1     8     1     16s|emailservice            Deployment/emailservice            cpu: 1%/70%          1     8     1     16s|frontend                Deployment/frontend                cpu: 0%/70%          1     8     1     17s|paymentservice          Deployment/paymentservice          cpu: 0%/70%          1     8     1     16s|productcatalogservice   Deployment/productcatalogservice   cpu: 0%/70%          1     8     1     17s|recommendationservice   Deployment/recommendationservice   cpu: 0%/70%          1     8     1     17s|shippingservice         Deployment/shippingservice         cpu: 0%/70%          1     8     1     16s|
+======== [cyc2 normal] USERS=240 2026-07-14T00:28:18+09:00 ========
+---- 2026-07-14T00:28:18+09:00 [normal] users=240 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T00:31:26+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-14T00:31:26+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006555555555552119 app=0.031970723874739156 node=0.49266666666667547
+---- 2026-07-14T00:33:58+09:00 [normal] users=240 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T00:37:01+09:00 負荷完了(試行 34)
+  2026-07-14T00:37:04+09:00 CPU: softirq=0.5966 app=6.75175171586262 node=8.05020000000001 | scale_replicas=19 [frontend=3 recommendationservice=2 productcatalogservice=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=2 ] cont_mc=[server=655]
+  HPA: adservice               Deployment/adservice               cpu: 16%/70%   1     8     2     9m2s|cartservice             Deployment/cartservice             cpu: 69%/70%   1     8     2     9m2s|checkoutservice         Deployment/checkoutservice         cpu: 60%/70%   1     8     1     9m2s|currencyservice         Deployment/currencyservice         cpu: 51%/70%   1     8     2     9m2s|emailservice            Deployment/emailservice            cpu: 52%/70%   1     8     2     9m2s|frontend                Deployment/frontend                cpu: 65%/70%   1     8     3     9m3s|paymentservice          Deployment/paymentservice          cpu: 70%/70%   1     8     1     9m2s|productcatalogservice   Deployment/productcatalogservice   cpu: 55%/70%   1     8     3     9m3s|recommendationservice   Deployment/recommendationservice   cpu: 50%/70%   1     8     2     9m3s|shippingservice         Deployment/shippingservice         cpu: 63%/70%   1     8     1     9m2s|
+  -> 記録: cyc2 normal users 240 softirq/req 0.919 scale_reps 19 cont_mc server=655
+======== [cyc2 normal] USERS=480 2026-07-14T00:37:04+09:00 ========
+---- 2026-07-14T00:37:04+09:00 [normal] users=480 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T00:40:14+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-14T00:40:15+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006111111111110605 app=0.027223122280187438 node=0.5195555555555326
+---- 2026-07-14T00:42:46+09:00 [normal] users=480 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T00:45:55+09:00 負荷完了(試行 34)
+  2026-07-14T00:45:57+09:00 CPU: softirq=0.603266666666669 app=6.532726063600669 node=7.854333333333276 | scale_replicas=18 [frontend=3 recommendationservice=2 productcatalogservice=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=1 ] cont_mc=[server=616]
+  HPA: adservice               Deployment/adservice               cpu: 30%/70%   1     8     1     17m|cartservice             Deployment/cartservice             cpu: 59%/70%   1     8     2     17m|checkoutservice         Deployment/checkoutservice         cpu: 61%/70%   1     8     1     17m|currencyservice         Deployment/currencyservice         cpu: 51%/70%   1     8     2     17m|emailservice            Deployment/emailservice            cpu: 53%/70%   1     8     2     17m|frontend                Deployment/frontend                cpu: 62%/70%   1     8     3     17m|paymentservice          Deployment/paymentservice          cpu: 73%/70%   1     8     1     17m|productcatalogservice   Deployment/productcatalogservice   cpu: 55%/70%   1     8     3     17m|recommendationservice   Deployment/recommendationservice   cpu: 51%/70%   1     8     2     17m|shippingservice         Deployment/shippingservice         cpu: 62%/70%   1     8     1     17m|
+  -> 記録: cyc2 normal users 480 softirq/req 0.922 scale_reps 18 cont_mc server=616
+################ CYCLE 3/3 ARM=f3avg 2026-07-14T00:45:58+09:00 ################
+---- deploy f3avg ----
+  HPA: adservice         Deployment/adservice         cpu: <unknown>/70%   1     8     1     15s|cartservice       Deployment/cartservice       cpu: <unknown>/70%   1     8     1     16s|checkoutservice   Deployment/checkoutservice   cpu: 0%/70%          1     8     1     16s|currencyservice   Deployment/currencyservice   cpu: 0%/70%          1     8     1     16s|emailservice      Deployment/emailservice      cpu: 1%/70%          1     8     1     16s|frontend          Deployment/frontend          cpu: 0%/70%          1     8     1     16s|paymentservice    Deployment/paymentservice    cpu: 4%/70%          1     8     1     16s|shippingservice   Deployment/shippingservice   cpu: 0%/70%          1     8     1     16s|
+======== [cyc3 f3avg] USERS=240 2026-07-14T00:46:49+09:00 ========
+---- 2026-07-14T00:46:49+09:00 [f3avg] users=240 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T00:49:58+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-14T00:49:58+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006555555555554014 app=0.03202792142197362 node=0.4895555555555294
+---- 2026-07-14T00:52:29+09:00 [f3avg] users=240 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T00:55:33+09:00 負荷完了(試行 34)
+  2026-07-14T00:55:35+09:00 CPU: softirq=0.4113333333333321 app=6.4599673457042925 node=7.692066666666593 | scale_replicas=13 [frontend=2 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=2 ] cont_mc=[productcatalog=494;recommendation=720;server=928]
+  HPA: adservice         Deployment/adservice         cpu: 18%/70%   1     8     2     9m1s|cartservice       Deployment/cartservice       cpu: 57%/70%   1     8     2     9m2s|checkoutservice   Deployment/checkoutservice   cpu: 57%/70%   1     8     1     9m2s|currencyservice   Deployment/currencyservice   cpu: 47%/70%   1     8     2     9m2s|emailservice      Deployment/emailservice      cpu: 58%/70%   1     8     2     9m2s|frontend          Deployment/frontend          cpu: 76%/70%   1     8     2     9m2s|paymentservice    Deployment/paymentservice    cpu: 64%/70%   1     8     1     9m2s|shippingservice   Deployment/shippingservice   cpu: 60%/70%   1     8     1     9m2s|
+  -> 記録: cyc3 f3avg users 240 softirq/req 0.575 scale_reps 13 cont_mc productcatalog=494;recommendation=720;server=928
+======== [cyc3 f3avg] USERS=480 2026-07-14T00:55:35+09:00 ========
+---- 2026-07-14T00:55:35+09:00 [f3avg] users=480 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T00:58:49+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-14T00:58:49+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006333333333337678 app=0.03725542271008329 node=0.4931111111111502
+---- 2026-07-14T01:01:20+09:00 [f3avg] users=480 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T01:07:01+09:00 負荷完了(試行 35)
+  2026-07-14T01:07:03+09:00 CPU: softirq=0.2805333333333336 app=5.108812652193666 node=6.30993333333331 | scale_replicas=11 [frontend=2 checkoutservice=1 cartservice=2 currencyservice=1 paymentservice=1 shippingservice=1 emailservice=2 adservice=1 ] cont_mc=[productcatalog=387;recommendation=607;server=800]
+  HPA: adservice         Deployment/adservice         cpu: 28%/70%   1     8     1     20m|cartservice       Deployment/cartservice       cpu: 27%/70%   1     8     2     20m|checkoutservice   Deployment/checkoutservice   cpu: 45%/70%   1     8     1     20m|currencyservice   Deployment/currencyservice   cpu: 67%/70%   1     8     1     20m|emailservice      Deployment/emailservice      cpu: 44%/70%   1     8     2     20m|frontend          Deployment/frontend          cpu: 59%/70%   1     8     2     20m|paymentservice    Deployment/paymentservice    cpu: 37%/70%   1     8     1     20m|shippingservice   Deployment/shippingservice   cpu: 43%/70%   1     8     1     20m|
+  -> 記録: cyc3 f3avg users 480 softirq/req 0.418 scale_reps 11 cont_mc productcatalog=387;recommendation=607;server=800
+################ CYCLE 3/3 ARM=f3perc 2026-07-14T01:07:04+09:00 ################
+---- deploy f3perc ----
+  HPA: adservice         Deployment/adservice         cpu: <unknown>/70%                                   1     8     1     15s|cartservice       Deployment/cartservice       cpu: <unknown>/70%                                   1     8     1     16s|checkoutservice   Deployment/checkoutservice   cpu: 0%/70%                                          1     8     1     16s|currencyservice   Deployment/currencyservice   cpu: 0%/70%                                          1     8     1     16s|emailservice      Deployment/emailservice      cpu: 1%/70%                                          1     8     1     15s|frontend          Deployment/frontend          cpu: <unknown>/70%, cpu: <unknown>/70% + 1 more...   1     8     1     16s|paymentservice    Deployment/paymentservice    cpu: 0%/70%                                          1     8     1     16s|shippingservice   Deployment/shippingservice   cpu: 0%/70%                                          1     8     1     16s|
+======== [cyc3 f3perc] USERS=240 2026-07-14T01:07:56+09:00 ========
+---- 2026-07-14T01:07:56+09:00 [f3perc] users=240 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T01:11:05+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-14T01:11:05+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.00700000000000058 app=0.03680142175795936 node=0.5345555555556225
+---- 2026-07-14T01:13:36+09:00 [f3perc] users=240 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T01:16:45+09:00 負荷完了(試行 35)
+  2026-07-14T01:16:48+09:00 CPU: softirq=0.4504666666666643 app=6.644984115988416 node=8.13826666666666 | scale_replicas=14 [frontend=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=2 ] cont_mc=[productcatalog=327;recommendation=469;server=608]
+  HPA: adservice         Deployment/adservice         cpu: 17%/70%                             1     8     2     9m7s|cartservice       Deployment/cartservice       cpu: 53%/70%                             1     8     2     9m8s|checkoutservice   Deployment/checkoutservice   cpu: 58%/70%                             1     8     1     9m8s|currencyservice   Deployment/currencyservice   cpu: 46%/70%                             1     8     2     9m8s|emailservice      Deployment/emailservice      cpu: 58%/70%                             1     8     2     9m7s|frontend          Deployment/frontend          cpu: 62%/70%, cpu: 38%/70% + 1 more...   1     8     3     9m8s|paymentservice    Deployment/paymentservice    cpu: 65%/70%                             1     8     1     9m8s|shippingservice   Deployment/shippingservice   cpu: 58%/70%                             1     8     1     9m8s|
+  -> 記録: cyc3 f3perc users 240 softirq/req 0.627 scale_reps 14 cont_mc productcatalog=327;recommendation=469;server=608
+======== [cyc3 f3perc] USERS=480 2026-07-14T01:16:48+09:00 ========
+---- 2026-07-14T01:16:48+09:00 [f3perc] users=480 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T01:20:02+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-14T01:20:02+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.007111111111110959 app=0.039122791347460245 node=0.5476666666666329
+---- 2026-07-14T01:22:33+09:00 [f3perc] users=480 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T01:28:19+09:00 負荷完了(試行 35)
+  2026-07-14T01:28:22+09:00 CPU: softirq=0.29193333333332966 app=5.1258592928080144 node=6.3877333333333075 | scale_replicas=12 [frontend=3 checkoutservice=1 cartservice=2 currencyservice=1 paymentservice=1 shippingservice=1 emailservice=2 adservice=1 ] cont_mc=[productcatalog=241;recommendation=380;server=533]
+  HPA: adservice         Deployment/adservice         cpu: 26%/70%                             1     8     1     20m|cartservice       Deployment/cartservice       cpu: 28%/70%                             1     8     2     20m|checkoutservice   Deployment/checkoutservice   cpu: 44%/70%                             1     8     1     20m|currencyservice   Deployment/currencyservice   cpu: 59%/70%                             1     8     1     20m|emailservice      Deployment/emailservice      cpu: 36%/70%                             1     8     2     20m|frontend          Deployment/frontend          cpu: 53%/70%, cpu: 31%/70% + 1 more...   1     8     3     20m|paymentservice    Deployment/paymentservice    cpu: 29%/70%                             1     8     1     20m|shippingservice   Deployment/shippingservice   cpu: 36%/70%                             1     8     1     20m|
+  -> 記録: cyc3 f3perc users 480 softirq/req 0.437 scale_reps 12 cont_mc productcatalog=241;recommendation=380;server=533
+################ CYCLE 3/3 ARM=normal 2026-07-14T01:28:22+09:00 ################
+---- deploy normal ----
+  HPA: adservice               Deployment/adservice               cpu: <unknown>/70%   1     8     1     16s|cartservice             Deployment/cartservice             cpu: <unknown>/70%   1     8     1     16s|checkoutservice         Deployment/checkoutservice         cpu: 0%/70%          1     8     1     16s|currencyservice         Deployment/currencyservice         cpu: 0%/70%          1     8     1     16s|emailservice            Deployment/emailservice            cpu: 1%/70%          1     8     1     16s|frontend                Deployment/frontend                cpu: 0%/70%          1     8     1     17s|paymentservice          Deployment/paymentservice          cpu: 1%/70%          1     8     1     16s|productcatalogservice   Deployment/productcatalogservice   cpu: 0%/70%          1     8     1     17s|recommendationservice   Deployment/recommendationservice   cpu: 0%/70%          1     8     1     17s|shippingservice         Deployment/shippingservice         cpu: 0%/70%          1     8     1     16s|
+======== [cyc3 normal] USERS=240 2026-07-14T01:29:18+09:00 ========
+---- 2026-07-14T01:29:18+09:00 [normal] users=240 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T01:32:26+09:00 負荷完了(試行 35)
+  ウォームアップ完了(捨て)
+---- 2026-07-14T01:32:26+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006555555555554645 app=0.031921277181241554 node=0.49333333333333984
+---- 2026-07-14T01:34:57+09:00 [normal] users=240 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T01:38:06+09:00 負荷完了(試行 35)
+  2026-07-14T01:38:09+09:00 CPU: softirq=0.6028000000000004 app=6.396491390301332 node=7.82680000000008 | scale_replicas=18 [frontend=3 recommendationservice=2 productcatalogservice=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=1 ] cont_mc=[server=659]
+  HPA: adservice               Deployment/adservice               cpu: 28%/70%   1     8     1     9m7s|cartservice             Deployment/cartservice             cpu: 54%/70%   1     8     2     9m7s|checkoutservice         Deployment/checkoutservice         cpu: 55%/70%   1     8     1     9m7s|currencyservice         Deployment/currencyservice         cpu: 48%/70%   1     8     2     9m7s|emailservice            Deployment/emailservice            cpu: 39%/70%   1     8     2     9m7s|frontend                Deployment/frontend                cpu: 65%/70%   1     8     3     9m8s|paymentservice          Deployment/paymentservice          cpu: 59%/70%   1     8     1     9m7s|productcatalogservice   Deployment/productcatalogservice   cpu: 55%/70%   1     8     3     9m8s|recommendationservice   Deployment/recommendationservice   cpu: 46%/70%   1     8     2     9m8s|shippingservice         Deployment/shippingservice         cpu: 53%/70%   1     8     1     9m7s|
+  -> 記録: cyc3 normal users 240 softirq/req 0.986 scale_reps 18 cont_mc server=659
+======== [cyc3 normal] USERS=480 2026-07-14T01:38:09+09:00 ========
+---- 2026-07-14T01:38:09+09:00 [normal] users=480 ウォームアップ (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T01:41:19+09:00 負荷完了(試行 34)
+  ウォームアップ完了(捨て)
+---- 2026-07-14T01:41:19+09:00 基線(ドレイン 30s + 窓 2m) ----
+  base: softirq=0.006222222222219089 app=0.028694840346341517 node=0.4777777777778808
+---- 2026-07-14T01:43:50+09:00 [normal] users=480 本計測 (負荷 3m) ----
+job.batch/loadgenerator created
+serviceaccount/loadgenerator unchanged
+  2026-07-14T01:46:59+09:00 負荷完了(試行 35)
+  2026-07-14T01:47:02+09:00 CPU: softirq=0.6098000000000009 app=6.677620053419204 node=7.889533333333355 | scale_replicas=18 [frontend=3 recommendationservice=2 productcatalogservice=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=1 ] cont_mc=[server=635]
+  HPA: adservice               Deployment/adservice               cpu: 30%/70%   1     8     1     18m|cartservice             Deployment/cartservice             cpu: 62%/70%   1     8     2     18m|checkoutservice         Deployment/checkoutservice         cpu: 62%/70%   1     8     1     18m|currencyservice         Deployment/currencyservice         cpu: 51%/70%   1     8     2     18m|emailservice            Deployment/emailservice            cpu: 53%/70%   1     8     2     18m|frontend                Deployment/frontend                cpu: 65%/70%   1     8     3     18m|paymentservice          Deployment/paymentservice          cpu: 72%/70%   1     8     1     18m|productcatalogservice   Deployment/productcatalogservice   cpu: 55%/70%   1     8     3     18m|recommendationservice   Deployment/recommendationservice   cpu: 49%/70%   1     8     2     18m|shippingservice         Deployment/shippingservice         cpu: 65%/70%   1     8     1     18m|
+  -> 記録: cyc3 normal users 480 softirq/req 0.944 scale_reps 18 cont_mc server=635
+================ HPAPERCONT DONE 2026-07-14T01:47:33+09:00 ================
+cycle  arm     users  reqcount  fails  p50_ms  p90_ms  p99_ms  avg_ms              rps                softirq_cores        base_softirq          app_cores           base_app              node_cores          base_node            softirq_mc_per_req  app_mc_per_req  node_mc_per_req  scale_replicas  scale_detail                                                                                                                                                                cont_mc
+1      f3avg   240    125873    0      61      160     840     95.7251433001263    700.8625632195536  0.4257333333333334   0.007333333333332347  6.276180836986841   0.033032743444821495  7.661933333333287   0.5223333333333366   0.597               8.908           10.187           12              frontend=2 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=1                                                  productcatalog=448;recommendation=681;server=852
+1      f3avg   480    116950    5      700     980     1200    707.1239769203385   651.3776802617566  0.28946666666666676  0.007111111111114748  5.25446403819529    0.03724094726081045   6.411733333333343   0.5203333333332386   0.433               8.01            9.045            12              frontend=2 checkoutservice=1 cartservice=2 currencyservice=1 paymentservice=2 shippingservice=1 emailservice=2 adservice=1                                                  productcatalog=352;recommendation=564;server=798
+1      f3perc  240    127289    0      100     220     540     121.49155845379948  711.155281294941   0.4300666666666658   0.006444444444446793  6.5318188570319045  0.03744172496811636   8.110866666666661   0.48933333333333817  0.596               9.132           10.717           14              frontend=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=2                                                  productcatalog=334;recommendation=499;server=631
+1      f3perc  480    121697    305    680     960     1300    672.0991151778791   680.0523066500871  0.28346666666666653  0.006777777777780455  5.180224677310802   0.03785897395578274   6.388466666666677   0.49288888888890675  0.407               7.562           8.669            12              frontend=3 checkoutservice=1 cartservice=2 currencyservice=1 paymentservice=1 shippingservice=1 emailservice=2 adservice=1                                                  productcatalog=224;recommendation=384;server=533
+1      normal  240    124160    0      220     340     860     228.86275881884907  692.2725005667933  0.6310666666666668   0.006333333333330099  6.729177871069602   0.031820863302949164  8.269599999999958   0.5325555555554478   0.902               9.674           11.176           20              frontend=3 recommendationservice=2 productcatalogservice=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=2 shippingservice=1 emailservice=2 adservice=2  server=681
+1      normal  480    126043    0      670     750     1200    656.9419623379551   703.1953702400906  0.6528               0.006666666666663129  7.067563010891731   0.030024157257109343  8.518599999999939   0.47766666666667185  0.919               10.008          11.435           19              frontend=3 recommendationservice=2 productcatalogservice=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=2 shippingservice=1 emailservice=2 adservice=1  server=651
+2      f3avg   240    125303    0      46      220     820     99.27502987385948   698.1240345931535  0.42820000000000047  0.006777777777780455  6.362303930404635   0.032203583290890195  7.642133333333329   0.5039999999999529   0.604               9.067           10.225           12              frontend=2 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=1                                                  productcatalog=491;recommendation=698;server=878
+2      f3avg   480    116237    0      700     990     1300    712.794226642735    647.1531687591787  0.27713333333333023  0.007000000000002475  5.109411437832835   0.03584122825680246   6.319866666666637   0.5040000000000106   0.417               7.84            8.987            11              frontend=2 checkoutservice=1 cartservice=2 currencyservice=1 paymentservice=1 shippingservice=1 emailservice=2 adservice=1                                                  productcatalog=343;recommendation=548;server=799
+2      f3perc  240    127558    0      60      220     680     98.0325885797728    709.8863375225754  0.45320000000000316  0.007222222222224495  6.791437328703147   0.03475908824771771   8.033666666666695   0.49033333333340656  0.628               9.518           10.626           13              frontend=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=1                                                  productcatalog=348;recommendation=478;server=639
+2      f3perc  480    114756    109    700     1000    1400    723.0420543149277   638.9201317960077  0.27953333333333186  0.007666666666671062  5.030969629298996   0.03545736796597506   6.269933333333355   0.48677777777774794  0.426               7.819           9.051            12              frontend=3 checkoutservice=1 cartservice=2 currencyservice=1 paymentservice=1 shippingservice=1 emailservice=2 adservice=1                                                  productcatalog=222;recommendation=377;server=511
+2      normal  240    115132    0      340     440     930     339.88665881047416  642.1167370608727  0.5966               0.006555555555552119  6.75175171586262    0.031970723874739156  8.05020000000001    0.49266666666667547  0.919               10.465          11.77            19              frontend=3 recommendationservice=2 productcatalogservice=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=2  server=655
+2      normal  480    116020    0      700     880     1200    713.4494695436294   647.6065312235648  0.603266666666669    0.006111111111110605  6.532726063600669   0.027223122280187438  7.854333333333276   0.5195555555555326   0.922               10.045          11.326           18              frontend=3 recommendationservice=2 productcatalogservice=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=1  server=616
+3      f3avg   240    126486    0      92      210     710     121.88966106182804  704.5207085734689  0.4113333333333321   0.006555555555554014  6.4599673457042925  0.03202792142197362   7.692066666666593   0.4895555555555294   0.575               9.124           10.223           13              frontend=2 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=2                                                  productcatalog=494;recommendation=720;server=928
+3      f3avg   480    117492    1430   690     990     1300    697.4522664420424   656.3904390492498  0.2805333333333336   0.006333333333337678  5.108812652193666   0.03725542271008329   6.30993333333331    0.4931111111111502   0.418               7.726           8.862            11              frontend=2 checkoutservice=1 cartservice=2 currencyservice=1 paymentservice=1 shippingservice=1 emailservice=2 adservice=1                                                  productcatalog=387;recommendation=607;server=800
+3      f3perc  240    126565    0      43      240     800     98.71752609538203   707.8451563995695  0.4504666666666643   0.00700000000000058   6.644984115988416   0.03680142175795936   8.13826666666666    0.5345555555556225   0.627               9.336           10.742           14              frontend=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=2                                                  productcatalog=327;recommendation=469;server=608
+3      f3perc  480    117077    141    690     990     1300    705.7477766925572   651.8692903602066  0.29193333333332966  0.007111111111110959  5.1258592928080144  0.039122791347460245  6.3877333333333075  0.5476666666666329   0.437               7.803           8.959            12              frontend=3 checkoutservice=1 cartservice=2 currencyservice=1 paymentservice=1 shippingservice=1 emailservice=2 adservice=1                                                  productcatalog=241;recommendation=380;server=533
+3      normal  240    108332    0      360     510     870     382.33032521055577  604.6613532780607  0.6028000000000004   0.006555555555554645  6.396491390301332   0.031921277181241554  7.82680000000008    0.49333333333333984  0.986               10.526          12.128           18              frontend=3 recommendationservice=2 productcatalogservice=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=1  server=659
+3      normal  480    114600    0      710     900     1100    722.7381339254019   639.5520145178596  0.6098000000000009   0.006222222222219089  6.677620053419204   0.028694840346341517  7.889533333333355   0.4777777777778808   0.944               10.396          11.589           18              frontend=3 recommendationservice=2 productcatalogservice=3 checkoutservice=1 cartservice=2 currencyservice=2 paymentservice=1 shippingservice=1 emailservice=2 adservice=1  server=635

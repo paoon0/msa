@@ -95,10 +95,10 @@ deploy_arm() { # $1=arm  -> グローバル SCALESET を設定
   echo "---- deploy $arm ----"
   kubectl delete hpa --all -n "$NS" >/dev/null 2>&1
   kubectl delete -f "$REPO/km2/all/all.yaml" -n "$NS" --ignore-not-found >/dev/null 2>&1
-  for f in "${NORMAL[@]}"; do kubectl delete -f "$REPO/km2/$f.yaml" -n "$NS" --ignore-not-found >/dev/null 2>&1; done
+  for f in "${NORMAL[@]}"; do kubectl delete -f "$REPO/km2/normal/$f.yaml" -n "$NS" --ignore-not-found >/dev/null 2>&1; done
   wait_empty
   if [ "$arm" = normal ]; then
-    for f in "${NORMAL[@]}"; do kubectl apply -f "$REPO/km2/$f.yaml" -n "$NS" >/dev/null; done
+    for f in "${NORMAL[@]}"; do kubectl apply -f "$REPO/km2/normal/$f.yaml" -n "$NS" >/dev/null; done
     patch_noistio "${NORMAL[@]}" redis-cart
     for d in "${NORMAL[@]}" redis-cart; do kubectl rollout status deploy/"$d" -n "$NS" --timeout="$ROLLOUT_TIMEOUT" >/dev/null 2>&1 || true; done
     kubectl delete hpa --all -n "$NS" >/dev/null 2>&1
@@ -119,6 +119,7 @@ deploy_arm() { # $1=arm  -> グローバル SCALESET を設定
     kubectl delete hpa --all -n "$NS" >/dev/null 2>&1   # yaml同梱HPAを消す
     if [ "$arm" = f3perc ]; then
       kubectl apply -f "$PC_HPA" -n "$NS" >/dev/null
+      kubectl patch hpa frontend -n "$NS" --type=merge -p "{\"spec\":{\"maxReplicas\":$HPA_MAX,\"minReplicas\":$HPA_MIN}}" >/dev/null 2>&1 || true  # コンテナ別HPAのmaxをHPA_MAXに追従
     else # f3avg
       kubectl autoscale deploy/frontend -n "$NS" --cpu-percent="$HPA_TARGET" --min="$HPA_MIN" --max="$HPA_MAX" >/dev/null 2>&1 || true
     fi

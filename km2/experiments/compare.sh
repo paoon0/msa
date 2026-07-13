@@ -88,7 +88,7 @@ measure_baseline() { # arm
 deploy_normal() {
   echo "---- deploy NORMAL (分離・Istio無し) ----"
   kubectl delete -f "$ALL" -n "$NS" --ignore-not-found
-  for f in "${NORMAL[@]}"; do kubectl apply -f "$REPO/km2/$f.yaml" -n "$NS"; done
+  for f in "${NORMAL[@]}"; do kubectl apply -f "$REPO/km2/normal/$f.yaml" -n "$NS"; done
   for d in "${ISTIO_SVCS[@]}"; do
     kubectl patch deploy/"$d" -n "$NS" --type=merge \
       -p '{"spec":{"template":{"metadata":{"annotations":{"sidecar.istio.io/inject":"false"}}}}}' || true
@@ -100,7 +100,7 @@ deploy_normal() {
 
 deploy_mega() {
   echo "---- deploy MEGA (全部入り) ----"
-  for f in "${NORMAL[@]}"; do kubectl delete -f "$REPO/km2/$f.yaml" -n "$NS" --ignore-not-found; done
+  for f in "${NORMAL[@]}"; do kubectl delete -f "$REPO/km2/normal/$f.yaml" -n "$NS" --ignore-not-found; done
   kubectl apply -f "$ALL" -n "$NS"
   kubectl rollout status deploy/megapod -n "$NS" --timeout="$ROLLOUT_TIMEOUT" || true
 }

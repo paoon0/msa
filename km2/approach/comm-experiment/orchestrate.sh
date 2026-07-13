@@ -3,7 +3,7 @@
 set -u
 SP=/tmp/claude-1000/-home-mizuki--------msa/2180ecd9-490c-40b3-8a03-47e2819257f7/scratchpad
 REPO=/home/mizuki/ダウンロード/msa
-SEP=$REPO/km2/checkoutservice.yaml          # 分離: EMAIL=emailservice:5000 (ClusterIP)
+SEP=$REPO/km2/normal/checkoutservice.yaml          # 分離: EMAIL=emailservice:5000 (ClusterIP)
 COLO=$REPO/km2/outmail/outmail.yaml         # 同居: EMAIL=localhost:8080
 LOAD=$SP/loadgen-run.yaml
 CSV=$SP/results.csv

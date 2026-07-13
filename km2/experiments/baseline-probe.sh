@@ -73,7 +73,7 @@ if kubectl get pod -n "$NS" -l app=megapod -o name 2>/dev/null | grep -q pod; th
   measure mega warm
 else
   echo "---- mega 未稼働。デプロイ→温め→測定 ----"
-  for f in "${NORMAL[@]}"; do kubectl delete -f "$REPO/km2/$f.yaml" -n "$NS" --ignore-not-found >/dev/null 2>&1; done
+  for f in "${NORMAL[@]}"; do kubectl delete -f "$REPO/km2/normal/$f.yaml" -n "$NS" --ignore-not-found >/dev/null 2>&1; done
   kubectl apply -f "$ALL" -n "$NS" >/dev/null
   kubectl rollout status deploy/megapod -n "$NS" --timeout=300s || true
   measure mega cold
@@ -84,7 +84,7 @@ fi
 # ---- normal: デプロイ→冷えた基線→5分温め→温まった基線 ----
 echo "---- normal デプロイ(分離・Istio無し) ----"
 kubectl delete -f "$ALL" -n "$NS" --ignore-not-found >/dev/null 2>&1
-for f in "${NORMAL[@]}"; do kubectl apply -f "$REPO/km2/$f.yaml" -n "$NS" >/dev/null; done
+for f in "${NORMAL[@]}"; do kubectl apply -f "$REPO/km2/normal/$f.yaml" -n "$NS" >/dev/null; done
 for d in "${ISTIO_SVCS[@]}"; do
   kubectl patch deploy/"$d" -n "$NS" --type=merge \
     -p '{"spec":{"template":{"metadata":{"annotations":{"sidecar.istio.io/inject":"false"}}}}}' >/dev/null 2>&1 || true

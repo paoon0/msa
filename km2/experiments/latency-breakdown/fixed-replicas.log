@@ -1,0 +1,24 @@
+================ FIXED-REPLICAS START 2026-07-14T02:24:36+09:00 replicas=4 users=480 ================
+---- deploy normal + 固定4台(HPA無し) ----
+  デプロイ完了: adservice=4/4 cartservice=4/4 checkoutservice=4/4 currencyservice=4/4 emailservice=4/4 frontend=4/4 paymentservice=4/4 productcatalogservice=4/4 recommendationservice=4/4 redis-cart=1/1 shippingservice=4/4 
+---- 2026-07-14T02:25:56+09:00 負荷 users=480 (warmup 120s + measure 150s) ----
+---- 2026-07-14T02:30:30+09:00 採取 ----
+  per-service CPU(絶対mc: 合計使用 / 台数 / 1台使用 / 1台limit / limit比):
+    frontend                 合計 2841m  x4  1台 710m  limit1600m  (44%)
+    recommendationservice    合計 2432m  x4  1台 608m  limit1600m  (38%)
+    currencyservice          合計 1610m  x4  1台 403m  limit1600m  (25%)
+    productcatalogservice    合計 1450m  x4  1台 363m  limit1000m  (36%)
+    checkoutservice          合計  893m  x4  1台 223m  limit1200m  (19%)
+    cartservice              合計  860m  x4  1台 215m  limit 960m  (22%)
+    emailservice             合計  434m  x4  1台 108m  limit 300m  (36%)
+    shippingservice          合計  375m  x4  1台  94m  limit 560m  (17%)
+    paymentservice           合計  268m  x4  1台  67m  limit 300m  (22%)
+    adservice                合計  172m  x4  1台  43m  limit 500m  (9%)
+    redis-cart               合計  100m  x1  1台 100m  limit 500m  (20%)
+  node_cores=13.690416666666577 (of 16)
+  checkout下流ホップ p50(ms): [emailservice=4;paymentservice=2]
+  /cart            rps=340.2035344150899 p50=330    p90=770    p99=1100   fails=0
+  /cart/checkout   rps=339.9068414099264 p50=250    p90=740    p99=1200   fails=0
+  /product/0PUK6V6 rps=38.13671886595685 p50=230    p90=700    p99=890    fails=0
+  Aggregated       rps=1022.4774356373096 p50=280    p90=740    p99=1100   fails=0
+================ FIXED-REPLICAS DONE 2026-07-14T02:31:03+09:00 ================

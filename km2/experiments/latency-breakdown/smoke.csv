@@ -1,0 +1,3 @@
+arm,users,rps,fails,agg_p50,agg_p90,agg_p99,product_p50,cart_p50,checkout_p50,checkout_p99,hop_p50,hop_p99,hot_services
+normal,1,3.0310030648458284,0,17,20,23,18,16,17,22,emailservice=1;paymentservice=2,emailservice=2;paymentservice=3,adservice=3%;cartservice=2%;productcatalogservice=2%;currencyservice=2%;frontend=2%;redis-cart=2%
+normal,480,669.5597447563737,0,680,880,1300,670,710,650,1500,emailservice=5;paymentservice=3,emailservice=150;paymentservice=315,frontend=159%;productcatalogservice=137%;recommendationservice=101%;currencyservice=71%;cartservice=70%;checkoutservice=46%

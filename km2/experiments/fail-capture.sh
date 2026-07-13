@@ -30,7 +30,7 @@ echo "---- deploy f3perc+SCALE_ALL ----"
 kubectl delete hpa --all -n "$NS" >/dev/null 2>&1
 kubectl delete job loadgenerator -n "$NS" --ignore-not-found >/dev/null 2>&1
 kubectl delete -f "$REPO/km2/all/all.yaml" -n "$NS" --ignore-not-found >/dev/null 2>&1
-for f in "${NORMAL[@]}"; do kubectl delete -f "$REPO/km2/$f.yaml" -n "$NS" --ignore-not-found >/dev/null 2>&1; done
+for f in "${NORMAL[@]}"; do kubectl delete -f "$REPO/km2/normal/$f.yaml" -n "$NS" --ignore-not-found >/dev/null 2>&1; done
 for i in $(seq 1 40); do [ -z "$(kubectl get deploy -n "$NS" -o name 2>/dev/null)" ] && break; sleep 3; done
 for y in "$REPO"/km2/frontrecocatalogcart/*.yaml; do
   case "$y" in *kustomization.yaml|*loadgenerator.yaml|*hpa-percontainer.yaml) continue;; esac
