@@ -1,0 +1,92 @@
+# loadgen-csv.yaml と同一だが、_stats に加えて _failures.csv(エラーメッセージ入り) と
+# _exceptions.csv も stdout へ吐く。束ねの fails の正体(接続リセット等)を捕まえる用。
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: loadgenerator
+  labels:
+    app: loadgenerator
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app: loadgenerator
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: loadgenerator
+      terminationGracePeriodSeconds: 5
+      restartPolicy: Never
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      volumes:
+      - name: out
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
+      initContainers:
+      - name: frontend-check
+        image: busybox:latest
+        command:
+        - /bin/sh
+        - -exc
+        - |
+          for i in $(seq 1 24); do
+            STATUSCODE=$(wget --server-response http://${FRONTEND_ADDR} 2>&1 | awk '/^  HTTP/{print $2}')
+            if [ "$STATUSCODE" = "200" ]; then echo "Frontend reachable."; exit 0; fi
+            echo "Attempt $i: frontend not ready (status=$STATUSCODE)"; sleep 5
+          done
+          echo "Failed to reach frontend"; exit 1
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: ["ALL"] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        env:
+        - { name: FRONTEND_ADDR, value: "frontend:80" }
+      containers:
+      - name: main
+        image: mizuki0118/mylocust:run1
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: ["ALL"] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        command:
+        - /bin/sh
+        - -c
+        - |
+          locust --host="http://${FRONTEND_ADDR}" --headless \
+                 -u "${USERS:-80}" -r "${RATE:-1}" --run-time "${RUN_TIME:-6m}" \
+                 --csv=/out/lg --only-summary
+          echo "@@@CSV_BEGIN@@@"
+          cat /out/lg_stats.csv
+          echo "@@@CSV_END@@@"
+          echo "@@@FAIL_BEGIN@@@"
+          cat /out/lg_failures.csv 2>/dev/null || echo "(no _failures.csv)"
+          echo "@@@FAIL_END@@@"
+          echo "@@@EXC_BEGIN@@@"
+          cat /out/lg_exceptions.csv 2>/dev/null || echo "(no _exceptions.csv)"
+          echo "@@@EXC_END@@@"
+          echo "keeping pod alive for log scrape..."
+          sleep 600
+        volumeMounts:
+        - { name: out, mountPath: /out }
+        - { name: tmp, mountPath: /tmp }
+        env:
+        - { name: FRONTEND_ADDR, value: "frontend:80" }
+        - { name: USERS,    value: "80" }
+        - { name: RATE,     value: "1" }
+        - { name: RUN_TIME, value: "30s" }
+        resources:
+          requests: { cpu: 600m, memory: 512Mi }
+          limits:   { cpu: 900m, memory: 1024Mi }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: loadgenerator

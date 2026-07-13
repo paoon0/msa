@@ -1,0 +1,35 @@
+# コンテナ別しきい値HPA(=しきい値を「バラバラ」に):
+#   既定の Resource cpu(Pod平均=全コンテナ使用量合計÷requests合計) だと、
+#   熱い frontend(server) が冷たい reco/catalog に薄められて 70% に届かず失速する(落とし穴#8)。
+#   ContainerResource は各コンテナを「自分のrequestsに対する使用率」で個別に判定し、
+#   HPA は3メトリクスのうち最も高い利用率でスケールする(=最も忙しいコンテナが律速)。
+#   これで frontend が単体で 70% に達した時点でスケールできる。
+# 対象=束ねPod(Deployment/frontend, コンテナ: server / recommendation / productcatalog)。
+# しきい値は normal と公平にするため全て 70%。min1/max4 も比較スクリプトと統一。
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: frontend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: frontend
+  minReplicas: 1
+  maxReplicas: 4
+  metrics:
+  - type: ContainerResource
+    containerResource:
+      name: cpu
+      container: server           # frontend 本体(requests 1000m)
+      target: { type: Utilization, averageUtilization: 70 }
+  - type: ContainerResource
+    containerResource:
+      name: cpu
+      container: recommendation    # reco(requests 1200m)
+      target: { type: Utilization, averageUtilization: 70 }
+  - type: ContainerResource
+    containerResource:
+      name: cpu
+      container: productcatalog    # catalog(requests 600m)
+      target: { type: Utilization, averageUtilization: 70 }

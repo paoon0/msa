@@ -1,0 +1,43 @@
+================ FAIL-CAPTURE-MULTI START 2026-07-13T15:27:16+09:00 N=3 users=480 ================
+
+########## ITER 1/3 2026-07-13T15:27:16+09:00 ##########
+  fails=204823  rps=0  frontend最大reps=4
+  --- 失敗エラー種別(_failures.csv) ---
+    GET,/product/1YMWWN1N4O,LocustBadStatusCode(code=500),2
+    GET,/product/0PUK6V6EV0,LocustBadStatusCode(code=500),1
+    POST,/cart,LocustBadStatusCode(code=500),10
+    GET,/product/L9ECAV7KIM,LocustBadStatusCode(code=500),1
+    GET,/product/66VCHSJNUP,LocustBadStatusCode(code=500),2
+    GET,/product/2ZYFJ3GM2N,LocustBadStatusCode(code=500),3
+    GET,/product/OLJCESPC7Z,LocustBadStatusCode(code=500),1
+    POST,/cart/checkout,LocustBadStatusCode(code=500),8
+    GET,/product/LS4PSXUNUM,LocustBadStatusCode(code=500),1
+    GET,/product/9SIQT8TOJO,LocustBadStatusCode(code=500),1
+  --- 下流プローブ失敗イベント(件数) ---
+          2 adiness
+          2 adline
+          1 adservice-
+          1 paymentservice-
+    (プローブ失敗イベント合計=2)
+
+########## ITER 2/3 2026-07-13T15:37:07+09:00 ##########
+  fails=209686  rps=0  frontend最大reps=4
+  --- 失敗エラー種別(_failures.csv) ---
+  --- 下流プローブ失敗イベント(件数) ---
+    (プローブ失敗イベント合計=0)
+
+########## ITER 3/3 2026-07-13T15:46:57+09:00 ##########
+  fails=213214  rps=0  frontend最大reps=4
+  --- 失敗エラー種別(_failures.csv) ---
+  --- 下流プローブ失敗イベント(件数) ---
+          1 adiness
+          1 adline
+          1 paymentservice-
+    (プローブ失敗イベント合計=1)
+
+================ FAIL-CAPTURE-MULTI DONE 2026-07-13T15:56:47+09:00 ================
+
+==== 横断サマリ ====
+  fails=204823  rps=0  frontend最大reps=4
+  fails=209686  rps=0  frontend最大reps=4
+  fails=213214  rps=0  frontend最大reps=4

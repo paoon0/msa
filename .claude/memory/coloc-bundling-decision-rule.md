@@ -38,6 +38,6 @@ metadata:
 
 **実測した割り当て枠(requests/limits, 2026-07-07, 3ファイルのみ確認):** checkout=800m/1200m, email=200m/300m, payment=200m/300m。**=checkout(800m)とemail・payment(各200m)が不揃い(親が子の4倍枠), email=paymentは一致。** 残り8サービス(frontend,cart,catalog,currency,shipping,reco,ad,redis)の枠は未確認。HPA使用率=使用CPU÷枠なので、閾値到達順は使用CPUだけでなく枠にも依存→Bで実測要。
 
-**次の一手(未実行):** ①全サービスの枠(requests/limits)一覧確認 ②B測定=各サービスのコンテナCPU使用率を負荷数段で測り閾値到達カーブを描く(スクリプト案 km2/all/perservice-cpu.sh はユーザが一旦保留) ③無駄の式に代入し「何レプリカで束ねが損に転じるか」算出 ④locustfileを見る人/買う人に分割し粒度損を実測(C案)。
+**次の一手(未実行):** ①全サービスの枠(requests/limits)一覧確認 ②B測定=各サービスのコンテナCPU使用率を負荷数段で測り閾値到達カーブを描く(スクリプト案 km2/experiments/perservice-cpu.sh はユーザが一旦保留) ③無駄の式に代入し「何レプリカで束ねが損に転じるか」算出 ④locustfileを見る人/買う人に分割し粒度損を実測(C案)。
 
 関連: [[hpa-scaling-angle]] [[softirq-cpu-metric]] [[bundling-merit-question]] [[related-work-coloc]] [[coloc-resource-efficiency-study]]

@@ -24,10 +24,10 @@
   app CPU は経路差を映さず「対照群（公平性チェック）」にしかならない。主指標にはできない。
 
 ### 方法
-`km2/all/compare.sh` に softirq/system 取得を配線（CSV 22列）。各アームで
+`km2/experiments/compare.sh` に softirq/system 取得を配線（CSV 22列）。各アームで
 ウォームアップ→**温まったアイドル基線（softirq含む）**→本計測。
 `softirq_mc_per_req =（負荷時 softirq − 無負荷 softirq）/ rps × 1000`。
-`CYCLES=3 WARMUP=3m MEASURE=5m`、結果 `km2/all/results-cpu.csv`。
+`CYCLES=3 WARMUP=3m MEASURE=5m`、結果 `km2/experiments/results-cpu.csv`。
 
 ### 結果（3サイクル, ~208rps, exp ns, Istio無し）
 | 指標 | normal（分離） | mega（同居） | 差 |
@@ -64,7 +64,7 @@
 Online Boutique の全11コンテナを1 Pod に同居させた **megapod**（`km2/all/all.yaml`）と、通常の分離構成
 （1 Pod 1 サービス、両アームとも **Istio 無し**に揃えた純パッキング比較）で、**1リクエストの
 エンドツーエンド応答時間**を比較。計測は locust のクライアント側応答時間（`--csv` の Aggregated 行）。
-自動化は `km2/all/compare.sh`（normal↔mega を ウォームアップ→本計測 で交互、env で `CYCLES/WARMUP/MEASURE`)。
+自動化は `km2/experiments/compare.sh`（normal↔mega を ウォームアップ→本計測 で交互、env で `CYCLES/WARMUP/MEASURE`)。
 - megapod のポート衝突回避: email 8080→8081 / reco 8080→8082 / shipping 50051→50052、全 `*_SERVICE_ADDR` を localhost 化。
 - per-コンテナ requests は分離と同一（=詰め方だけ変えた公平比較）。実験 ns=`exp`、単一ノード。
 

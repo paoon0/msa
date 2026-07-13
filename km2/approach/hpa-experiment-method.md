@@ -118,16 +118,16 @@ kubectl top node                 # metrics-server が動くこと
 kubectl get ns exp || kubectl create ns exp
 
 # 本走（3サイクル、front3→normal を users240/480 で）
-nohup bash km2/all/hpa-compare-softirq.sh >/dev/null 2>&1 &
+nohup bash km2/experiments/hpa-compare-softirq.sh >/dev/null 2>&1 &
 
 # 進捗
-tail -f km2/all/hpacompare.log            # 節目ログ
-wc -l km2/all/results-hpacompare.csv      # 13行(header+12)で完了
+tail -f km2/experiments/hpacompare.log            # 節目ログ
+wc -l km2/experiments/results-hpacompare.csv      # 13行(header+12)で完了
 
 # env で条件変更可（例: 1サイクルだけ、全3レベル）
-CYCLES=1 SWEEP_USERS="80 240 480" bash km2/all/hpa-compare-softirq.sh
+CYCLES=1 SWEEP_USERS="80 240 480" bash km2/experiments/hpa-compare-softirq.sh
 ```
-スクリプト本体 = `km2/all/hpa-compare-softirq.sh`。出力 = `km2/all/results-hpacompare.csv`。
+スクリプト本体 = `km2/experiments/hpa-compare-softirq.sh`。出力 = `km2/experiments/results-hpacompare.csv`。
 
 ---
 
@@ -137,7 +137,7 @@ CSV列: `cycle,arm,users,...,rps,softirq_mc_per_req,...,scale_replicas,scale_det
 3サイクル平均±sd を (arm,users) ごとに取り、束ね vs 分離 を比較:
 ```python
 import csv,statistics as st
-r=list(csv.DictReader(open('km2/all/results-hpacompare.csv')))
+r=list(csv.DictReader(open('km2/experiments/results-hpacompare.csv')))
 for u in ['240','480']:
   for arm in ['front3','normal']:
     g=[x for x in r if x['arm']==arm and x['users']==u]
@@ -163,9 +163,9 @@ for u in ['240','480']:
 ---
 
 ## 9. 関連ファイル
-- 計測スクリプト: `km2/all/hpa-compare-softirq.sh`（softirqスイープ版=`hpa-sweep-softirq.sh`, 単発softirq=各 `km2/all/*-softirq.sh`）
+- 計測スクリプト: `km2/experiments/hpa-compare-softirq.sh`（softirqスイープ版=`hpa-sweep-softirq.sh`, 単発softirq=各 `km2/experiments/*-softirq.sh`）
 - トポロジ: `km2/frontrecocatalogcart/`（束ね）, `km2/*.yaml`（分離）, `km2/all/all.yaml`（mega=全部入り, resources基準）
-- 負荷: `km2/all/loadgen-csv.yaml`
-- 結果: `km2/all/results-hpacompare.csv`, ログ `km2/all/hpacompare.log`
-- 通信量実測: `km2/all/netmeasure.sh`（各サービスの packets/bytes）
-- HPA盲点図: `km2/all/hpa-blindspot.svg`
+- 負荷: `km2/experiments/loadgen-csv.yaml`
+- 結果: `km2/experiments/results-hpacompare.csv`, ログ `km2/experiments/hpacompare.log`
+- 通信量実測: `km2/experiments/netmeasure.sh`（各サービスの packets/bytes）
+- HPA盲点図: `km2/experiments/hpa-blindspot.svg`

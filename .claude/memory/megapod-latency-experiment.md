@@ -7,7 +7,7 @@ metadata:
   originSessionId: 36fe70d4-73ca-49de-8cd1-9ee9a0b6def6
 ---
 
-2026-06-29。「直接通信するサービスを**全部1 Podにまとめる(megapod)**と1リクエストが速くなるか」を実機計測。資産は `km2/all/`。
+2026-06-29。「直接通信するサービスを**全部1 Podにまとめる(megapod)**と1リクエストが速くなるか」を実機計測。資産は `km2/experiments/`。
 
 **計測方法:** locust の**クライアント側エンドツーエンド応答時間**(loadgen→frontend の1往復、frontend が待つ下流gRPCツリー全部込み)。frontend ハンドラは**逐次** gRPC を待ってから HTML を書き出す(`src/frontend/handlers.go`)ので、全ホップ遅延が足し算で1つの数字に入る。locust `--csv` の "Aggregated" 行(p50/p90/p99/avg/rps)を取得。フローは index/product/cart/**checkout** の4種HTTP(checkoutが最も深いツリー)。
 
@@ -20,7 +20,7 @@ metadata:
 
 **→ 主指標を 遅延 から CPU/req(資源効率)へ転換中。** 理由: 通信処理は消えず**CPUとして焼かれる**(NotNets: CPUの25-40%しか業務ロジック)。CPUは足し算なので latency が隠した差を拾える可能性。`compare.sh` に Prometheus 取得を**統合済み**(列 node_cores/app_cores/**node_mc_per_req**(ミリコア秒/req,主)/app_mc_per_req=対照)。**ただしスモーク中にユーザ指示で中止=未完走。** 懸念: 215rps(ノードCPU 3%)では CPU差も小さい→**①負荷を飽和近くへ上げる**②**Istio注入**(Envoy税11→1で増幅)が要る。
 
-**実験資産 `km2/all/`:**
+**実験資産 `km2/experiments/`:**
 - `all.yaml` = 11コンテナ1 Pod(megapod)。ポート衝突回避で **email 8080→8081 / reco 8080→8082 / shipping 50051→50052**、全 `*_SERVICE_ADDR` を localhost 化。per-コンテナ requests は分離と同一(公平比較)。合計~6.3vCPU(単一ノード16vCPUに余裕で収まる)。
 - `loadgen-csv.yaml` = locust headless+`--csv`、末尾でCSVを stdout に出し**keep-alive `sleep 600`**で生存。RUN_TIME は compare.sh が差し込む。
 - `compare.sh` = normal(分離,Istio無し化パッチ)↔mega を warmup→measure で交互×CYCLES。env: `CYCLES/WARMUP/MEASURE`(例 `CYCLES=3 WARMUP=4m MEASURE=7m`)。結果 `results-compare.csv`。実験ns=**exp**。
