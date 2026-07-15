@@ -1,0 +1,40 @@
+# k6 開ループ負荷 Job。スクリプトは ConfigMap k6-script(checkout.js)をマウント。
+# __RATE__ / __DUR__ / __PRE__ / __MAX__ は run-k6.sh が sed で埋める。
+# k6終了後 handleSummary が @@@K6_BEGIN@@@..@@@K6_END@@@ を stdout へ。sleep でPod生存させ後追いscrape。
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: k6load
+  labels: { app: k6load }
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels: { app: k6load }
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      restartPolicy: Never
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: k6
+        image: grafana/k6:latest
+        command: ["sh","-c","mkdir -p /shared; k6 run /scripts/checkout.js; echo '@@@K6_DONE@@@'; touch /shared/done; sleep 300"]
+        env:
+        - { name: BASE,     value: "http://frontend:80" }
+        - { name: RATE,     value: "__RATE__" }
+        - { name: WARMUP,   value: "__WARM__" }
+        - { name: MEASURE,  value: "__MEAS__" }
+        - { name: PRE_VUS,  value: "__PRE__" }
+        - { name: MAX_VUS,  value: "__MAX__" }
+        volumeMounts:
+        - { name: script, mountPath: /scripts }
+        - { name: shared, mountPath: /shared }
+        resources:
+          requests: { cpu: 800m, memory: 512Mi }
+          limits:   { cpu: 2000m, memory: 1024Mi }
+      volumes:
+      - name: script
+        configMap: { name: k6-script }
+      - name: shared
+        emptyDir: {}

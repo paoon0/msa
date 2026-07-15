@@ -32,9 +32,19 @@ kubernetes-manifests/には、計算資源が少ないマシン用のマニフ�
 
 全ディレクトリの`kustomization.yaml`は利用せず、ディレクトリ単位でapplyしている。
 
+### km2/ のディレクトリ構成 (2026-07 に再編。パスが変わったので注意)
+
+- `km2/normal/` — **分離 (1 Pod 1 サービス) の各サービスマニフェスト** (旧 `km2/` 直下から移動)。比較のベースライン。`CMD` (認証情報メモ) と個別 `loadgenerator.yaml` もここ。
+- `km2/all/` — `all.yaml` (全 11 コンテナを 1 Pod に同居させた megapod) と `README.md` のみ。
+- `km2/experiments/` — **実験の実体**。スクリプト (`*.sh`)、結果 CSV (`results-*.csv`)、計測用負荷マニフェスト (`loadgen-csv.yaml`/`loadgen-csv-fail.yaml`)、図、調査記録 (`*.md`)。`README.md` が実験→スクリプト→CSV の索引。使い捨てログ (`*.log`,`last-logs-*.txt`) は随時削除可。`latency-breakdown/` はレイテンシ/固定台数の追加調査サブフォルダ。
+- `km2/frontrecocatalogcart/` — **束ね (front3): frontend+recommendation+productcatalog を 1 Pod に同居**したトポロジ (主力の co-location アーム)。
+- `km2/outmail/`,`paymail/`,`outpy/` 等 — 部分集約バリアント (下記)。
+
+スクリプトは絶対パス参照なので、これらを移動する際は参照側 (`km2/experiments/*.sh`、`.claude/memory/`、`km2/approach/`) も一緒に書き換えること。
+
 ### トポロジのバリアント (実験の本題)
 
-`km2/` の各サブディレクトリは、それぞれ異なるサービス配置の実験です。テストしているパターンは、**複数のサービスを 1 つの Pod 内にサイドカーとして同居させる** (`localhost` 経由で通信) 方式と、通常の 1 Pod 1 サービス構成 (クラスタの `Service` DNS 名経由で通信) 方式の比較です。バリアントの `checkoutservice.yaml`/結合マニフェストを `km2/checkoutservice.yaml` と比較すると、何が変わったか分かります。
+`km2/` の各サブディレクトリは、それぞれ異なるサービス配置の実験です。テストしているパターンは、**複数のサービスを 1 つの Pod 内にサイドカーとして同居させる** (`localhost` 経由で通信) 方式と、通常の 1 Pod 1 サービス構成 (クラスタの `Service` DNS 名経由で通信) 方式の比較です。バリアントの `checkoutservice.yaml`/結合マニフェストを `km2/normal/checkoutservice.yaml` (分離ベースライン) と比較すると、何が変わったか分かります。
 
 - `outmail/` — emailservice を checkout の Pod 内へサイドカーとして移動。checkout は `emailservice:5000` ではなく `EMAIL_SERVICE_ADDR=localhost:8080` で到達する。
 - `paymail/`、`outpaymail/` — payment や email を checkout と同居させる。
@@ -75,7 +85,7 @@ cd src/productcatalogservice && go test ./...
 go test -run TestNameRegex ./...   # 単一のテスト
 ```
 
-`km2/CMD` は運用上のワンライナー (port-forward、PromQL クエリ、MicroK8s 証明書の更新、Grafana スナップショット URL) の個人的なメモ書きです。**平文の認証情報** も含まれています。それらは表示・コピー・コミットせず、他のファイルへ書き出すこともしないでください。
+`km2/normal/CMD` は運用上のワンライナー (port-forward、PromQL クエリ、MicroK8s 証明書の更新、Grafana スナップショット URL) の個人的なメモ書きです。**平文の認証情報** も含まれています。それらは表示・コピー・コミットせず、他のファイルへ書き出すこともしないでください。
 
 ## ファイルをまたぐアーキテクチャ上のメモ
 
