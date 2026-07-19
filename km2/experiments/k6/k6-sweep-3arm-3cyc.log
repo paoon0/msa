@@ -1,0 +1,204 @@
+================ K6-SWEEP START 2026-07-17T01:53:29+09:00 arms=[mega bundle normal] rates=[100 200 300 400 500] cycles=3 reps=4 warm=30s meas=180s ================
+################ CYCLE 1 / 3 2026-07-17T01:53:29+09:00 ################
+---- deploy mega (固定4台, req=150m, HPA無し) ----
+  megapod=4/4 
+==== [cyc1][mega] target=100周/秒 2026-07-17T01:55:05+09:00 ====
+  -> iter_rate=100/100 dropped=0 p50=6 p99=13 failed=0.000 node=3.6
+     hot=[megapod=40%;megapod=36%;megapod=35%;megapod=32%]
+==== [cyc1][mega] target=200周/秒 2026-07-17T01:59:04+09:00 ====
+  -> iter_rate=200/200 dropped=0 p50=8 p99=599 failed=0.000 node=6.9
+     hot=[megapod=99%;megapod=86%;megapod=72%;megapod=70%]
+==== [cyc1][mega] target=300周/秒 2026-07-17T02:03:02+09:00 ====
+  -> iter_rate=300/300 dropped=0 p50=15 p99=470 failed=0.000 node=12.3
+     hot=[megapod=168%;megapod=143%;megapod=142%;megapod=119%]
+==== [cyc1][mega] target=400周/秒 2026-07-17T02:06:56+09:00 ====
+  -> iter_rate=394/400 dropped=1031 p50=733 p99=1427 failed=0.000 node=15.0
+     hot=[megapod=171%;megapod=159%;megapod=156%;megapod=143%]
+==== [cyc1][mega] target=500周/秒 2026-07-17T02:10:50+09:00 ====
+  -> iter_rate=422/500 dropped=15774 p50=2396 p99=5595 failed=0.000 node=15.0
+     hot=[megapod=163%;megapod=162%;megapod=161%;megapod=141%]
+---- deploy bundle (固定4台, req=150m, HPA無し) ----
+  adservice=4/4 cartservice=4/4 checkoutservice=4/4 currencyservice=4/4 emailservice=4/4 frontend=4/4 paymentservice=4/4 redis-cart=1/1 shippingservice=4/4 
+==== [cyc1][bundle] target=100周/秒 2026-07-17T02:16:35+09:00 ====
+  -> iter_rate=100/100 dropped=0 p50=6 p99=476 failed=0.000 node=3.9
+     hot=[cartservice=140%;currencyservice=100%;frontend=94%;frontend=92%;currencyservice=76%]
+==== [cyc1][bundle] target=200周/秒 2026-07-17T02:20:34+09:00 ====
+  -> iter_rate=200/200 dropped=0 p50=8 p99=585 failed=0.000 node=7.6
+     hot=[cartservice=311%;currencyservice=214%;frontend=184%;currencyservice=176%;frontend=169%]
+==== [cyc1][bundle] target=300周/秒 2026-07-17T02:24:32+09:00 ====
+  -> iter_rate=300/300 dropped=0 p50=21 p99=606 failed=0.000 node=12.4
+     hot=[currencyservice=413%;currencyservice=400%;frontend=349%;cartservice=346%;frontend=322%]
+==== [cyc1][bundle] target=400周/秒 2026-07-17T02:28:31+09:00 ====
+  -> iter_rate=396/400 dropped=857 p50=589 p99=2576 failed=0.000 node=14.5
+     hot=[currencyservice=418%;frontend=398%;frontend=374%;frontend=362%;frontend=344%]
+==== [cyc1][bundle] target=500周/秒 2026-07-17T02:32:26+09:00 ====
+  -> iter_rate=419/500 dropped=16329 p50=1885 p99=6822 failed=0.010 node=14.8
+     hot=[currencyservice=487%;cartservice=401%;frontend=393%;frontend=340%;currencyservice=307%]
+---- deploy normal (固定4台, req=150m, HPA無し) ----
+  adservice=4/4 cartservice=4/4 checkoutservice=4/4 currencyservice=4/4 emailservice=4/4 frontend=4/4 paymentservice=4/4 productcatalogservice=4/4 recommendationservice=4/4 redis-cart=1/1 shippingservice=4/4 
+==== [cyc1][normal] target=100周/秒 2026-07-17T02:37:46+09:00 ====
+  -> iter_rate=100/100 dropped=0 p50=6 p99=532 failed=0.000 node=3.9
+     hot=[frontend=134%;productcatalogservice=120%;frontend=120%;currencyservice=116%;frontend=116%]
+==== [cyc1][normal] target=200周/秒 2026-07-17T02:41:44+09:00 ====
+  -> iter_rate=200/200 dropped=0 p50=8 p99=683 failed=0.000 node=7.6
+     hot=[frontend=311%;recommendationservice=310%;productcatalogservice=304%;currencyservice=236%;currencyservice=224%]
+==== [cyc1][normal] target=300周/秒 2026-07-17T02:45:43+09:00 ====
+  -> iter_rate=298/300 dropped=330 p50=217 p99=2494 failed=0.000 node=11.8
+     hot=[recommendationservice=646%;frontend=409%;frontend=388%;recommendationservice=366%;recommendationservice=348%]
+==== [cyc1][normal] target=400周/秒 2026-07-17T02:49:37+09:00 ====
+  -> iter_rate=343/400 dropped=11218 p50=2533 p99=7515 failed=0.000 node=12.6
+     hot=[frontend=846%;recommendationservice=731%;productcatalogservice=510%;currencyservice=486%;recommendationservice=402%]
+==== [cyc1][normal] target=500周/秒 2026-07-17T02:53:36+09:00 ====
+  -> iter_rate=278/500 dropped=43612 p50=5468 p99=7448 failed=0.000 node=8.9
+     hot=[recommendationservice=850%;productcatalogservice=421%;frontend=268%;frontend=254%;currencyservice=249%]
+################ CYCLE 2 / 3 2026-07-17T02:57:35+09:00 ################
+---- deploy mega (固定4台, req=150m, HPA無し) ----
+  megapod=4/4 
+==== [cyc2][mega] target=100周/秒 2026-07-17T02:58:49+09:00 ====
+  -> iter_rate=100/100 dropped=0 p50=6 p99=34 failed=0.000 node=3.6
+     hot=[megapod=48%;megapod=46%;megapod=43%;megapod=37%]
+==== [cyc2][mega] target=200周/秒 2026-07-17T03:02:48+09:00 ====
+  -> iter_rate=200/200 dropped=0 p50=8 p99=544 failed=0.000 node=7.4
+     hot=[megapod=98%;megapod=92%;megapod=89%;megapod=73%]
+==== [cyc2][mega] target=300周/秒 2026-07-17T03:06:46+09:00 ====
+  -> iter_rate=300/300 dropped=0 p50=17 p99=568 failed=0.000 node=12.3
+     hot=[megapod=156%;megapod=146%;megapod=131%;megapod=130%]
+==== [cyc2][mega] target=400周/秒 2026-07-17T03:10:45+09:00 ====
+  -> iter_rate=395/400 dropped=889 p50=731 p99=1401 failed=0.000 node=14.8
+     hot=[megapod=180%;megapod=168%;megapod=165%;megapod=163%]
+==== [cyc2][mega] target=500周/秒 2026-07-17T03:14:39+09:00 ====
+  -> iter_rate=418/500 dropped=16407 p50=2115 p99=6631 failed=0.005 node=15.0
+     hot=[megapod=183%;megapod=176%;megapod=160%;megapod=144%]
+---- deploy bundle (固定4台, req=150m, HPA無し) ----
+  adservice=4/4 cartservice=4/4 checkoutservice=4/4 currencyservice=4/4 emailservice=4/4 frontend=4/4 paymentservice=4/4 redis-cart=1/1 shippingservice=4/4 
+==== [cyc2][bundle] target=100周/秒 2026-07-17T03:20:35+09:00 ====
+  -> iter_rate=100/100 dropped=0 p50=6 p99=12 failed=0.000 node=4.1
+     hot=[currencyservice=136%;currencyservice=114%;frontend=91%;cartservice=83%;frontend=82%]
+==== [cyc2][bundle] target=200周/秒 2026-07-17T03:24:33+09:00 ====
+  -> iter_rate=200/200 dropped=0 p50=8 p99=727 failed=0.000 node=7.7
+     hot=[checkoutservice=260%;currencyservice=231%;frontend=221%;frontend=188%;frontend=183%]
+==== [cyc2][bundle] target=300周/秒 2026-07-17T03:28:32+09:00 ====
+  -> iter_rate=300/300 dropped=0 p50=26 p99=945 failed=0.000 node=12.0
+     hot=[currencyservice=430%;checkoutservice=337%;frontend=335%;frontend=324%;frontend=311%]
+==== [cyc2][bundle] target=400周/秒 2026-07-17T03:32:30+09:00 ====
+  -> iter_rate=381/400 dropped=3523 p50=364 p99=14676 failed=0.000 node=14.8
+     hot=[currencyservice=485%;frontend=417%;frontend=412%;frontend=399%;frontend=369%]
+==== [cyc2][bundle] target=500周/秒 2026-07-17T03:36:30+09:00 ====
+  -> iter_rate=415/500 dropped=17063 p50=1839 p99=10782 failed=0.005 node=14.8
+     hot=[currencyservice=491%;frontend=418%;frontend=397%;checkoutservice=355%;frontend=355%]
+---- deploy normal (固定4台, req=150m, HPA無し) ----
+  adservice=4/4 cartservice=4/4 checkoutservice=4/4 currencyservice=4/4 emailservice=4/4 frontend=4/4 paymentservice=4/4 productcatalogservice=4/4 recommendationservice=4/4 redis-cart=1/1 shippingservice=4/4 
+==== [cyc2][normal] target=100周/秒 2026-07-17T03:41:53+09:00 ====
+  -> iter_rate=100/100 dropped=0 p50=6 p99=35 failed=0.000 node=3.7
+     hot=[recommendationservice=247%;frontend=133%;productcatalogservice=126%;frontend=120%;currencyservice=101%]
+==== [cyc2][normal] target=200周/秒 2026-07-17T03:45:51+09:00 ====
+  -> iter_rate=200/200 dropped=0 p50=9 p99=812 failed=0.000 node=7.4
+     hot=[recommendationservice=400%;frontend=308%;frontend=289%;frontend=284%;frontend=258%]
+==== [cyc2][normal] target=300周/秒 2026-07-17T03:49:50+09:00 ====
+  -> iter_rate=299/300 dropped=302 p50=674 p99=1501 failed=0.000 node=12.2
+     hot=[frontend=742%;recommendationservice=594%;productcatalogservice=496%;recommendationservice=494%;currencyservice=464%]
+==== [cyc2][normal] target=400周/秒 2026-07-17T03:53:48+09:00 ====
+  -> iter_rate=323/400 dropped=15574 p50=3118 p99=8204 failed=0.000 node=12.6
+     hot=[frontend=838%;productcatalogservice=520%;currencyservice=486%;recommendationservice=395%;recommendationservice=365%]
+==== [cyc2][normal] target=500周/秒 2026-07-17T03:57:47+09:00 ====
+  -> iter_rate=330/500 dropped=34486 p50=4070 p99=7059 failed=0.000 node=14.1
+     hot=[frontend=591%;frontend=576%;recommendationservice=559%;recommendationservice=555%;productcatalogservice=424%]
+################ CYCLE 3 / 3 2026-07-17T04:01:41+09:00 ################
+---- deploy mega (固定4台, req=150m, HPA無し) ----
+  megapod=4/4 
+==== [cyc3][mega] target=100周/秒 2026-07-17T04:02:55+09:00 ====
+  -> iter_rate=100/100 dropped=0 p50=6 p99=13 failed=0.000 node=3.5
+     hot=[megapod=43%;megapod=40%;megapod=37%;megapod=37%]
+==== [cyc3][mega] target=200周/秒 2026-07-17T04:06:54+09:00 ====
+  -> iter_rate=200/200 dropped=0 p50=8 p99=555 failed=0.000 node=7.1
+     hot=[megapod=86%;megapod=82%;megapod=75%;megapod=69%]
+==== [cyc3][mega] target=300周/秒 2026-07-17T04:10:52+09:00 ====
+  -> iter_rate=300/300 dropped=0 p50=17 p99=593 failed=0.000 node=12.5
+     hot=[megapod=163%;megapod=157%;megapod=142%;megapod=135%]
+==== [cyc3][mega] target=400周/秒 2026-07-17T04:14:46+09:00 ====
+  -> iter_rate=395/400 dropped=951 p50=774 p99=1339 failed=0.000 node=15.1
+     hot=[megapod=173%;megapod=168%;megapod=160%;megapod=146%]
+==== [cyc3][mega] target=500周/秒 2026-07-17T04:18:41+09:00 ====
+  -> iter_rate=418/500 dropped=16523 p50=1915 p99=7560 failed=0.000 node=15.2
+     hot=[megapod=192%;megapod=165%;megapod=141%;megapod=119%]
+---- deploy bundle (固定4台, req=150m, HPA無し) ----
+  adservice=4/4 cartservice=4/4 checkoutservice=4/4 currencyservice=4/4 emailservice=4/4 frontend=4/4 paymentservice=4/4 redis-cart=1/1 shippingservice=4/4 
+==== [cyc3][bundle] target=100周/秒 2026-07-17T04:24:30+09:00 ====
+  -> iter_rate=100/100 dropped=0 p50=6 p99=49 failed=0.000 node=3.6
+     hot=[currencyservice=235%;frontend=105%;frontend=84%;frontend=83%;checkoutservice=80%]
+==== [cyc3][bundle] target=200周/秒 2026-07-17T04:28:28+09:00 ====
+  -> iter_rate=200/200 dropped=0 p50=8 p99=743 failed=0.000 node=7.3
+     hot=[currencyservice=459%;frontend=208%;frontend=199%;frontend=196%;frontend=193%]
+==== [cyc3][bundle] target=300周/秒 2026-07-17T04:32:26+09:00 ====
+  -> iter_rate=300/300 dropped=0 p50=26 p99=687 failed=0.000 node=11.6
+     hot=[currencyservice=623%;frontend=317%;frontend=298%;frontend=275%;checkoutservice=266%]
+==== [cyc3][bundle] target=400周/秒 2026-07-17T04:36:25+09:00 ====
+  -> iter_rate=400/400 dropped=139 p50=207 p99=909 failed=0.000 node=13.7
+     hot=[currencyservice=643%;frontend=434%;frontend=348%;frontend=346%;frontend=320%]
+==== [cyc3][bundle] target=500周/秒 2026-07-17T04:40:25+09:00 ====
+  -> iter_rate=446/500 dropped=10921 p50=2695 p99=4283 failed=0.023 node=14.2
+     hot=[frontend=374%;frontend=371%;frontend=360%;frontend=356%;currencyservice=308%]
+---- deploy normal (固定4台, req=150m, HPA無し) ----
+  adservice=4/4 cartservice=4/4 checkoutservice=4/4 currencyservice=4/4 emailservice=4/4 frontend=4/4 paymentservice=4/4 productcatalogservice=4/4 recommendationservice=4/4 redis-cart=1/1 shippingservice=4/4 
+==== [cyc3][normal] target=100周/秒 2026-07-17T04:45:45+09:00 ====
+  -> iter_rate=100/100 dropped=0 p50=6 p99=558 failed=0.000 node=3.9
+     hot=[productcatalogservice=142%;frontend=134%;frontend=132%;currencyservice=115%;frontend=113%]
+==== [cyc3][normal] target=200周/秒 2026-07-17T04:49:43+09:00 ====
+  -> iter_rate=200/200 dropped=0 p50=9 p99=679 failed=0.000 node=7.7
+     hot=[recommendationservice=375%;frontend=302%;frontend=293%;frontend=282%;frontend=257%]
+==== [cyc3][normal] target=300周/秒 2026-07-17T04:53:41+09:00 ====
+  -> iter_rate=300/300 dropped=136 p50=90 p99=2012 failed=0.000 node=12.8
+     hot=[recommendationservice=651%;frontend=518%;frontend=451%;frontend=420%;currencyservice=390%]
+==== [cyc3][normal] target=400周/秒 2026-07-17T04:57:41+09:00 ====
+  -> iter_rate=365/400 dropped=7277 p50=2769 p99=6583 failed=0.000 node=14.0
+     hot=[recommendationservice=568%;frontend=479%;frontend=436%;currencyservice=434%;currencyservice=387%]
+==== [cyc3][normal] target=500周/秒 2026-07-17T05:01:35+09:00 ====
+  -> iter_rate=318/500 dropped=36434 p50=4255 p99=9031 failed=0.000 node=12.4
+     hot=[recommendationservice=731%;recommendationservice=534%;frontend=504%;currencyservice=414%;checkoutservice=385%]
+================ K6-SWEEP DONE 2026-07-17T05:05:29+09:00 ================
+cycle  arm     target_rate  iter_rate  rps     dropped  failed_rate  p50     p90     p99      avg     node_cores  hot
+1      mega    100          100.0      300.0   0        0            5.7     8.3     13.2     6.7     3.6         megapod=40%;megapod=36%;me
+1      mega    200          200.0      600.0   0        0            7.8     33.2    599.4    30.4    6.9         megapod=99%;megapod=86%;me
+1      mega    300          300.0      900.0   0        0            14.6    80.6    469.5    40.7    12.3        megapod=168%;megapod=143%;
+1      mega    400          394.5      1183.5  1031     0            733.2   1121.7  1427.1   770.8   15.0        megapod=171%;megapod=159%;
+1      mega    500          422.1      1266.2  15774    0.0001       2395.5  5198.3  5594.6   2861.0  15.0        megapod=163%;megapod=162%;
+1      bundle  100          100.0      300.0   0        0            6.2     12.2    475.6    19.4    3.9         cartservice=140%;currencys
+1      bundle  200          200        600     0        0            7.8     43.6    584.7    31.3    7.6         cartservice=311%;currencys
+1      bundle  300          300        900     0        0            21.1    184.1   605.9    64.8    12.4        currencyservice=413%;curre
+1      bundle  400          396.1      1188.2  857      0            589.0   1436.8  2575.7   715.0   14.5        currencyservice=418%;front
+1      bundle  500          419.1      1257.2  16329    0.0097       1885.0  5824.2  6822.1   2649.6  14.8        currencyservice=487%;carts
+1      normal  100          100.0      300.0   0        0            6.3     9.7     531.9    20.8    3.9         frontend=134%;productcatal
+1      normal  200          200.0      600.0   0        0            8.5     89.9    682.6    40.9    7.6         frontend=311%;recommendati
+1      normal  300          298.2      894.5   330      0            217.1   1532.8  2493.8   462.6   11.8        recommendationservice=646%
+1      normal  400          342.7      1028.2  11218    0            2532.9  6480.1  7514.7   3314.4  12.6        frontend=846%;recommendati
+1      normal  500          278.4      835.2   43612    0            5468.3  6657.9  7448.0   4639.1  8.9         recommendationservice=850%
+2      mega    100          100.0      300.0   0        0            5.7     8.4     34.2     8.4     3.6         megapod=48%;megapod=46%;me
+2      mega    200          200.0      600.0   0        0            7.7     17.8    543.6    25.5    7.4         megapod=98%;megapod=92%;me
+2      mega    300          300.0      900.0   0        0            16.6    110.2   567.9    50.0    12.3        megapod=156%;megapod=146%;
+2      mega    400          395.4      1186.3  889      0            731.1   1039.0  1401.4   746.2   14.8        megapod=180%;megapod=168%;
+2      mega    500          418.5      1255.4  16407    0.0051       2114.8  5783.2  6631.0   2796.1  15.0        megapod=183%;megapod=176%;
+2      bundle  100          100.0      300.0   0        0            6.0     8.8     12.4     6.7     4.1         currencyservice=136%;curre
+2      bundle  200          200.0      600.0   0        0            7.8     50.5    726.7    38.1    7.7         checkoutservice=260%;curre
+2      bundle  300          300        900     0        0            26.4    275.7   945.1    100.7   12.0        currencyservice=430%;check
+2      bundle  400          381.0      1143.0  3523     0            364.4   2261.8  14676.2  1211.1  14.8        currencyservice=485%;front
+2      bundle  500          415.4      1246.1  17063    0.0047       1839.1  7971.3  10781.9  2895.5  14.8        currencyservice=491%;front
+2      normal  100          100        300     0        0            6.3     9.2     35.1     9.2     3.7         recommendationservice=247%
+2      normal  200          200        600     0        0            9.4     145.8   812.3    59.5    7.4         recommendationservice=400%
+2      normal  300          298.6      895.9   302      0            674.4   1158.1  1501.0   652.0   12.2        frontend=742%;recommendati
+2      normal  400          323.1      969.2   15574    0            3118.5  6550.7  8203.8   3911.6  12.6        frontend=838%;productcatal
+2      normal  500          330.3      991.0   34486    0            4070.3  5876.1  7059.3   3939.6  14.1        frontend=591%;frontend=576
+3      mega    100          100.0      300.0   0        0            5.7     8.2     12.8     6.4     3.5         megapod=43%;megapod=40%;me
+3      mega    200          200.0      600.0   0        0            7.5     20.7    555.4    28.1    7.1         megapod=86%;megapod=82%;me
+3      mega    300          300.0      900.0   0        0            16.7    132.5   593.1    53.6    12.5        megapod=163%;megapod=157%;
+3      mega    400          395.0      1185.0  951      0            774.0   1078.9  1338.9   763.6   15.1        megapod=173%;megapod=168%;
+3      mega    500          418.3      1254.8  16523    0.0004       1915.2  7070.8  7560.2   2894.0  15.2        megapod=192%;megapod=165%;
+3      bundle  100          100.0      300.0   0        0            6.1     9.0     48.6     10.4    3.6         currencyservice=235%;front
+3      bundle  200          200.0      600.0   0        0            8.4     89.2    743.2    44.1    7.3         currencyservice=459%;front
+3      bundle  300          300        900     0        0            26.2    134.2   686.8    61.6    11.6        currencyservice=623%;front
+3      bundle  400          399.6      1198.7  139      0            207.0   390.1   908.8    237.9   13.7        currencyservice=643%;front
+3      bundle  500          445.9      1337.7  10921    0.0232       2695.1  3567.1  4283.4   2519.1  14.2        frontend=374%;frontend=371
+3      normal  100          100.0      300.0   0        0            6.3     12.4    558.3    22.7    3.9         productcatalogservice=142%
+3      normal  200          200.0      600.0   0        0            9.0     121.2   679.3    46.3    7.7         recommendationservice=375%
+3      normal  300          299.5      898.6   136      0            89.9    1064.7  2012.5   277.0   12.8        recommendationservice=651%
+3      normal  400          364.7      1094.2  7277     0            2769.0  5454.7  6583.3   3079.0  14.0        recommendationservice=568%
+3      normal  500          317.6      952.9   36434    0            4254.7  6470.8  9030.5   4117.9  12.4        recommendationservice=731%

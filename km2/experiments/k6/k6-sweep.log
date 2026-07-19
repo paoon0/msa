@@ -215,3 +215,91 @@ Traceback (most recent call last):
 json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
 ================ K6-SWEEP DONE 2026-07-15T14:06:37+09:00 ================
 arm  target_rate  iter_rate  rps  dropped  failed_rate  p50  p90  p99  avg  node_cores  hot
+================ K6-SWEEP START 2026-07-16T21:48:25+09:00 arms=[normal bundle] rates=[100 200 300 400 500] reps=4 warm=30s meas=180s ================
+---- deploy normal (固定4台, req=150m, HPA無し) ----
+  adservice=4/4 cartservice=4/4 checkoutservice=4/4 currencyservice=4/4 emailservice=4/4 frontend=4/4 paymentservice=4/4 productcatalogservice=4/4 recommendationservice=4/4 redis-cart=1/1 shippingservice=4/4 
+==== [normal] target=100周/秒 2026-07-16T21:49:55+09:00 ====
+  -> iter_rate=100/100 dropped=0 p50=6 p99=298 failed=0.000 node=4.0
+     hot=[recommendationservice=165%;currencyservice=164%;frontend=136%;frontend=107%;frontend=95%]
+==== [normal] target=200周/秒 2026-07-16T21:53:54+09:00 ====
+  -> iter_rate=200/200 dropped=0 p50=9 p99=721 failed=0.000 node=7.3
+     hot=[recommendationservice=380%;currencyservice=302%;productcatalogservice=293%;frontend=274%;frontend=270%]
+==== [normal] target=300周/秒 2026-07-16T21:57:52+09:00 ====
+  -> iter_rate=299/300 dropped=166 p50=120 p99=2316 failed=0.000 node=11.8
+     hot=[currencyservice=434%;recommendationservice=409%;recommendationservice=339%;recommendationservice=325%;productcatalogservice=324%]
+==== [normal] target=400周/秒 2026-07-16T22:01:46+09:00 ====
+  !! summary回収失敗(pod=k6load-2fr8h)
+==== [normal] target=500周/秒 2026-07-16T22:05:44+09:00 ====
+  !! summary回収失敗(pod=k6load-gvgjc)
+---- deploy bundle (固定4台, req=150m, HPA無し) ----
+  adservice=4/4 cartservice=4/4 checkoutservice=4/4 currencyservice=4/4 emailservice=4/4 frontend=4/4 paymentservice=4/4 redis-cart=1/1 shippingservice=4/4 
+==== [bundle] target=100周/秒 2026-07-16T22:11:08+09:00 ====
+  -> iter_rate=100/100 dropped=0 p50=6 p99=11 failed=0.000 node=NA
+     hot=[currencyservice=157%;frontend=99%;frontend=93%;frontend=93%;frontend=91%]
+==== [bundle] target=200周/秒 2026-07-16T22:15:07+09:00 ====
+  -> iter_rate=200/200 dropped=0 p50=8 p99=652 failed=0.000 node=NA
+     hot=[currencyservice=335%;frontend=210%;frontend=199%;frontend=189%;checkoutservice=181%]
+==== [bundle] target=300周/秒 2026-07-16T22:19:05+09:00 ====
+  -> iter_rate=300/300 dropped=45 p50=23 p99=846 failed=0.000 node=NA
+     hot=[currencyservice=377%;frontend=323%;frontend=305%;currencyservice=281%;frontend=230%]
+==== [bundle] target=400周/秒 2026-07-16T22:23:04+09:00 ====
+  -> iter_rate=397/400 dropped=574 p50=350 p99=1938 failed=0.000 node=NA
+     hot=[frontend=401%;frontend=397%;frontend=375%;currencyservice=352%;frontend=315%]
+==== [bundle] target=500周/秒 2026-07-16T22:27:04+09:00 ====
+  !! summary回収失敗(pod=k6load-27kxk)
+================ K6-SWEEP DONE 2026-07-16T22:31:02+09:00 ================
+arm     target_rate  iter_rate  rps     dropped  failed_rate  p50    p90     p99     avg    node_cores  hot
+normal  100          100.0      300.0   0        0            6.3    9.5     298.2   14.4   4.0         recommendationservice=165%;currencys
+normal  200          200.0      600.0   0        0            8.8    135.9   720.7   50.0   7.3         recommendationservice=380%;currencys
+normal  300          299.1      897.2   166      0            120.2  1575.1  2316.1  501.3  11.8        currencyservice=434%;recommendations
+bundle  100          100.0      300.0   0        0            6.0    8.9     11.3    6.7    NA          currencyservice=157%;frontend=99%;fr
+bundle  200          200.0      600.0   0        0            7.7    18.1    651.5   31.9   NA          currencyservice=335%;frontend=210%;f
+bundle  300          300.0      900.0   45       0            22.7   192.5   846.3   77.5   NA          currencyservice=377%;frontend=323%;f
+bundle  400          397.5      1192.5  574      0            349.7  612.2   1937.6  412.4  NA          frontend=401%;frontend=397%;frontend
+================ K6-SWEEP START 2026-07-16T23:27:01+09:00 arms=[normal bundle] rates=[100 200 300 400 500] reps=4 warm=30s meas=180s ================
+---- deploy normal (固定4台, req=150m, HPA無し) ----
+  adservice=4/4 cartservice=4/4 checkoutservice=4/4 currencyservice=4/4 emailservice=4/4 frontend=4/4 paymentservice=4/4 productcatalogservice=4/4 recommendationservice=4/4 redis-cart=1/1 shippingservice=4/4 
+==== [normal] target=100周/秒 2026-07-16T23:28:27+09:00 ====
+  -> iter_rate=100/100 dropped=0 p50=6 p99=433 failed=0.000 node=3.9
+     hot=[recommendationservice=166%;frontend=145%;frontend=144%;frontend=135%;productcatalogservice=128%]
+==== [normal] target=200周/秒 2026-07-16T23:32:26+09:00 ====
+  -> iter_rate=200/200 dropped=0 p50=9 p99=918 failed=0.000 node=7.7
+     hot=[recommendationservice=392%;frontend=273%;currencyservice=246%;frontend=243%;productcatalogservice=196%]
+==== [normal] target=300周/秒 2026-07-16T23:36:24+09:00 ====
+  -> iter_rate=300/300 dropped=0 p50=98 p99=965 failed=0.000 node=13.3
+     hot=[recommendationservice=631%;frontend=514%;recommendationservice=431%;recommendationservice=406%;frontend=397%]
+==== [normal] target=400周/秒 2026-07-16T23:40:24+09:00 ====
+  -> iter_rate=350/400 dropped=10086 p50=2970 p99=8496 failed=0.000 node=13.4
+     hot=[frontend=551%;frontend=533%;recommendationservice=490%;currencyservice=421%;frontend=380%]
+==== [normal] target=500周/秒 2026-07-16T23:44:23+09:00 ====
+  -> iter_rate=333/500 dropped=33042 p50=3206 p99=7520 failed=0.000 node=12.4
+     hot=[frontend=834%;recommendationservice=729%;recommendationservice=719%;currencyservice=366%;productcatalogservice=342%]
+---- deploy bundle (固定4台, req=150m, HPA無し) ----
+  adservice=4/4 cartservice=4/4 checkoutservice=4/4 currencyservice=4/4 emailservice=4/4 frontend=4/4 paymentservice=4/4 redis-cart=1/1 shippingservice=4/4 
+==== [bundle] target=100周/秒 2026-07-16T23:49:48+09:00 ====
+  -> iter_rate=100/100 dropped=0 p50=6 p99=478 failed=0.000 node=3.7
+     hot=[currencyservice=150%;frontend=100%;frontend=94%;frontend=94%;frontend=88%]
+==== [bundle] target=200周/秒 2026-07-16T23:53:46+09:00 ====
+  -> iter_rate=200/200 dropped=0 p50=8 p99=681 failed=0.000 node=7.9
+     hot=[currencyservice=233%;cartservice=224%;frontend=209%;frontend=178%;frontend=164%]
+==== [bundle] target=300周/秒 2026-07-16T23:57:45+09:00 ====
+  -> iter_rate=300/300 dropped=15 p50=21 p99=563 failed=0.000 node=12.4
+     hot=[currencyservice=357%;frontend=350%;frontend=298%;frontend=276%;checkoutservice=267%]
+==== [bundle] target=400周/秒 2026-07-17T00:01:43+09:00 ====
+  -> iter_rate=397/400 dropped=707 p50=592 p99=1299 failed=0.000 node=14.7
+     hot=[frontend=414%;frontend=406%;frontend=338%;cartservice=337%;checkoutservice=300%]
+==== [bundle] target=500周/秒 2026-07-17T00:05:37+09:00 ====
+  -> iter_rate=421/500 dropped=15935 p50=1951 p99=7787 failed=0.000 node=15.0
+     hot=[currencyservice=526%;frontend=351%;frontend=326%;frontend=303%;frontend=284%]
+================ K6-SWEEP DONE 2026-07-17T00:09:32+09:00 ================
+arm     target_rate  iter_rate  rps     dropped  failed_rate  p50     p90     p99     avg     node_cores  hot
+normal  100          100.0      300.0   0        0            6.3     9.4     433.0   16.1    3.9         recommendationservice=166%;fronten
+normal  200          200.0      600.0   0        0            9.1     134.9   918.4   59.6    7.7         recommendationservice=392%;fronten
+normal  300          300.0      900.0   0        0            98.5    349.7   965.3   159.1   13.3        recommendationservice=631%;fronten
+normal  400          349.7      1049.0  10086    0            2970.2  5662.6  8496.1  3307.3  13.4        frontend=551%;frontend=533%;recomm
+normal  500          333.5      1000.5  33042    0            3206.5  6553.0  7520.1  3937.5  12.4        frontend=834%;recommendationservic
+bundle  100          100.0      300.0   0        0            6.0     9.3     478.1   17.2    3.7         currencyservice=150%;frontend=100%
+bundle  200          200        600     0        0            7.7     15.2    681.0   28.6    7.9         currencyservice=233%;cartservice=2
+bundle  300          300.0      900.0   15       0            21.5    130.0   562.6   54.3    12.4        currencyservice=357%;frontend=350%
+bundle  400          397.2      1191.8  707      0            592.0   863.9   1299.4  604.7   14.7        frontend=414%;frontend=406%;fronte
+bundle  500          421.1      1263.4  15935    0.0005       1950.7  7345.0  7787.4  2945.0  15.0        currencyservice=526%;frontend=351%

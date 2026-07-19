@@ -16,6 +16,7 @@ WARM=${WARM:-30}      # 捨てる秒(VU立ち上げ過渡)
 MEAS=${MEAS:-180}     # 記録する秒
 PRE_VUS=${PRE_VUS:-500}
 MAX_VUS=${MAX_VUS:-4000}
+CYCLES=${CYCLES:-1}   # 反復回数(サイクル外側=各周でアームを撒き時間ドリフトと交絡させない)
 CSV=${CSV:-$DIR/k6-sweep.csv}
 LOG=${LOG:-$DIR/k6-sweep.log}
 PROM="http://prometheus-grafana-kube-pr-prometheus.monitoring.svc:9090"
@@ -25,8 +26,8 @@ NORMAL=(frontend checkoutservice cartservice productcatalogservice currencyservi
 BUNDLE_SCALE=(frontend checkoutservice cartservice currencyservice paymentservice shippingservice emailservice adservice)
 
 exec > >(tee -a "$LOG") 2>&1
-echo "================ K6-SWEEP START $(date -Is) arms=[$ARMS] rates=[$RATES] reps=$REPLICAS warm=${WARM}s meas=${MEAS}s ================"
-echo "arm,target_rate,iter_rate,rps,dropped,failed_rate,p50,p90,p99,avg,node_cores,hot" > "$CSV"
+echo "================ K6-SWEEP START $(date -Is) arms=[$ARMS] rates=[$RATES] cycles=$CYCLES reps=$REPLICAS warm=${WARM}s meas=${MEAS}s ================"
+echo "cycle,arm,target_rate,iter_rate,rps,dropped,failed_rate,p50,p90,p99,avg,node_cores,hot" > "$CSV"
 
 ensure_promq(){ [ "$(kubectl get pod promq -n $NS -o jsonpath='{.status.phase}' 2>/dev/null)" = Running ] && return
   kubectl delete pod promq -n $NS --ignore-not-found >/dev/null 2>&1
@@ -44,6 +45,10 @@ deploy(){ local arm=$1
   if [ "$arm" = normal ];then
     for f in "${NORMAL[@]}";do kubectl apply -f $REPO/km2/normal/$f.yaml -n $NS >/dev/null;done
     SCALE=("${NORMAL[@]}")
+  elif [ "$arm" = mega ];then
+    # 全11コンテナ+redisを1Podに同居(megapod)。全*_SERVICE_ADDRがlocalhost。frontend ServiceはmegapodをSelect。
+    kubectl apply -f $REPO/km2/all/all.yaml -n $NS >/dev/null
+    SCALE=(megapod)
   else
     for y in $REPO/km2/frontrecocatalogcart/*.yaml;do case "$y" in *kustomization*|*loadgenerator*|*hpa-percontainer*)continue;;esac;kubectl apply -f "$y" -n $NS >/dev/null;done
     SCALE=("${BUNDLE_SCALE[@]}")
@@ -57,8 +62,8 @@ deploy(){ local arm=$1
   echo "  $(kubectl get deploy -n $NS --no-headers 2>/dev/null | awk '{printf "%s=%s ",$1,$2}')"
 }
 
-run_rate(){ local arm=$1 rate=$2
-  echo "==== [$arm] target=${rate}周/秒 $(date -Is) ===="
+run_rate(){ local arm=$1 rate=$2 cyc=${3:-1}
+  echo "==== [cyc$cyc][$arm] target=${rate}周/秒 $(date -Is) ===="
   kubectl create configmap k6-script -n $NS --from-file=checkout.js=$DIR/checkout.js --dry-run=client -o yaml | kubectl apply -f - >/dev/null 2>&1
   kubectl delete job k6load -n $NS --ignore-not-found --wait=true >/dev/null 2>&1
   sed -e "s/__RATE__/$rate/" -e "s/__WARM__/$WARM/" -e "s/__MEAS__/$MEAS/" -e "s/__PRE__/$PRE_VUS/" -e "s/__MAX__/$MAX_VUS/" "$DIR/k6-job.yaml" | kubectl apply -f - -n $NS >/dev/null
@@ -70,18 +75,21 @@ run_rate(){ local arm=$1 rate=$2
   sleep $(( WARM + MEAS*6/10 ))
   HOT=$(promq "sort_desc( sum by(pod)(rate(container_cpu_usage_seconds_total{namespace=\"$NS\",container!=\"\",container!=\"POD\",pod!~\"k6load.*|promq.*\"}[45s])) / on(pod) group_left sum by(pod)(kube_pod_container_resource_requests{namespace=\"$NS\",resource=\"cpu\"}) )" \
     | python3 -c "import sys,json,re;r=json.load(sys.stdin).get('data',{}).get('result',[]);print(';'.join('%s=%.0f%%'%(re.sub(r'-[a-f0-9]{6,}.*\$','',x['metric'].get('pod','?')),float(x['value'][1])*100) for x in r[:5]))" 2>/dev/null)
-  NODE=$(promq "sum(rate(node_cpu_seconds_total{mode!=\"idle\"}[45s]))" | python3 -c "import sys,json;r=json.load(sys.stdin).get('data',{}).get('result',[]);print(round(float(r[0]['value'][1]),1) if r else 'NA')" 2>/dev/null)
+  # 内側rateは[1m]以上(node-exporterのscrape≈30sに対し2点確保。[45s]だと点不足でNAになり得た)
+  NODE=$(promq "sum(rate(node_cpu_seconds_total{mode!=\"idle\"}[1m]))" | python3 -c "import sys,json;r=json.load(sys.stdin).get('data',{}).get('result',[]);print(round(float(r[0]['value'][1]),1) if r else 'NA')" 2>/dev/null)
   # k6は t_run+WARM+MEAS で計測完了。その時刻+20s まで確実に待ってから、ログを一度だけ読む(ポーリング競合を排除)。
   local done_at=$(( t_run + WARM + MEAS + 20 ))
   while [ "$(date +%s)" -lt "$done_at" ]; do sleep 5; done
   local logs; logs=$(kubectl logs "$pod" -n $NS 2>/dev/null)
   local summary; summary=$(printf '%s\n' "$logs" | sed -n '/@@@K6_BEGIN@@@/,/@@@K6_END@@@/p' | grep '{')
   echo "$summary" | grep -q '{' || { echo "  !! summary回収失敗(pod=$pod)"; kubectl delete job k6load -n $NS --ignore-not-found >/dev/null 2>&1; return; }
-  echo "$summary" | python3 - "$arm" "$CSV" "$NODE" "$HOT" <<'PY'
-import sys,json,csv
-arm,out,node,hot=sys.argv[1:5]
-d=json.load(sys.stdin)
-row=[arm,d.get('target_rate'),round(d.get('iter_rate') or 0,1),round(d.get('rps') or 0,1),
+  # 注意: python3 - <<'PY' は heredoc が stdin を占有するため `echo|python3` のパイプは効かない。
+  #       summary は環境変数 SUMMARY で渡し、json.loads する。
+  SUMMARY="$summary" python3 - "$arm" "$CSV" "$NODE" "$HOT" "$cyc" <<'PY'
+import sys,json,csv,os
+arm,out,node,hot,cyc=sys.argv[1:6]
+d=json.loads(os.environ['SUMMARY'])
+row=[cyc,arm,d.get('target_rate'),round(d.get('iter_rate') or 0,1),round(d.get('rps') or 0,1),
      d.get('dropped'),round(d.get('failed_rate') or 0,4),
      round(d.get('p50') or 0,1),round(d.get('p90') or 0,1),round(d.get('p99') or 0,1),round(d.get('avg') or 0,1),node,hot]
 with open(out,'a',newline='') as f: csv.writer(f).writerow(row)
@@ -92,9 +100,12 @@ PY
 }
 
 ensure_promq
-for arm in $ARMS; do
-  deploy "$arm"; sleep 10
-  for r in $RATES; do run_rate "$arm" "$r"; done
+for c in $(seq 1 $CYCLES); do
+  echo "################ CYCLE $c / $CYCLES $(date -Is) ################"
+  for arm in $ARMS; do
+    deploy "$arm"; sleep 10
+    for r in $RATES; do run_rate "$arm" "$r" "$c"; done
+  done
 done
 kubectl delete job k6load -n $NS --ignore-not-found >/dev/null 2>&1
 echo "================ K6-SWEEP DONE $(date -Is) ================"

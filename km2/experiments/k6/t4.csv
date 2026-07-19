@@ -1,1 +1,2 @@
 arm,target_rate,iter_rate,rps,dropped,failed_rate,p50,p90,p99,avg,node_cores,hot
+bundle,200,200.0,600.1,0,0,8.2,116.1,702.4,43.1,7.8,currencyservice=249%;currencyservice=238%;checkoutservice=236%;cartservice=182%;frontend=180%

@@ -1,0 +1,8 @@
+arm,target_rate,iter_rate,rps,dropped,failed_rate,p50,p90,p99,avg,node_cores,hot
+normal,100,100.0,300.0,0,0,6.3,9.5,298.2,14.4,4.0,recommendationservice=165%;currencyservice=164%;frontend=136%;frontend=107%;frontend=95%
+normal,200,200.0,600.0,0,0,8.8,135.9,720.7,50.0,7.3,recommendationservice=380%;currencyservice=302%;productcatalogservice=293%;frontend=274%;frontend=270%
+normal,300,299.1,897.2,166,0,120.2,1575.1,2316.1,501.3,11.8,currencyservice=434%;recommendationservice=409%;recommendationservice=339%;recommendationservice=325%;productcatalogservice=324%
+bundle,100,100.0,300.0,0,0,6.0,8.9,11.3,6.7,3.88,currencyservice=157%;frontend=99%;frontend=93%;frontend=93%;frontend=91%
+bundle,200,200.0,600.0,0,0,7.7,18.1,651.5,31.9,7.70,currencyservice=335%;frontend=210%;frontend=199%;frontend=189%;checkoutservice=181%
+bundle,300,300.0,900.0,45,0,22.7,192.5,846.3,77.5,12.16,currencyservice=377%;frontend=323%;frontend=305%;currencyservice=281%;frontend=230%
+bundle,400,397.5,1192.5,574,0,349.7,612.2,1937.6,412.4,14.46,frontend=401%;frontend=397%;frontend=375%;currencyservice=352%;frontend=315%

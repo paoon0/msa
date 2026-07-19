@@ -53,4 +53,12 @@ metadata:
 
 計測の型は softirq 実験と同じ(exp ns, Istio無し, resources=all値, USERS/RATE, promq経由Prometheus)。実験資産は `km2/experiments/`。
 
+**★2026-07-13〜15の重要訂正(調査記録=km2/experiments/latency-breakdown/investigation-writeup.md, ただし134%等は下記で再訂正):**
+- **normalの頭打ち(664rps)=HPAの過少スケール**(通信の壁ではない)。**固定台数4台にすると normal=1022rps/p50 280ms(+54%)**。HPAはCPUしか見ず多ホップ遅延(真の律速)が見えないため追加スケールしない=HPA盲点の実例。ノードは半分空き(CPU飽和でない)。台数4台なら normal も bundle も ~1000-1100rps・p50 280msで**天井同等**。
+- **co-locの確かな利点は softirq(通信CPU)約半分だけ**。①レイテンシは同台数なら normal と同じ(1ユーザ床17ms同じ, localネット1ホップは元々サブミリ秒でlocalhost化しても壁時計は変わらない, 削るのはCPUで時間でない)②Pod数削減は資源メリットでない(コンテナも予約も同じ、束ねは同ノード制約でむしろ配置不利)。softirq半減も絶対値~0.5コア/1000rps≈ノード数%と控えめ。⇒単一ノードの"効率"物語は弱い。
+- **双安定は負荷モデル(constant_throughput閉ループ)由来**でHPA固有でない(固定台数でも出た)。→[[openloop-k6-capacity]] で開ループ化して真容量を測る作業に移行。
+- **★catalogの"134%/159%飽和"は誤読**: hot_servicesの sort_desc が"一番熱い1台(max)"を拾っていた値。**全Pod平均(HPAが見る値)は全サービス~30-67%で飽和していない**(per-container履歴クエリで確認)。→「計算サービス飽和」でなく「70%均衡+閉ループ」が頭打ちの正体。
+- 論文性: 単一ノード効率は薄く、マルチノードは自明とユーザ指摘。非自明の核候補=「HPAはCPU盲点で通信/遅延律速を過少スケール」+手法提案。開ループで真容量を先に確定するのが今の一手。
+- ワークロード注意: locustは**checkoutのみ**(browse系コメントアウト)=全サービス相関ρ=1・購入偏重。/logoutコメントアウト=セッション持続(問題なし)。browse復活で非相関にすれば粒度損が顕在化(C案)。
+
 関連: [[softirq-cpu-metric]] [[bundling-merit-question]] [[coloc-resource-efficiency-study]] [[related-work-coloc]]
