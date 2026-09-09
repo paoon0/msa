@@ -63,29 +63,11 @@ RS_SERVICES=${RS_SERVICES:-"frontend productcatalogservice recommendationservice
 # LIMIT_SCALE は requests と同じ倍率にすること(片方だけ縮めると絞りの条件が変わる)。
 RS_SCALE=${RS_SCALE:-1}
 LIMIT_SCALE=${LIMIT_SCALE:-0}
-# --- 2026-09-09 追加: 台数固定モード(HPA無し) ---
-#   FIXED_REPLICAS > 0 で HPA を作らず、全 Deployment をこの台数に固定する(redis-cart は常に1)。
-#   狙い: 「HPAが何台選んだか」という交絡を外し、同じ台数・同じ枠で通信の得だけを見る。
-#   UNIFORM_REQ_M > 0 で全コンテナの requests をこの値に揃える(limits は触らない)。
-#   HPA を使わないので requests は「スケール判断の分母」ではなく単なる予約になり、
-#   一律にすると3アームの予約が完全に一致する(4台×10コンテナ×150m = 6.0コア)。
-#   2026-07-14 の固定台数実験(latency-breakdown/fixed-replicas.sh)と同じ規則。
-# アーム間・サイクル間に挟む休憩[秒]。長時間連続で回すとマシンが熱を持ち、
-# 熱による周波数低下が測定に混ざる(同じ条件でも後半のサイクルだけCPU時間が増える)。
-# 休憩中は負荷が無いので、その間にノードが冷える。
-REST_ARM=${REST_ARM:-0}
-REST_CYCLE=${REST_CYCLE:-0}
-FIXED_REPLICAS=${FIXED_REPLICAS:-0}
-UNIFORM_REQ_M=${UNIFORM_REQ_M:-0}
-# mega を複数台にすると Pod内 redis も台数分でき、カートが割れて1周の仕事量が他アームと変わる。
-#   shared = redis だけ Pod の外に出して全 megapod で共有(normal/front3 と同条件)
-MEGA_REDIS=${MEGA_REDIS:-shared}
 CYC_START=${CYC_START:-1}     # サイクル番号の開始値(条件を交互に回すとき、番号を通しにするために使う)
 CSV=${CSV:-$DIR/results-bundle-vs-loss2.csv}
 TL=${TL:-$DIR/timeline-bundle-vs-loss2.csv}
 EV=${EV:-$DIR/events-bundle-vs-loss2.csv}
 LOG=${LOG:-$DIR/bundle-vs-loss2.log}
-[ "$FIXED_REPLICAS" != 0 ] && PRESCALE=$FIXED_REPLICAS
 PROM="http://prometheus-grafana-kube-pr-prometheus.monitoring.svc:9090"
 ROLLOUT=300s
 
@@ -159,16 +141,6 @@ apply_arm(){ local arm=$1
                      kubectl apply -f $DIR/manifests/checkoutemail.yaml -n $NS >/dev/null ;;
     catalogcheckout) apply_normal_except productcatalogservice checkoutservice
                      kubectl apply -f $DIR/manifests/catalogcheckout.yaml -n $NS >/dev/null ;;
-    mega)         # 全部入り: 11サービスを1Podに同居(km2/all/all.yaml)。
-                  kubectl apply -f $REPO/km2/all/all.yaml -n $NS >/dev/null
-                  if [ "$MEGA_REDIS" = shared ]; then
-                    # redis だけ Pod の外へ(複数台にすると Pod内 redis が分裂しカートが割れるため)
-                    python3 "$DIR/extract_redis.py" $REPO/km2/normal/cartservice.yaml | kubectl apply -f - -n $NS >/dev/null
-                    idx=$(kubectl get deploy megapod -n $NS -o jsonpath='{range .spec.template.spec.containers[*]}{.name}{"\n"}{end}' | grep -n '^redis$' | cut -d: -f1)
-                    [ -n "$idx" ] && kubectl patch deploy megapod -n $NS --type=json \
-                      -p "[{\"op\":\"remove\",\"path\":\"/spec/template/spec/containers/$((idx-1))\"}]" >/dev/null
-                    kubectl set env deploy/megapod -n $NS --containers=cartservice REDIS_ADDR=redis-cart:6379 >/dev/null
-                  fi ;;
     frontcart)    kubectl apply -f $DIR/manifests/frontcart.yaml -n $NS >/dev/null
                   kubectl apply -f $DIR/manifests/redis-cart.yaml -n $NS >/dev/null
                   for y in $REPO/km2/frontcart/*.yaml;do case "$y" in *kustomization*|*loadgenerator*|*frontcart.yaml)continue;;esac
@@ -206,11 +178,7 @@ spec:
 }
 
 deploy(){ local arm=$1
-  if [ "$FIXED_REPLICAS" != 0 ]; then
-    echo "---- deploy $arm (HPA無し・${FIXED_REPLICAS}台固定, 枠 req=${UNIFORM_REQ_M}m一律/limits据置) ----"
-  else
-    echo "---- deploy $arm (HPA ${HPA_TARGET}% コンテナ別, ${HPA_MIN}-${HPA_MAX}台, 枠は変更しない) ----"
-  fi
+  echo "---- deploy $arm (HPA ${HPA_TARGET}% コンテナ別, ${HPA_MIN}-${HPA_MAX}台, 枠は変更しない) ----"
   kubectl delete hpa --all -n $NS >/dev/null 2>&1
   kubectl delete deploy --all -n $NS >/dev/null 2>&1
   for i in $(seq 1 40);do [ -z "$(kubectl get deploy -n $NS -o name 2>/dev/null)" ]&&break;sleep 3;done
@@ -221,13 +189,6 @@ deploy(){ local arm=$1
     kubectl scale deploy/$d -n $NS --replicas=$PRESCALE >/dev/null 2>&1||true
   done
   kubectl scale deploy/redis-cart -n $NS --replicas=1 >/dev/null 2>&1||true
-  if [ "$UNIFORM_REQ_M" != 0 ]; then
-    echo "  枠(requests)を一律 ${UNIFORM_REQ_M}m に(limits は据え置き。redis-cart は除く)"
-    for d in $(kubectl get deploy -n $NS -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}'); do
-      [ "$d" = redis-cart ] && continue
-      kubectl set resources deploy/$d -n $NS --requests=cpu=${UNIFORM_REQ_M}m >/dev/null 2>&1||true
-    done
-  fi
   if [ "$RIGHTSIZE" = 1 ]; then
     echo "  枠を適正化テーブルで置換: $RSTABLE (対象: ${RS_SERVICES:-全サービス}, 倍率 req×${RS_SCALE} lim×${LIMIT_SCALE})"
     [ "$LIMIT_X" != 0 ] && echo "  CPU上限(limits)も置換: requests × $LIMIT_X (下限 ${LIMIT_MIN_M}m)"
@@ -239,7 +200,7 @@ deploy(){ local arm=$1
   for d in $(kubectl get deploy -n $NS -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}'); do
     kubectl rollout status deploy/$d -n $NS --timeout=$ROLLOUT >/dev/null 2>&1||true; done
   echo "  枠(req/上限lim): $(kubectl get deploy -n $NS -o jsonpath='{range .items[*]}{.metadata.name}={range .spec.template.spec.containers[*]}{.name}:{.resources.requests.cpu}/{.resources.limits.cpu}{","}{end}{" "}{end}')"
-  if [ "$FIXED_REPLICAS" = 0 ]; then make_hpa; else echo "  HPAは作らない(${FIXED_REPLICAS}台固定)"; fi
+  make_hpa
   echo "  deploy: $(kubectl get deploy -n $NS --no-headers 2>/dev/null | awk '{printf "%s=%s ",$1,$2}')"
 }
 
@@ -359,9 +320,7 @@ for c in $(seq $CYC_START $(( CYC_START + CYCLES - 1 ))); do
   for arm in $ARMS; do
     deploy "$arm"; sleep 10
     for r in $RATES; do for b in $BROWSE_RATE; do run_rate "$arm" "$r" "$c" "$b"; done; done
-    if [ "$REST_ARM" != 0 ]; then echo "---- 休憩 ${REST_ARM}s (アーム間) $(date -Is) ----"; sleep $REST_ARM; fi
   done
-  if [ "$REST_CYCLE" != 0 ]; then echo "######## 休憩 ${REST_CYCLE}s (サイクル間) $(date -Is) ########"; sleep $REST_CYCLE; fi
 done
 kubectl delete job k6load -n $NS --ignore-not-found >/dev/null 2>&1
 echo "================ BUNDLE-VS-LOSS2 DONE $(date -Is) ================"

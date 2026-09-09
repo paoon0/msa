@@ -1,0 +1,4 @@
+================ BUNDLE-VS-LOSS2 START 2026-09-10T02:53:59+09:00 arms=[normal frontrecocatalog mega] rates=[350 400 450] cycles=6 HPA=70%/1-8台 warm=90s meas=120s browse=0周/s sample=15s 様子見=増30s/減60s 開始4台 rightsize=0 limit_x=0 ================
+################ CYCLE 1 / 6 2026-09-10T02:53:59+09:00 ################
+---- deploy normal (HPA無し・4台固定, 枠 req=150m一律/limits据置) ----
+  枠(requests)を一律 150m に(limits は据え置き。redis-cart は除く)

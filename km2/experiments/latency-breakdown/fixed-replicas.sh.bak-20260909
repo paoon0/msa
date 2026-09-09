@@ -23,12 +23,7 @@ PROM="http://prometheus-grafana-kube-pr-prometheus.monitoring.svc:9090"
 ROLLOUT=300s
 NORMAL=(frontend checkoutservice cartservice productcatalogservice currencyservice \
         paymentservice shippingservice emailservice recommendationservice adservice)
-ARM=${ARM:-normal}   # normal(分離) / f3perc(束ね: frontend Podにfront+reco+catalog同居) / mega(全部入り1Pod)
-CYC=${CYC:-1}        # サイクル番号(CSVに記録するだけ)
-# mega を複数台にすると Pod内 redis も台数分できてカートが割れる(=他アームと仕事の量が変わる)。
-#   shared = redis だけ Pod の外に出し、全 megapod が同じ redis-cart を使う(normal/f3perc と同条件)
-#   local  = all.yaml のまま(1台のときだけ意味がある)
-MEGA_REDIS=${MEGA_REDIS:-shared}
+ARM=${ARM:-normal}   # normal(分離) or f3perc(束ね: frontend Podにfront+reco+catalog同居)
 SWEEPCSV=${SWEEPCSV:-}   # 設定すると Aggregated行を1行追記(スイープ集計用)
 # 束ねでスケールする Deployment 群(frontendが束ねPod, reco/catalogは中に居るので単独無し)
 BUNDLE_SCALE=(frontend checkoutservice cartservice currencyservice paymentservice shippingservice emailservice adservice)
@@ -45,8 +40,6 @@ promq(){ local q="$1" i out; for i in 1 2 3 4 5;do ensure_promq
   out=$(kubectl exec promq -n $NS -- curl -s --max-time 20 "$PROM/api/v1/query" --data-urlencode "query=$q" 2>/dev/null)
   [ -n "$out" ]&&{ echo "$out"; return; }; sleep 4; done; echo ""; }
 
-scalar1(){ python3 -c "import sys,json;r=json.load(sys.stdin).get('data',{}).get('result',[]);print(round(float(r[0]['value'][1]),4) if r else 'NA')" 2>/dev/null; }
-
 echo "---- deploy $ARM + 固定${REPLICAS}台(HPA無し) ----"
 kubectl delete hpa --all -n $NS >/dev/null 2>&1
 kubectl delete deploy --all -n $NS >/dev/null 2>&1
@@ -54,45 +47,21 @@ for i in $(seq 1 40);do [ -z "$(kubectl get deploy -n $NS -o name 2>/dev/null)" 
 if [ "$ARM" = normal ];then
   for f in "${NORMAL[@]}";do kubectl apply -f $REPO/km2/normal/$f.yaml -n $NS >/dev/null;done
   SCALE=("${NORMAL[@]}")
-elif [ "$ARM" = mega ];then
-  kubectl apply -f $REPO/km2/all/all.yaml -n $NS >/dev/null
-  SCALE=(megapod)
-  if [ "$MEGA_REDIS" = shared ];then
-    # redis-cart(Deployment+Service)だけ km2/normal/cartservice.yaml から切り出して外に置く
-    sed -n '/^kind: Deployment/,$p' $REPO/km2/normal/cartservice.yaml | sed -n '/name: redis-cart/,$p' >/dev/null
-    awk 'BEGIN{RS="---\n"} /name: redis-cart/{print "---"; print}' $REPO/km2/normal/cartservice.yaml | kubectl apply -f - -n $NS >/dev/null
-    # megapod から redis コンテナを外し、cartservice を外部 redis に向ける
-    idx=$(kubectl get deploy megapod -n $NS -o jsonpath='{range .spec.template.spec.containers[*]}{.name}{"\n"}{end}' | grep -n '^redis$' | cut -d: -f1)
-    if [ -n "$idx" ];then
-      kubectl patch deploy megapod -n $NS --type=json \
-        -p "[{\"op\":\"remove\",\"path\":\"/spec/template/spec/containers/$((idx-1))\"}]" >/dev/null
-    fi
-    kubectl set env deploy/megapod -n $NS --containers=cartservice REDIS_ADDR=redis-cart:6379 >/dev/null
-    echo "  mega: redis を外出し(redis-cart:6379 共有)。megapod のコンテナ数=$(kubectl get deploy megapod -n $NS -o jsonpath='{.spec.template.spec.containers[*].name}' | wc -w)"
-  fi
 else  # f3perc(束ね)
   for y in $REPO/km2/frontrecocatalogcart/*.yaml;do case "$y" in *kustomization*|*loadgenerator*|*hpa-percontainer*)continue;;esac;kubectl apply -f "$y" -n $NS >/dev/null;done
   SCALE=("${BUNDLE_SCALE[@]}")
 fi
 kubectl delete hpa --all -n $NS >/dev/null 2>&1   # マニフェスト同梱HPA(束ねのfrontrecocatalogcart.yaml等)を消して真の固定台数にする
-EXTRA=(); kubectl get deploy redis-cart -n $NS >/dev/null 2>&1 && EXTRA=(redis-cart)
-for d in "${SCALE[@]}" "${EXTRA[@]:-}";do [ -n "$d" ]||continue; kubectl patch deploy/$d -n $NS --type=merge -p '{"spec":{"template":{"metadata":{"annotations":{"sidecar.istio.io/inject":"false"}}}}}' >/dev/null 2>&1||true;done
+for d in "${SCALE[@]}" redis-cart;do kubectl patch deploy/$d -n $NS --type=merge -p '{"spec":{"template":{"metadata":{"annotations":{"sidecar.istio.io/inject":"false"}}}}}' >/dev/null 2>&1||true;done
 # cpu requestを$REQ_Mに下げて4台がノードに載るように(limitは据置)。束ねPodは3コンテナ各150m。
 for d in "${SCALE[@]}";do kubectl set resources deploy/$d -n $NS --requests=cpu=${REQ_M}m >/dev/null 2>&1||true;done
 # 固定台数: スケール対象REPLICAS台, redisは1
 for d in "${SCALE[@]}";do kubectl scale deploy/$d -n $NS --replicas=$REPLICAS >/dev/null 2>&1||true;done
 kubectl scale deploy/redis-cart -n $NS --replicas=1 >/dev/null 2>&1||true
-for d in "${SCALE[@]}" "${EXTRA[@]:-}";do [ -n "$d" ]||continue; kubectl rollout status deploy/$d -n $NS --timeout=$ROLLOUT >/dev/null 2>&1||true;done
+for d in "${SCALE[@]}" redis-cart;do kubectl rollout status deploy/$d -n $NS --timeout=$ROLLOUT >/dev/null 2>&1||true;done
 echo "  デプロイ完了: $(kubectl get deploy -n $NS --no-headers 2>/dev/null | awk '{printf "%s=%s ",$1,$2}')"
 
 ensure_promq
-BASE_W=${BASE_W:-30}
-echo "---- $(date -Is) 無負荷ベースライン ${BASE_W}s ----"
-sleep $BASE_W
-bw="${BASE_W}s"
-BASE_NODE=$(promq "sum(rate(node_cpu_seconds_total{mode!=\"idle\"}[${bw}]))" | scalar1)
-BASE_SOFT=$(promq "sum(rate(node_cpu_seconds_total{mode=\"softirq\"}[${bw}]))" | scalar1)
-echo "  base: node=${BASE_NODE} softirq=${BASE_SOFT}"
 echo "---- $(date -Is) 負荷 users=$USERS (warmup ${WARM}s + measure ${MEAS}s) ----"
 sed -E "s/(name: RUN_TIME, value: )\"[^\"]*\"/\1\"$((WARM+MEAS+30))s\"/; s/(name: USERS,[[:space:]]*value: )\"[^\"]*\"/\1\"$USERS\"/; s/(name: RATE,[[:space:]]*value: )\"[^\"]*\"/\1\"$RATE\"/" "$LOAD" > "$LOADGEN"
 kubectl delete job loadgenerator -n $NS --ignore-not-found --wait=true >/dev/null 2>&1
@@ -129,16 +98,14 @@ for svc,v in sorted(u.items(),key=lambda kv:-sum(kv[1])):
     print('    %-24s 合計%5.0fm  x%d  1台%4.0fm  limit%4.0fm  (%s)'%(svc,tot,n,per,lper,pct))
 " 2>/dev/null
 # node/app/softirq
-NODE=$(promq "sum(rate(node_cpu_seconds_total{mode!=\"idle\"}[${wm}]))" | scalar1)
-SOFT=$(promq "sum(rate(node_cpu_seconds_total{mode=\"softirq\"}[${wm}]))" | scalar1)
-APP=$(promq "sum(rate(container_cpu_usage_seconds_total{namespace=\"$NS\",container!=\"\",container!=\"POD\",pod!~\"loadgenerator.*|promq.*\"}[${wm}]))" | scalar1)
+NODE=$(promq "sum(rate(node_cpu_seconds_total{mode!=\"idle\"}[${wm}]))" | python3 -c "import sys,json;r=json.load(sys.stdin).get('data',{}).get('result',[]);print(r[0]['value'][1] if r else 'NA')" 2>/dev/null)
 # checkout hop latency
 HOP=$(promq "histogram_quantile(0.5, sum by(le,destination)(rate(grpc_client_latency_seconds_bucket{namespace=\"$NS\"}[${wm}])))" | python3 -c "import sys,json;r=json.load(sys.stdin).get('data',{}).get('result',[]);print(';'.join('%s=%.0f'%(x['metric'].get('destination','?'),float(x['value'][1])*1000) for x in r if x['value'][1] not in('NaN','')))" 2>/dev/null)
-echo "  node_cores=${NODE} (of 16)  softirq=${SOFT}  app=${APP}"
+echo "  node_cores=${NODE} (of 16)"
 echo "  checkout下流ホップ p50(ms): [$HOP]"
 # locust 結果
 logs=""; for i in $(seq 1 60);do logs=$(kubectl logs $pod -n $NS -c main --tail=-1 2>/dev/null); echo "$logs"|grep -q '@@@CSV_END@@@'&&break;sleep 4;done
-export ARM REPLICAS USERS NODE SWEEPCSV CYC SOFT APP BASE_NODE BASE_SOFT
+export ARM REPLICAS USERS NODE SWEEPCSV
 echo "$logs" | python3 -c "
 import sys,csv,io,os
 d=sys.stdin.read(); b,e='@@@CSV_BEGIN@@@','@@@CSV_END@@@'
@@ -159,8 +126,8 @@ if b in d and e in d:
         new=not os.path.exists(sc)
         with open(sc,'a',newline='') as f:
             w=csv.writer(f)
-            if new: w.writerow(['cycle','arm','replicas','users','rps','p50','p90','p99','fails','node_cores','softirq_cores','app_cores','base_node','base_softirq'])
-            w.writerow([os.environ.get('CYC'),os.environ.get('ARM'),os.environ.get('REPLICAS'),os.environ.get('USERS'),v('Requests/s'),v('50%'),v('90%'),v('99%'),v('Failure Count'),os.environ.get('NODE'),os.environ.get('SOFT'),os.environ.get('APP'),os.environ.get('BASE_NODE'),os.environ.get('BASE_SOFT')])
+            if new: w.writerow(['arm','replicas','users','rps','p50','p90','p99','fails','node_cores'])
+            w.writerow([os.environ.get('ARM'),os.environ.get('REPLICAS'),os.environ.get('USERS'),v('Requests/s'),v('50%'),v('90%'),v('99%'),v('Failure Count'),os.environ.get('NODE')])
 " 2>/dev/null
 kubectl delete job loadgenerator -n $NS --ignore-not-found >/dev/null 2>&1
 echo "================ FIXED-REPLICAS DONE $(date -Is) ================"
