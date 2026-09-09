@@ -7,7 +7,10 @@ metadata:
   name: k6load
   labels: { app: k6load }
 spec:
-  backoffLimit: 0
+  # 0 だと ConfigMap のマウントが一瞬失敗しただけで即あきらめ、7.7分の測定が丸ごと無駄になる。
+  # 実際 2026-09-01 の本走で 15回中2回 FailedMount("object exp/k6-script not registered")→
+  # BackoffLimitExceeded で欠測した。マウント失敗は数秒で分かるので、作り直せば十分間に合う。
+  backoffLimit: 3
   template:
     metadata:
       labels: { app: k6load }
@@ -23,6 +26,7 @@ spec:
         env:
         - { name: BASE,     value: "http://frontend:80" }
         - { name: RATE,     value: "__RATE__" }
+        - { name: BROWSE_RATE, value: "__BROWSE__" }
         - { name: WARMUP,   value: "__WARM__" }
         - { name: MEASURE,  value: "__MEAS__" }
         - { name: PRE_VUS,  value: "__PRE__" }

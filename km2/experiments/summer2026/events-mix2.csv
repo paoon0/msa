@@ -1,0 +1,33 @@
+cycle,arm,target_rate,limit_x,browse_rate,time,object,message
+1,normal,100,2026-09-06T17:58:29Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+1,frontemail,100,2026-09-06T18:37:16Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target
+1,frontemail,100,2026-09-06T18:37:30Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+1,frontcheckout,100,2026-09-06T19:07:46Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+1,frontcheckout,100,2026-09-06T19:08:01Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+1,frontcheckout,100,2026-09-06T19:09:33Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+1,checkoutemail,100,2026-09-06T19:50:39Z,productcatalogservice,New size: 2; reason: All metrics below target
+1,catalogcheckout,100,2026-09-06T20:10:07Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+1,catalogcheckout,100,2026-09-06T20:11:53Z,frontend,New size: 2; reason: All metrics below target
+1,catalogcheckout,100,2026-09-06T20:12:53Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target
+2,normal,100,2026-09-06T20:40:10Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+2,normal,100,2026-09-06T20:40:24Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+2,normal,100,2026-09-06T20:40:39Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target
+2,normal,100,2026-09-06T20:42:08Z,cartservice,New size: 1; reason: All metrics below target
+2,normal,100,2026-09-06T20:42:09Z,frontend,New size: 2; reason: All metrics below target
+2,frontcheckout,100,2026-09-06T21:42:57Z,cartservice,New size: 1; reason: All metrics below target
+3,normal,100,2026-09-06T23:15:49Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+3,normal,100,2026-09-06T23:16:03Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+3,normal,100,2026-09-06T23:17:47Z,cartservice,New size: 1; reason: All metrics below target
+3,normal,100,2026-09-06T23:18:33Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target
+3,normal,100,2026-09-06T23:19:47Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+3,frontemail,100,2026-09-06T23:39:33Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+3,frontemail,100,2026-09-06T23:46:33Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+3,frontemail,100,2026-09-06T23:47:34Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+3,frontemail,100,2026-09-06T23:47:35Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+3,frontemail,100,2026-09-06T23:47:49Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target
+3,frontemail,100,2026-09-06T23:49:34Z,frontend,New size: 2; reason: All metrics below target
+3,frontemail,100,2026-09-06T23:50:19Z,cartservice,New size: 1; reason: All metrics below target
+3,frontcheckout,100,2026-09-07T00:03:03Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+3,checkoutemail,100,2026-09-07T00:51:18Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target
+3,checkoutemail,100,2026-09-07T00:59:49Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target
+3,catalogcheckout,100,2026-09-07T01:04:03Z,productcatalogservice,New size: 1; reason: All metrics below target

@@ -1,0 +1,127 @@
+# frontemail: frontend + emailservice を 1 Pod に同居(2026-09-07 作成)
+#
+# ★この束ねの狙い = 「純粋な粒度損」の対照。
+#   frontend は emailservice を呼ばない(email を呼ぶのは checkoutservice。
+#   src/frontend/main.go の呼び出し先に email は無い)。
+#   よって取り込むエッジはゼロ = 通信の便益はゼロ。残るのは需要のズレによる損だけ。
+#   閲覧型を積むと frontend の需要は +119% 伸びるが email は +13% しか動かないので、
+#   frontend が N 台必要になると email も N 台に引き上げられる = (N-1) × email の枠 が損。
+#
+# 注意: emailservice の既定 PORT は 8080 で frontend と衝突するため、同居時は 8081 に変更する。
+#   Service emailservice は port 5000 → targetPort 8081 に付け替え、checkout からは従来どおり
+#   emailservice:5000 で到達できるようにする(セレクタは app=frontend)。
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: frontend
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: server
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: [ALL] }
+            privileged: false
+            readOnlyRootFilesystem: true
+          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend:v0.10.3
+          ports:
+          - containerPort: 8080
+          readinessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              path: "/_healthz"
+              port: 8080
+              httpHeaders:
+              - { name: "Cookie", value: "shop_session-id=x-readiness-probe" }
+          livenessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              path: "/_healthz"
+              port: 8080
+              httpHeaders:
+              - { name: "Cookie", value: "shop_session-id=x-liveness-probe" }
+          env:
+          - { name: PORT, value: "8080" }
+          - { name: PRODUCT_CATALOG_SERVICE_ADDR, value: "productcatalogservice:3550" }
+          - { name: CURRENCY_SERVICE_ADDR,        value: "currencyservice:7000" }
+          - { name: CART_SERVICE_ADDR,            value: "cartservice:7070" }
+          - { name: RECOMMENDATION_SERVICE_ADDR,  value: "recommendationservice:8080" }
+          - { name: SHIPPING_SERVICE_ADDR,        value: "shippingservice:50051" }
+          - { name: CHECKOUT_SERVICE_ADDR,        value: "checkoutservice:5050" }
+          - { name: AD_SERVICE_ADDR,              value: "adservice:9555" }
+          - { name: SHOPPING_ASSISTANT_SERVICE_ADDR, value: "shoppingassistantservice:80" }
+          - { name: ENABLE_PROFILER, value: "0" }
+          resources:
+            requests: { cpu: 1000m, memory: 128Mi }
+            limits:   { cpu: 1600m, memory: 256Mi }
+
+        - name: email
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: [ALL] }
+            privileged: false
+            readOnlyRootFilesystem: true
+          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice:v0.10.3
+          ports:
+          - containerPort: 8081
+          env:
+          - { name: PORT, value: "8081" }        # ← frontend の 8080 と衝突するのでずらす
+          - { name: DISABLE_PROFILER, value: "1" }
+          readinessProbe:
+            periodSeconds: 5
+            grpc: { port: 8081 }
+          livenessProbe:
+            periodSeconds: 30
+            grpc: { port: 8081 }
+          resources:
+            requests: { cpu: 200m, memory: 64Mi }
+            limits:   { cpu: 300m, memory: 128Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels: { app: frontend }
+spec:
+  type: ClusterIP
+  selector: { app: frontend }
+  ports:
+  - { name: http, port: 80, targetPort: 8080 }
+---
+# email は frontend Pod の中に居るので、Service を app=frontend に向ける。
+# checkout は従来どおり emailservice:5000 で到達できる(→ targetPort 8081)。
+apiVersion: v1
+kind: Service
+metadata:
+  name: emailservice
+  labels: { app: emailservice }
+spec:
+  type: ClusterIP
+  selector: { app: frontend }
+  ports:
+  - { name: grpc, port: 5000, targetPort: 8081 }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: frontend }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: emailservice }

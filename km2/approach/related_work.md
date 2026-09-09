@@ -23,8 +23,31 @@ DOI: 10.4038/icter.v15i3.7251 (オープンアクセス)
   - **Colocated** — 同一ホスト上で bridge 経由(K_b)
   - **Merged** — 同一ネットワーク名前空間で loopback 経由(K_l)
   - 不等式 **K_l < K_b < K_o**(loopback が最安、overlay が最も高い)。
-- 配置問題を **Binary Knapsack** として定式化し最適配置を求める。
-- 実験環境: Docker Swarm + Sock-Shop(マイクロサービスベンチ)。
+- **★ベースライン(2026-08-29 に原典PDFで確認)= Docker Swarm の Spread 戦略 = 「1サービス = 1ホスト」。**
+  原文: *"Spread strategy deployment of Docker Swarm is considered as the baseline to this study. ...
+  we consider the deployment of service instance per host as the baseline since there are not any
+  optimizations present in that strategy."* / *"initial monitoring was done deploying each
+  service/container in a separate VM."* 定式化でも *"according to Spread strategy (one service per host)"*。
+- 3段階が減らすもの(Table I): 初期 n サービス/n コンテナ/**N ホスト** → colocation 後 n/n/**M ホスト(M<N)**
+  → merging 後 n サービス/**m コンテナ(m<n)**/M ホスト。
+  つまり **Colocated = ホストを減らす**(コンテナ数は不変, bridge 経由)、
+  **Merged = コンテナ自体を統合**(1コンテナ内の2プロセス, loopback 経由。同一ベースイメージが必須で、
+  Dockerfile を結合し ENTRYPOINT をシェルスクリプトにして2サービスを起動する実装)。
+- 配置問題を **Binary Knapsack** として定式化し最適配置を求める。**制約は CPU 使用量のみ**
+  (*"consider only the CPU usage as a constraint that limits the colocation"*)。
+- 実験環境: Docker Swarm + Sock-Shop と Page-Rank の2ベンチ。
+  ホストは Sock-Shop 用が 4/5/5/4 コアの4台、Page-Rank 用が 3/6/9/10 コアの4台。
+
+**★本研究との位置関係(重要):**
+| | ICTer | 本研究(単一ノード時点) |
+|---|---|---|
+| ベースライン | 1サービス=1ホスト(全部別VM, overlay越し) | 1 Pod 1サービス, **全部同じノード** |
+| 比較対象 | Colocated(同ホスト別コンテナ)/ Merged(1コンテナ2プロセス) | 同一Pod(別コンテナ, localhost) |
+⇒ **本研究の「分離(normal)」は ICTer の Colocated に相当し、ベースライン(Spreaded)ではない。**
+  ICTer が測った大きい効果(52-57% = overlay の有無)は最初から手に入っており、
+  測れているのは残りの K_b→K_l 部分だけ。マルチノード化して初めて同じ土俵に立てる。
+⇒ ICTer の Merged は**コンテナ分離を捨てている**(1コンテナ2プロセス)。
+  K8s の Pod 同居は**分離を保ったまま loopback を得る** = Colocated と Merged の中間 = 差別化点(原典で裏付け済)。
 - 計測指標: `tcpdump` による**通信バイト量(communication affinity)**。
 - 結果: colocation で通信 **52〜57% 減**、さらに merging で **+13%**、合計 **58.5% 減**・
   実行時間 **13.4% 短縮**。

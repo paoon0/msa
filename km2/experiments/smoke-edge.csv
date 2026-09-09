@@ -1,0 +1,12 @@
+cycle,arm,rate,browse,iter_rate,browse_rate,pod,rx_bytes,tx_bytes,rx_pkts,tx_pkts
+1,normal,0,100,0,100.0,adservice,1057906,1326899,9691,9611
+1,normal,0,100,0,100.0,cartservice,1904127,2071627,18085,18066
+1,normal,0,100,0,100.0,checkoutservice,19749,37435,181,134
+1,normal,0,100,0,100.0,currencyservice,2631685,3523572,26921,26960
+1,normal,0,100,0,100.0,emailservice,11701,9203,129,96
+1,normal,0,100,0,100.0,frontend,26206048,67544278,205954,196411
+1,normal,0,100,0,100.0,paymentservice,10759,8717,121,92
+1,normal,0,100,0,100.0,productcatalogservice,12918098,26227843,139796,140816
+1,normal,0,100,0,100.0,recommendationservice,6936794,2472839,20617,22350
+1,normal,0,100,0,100.0,redis-cart,954981,514005,6102,6050
+1,normal,0,100,0,100.0,shippingservice,21522,15643,241,193

@@ -1,0 +1,12 @@
+================ BUNDLE-VS-LOSS2 START 2026-08-29T19:14:29+09:00 arms=[frontcatalog] rates=[250] cycles=1 HPA=70%/1-8台 warm=150s meas=150s sample=15s 様子見=増30s/減60s 開始2台 rightsize=1 limit_x=10 ================
+################ CYCLE 1 / 1 2026-08-29T19:14:31+09:00 ################
+---- deploy frontcatalog (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/summer2026/rightsize-requests.csv
+  CPU上限(limits)も置換: requests × 10 (下限 200m)
+  枠(req/上限lim): adservice=server:69m/690m, cartservice=server:361m/3610m, checkoutservice=checkout:321m/3210m, currencyservice=server:523m/5230m, emailservice=email:119m/1190m, frontend=server:1077m/10770m,productcatalog:662m/6620m, paymentservice=payment:84m/840m, recommendationservice=server:742m/7420m, redis-cart=redis:50m/500m, shippingservice=server:133m/1330m, 
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+==== [cyc1][frontcatalog] target=250周/秒 2026-08-29T19:16:00+09:00 ====
+  -> 捌けた=250.0/250 drop=0 p50=11 p99=25 | 動作中の枠=12.89コア(Pending分 0.00) Pod=31(Pending 0) 効率=19.4周/コア softirq=2.56
+     種類別p50: 商品9 / カート11 / 購入14 ms | k6 0.39コア | TCP再送 0/s | 絞り[]
+     台数: adservice:3 cartservice:4 checkoutservice:3 currencyservice:3 emailservice:4 frontend:3 paymentservice:4 recommendationservice:3 redis-cart:1 shippingservice:3
+================ BUNDLE-VS-LOSS2 DONE 2026-08-29T19:21:42+09:00 ================

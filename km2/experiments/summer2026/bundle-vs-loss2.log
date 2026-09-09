@@ -1,0 +1,65 @@
+================ BUNDLE-VS-LOSS2 START 2026-08-19T05:22:27+09:00 arms=[normal frontcatalog frontreco frontcart] rates=[200] cycles=3 HPA=70%/1-8台 warm=180s meas=240s sample=15s ================
+################ CYCLE 1 / 3 2026-08-19T05:22:27+09:00 ################
+---- deploy normal (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][normal] target=200周/秒 2026-08-19T05:23:18+09:00 ====
+  -> 捌けた=200.0/200 drop=0 p50=321 p99=922 | 動作中の枠=3.00コア(Pending分 0.00) Pod=18(Pending 0) 効率=66.7周/コア softirq=1.91
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:2 frontend:3 paymentservice:1 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1
+---- deploy frontcatalog (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][frontcatalog] target=200周/秒 2026-08-19T05:31:45+09:00 ====
+  -> 捌けた=200.0/200 drop=119 p50=9 p99=634 | 動作中の枠=3.00コア(Pending分 0.00) Pod=17(Pending 0) 効率=66.7周/コア softirq=2.29
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:2 frontend:3 paymentservice:1 recommendationservice:2 redis-cart:1 shippingservice:1
+---- deploy frontreco (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][frontreco] target=200周/秒 2026-08-19T05:40:12+09:00 ====
+  -> 捌けた=200.0/200 drop=7 p50=406 p99=1072 | 動作中の枠=3.00コア(Pending分 0.00) Pod=17(Pending 0) 効率=66.7周/コア softirq=1.85
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:2 frontend:3 paymentservice:1 productcatalogservice:2 redis-cart:1 shippingservice:1
+---- deploy frontcart (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  deploy: adservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][frontcart] target=200周/秒 2026-08-19T05:48:39+09:00 ====
+  -> 捌けた=200.0/200 drop=37 p50=179 p99=803 | 動作中の枠=3.00コア(Pending分 0.00) Pod=18(Pending 0) 効率=66.7周/コア softirq=2.14
+     台数: adservice:1 checkoutservice:1 currencyservice:2 emailservice:2 frontend:3 paymentservice:1 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1
+################ CYCLE 2 / 3 2026-08-19T05:56:19+09:00 ################
+---- deploy normal (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][normal] target=200周/秒 2026-08-19T05:57:10+09:00 ====
+  -> 捌けた=200.0/200 drop=0 p50=262 p99=791 | 動作中の枠=3.00コア(Pending分 0.00) Pod=19(Pending 0) 効率=66.7周/コア softirq=2.11
+     台数: adservice:2 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:2 frontend:3 paymentservice:1 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1
+---- deploy frontcatalog (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][frontcatalog] target=200周/秒 2026-08-19T06:05:37+09:00 ====
+  -> 捌けた=200.0/200 drop=20 p50=396 p99=1011 | 動作中の枠=3.00コア(Pending分 0.00) Pod=17(Pending 0) 効率=66.7周/コア softirq=1.67
+     台数: adservice:2 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:2 frontend:3 paymentservice:1 recommendationservice:2 redis-cart:1 shippingservice:1
+---- deploy frontreco (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][frontreco] target=200周/秒 2026-08-19T06:14:04+09:00 ====
+  -> 捌けた=200.0/200 drop=18 p50=317 p99=1023 | 動作中の枠=3.00コア(Pending分 0.00) Pod=16(Pending 0) 効率=66.7周/コア softirq=1.90
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:2 frontend:3 paymentservice:1 productcatalogservice:2 redis-cart:1 shippingservice:1
+---- deploy frontcart (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  deploy: adservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][frontcart] target=200周/秒 2026-08-19T06:22:31+09:00 ====
+  -> 捌けた=200.0/200 drop=34 p50=266 p99=967 | 動作中の枠=3.00コア(Pending分 0.00) Pod=16(Pending 0) 効率=66.7周/コア softirq=1.94
+     台数: adservice:1 checkoutservice:1 currencyservice:2 emailservice:2 frontend:3 paymentservice:1 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1
+################ CYCLE 3 / 3 2026-08-19T06:30:11+09:00 ################
+---- deploy normal (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][normal] target=200周/秒 2026-08-19T06:31:01+09:00 ====
+  -> 捌けた=200.0/200 drop=22 p50=122 p99=873 | 動作中の枠=3.00コア(Pending分 0.00) Pod=19(Pending 0) 効率=66.7周/コア softirq=2.29
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:2 frontend:3 paymentservice:1 productcatalogservice:3 recommendationservice:2 redis-cart:1 shippingservice:1
+---- deploy frontcatalog (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][frontcatalog] target=200周/秒 2026-08-19T06:39:28+09:00 ====
+  -> 捌けた=199.8/200 drop=39 p50=55 p99=873 | 動作中の枠=3.00コア(Pending分 0.00) Pod=19(Pending 0) 効率=66.6周/コア softirq=2.12
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:2 frontend:3 paymentservice:2 recommendationservice:2 redis-cart:1 shippingservice:1
+---- deploy frontreco (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][frontreco] target=200周/秒 2026-08-19T06:47:54+09:00 ====
+  -> 捌けた=199.4/200 drop=160 p50=260 p99=1391 | 動作中の枠=3.00コア(Pending分 0.00) Pod=17(Pending 0) 効率=66.5周/コア softirq=2.22
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:2 frontend:3 paymentservice:2 productcatalogservice:3 redis-cart:1 shippingservice:1
+---- deploy frontcart (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  deploy: adservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][frontcart] target=200周/秒 2026-08-19T06:56:22+09:00 ====
+  -> 捌けた=199.8/200 drop=46 p50=363 p99=1091 | 動作中の枠=3.00コア(Pending分 0.00) Pod=19(Pending 0) 効率=66.6周/コア softirq=1.93
+     台数: adservice:3 checkoutservice:1 currencyservice:2 emailservice:2 frontend:3 paymentservice:2 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1
+================ BUNDLE-VS-LOSS2 DONE 2026-08-19T07:04:02+09:00 ================

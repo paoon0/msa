@@ -1,0 +1,125 @@
+# frontcheckout: frontend + checkoutservice を 1 Pod に同居(2026-09-07 作成)
+#
+# ★狙い = 「細いエッジ × 最大の需要ズレ」。
+#   取り込むエッジ: frontend → checkout(PlaceOrder。購入1周につき1回だけ)= 通信の便益は小さい。
+#   一方、閲覧型を積むと frontend の需要は +119%、checkout は +20% しか動かない(実験9/4 実測)。
+#   よって損 = (frontend の必要台数 − checkout の必要台数) × checkout の枠。
+#   便益 ≪ 損 になるはず、という予測を検証する。
+# checkout を呼ぶのは frontend だけなので、checkoutservice Service は他から使われないが、
+#   撤去し忘れの取り違えを避けるため app=frontend に向けたまま残す。
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: frontend
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: server
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: [ALL] }
+            privileged: false
+            readOnlyRootFilesystem: true
+          image: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend:v0.10.3
+          ports:
+          - containerPort: 8080
+          readinessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              path: "/_healthz"
+              port: 8080
+              httpHeaders:
+              - { name: "Cookie", value: "shop_session-id=x-readiness-probe" }
+          livenessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              path: "/_healthz"
+              port: 8080
+              httpHeaders:
+              - { name: "Cookie", value: "shop_session-id=x-liveness-probe" }
+          env:
+          - { name: PORT, value: "8080" }
+          - { name: PRODUCT_CATALOG_SERVICE_ADDR, value: "productcatalogservice:3550" }
+          - { name: CURRENCY_SERVICE_ADDR,        value: "currencyservice:7000" }
+          - { name: CART_SERVICE_ADDR,            value: "cartservice:7070" }
+          - { name: RECOMMENDATION_SERVICE_ADDR,  value: "recommendationservice:8080" }
+          - { name: SHIPPING_SERVICE_ADDR,        value: "shippingservice:50051" }
+          - { name: CHECKOUT_SERVICE_ADDR,        value: "localhost:5050" }   # ← 同居先へ loopback
+          - { name: AD_SERVICE_ADDR,              value: "adservice:9555" }
+          - { name: SHOPPING_ASSISTANT_SERVICE_ADDR, value: "shoppingassistantservice:80" }
+          - { name: ENABLE_PROFILER, value: "0" }
+          resources:
+            requests: { cpu: 1000m, memory: 128Mi }
+            limits:   { cpu: 1600m, memory: 256Mi }
+
+        - name: checkout
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: [ALL] }
+            privileged: false
+            readOnlyRootFilesystem: true
+          image: mizuki0118/mygo:bunpupaymail
+          ports:
+          - { name: grpc,    containerPort: 5050 }
+          - { name: metrics, containerPort: 9464 }
+          readinessProbe: { grpc: { port: 5050 } }
+          livenessProbe:  { grpc: { port: 5050 } }
+          env:
+          - { name: PORT, value: "5050" }
+          - { name: PRODUCT_CATALOG_SERVICE_ADDR, value: "productcatalogservice:3550" }
+          - { name: SHIPPING_SERVICE_ADDR, value: "shippingservice:50051" }
+          - { name: PAYMENT_SERVICE_ADDR,  value: "paymentservice:50051" }
+          - { name: EMAIL_SERVICE_ADDR,    value: "emailservice:5000" }
+          - { name: CURRENCY_SERVICE_ADDR, value: "currencyservice:7000" }
+          - { name: CART_SERVICE_ADDR,     value: "cartservice:7070" }
+          resources:
+            requests: { cpu: 800m, memory: 64Mi }
+            limits:   { cpu: 1200m, memory: 128Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels: { app: frontend }
+spec:
+  type: ClusterIP
+  selector: { app: frontend }
+  ports:
+  - { name: http, port: 80, targetPort: 8080 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: checkoutservice
+  labels: { app: checkoutservice }
+spec:
+  type: ClusterIP
+  selector: { app: frontend }
+  ports:
+  - { name: grpc,    port: 5050, targetPort: 5050 }
+  - { name: metrics, port: 9464, targetPort: 9464 }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: frontend }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: checkoutservice }

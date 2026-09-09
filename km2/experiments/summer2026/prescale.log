@@ -1,0 +1,29 @@
+================ BUNDLE-VS-LOSS2 START 2026-08-29T23:17:05+09:00 arms=[frontcatalog] rates=[300] cycles=3 HPA=70%/1-8台 warm=180s meas=240s sample=15s 様子見=増30s/減60s 開始3台 rightsize=1 limit_x=0 ================
+################ CYCLE 1 / 3 2026-08-29T23:17:05+09:00 ################
+---- deploy frontcatalog (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/summer2026/rightsize-requests.csv
+  枠(req/上限lim): adservice=server:69m/500m, cartservice=server:361m/960m, checkoutservice=checkout:321m/1200m, currencyservice=server:523m/1600m, emailservice=email:119m/300m, frontend=server:1077m/1600m,productcatalog:662m/1, paymentservice=payment:84m/300m, recommendationservice=server:742m/1600m, redis-cart=redis:50m/500m, shippingservice=server:133m/560m, 
+  deploy: adservice=3/3 cartservice=3/3 checkoutservice=3/3 currencyservice=3/3 emailservice=3/3 frontend=3/3 paymentservice=3/3 recommendationservice=3/3 redis-cart=1/1 shippingservice=3/3 
+==== [cyc1][frontcatalog] target=300周/秒 2026-08-29T23:19:31+09:00 ====
+  -> 捌けた=279.3/300 drop=13726 p50=2072 p99=6265 | 動作中の枠=14.13コア(Pending分 3.00) Pod=33(Pending 7) 効率=19.8周/コア softirq=2.76
+     種類別p50: 商品2051 / カート1987 / 購入2168 ms | k6 0.48コア | TCP再送 0/s | 絞り[emailservice/email=28%;paymentservice/payment=16%;emailservice/email=15%;paymentservice/payment=15%;cartservice/server=6%]
+     台数: adservice:3 cartservice:4 checkoutservice:4 currencyservice:5 emailservice:3 frontend:3 paymentservice:4 recommendationservice:2 redis-cart:1 shippingservice:3
+################ CYCLE 2 / 3 2026-08-29T23:27:15+09:00 ################
+---- deploy frontcatalog (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/summer2026/rightsize-requests.csv
+  枠(req/上限lim): adservice=server:69m/500m, cartservice=server:361m/960m, checkoutservice=checkout:321m/1200m, currencyservice=server:523m/1600m, emailservice=email:119m/300m, frontend=server:1077m/1600m,productcatalog:662m/1, paymentservice=payment:84m/300m, recommendationservice=server:742m/1600m, redis-cart=redis:50m/500m, shippingservice=server:133m/560m, 
+  deploy: adservice=3/3 cartservice=3/3 checkoutservice=3/3 currencyservice=3/3 emailservice=3/3 frontend=3/3 paymentservice=3/3 recommendationservice=3/3 redis-cart=1/1 shippingservice=3/3 
+==== [cyc2][frontcatalog] target=300周/秒 2026-08-29T23:29:24+09:00 ====
+  -> 捌けた=300.0/300 drop=82 p50=313 p99=1067 | 動作中の枠=14.14コア(Pending分 2.48) Pod=37(Pending 2) 効率=21.2周/コア softirq=2.61
+     種類別p50: 商品299 / カート271 / 購入359 ms | k6 0.48コア | TCP再送 0/s | 絞り[emailservice/email=15%;emailservice/email=14%;emailservice/email=10%;frontend/server=2%;paymentservice/payment=2%]
+     台数: adservice:4 cartservice:4 checkoutservice:4 currencyservice:4 emailservice:5 frontend:3 paymentservice:5 recommendationservice:3 redis-cart:1 shippingservice:4
+################ CYCLE 3 / 3 2026-08-29T23:37:11+09:00 ################
+---- deploy frontcatalog (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/summer2026/rightsize-requests.csv
+  枠(req/上限lim): adservice=server:69m/500m, cartservice=server:361m/960m, checkoutservice=checkout:321m/1200m, currencyservice=server:523m/1600m, emailservice=email:119m/300m, frontend=server:1077m/1600m,productcatalog:662m/1, paymentservice=payment:84m/300m, recommendationservice=server:742m/1600m, redis-cart=redis:50m/500m, shippingservice=server:133m/560m, 
+  deploy: adservice=3/3 cartservice=3/3 checkoutservice=3/3 currencyservice=3/3 emailservice=3/3 frontend=3/3 paymentservice=3/3 recommendationservice=3/3 redis-cart=1/1 shippingservice=3/3 
+==== [cyc3][frontcatalog] target=300周/秒 2026-08-29T23:39:29+09:00 ====
+  -> 捌けた=300.0/300 drop=13 p50=220 p99=777 | 動作中の枠=14.08コア(Pending分 2.02) Pod=34(Pending 5) 効率=21.3周/コア softirq=2.40
+     種類別p50: 商品218 / カート215 / 購入227 ms | k6 0.45コア | TCP再送 0/s | 絞り[emailservice/email=39%;adservice/server=17%;cartservice/server=17%;cartservice/server=5%;emailservice/email=3%]
+     台数: adservice:3 cartservice:4 checkoutservice:4 currencyservice:3 emailservice:4 frontend:3 paymentservice:4 recommendationservice:4 redis-cart:1 shippingservice:4
+================ BUNDLE-VS-LOSS2 DONE 2026-08-29T23:47:14+09:00 ================

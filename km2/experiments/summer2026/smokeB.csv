@@ -1,0 +1,2 @@
+cycle,arm,target_rate,iter_rate,dropped,failed_rate,p50,p99,running_cores,pending_cores,eff_iter_per_running_core,pods,pending,node_cores,softirq_mc_per_iter,k6_cores,tcp_retrans_s,prod_p50,cart_p50,chk_p50,prod_p99,cart_p99,chk_p99,throttled,replicas,limit_x
+1,frontcatalog,250,250.0,0,0,11.2,24.6,12.89,0.0,19.4,31,0,9.6733,2.56,0.39,0.0,9.0,10.7,14.5,18.2,21.8,28.7,,adservice:3 cartservice:4 checkoutservice:3 currencyservice:3 emailservice:4 frontend:3 paymentservice:4 recommendationservice:3 redis-cart:1 shippingservice:3,10

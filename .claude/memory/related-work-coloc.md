@@ -10,7 +10,8 @@ metadata:
 本研究(K8s Pod 同居で資源効率↑)の先行研究調査(2026-06-15)。全文は `km2/approach/related_work.md`。
 
 **直接の先行研究:**
-- **Wickramanayaka, Keppitiyagama, Thilakarathna (2022)** "Communication-Affinity Aware Colocation and Merging of Containers", IJ Advances in ICT for Emerging Regions 15(3), DOI 10.4038/icter.v15i3.7251(OA)。ほぼ同一テーマ。3段階 Spreaded(overlay K_o)→Colocated(bridge K_b)→Merged(loopback K_l)、不等式 K_l<K_b<K_o。Binary Knapsack で配置。Docker Swarm + Sock-Shop。tcpdump で**通信バイト量(affinity)**を計測。colocation で52〜57%減、merging で+13%、計58.5%減・実行時間13.4%短縮。
+- **Wickramanayaka, Keppitiyagama, Thilakarathna (2022)** "Communication-Affinity Aware Colocation and Merging of Containers", IJ Advances in ICT for Emerging Regions 15(3), DOI 10.4038/icter.v15i3.7251(OA)。ほぼ同一テーマ。3段階 Spreaded(overlay K_o)→Colocated(bridge K_b)→Merged(loopback K_l)、不等式 K_l<K_b<K_o。Binary Knapsack で配置(**制約はCPU使用量のみ**)。Docker Swarm + Sock-Shop/Page-Rank(ホストは4/5/5/4コアの4台)。
+**★ベースライン=Docker Swarm の Spread 戦略=「1サービス=1ホスト」(原典PDFで2026-08-29確認)。** Table I: 初期 n サービス/n コンテナ/N ホスト → colocation後 ホストがM<Nに減る(コンテナ数不変) → merging後 コンテナがm<nに減る。**Merged は 1コンテナ内2プロセス=コンテナ分離を捨てている**(同一ベースイメージ必須、Dockerfile結合+シェルスクリプトで2起動)。⇒ **本研究の「分離(normal)」は単一ノードなので ICTer の Colocated に相当し、ベースライン(Spreaded)ではない**=大きい効果(overlay分52-57%)は最初から手に入っており測れていない。K8s の Pod 同居は**分離を保ったまま loopback**=Colocated と Merged の中間=差別化点が原典で裏付けられた。tcpdump で**通信バイト量(affinity)**を計測。colocation で52〜57%減、merging で+13%、計58.5%減・実行時間13.4%短縮。
 - **Alvaro et al. (2024)** "NotNets: Accelerating Microservices by Bypassing the Network" arXiv:2404.06581。CPU サイクルの**25〜40%しか業務ロジックに使われない**(残りは通信: serialization/HTTP/gRPC core/kernel)。CXL 共有メモリで RPC をネットワークバイパス→echo レイテンシ約1桁減。
 
 **最重要の示唆 = なぜ単一ノードで差が出ないか:** 大きな差は overlay の有無(K_o→K_b, 約52〜57%)で生まれ、bridge→loopback(K_b→K_l, 約13%)は小さい。Suo et al.(2018 INFOCOM)実測: overlay は host比スループット82.8%減。**本研究の単一ノード・Envoy無しでは overlay が無く、測れるのは一番小さい K_b→K_l 差だけ**→ CPU/req 差がノイズ床に埋もれるのは文献的に当然。有意差には ①マルチノード+CNI overlay か ②高負荷・多反復で小差を精密計測、が必要。

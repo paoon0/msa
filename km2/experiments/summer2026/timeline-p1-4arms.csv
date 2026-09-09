@@ -1,0 +1,12 @@
+cycle,arm,target_rate,limit_x,t_rel,deploy,container,hpa_util_pct,current_replicas,desired_replicas,ready_replicas,pending_pods
+1,normal,200,0,0,adservice,-,,1,0,1,0
+1,normal,200,0,0,cartservice,-,,1,0,1,0
+1,normal,200,0,0,checkoutservice,checkout,0,1,1,1,0
+1,normal,200,0,0,currencyservice,server,0,1,1,1,0
+1,normal,200,0,0,emailservice,email,1,1,1,1,0
+1,normal,200,0,0,frontend,server,0,1,1,1,0
+1,normal,200,0,0,paymentservice,payment,1,1,1,1,0
+1,normal,200,0,0,productcatalogservice,-,,,0,1,0
+1,normal,200,0,0,recommendationservice,-,,,0,1,0
+1,normal,200,0,0,redis-cart,-,,1,1,1,0
+1,normal,200,0,0,shippingservice,-,,,0,1,0

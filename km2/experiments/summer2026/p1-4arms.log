@@ -1,0 +1,7 @@
+================ BUNDLE-VS-LOSS2 START 2026-09-01T15:35:20+09:00 arms=[normal frontcatalog frontreco frontcart] rates=[200] cycles=3 HPA=70%/1-8台 warm=180s meas=240s sample=15s 様子見=増30s/減60s 開始1台 rightsize=1 limit_x=0 ================
+################ CYCLE 1 / 3 2026-09-01T15:35:21+09:00 ################
+---- deploy normal (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/summer2026/rightsize-requests.csv
+  枠(req/上限lim): adservice=server:69m/500m, cartservice=server:361m/960m, checkoutservice=checkout:321m/1200m, currencyservice=server:523m/1600m, emailservice=email:119m/300m, frontend=server:1077m/1600m, paymentservice=payment:84m/300m, productcatalogservice=server:662m/1, recommendationservice=server:742m/1600m, redis-cart=redis:50m/500m, shippingservice=server:133m/560m, 
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][normal] target=200周/秒 2026-09-01T15:36:16+09:00 ====

@@ -1,0 +1,98 @@
+================ PERSERVICE-CPU START 2026-08-18T22:44:18+09:00 arms=[normal] rates=[10 30 60 90 120 150] cycles=1 reps=1 warm=30s meas=180s (枠=マニフェストのまま/HPA無し) ================
+################ CYCLE 1 / 1 2026-08-18T22:44:18+09:00 ################
+---- deploy normal (固定1台, HPA無し, 枠は変更しない) ----
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][normal] target=10周/秒 2026-08-18T22:45:11+09:00 ====
+  node_cores=1.1
+  -> iter_rate=10.0/10 dropped=0 p99=18 failed=0.000
+     pod                      container                 使用m      枠m     利用率%      mc秒/周      絞り%
+     frontend                 server                  181.4    1000     18.1      18.13      0.0
+     productcatalogservice    server                  106.8     600     17.8      10.68      0.0
+     recommendationservice    server                   99.3    1200      8.3       9.92      0.0
+     currencyservice          server                   97.0     800     12.1       9.69      0.0
+     cartservice              server                   58.1     560     10.4       5.81      0.0
+     checkoutservice          checkout                 47.8     800      6.0       4.78      0.0
+     adservice                server                   34.8     300     11.6       3.48      0.6
+     paymentservice           payment                  18.6     200      9.3       1.86      0.0
+     shippingservice          server                   18.6     320      5.8       1.85      0.0
+     emailservice             email                    15.1     200      7.5       1.51      0.0
+     redis-cart               redis                    10.1     300      3.4       1.01      0.0
+==== [cyc1][normal] target=30周/秒 2026-08-18T22:49:11+09:00 ====
+  node_cores=1.96
+  -> iter_rate=30.0/30 dropped=0 p99=16 failed=0.000
+     pod                      container                 使用m      枠m     利用率%      mc秒/周      絞り%
+     frontend                 server                  392.3    1000     39.2      13.07      0.0
+     recommendationservice    server                  245.7    1200     20.5       8.19      0.0
+     productcatalogservice    server                  245.7     600     40.9       8.19      0.0
+     currencyservice          server                  193.5     800     24.2       6.45      0.0
+     cartservice              server                  122.4     560     21.9       4.08      0.0
+     checkoutservice          checkout                100.3     800     12.5       3.34      0.0
+     shippingservice          server                   41.4     320     12.9       1.38      0.0
+     emailservice             email                    39.2     200     19.6       1.31      0.0
+     paymentservice           payment                  33.0     200     16.5       1.10      0.1
+     adservice                server                   32.0     300     10.7       1.07      0.9
+     redis-cart               redis                    16.4     300      5.5       0.55      0.0
+==== [cyc1][normal] target=60周/秒 2026-08-18T22:53:12+09:00 ====
+  node_cores=2.44
+  -> iter_rate=60.0/60 dropped=0 p99=12 failed=0.000
+     pod                      container                 使用m      枠m     利用率%      mc秒/周      絞り%
+     frontend                 server                  481.0    1000     48.1       8.02      0.0
+     recommendationservice    server                  324.3    1200     27.0       5.41      0.0
+     productcatalogservice    server                  302.5     600     50.4       5.04      0.0
+     currencyservice          server                  273.3     800     34.2       4.55      0.0
+     checkoutservice          checkout                150.7     800     18.8       2.51      0.0
+     cartservice              server                  150.7     560     26.9       2.51      0.0
+     shippingservice          server                   62.8     320     19.6       1.05      0.0
+     emailservice             email                    59.6     200     29.8       0.99      0.0
+     paymentservice           payment                  42.5     200     21.3       0.71      0.1
+     adservice                server                   28.3     300      9.4       0.47      0.2
+     redis-cart               redis                    20.1     300      6.7       0.34      0.0
+==== [cyc1][normal] target=90周/秒 2026-08-18T22:57:12+09:00 ====
+  node_cores=3.15
+  -> iter_rate=90.0/90 dropped=0 p99=290 failed=0.000
+     pod                      container                 使用m      枠m     利用率%      mc秒/周      絞り%
+     frontend                 server                  699.6    1000     70.0       7.77      3.6
+     productcatalogservice    server                  400.0     600     66.7       4.44      0.2
+     recommendationservice    server                  361.4    1200     30.1       4.01      0.0
+     currencyservice          server                  320.9     800     40.1       3.57      0.0
+     cartservice              server                  220.0     560     39.3       2.44      0.0
+     checkoutservice          checkout                184.9     800     23.1       2.05      0.0
+     shippingservice          server                   84.3     320     26.3       0.94      0.0
+     emailservice             email                    81.2     200     40.6       0.90      0.5
+     paymentservice           payment                  55.8     200     27.9       0.62      0.1
+     adservice                server                   41.0     300     13.7       0.46      0.2
+     redis-cart               redis                    24.2     300      8.1       0.27      0.0
+     !! スロットリング検出(カーブが寝ている可能性): frontend/server=4%
+==== [cyc1][normal] target=120周/秒 2026-08-18T23:01:12+09:00 ====
+  node_cores=4.03
+  -> iter_rate=120.0/120 dropped=9 p99=443 failed=0.000
+     pod                      container                 使用m      枠m     利用率%      mc秒/周      絞り%
+     frontend                 server                  853.3    1000     85.3       7.11      6.6
+     recommendationservice    server                  538.4    1200     44.9       4.49      0.0
+     productcatalogservice    server                  521.1     600     86.8       4.34      0.5
+     currencyservice          server                  458.6     800     57.3       3.82      0.0
+     cartservice              server                  311.8     560     55.7       2.60      0.0
+     checkoutservice          checkout                247.2     800     30.9       2.06      0.0
+     shippingservice          server                  112.1     320     35.0       0.93      0.0
+     emailservice             email                    98.8     200     49.4       0.82      0.5
+     paymentservice           payment                  79.7     200     39.8       0.66      0.1
+     adservice                server                   47.7     300     15.9       0.40      0.2
+     redis-cart               redis                    35.8     300     11.9       0.30      0.0
+     !! スロットリング検出(カーブが寝ている可能性): frontend/server=7%
+==== [cyc1][normal] target=150周/秒 2026-08-18T23:05:12+09:00 ====
+  node_cores=5.42
+  -> iter_rate=150.0/150 dropped=20 p99=612 failed=0.000
+     pod                      container                 使用m      枠m     利用率%      mc秒/周      絞り%
+     frontend                 server                 1379.0    1000    137.9       9.19     63.0
+     recommendationservice    server                  875.5    1200     73.0       5.84      0.0
+     productcatalogservice    server                  677.3     600    112.9       4.51      2.4
+     currencyservice          server                  474.9     800     59.4       3.17      0.0
+     cartservice              server                  354.7     560     63.3       2.36      0.0
+     checkoutservice          checkout                344.5     800     43.1       2.30      0.0
+     shippingservice          server                  128.4     320     40.1       0.86      0.0
+     emailservice             email                   110.5     200     55.2       0.74      3.0
+     adservice                server                   71.3     300     23.8       0.48      0.0
+     paymentservice           payment                  67.0     200     33.5       0.45      0.2
+     redis-cart               redis                    47.4     300     15.8       0.32      0.2
+     !! スロットリング検出(カーブが寝ている可能性): frontend/server=63%, productcatalogservice/server=2%, emailservice/email=3%
+================ PERSERVICE-CPU DONE 2026-08-18T23:09:13+09:00 ================

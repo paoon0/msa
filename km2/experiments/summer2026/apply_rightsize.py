@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+"""適正化した枠(requests)を、いま動いている Deployment に当てるためのコマンドを出力する。
+
+標準入力: kubectl get deploy -n <ns> -o json
+標準出力: `kubectl set resources ...` のコマンド行(呼び出し側の bash が実行する)
+
+考え方: 枠は「サービスごと」に決まる。束ねたPodでは同じPodの中に複数サービスのコンテナが入るので、
+  コンテナ名からどのサービスかを引いて、それぞれに対応する値を当てる。
+  (同居してもアプリのCPU消費は変わらないことは実測済みなので、分離時に測った値をそのまま使える)
+
+環境変数:
+  TABLE   = 適正化テーブルCSV
+  NS      = namespace
+  LIMIT_X = CPU上限(limits)を requests の何倍にするか。0 または未設定ならマニフェストのまま触らない。
+            (2026-08-20 の発見: limits はカーネルの「100msごとに quota だけ」という配給制なので、
+             バーストで来る仕事は上限に叩かれて強制停止される。email が48%停止させられていた。
+             LIMIT_X を大きく取ると実質「絞りなし」になり、崩壊の原因が絞りかどうかを切り分けられる)
+  LIMIT_MIN_M = 上限の下限値[m]。小さすぎる上限を作らないための保険(既定 200m)。
+  RS_SCALE  = 枠(requests)を何倍にするか。既定1.0。
+            1/3 にすると利用率が3倍になり、必要台数も約3倍になる。
+            狙い: 粒度損は「余分な1台の枠」なので、台数の刻みを細かくすると損の分解能が上がる
+            (これまでは台数が1〜3台しかなく、損が0か1台分かの二択で中間が測れなかった)。
+  LIMIT_SCALE = 上限(limits)を何倍にするか。既定0=触らない。
+            requests と同じ倍率にしないと、絞りの当たり方が変わって条件が揃わない。
+  RS_SERVICES = 適正化枠を当てる deploy 名を空白区切りで列挙。未設定なら全サービスに当てる。
+            ここに無いサービスはマニフェストの枠のまま(=「まとめている部分以外は通常の枠に戻す」)。
+            狙い: 束ねの候補(frontend/productcatalog/recommendation/cart)だけ枠を揃え、
+            それ以外は既定値に戻して、絞りすぎによる過剰スケール(ad 69m など)の人工物を持ち込まない。
+            ※ 全アームで同じ集合を指定すること。アームごとに変えると粒度損の基準が変わって比較が壊れる。
+"""
+import sys, json, csv, os
+
+ns = os.environ.get('NS', 'exp')
+table = os.environ.get('TABLE', 'km2/experiments/summer2026/rightsize-requests.csv')
+limit_x = float(os.environ.get('LIMIT_X', '0') or 0)
+limit_min = int(float(os.environ.get('LIMIT_MIN_M', '200') or 200))
+rs_services = set((os.environ.get('RS_SERVICES') or '').replace(',', ' ').split())
+rs_scale = float(os.environ.get('RS_SCALE', '1') or 1)
+limit_scale = float(os.environ.get('LIMIT_SCALE', '0') or 0)
+
+
+def _cpu_m(v):
+    if not v: return 0.0
+    v = str(v)
+    return float(v[:-1]) if v.endswith('m') else float(v) * 1000.0
+
+# サービス識別: (deploy名, コンテナ名) → テーブルの行キー
+# 束ねたPodでは deploy名が frontend でも、コンテナ名が相方サービスを表す。
+CONTAINER_TO_SERVICE = {
+    'productcatalog': ('productcatalogservice', 'server'),
+    'recommendation': ('recommendationservice', 'server'),
+    'cartservice':    ('cartservice', 'server'),
+    'checkout':       ('checkoutservice', 'checkout'),
+    'email':          ('emailservice', 'email'),
+    'payment':        ('paymentservice', 'payment'),
+    'redis':          ('redis-cart', 'redis'),
+}
+
+req = {}
+for r in csv.DictReader(open(table)):
+    req[(r['deploy'], r['container'])] = int(float(r['request_m']))
+
+try:
+    d = json.load(sys.stdin)
+except Exception as e:
+    print("# apply_rightsize: JSON読み取り失敗 %s" % e, file=sys.stderr)
+    sys.exit(1)
+
+missing = []
+for it in d.get('items', []):
+    dep = it['metadata']['name']
+    for c in it['spec']['template']['spec']['containers']:
+        cn = c['name']
+        if cn == 'istio-proxy':
+            continue
+        key = CONTAINER_TO_SERVICE.get(cn, (dep, cn))
+        if key not in req:
+            missing.append((dep, cn))
+            continue
+        if rs_services and key[0] not in rs_services:
+            continue                      # 適正化の対象外 = マニフェストの枠のまま
+        r_m = req[key] * rs_scale
+        flags = "--requests=cpu=%dm" % round(r_m)
+        if limit_x > 0:
+            l_m = max(int(round(r_m * limit_x)), limit_min)
+            flags += " --limits=cpu=%dm" % l_m
+        elif limit_scale > 0:
+            # マニフェストの上限を同じ倍率で縮める(requests だけ縮めると絞りの条件が変わる)
+            cur_lim = _cpu_m(((c.get('resources') or {}).get('limits') or {}).get('cpu'))
+            if cur_lim > 0:
+                flags += " --limits=cpu=%dm" % round(cur_lim * limit_scale)
+        print("kubectl set resources deploy/%s -n %s --containers=%s %s >/dev/null"
+              % (dep, ns, cn, flags))
+for m in missing:
+    print("# !! 適正化テーブルに無い: deploy=%s container=%s (枠はマニフェストのまま)" % m, file=sys.stderr)

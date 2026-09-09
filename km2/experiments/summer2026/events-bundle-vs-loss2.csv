@@ -1,0 +1,35 @@
+cycle,arm,target_rate,time,object,message
+1,normal,200,2026-08-18T20:29:21Z,adservice,New size: 1; reason: All metrics below target
+1,frontcatalog,200,2026-08-18T20:37:49Z,adservice,New size: 1; reason: All metrics below target
+1,frontcatalog,200,2026-08-18T20:38:19Z,adservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+1,frontreco,200,2026-08-18T20:46:15Z,adservice,New size: 1; reason: All metrics below target
+1,frontreco,200,2026-08-18T20:46:45Z,adservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+1,frontreco,200,2026-08-18T20:47:01Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+1,frontcart,200,2026-08-18T20:52:43Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+1,frontcart,200,2026-08-18T20:54:43Z,adservice,New size: 1; reason: All metrics below target
+1,frontcart,200,2026-08-18T20:55:13Z,adservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target
+2,normal,200,2026-08-18T21:03:13Z,adservice,New size: 1; reason: All metrics below target
+2,normal,200,2026-08-18T21:03:43Z,adservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+2,frontcatalog,200,2026-08-18T21:11:12Z,paymentservice,New size: 1; reason: All metrics below target
+2,frontcatalog,200,2026-08-18T21:11:40Z,adservice,New size: 1; reason: All metrics below target
+2,frontcatalog,200,2026-08-18T21:11:55Z,adservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+2,frontcatalog,200,2026-08-18T21:13:11Z,currencyservice,New size: 1; reason: All metrics below target
+2,frontreco,200,2026-08-18T21:20:07Z,adservice,New size: 1; reason: All metrics below target
+2,frontcart,200,2026-08-18T21:25:50Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+2,frontcart,200,2026-08-18T21:28:49Z,adservice,New size: 1; reason: All metrics below target
+2,frontcart,200,2026-08-18T21:29:34Z,adservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+3,normal,200,2026-08-18T21:37:04Z,adservice,New size: 1; reason: All metrics below target
+3,frontcatalog,200,2026-08-18T21:42:47Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+3,frontcatalog,200,2026-08-18T21:45:31Z,adservice,New size: 1; reason: All metrics below target
+3,frontcatalog,200,2026-08-18T21:46:02Z,adservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target
+3,frontreco,200,2026-08-18T21:53:43Z,adservice,New size: 1; reason: All metrics below target
+3,frontreco,200,2026-08-18T21:53:44Z,productcatalogservice,New size: 2; reason: All metrics below target
+3,frontreco,200,2026-08-18T21:53:59Z,emailservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+3,frontreco,200,2026-08-18T21:53:59Z,paymentservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+3,frontreco,200,2026-08-18T21:54:44Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target
+3,frontcart,200,2026-08-18T22:01:56Z,paymentservice,New size: 1; reason: All metrics below target
+3,frontcart,200,2026-08-18T22:02:10Z,adservice,New size: 1; reason: All metrics below target
+3,frontcart,200,2026-08-18T22:02:11Z,currencyservice,New size: 1; reason: All metrics below target
+3,frontcart,200,2026-08-18T22:02:26Z,paymentservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+3,frontcart,200,2026-08-18T22:02:40Z,adservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target
+3,frontcart,200,2026-08-18T22:02:41Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target

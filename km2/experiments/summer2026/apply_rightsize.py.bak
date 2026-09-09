@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+"""適正化した枠(requests)を、いま動いている Deployment に当てるためのコマンドを出力する。
+
+標準入力: kubectl get deploy -n <ns> -o json
+標準出力: `kubectl set resources ...` のコマンド行(呼び出し側の bash が実行する)
+
+考え方: 枠は「サービスごと」に決まる。束ねたPodでは同じPodの中に複数サービスのコンテナが入るので、
+  コンテナ名からどのサービスかを引いて、それぞれに対応する値を当てる。
+  (同居してもアプリのCPU消費は変わらないことは実測済みなので、分離時に測った値をそのまま使える)
+
+環境変数: TABLE=適正化テーブルCSV, NS=namespace
+"""
+import sys, json, csv, os
+
+ns = os.environ.get('NS', 'exp')
+table = os.environ.get('TABLE', 'km2/experiments/summer2026/rightsize-requests.csv')
+
+# サービス識別: (deploy名, コンテナ名) → テーブルの行キー
+# 束ねたPodでは deploy名が frontend でも、コンテナ名が相方サービスを表す。
+CONTAINER_TO_SERVICE = {
+    'productcatalog': ('productcatalogservice', 'server'),
+    'recommendation': ('recommendationservice', 'server'),
+    'cartservice':    ('cartservice', 'server'),
+    'checkout':       ('checkoutservice', 'checkout'),
+    'email':          ('emailservice', 'email'),
+    'payment':        ('paymentservice', 'payment'),
+    'redis':          ('redis-cart', 'redis'),
+}
+
+req = {}
+for r in csv.DictReader(open(table)):
+    req[(r['deploy'], r['container'])] = int(float(r['request_m']))
+
+try:
+    d = json.load(sys.stdin)
+except Exception as e:
+    print("# apply_rightsize: JSON読み取り失敗 %s" % e, file=sys.stderr)
+    sys.exit(1)
+
+missing = []
+for it in d.get('items', []):
+    dep = it['metadata']['name']
+    for c in it['spec']['template']['spec']['containers']:
+        cn = c['name']
+        if cn == 'istio-proxy':
+            continue
+        key = CONTAINER_TO_SERVICE.get(cn, (dep, cn))
+        if key not in req:
+            missing.append((dep, cn))
+            continue
+        print("kubectl set resources deploy/%s -n %s --containers=%s --requests=cpu=%dm >/dev/null"
+              % (dep, ns, cn, req[key]))
+for m in missing:
+    print("# !! 適正化テーブルに無い: deploy=%s container=%s (枠はマニフェストのまま)" % m, file=sys.stderr)

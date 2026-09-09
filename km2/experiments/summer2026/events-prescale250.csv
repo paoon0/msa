@@ -1,0 +1,14 @@
+cycle,arm,target_rate,limit_x,time,object,message
+1,frontcatalog,250,2026-08-29T17:11:10Z,adservice,New size: 4; reason: All metrics below target
+1,frontcatalog,250,2026-08-29T17:12:10Z,adservice,New size: 3; reason: All metrics below target
+1,frontcatalog,250,2026-08-29T17:12:41Z,emailservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target
+2,frontcatalog,250,2026-08-29T17:20:55Z,adservice,New size: 5; reason: All metrics below target
+2,frontcatalog,250,2026-08-29T17:21:56Z,emailservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target
+2,frontcatalog,250,2026-08-29T17:22:40Z,adservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target
+2,frontcatalog,250,2026-08-29T17:24:40Z,adservice,New size: 4; reason: All metrics below target
+2,frontcatalog,250,2026-08-29T17:25:10Z,adservice,New size: 3; reason: All metrics below target
+3,frontcatalog,250,2026-08-29T17:30:56Z,adservice,New size: 6; reason: All metrics below target
+3,frontcatalog,250,2026-08-29T17:31:26Z,adservice,New size: 5; reason: All metrics below target
+3,frontcatalog,250,2026-08-29T17:32:41Z,adservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target
+3,frontcatalog,250,2026-08-29T17:34:11Z,adservice,New size: 4; reason: All metrics below target
+3,frontcatalog,250,2026-08-29T17:35:26Z,adservice,New size: 3; reason: All metrics below target

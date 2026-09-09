@@ -1,0 +1,305 @@
+#!/usr/bin/env bash
+# 【夏休み実験1・第2版】束ねの「通信の得」と「台数の損」の対決。第1版(bundle-vs-loss.sh)の反省を反映。
+#
+# 第1版で分かった問題:
+#   (a) Pending の Pod(動いていない=CPUを使っていない)を予約枠に数えてしまい、結論を取り違えた。
+#   (b) 束ねと無関係なサービス(checkout/payment/shipping)の台数がアームごとに違い、
+#       そのノイズ(1.32コア)が束ね起因の差(0.64コア)より大きかった。
+#   (c) 「HPA がいつ・何を見て台数を変えたか」が記録されておらず、事後に説明できなかった。
+#
+# 第2版の変更:
+#   1. 15秒ごと(HPAの判断周期と同じ)に時系列を記録する。
+#      - HPA が判断に使った利用率(コンテナ別 status.currentMetrics)
+#      - 現在の台数 / HPAが望んだ台数(desired) / Ready台数 / Pending Pod数
+#   2. 台数変更イベント(SuccessfulRescale)の時刻と理由文を記録。
+#   3. 最終行の予約枠は「動いている Pod」と「Pending 込み」の両方を出す(取り違え防止)。
+#   4. 反復(CYCLES)を既定3にし、束ね起因の差とノイズを分離できるようにする。
+#   ※ 束ねと無関係なサービスの HPA は外さない(ユーザ判断)。代わりに台数を全部記録し、
+#     事後に「束ねに関係する部分」だけ抜き出して比較する。
+#
+# 出力:
+#   results-bundle-vs-loss2.csv  … 1点1行のまとめ
+#   timeline-bundle-vs-loss2.csv … 15秒ごとの時系列(コンテナ別利用率・台数)
+#   events-bundle-vs-loss2.csv   … 台数変更イベント
+set -u
+NS=exp
+REPO=/home/mizuki/ダウンロード/msa
+DIR=$REPO/km2/experiments/summer2026
+K6DIR=$REPO/km2/experiments/k6
+ARMS=${ARMS:-"normal frontcatalog frontreco frontcart"}
+RATES=${RATES:-"200 260"}
+HPA_MIN=${HPA_MIN:-1}
+HPA_MAX=${HPA_MAX:-8}
+HPA_TARGET=${HPA_TARGET:-70}
+# HPAの様子見時間。既定(増やす0秒/減らす300秒)だと、立ち上がりの増やしすぎが計測窓(240秒)の間ずっと残るため、
+# 増やす側に少し様子見を入れ、減らす側を短くして「落ち着いた台数」に計測窓内で到達させる。
+SU_WIN=${SU_WIN:-30}
+SD_WIN=${SD_WIN:-60}
+# 負荷をいきなり掛けると1台目が過負荷になりHPAが暴走するので、開始時の台数を少し多めにしておく
+PRESCALE=${PRESCALE:-2}
+WARM=${WARM:-180}
+MEAS=${MEAS:-240}
+# 閲覧型(商品を見るだけで買わない)利用者の到着レート [周/秒]。0 で従来どおり購入型のみ。
+# 目的: 全員が購入型だと全サービスの忙しさが完全に連動し、需要のズレ(=粒度損の源)が作れない。
+# 空白区切りで複数指定できる(例 "0 100 200 300")。RATES と同じく1回のデプロイで連続測定する。
+BROWSE_RATE=${BROWSE_RATE:-0}
+SAMPLE=${SAMPLE:-15}          # 時系列の採取間隔[秒]。HPAの判断周期と同じ15秒が既定
+PRE_VUS=${PRE_VUS:-600}
+MAX_VUS=${MAX_VUS:-4000}
+CYCLES=${CYCLES:-3}
+RIGHTSIZE=${RIGHTSIZE:-0}     # 1 = 枠(requests)を適正化テーブルで置き換える(規則: (アイドル+1周CPU×k)/0.7)
+RSTABLE=${RSTABLE:-$DIR/rightsize-requests.csv}
+# CPU上限(limits)のつまみ。0=マニフェストのまま触らない / >0 = limits を requests の LIMIT_X 倍に置き換える。
+# 【2026-08-20の発見】limits は「100msごとに quota だけ」というカーネルの配給制なので、バーストで来る仕事は
+#   上限に叩かれて強制停止(スロットリング)される。250周/s以上の崩壊時、email が 48% 停止させられていた。
+#   LIMIT_X=10 なら実質「絞りなし」= 崩壊が消えれば絞りが原因と確定できる(実験B)。
+#   ※ RIGHTSIZE=1 のときだけ効く(枠の置き換えと同じ経路で当てるため)。
+LIMIT_X=${LIMIT_X:-0}
+LIMIT_MIN_M=${LIMIT_MIN_M:-200}
+# 適正化枠を当てるサービスの限定。空なら全サービス。
+# 既定 = 束ねの候補4つだけ。それ以外はマニフェストの枠に戻す(2026-09-01 ユーザ指示)。
+RS_SERVICES=${RS_SERVICES:-"frontend productcatalogservice recommendationservice cartservice"}
+# 枠と上限を何倍にするか。RS_SCALE=0.3333 で1/3。台数の刻みを細かくして粒度損の分解能を上げる用。
+# LIMIT_SCALE は requests と同じ倍率にすること(片方だけ縮めると絞りの条件が変わる)。
+RS_SCALE=${RS_SCALE:-1}
+LIMIT_SCALE=${LIMIT_SCALE:-0}
+CYC_START=${CYC_START:-1}     # サイクル番号の開始値(条件を交互に回すとき、番号を通しにするために使う)
+CSV=${CSV:-$DIR/results-bundle-vs-loss2.csv}
+TL=${TL:-$DIR/timeline-bundle-vs-loss2.csv}
+EV=${EV:-$DIR/events-bundle-vs-loss2.csv}
+LOG=${LOG:-$DIR/bundle-vs-loss2.log}
+PROM="http://prometheus-grafana-kube-pr-prometheus.monitoring.svc:9090"
+ROLLOUT=300s
+
+exec > >(tee -a "$LOG") 2>&1
+echo "================ BUNDLE-VS-LOSS2 START $(date -Is) arms=[$ARMS] rates=[$RATES] cycles=$CYCLES HPA=${HPA_TARGET}%/${HPA_MIN}-${HPA_MAX}台 warm=${WARM}s meas=${MEAS}s browse=${BROWSE_RATE}周/s sample=${SAMPLE}s 様子見=増${SU_WIN}s/減${SD_WIN}s 開始${PRESCALE}台 rightsize=${RIGHTSIZE} limit_x=${LIMIT_X} ================"
+[ -s "$CSV" ] || echo "cycle,arm,target_rate,iter_rate,dropped,failed_rate,p50,p99,running_cores,pending_cores,eff_iter_per_running_core,pods,pending,node_cpu_sec,softirq_cpu_sec,k6_cpu_sec,prod_p50,cart_p50,chk_p50,prod_p99,cart_p99,chk_p99,replicas,limit_x,dropped_win,started,replicas_at_window_start,replicas_changed_in_window,browse_rate_target,browse_rate,browse_dropped_win,browse_p50,browse_p99,rs_scale,limit_scale,reserved_core_sec,pending_core_sec,reserved_avg_cores,n_samples" > "$CSV"
+[ -s "$TL" ] || echo "cycle,arm,target_rate,limit_x,browse_rate,t_rel,deploy,container,hpa_util_pct,current_replicas,desired_replicas,ready_replicas,pending_pods,ns_running_cores,ns_pending_cores" > "$TL"
+[ -s "$EV" ] || echo "cycle,arm,target_rate,limit_x,browse_rate,time,object,message" > "$EV"
+
+ensure_promq(){ [ "$(kubectl get pod promq -n $NS -o jsonpath='{.status.phase}' 2>/dev/null)" = Running ] && return
+  kubectl delete pod promq -n $NS --ignore-not-found >/dev/null 2>&1
+  kubectl run promq -n $NS --image=curlimages/curl:latest --restart=Never --command -- sleep 86400 >/dev/null 2>&1
+  for i in $(seq 1 30);do [ "$(kubectl get pod promq -n $NS -o jsonpath='{.status.phase}' 2>/dev/null)" = Running ]&&break;sleep 2;done; }
+promq(){ local q="$1" i out; for i in 1 2 3 4 5;do ensure_promq
+  out=$(kubectl exec promq -n $NS -- curl -s --max-time 25 "$PROM/api/v1/query" --data-urlencode "query=$q" 2>/dev/null)
+  [ -n "$out" ]&&{ echo "$out"; return; }; sleep 4; done; echo ""; }
+scalar(){ python3 -c "import sys,json;r=json.load(sys.stdin).get('data',{}).get('result',[]);print(round(float(r[0]['value'][1]),4) if r else 'NA')" 2>/dev/null; }
+
+apply_arm(){ local arm=$1
+  case "$arm" in
+    normal)       for f in frontend checkoutservice cartservice productcatalogservice currencyservice \
+                            paymentservice shippingservice emailservice recommendationservice adservice; do
+                    kubectl apply -f $REPO/km2/normal/$f.yaml -n $NS >/dev/null; done ;;
+    frontcatalog) for y in $REPO/km2/frontcatalog/*.yaml;do case "$y" in *kustomization*|*loadgenerator*)continue;;esac
+                    kubectl apply -f "$y" -n $NS >/dev/null; done ;;
+    frontreco)    for y in $REPO/km2/frontreco/*.yaml;do case "$y" in *kustomization*|*loadgenerator*)continue;;esac
+                    kubectl apply -f "$y" -n $NS >/dev/null; done ;;
+    frontrecocartcatalog)
+                  # 4つ束ね: frontend + recommendation + productcatalog + cartservice を1Podに同居。
+                  # redis-cart だけ束ねの外(状態を持つため)。cart→redis は ClusterIP。
+                  # 3つ束ね(km2/frontrecocatalogcart/)に cartservice を足したもの。2026-09-03 作成。
+                  kubectl apply -f $DIR/manifests/frontrecocartcatalog.yaml -n $NS >/dev/null
+                  # cartservice の Deployment は不要(同居)。redis と他サービスは3つ束ねの定義を流用
+                  for y in $REPO/km2/frontrecocatalogcart/*.yaml;do
+                    case "$y" in *kustomization*|*loadgenerator*|*hpa-percontainer*|*frontrecocatalogcart.yaml)continue;;esac
+                    case "$y" in *cartservice.yaml)
+                      # cartservice.yaml には redis-cart も入っているので redis だけ取り出す
+                      # 「redis-cart を含む」で絞ると cartservice の Deployment も一致してしまう
+                      # (REDIS_ADDR: "redis-cart:6379" という文字列を持つため)。
+                      # metadata.name が redis-cart のものだけを残す。
+                      python3 "$DIR/extract_redis.py" "$y" | kubectl apply -f - -n $NS >/dev/null
+                      continue;;
+                    esac
+                    kubectl apply -f "$y" -n $NS >/dev/null; done ;;
+    frontrecocatalog)
+                  # 3つ束ね: frontend + recommendation + productcatalog を1Podに同居。
+                  # cart は redis の分裂を避けるため束ねの外(別Pod, ClusterIP)。
+                  # ディレクトリ名は frontrecocatalogcart だが中身は3コンテナ(名前は旧計画の名残)。
+                  # hpa-percontainer.yaml は同梱HPAなので除外(make_hpa で作り直すため)
+                  for y in $REPO/km2/frontrecocatalogcart/*.yaml;do
+                    case "$y" in *kustomization*|*loadgenerator*|*hpa-percontainer*)continue;;esac
+                    kubectl apply -f "$y" -n $NS >/dev/null; done ;;
+    frontcart)    kubectl apply -f $DIR/manifests/frontcart.yaml -n $NS >/dev/null
+                  kubectl apply -f $DIR/manifests/redis-cart.yaml -n $NS >/dev/null
+                  for y in $REPO/km2/frontcart/*.yaml;do case "$y" in *kustomization*|*loadgenerator*|*frontcart.yaml)continue;;esac
+                    kubectl apply -f "$y" -n $NS >/dev/null; done ;;
+  esac
+}
+
+make_hpa(){ local d cs c yaml
+  for d in $(kubectl get deploy -n $NS -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'); do
+    [ "$d" = redis-cart ] && continue
+    cs=$(kubectl get deploy/$d -n $NS -o jsonpath='{range .spec.template.spec.containers[*]}{.name}{"\n"}{end}')
+    yaml="apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: $d
+spec:
+  scaleTargetRef: {apiVersion: apps/v1, kind: Deployment, name: $d}
+  minReplicas: $HPA_MIN
+  maxReplicas: $HPA_MAX
+  behavior:
+    scaleUp:   {stabilizationWindowSeconds: $SU_WIN}
+    scaleDown: {stabilizationWindowSeconds: $SD_WIN}
+  metrics:"
+    for c in $cs; do
+      case "$c" in istio-proxy) continue;; esac
+      yaml="$yaml
+  - type: ContainerResource
+    containerResource:
+      name: cpu
+      container: $c
+      target: {type: Utilization, averageUtilization: $HPA_TARGET}"
+    done
+    printf '%s\n' "$yaml" | kubectl apply -f - -n $NS >/dev/null || echo "  !! HPA作成失敗: $d"
+  done
+}
+
+deploy(){ local arm=$1
+  echo "---- deploy $arm (HPA ${HPA_TARGET}% コンテナ別, ${HPA_MIN}-${HPA_MAX}台, 枠は変更しない) ----"
+  kubectl delete hpa --all -n $NS >/dev/null 2>&1
+  kubectl delete deploy --all -n $NS >/dev/null 2>&1
+  for i in $(seq 1 40);do [ -z "$(kubectl get deploy -n $NS -o name 2>/dev/null)" ]&&break;sleep 3;done
+  apply_arm "$arm"
+  kubectl delete hpa --all -n $NS >/dev/null 2>&1
+  for d in $(kubectl get deploy -n $NS -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}'); do
+    kubectl patch deploy/$d -n $NS --type=merge -p '{"spec":{"template":{"metadata":{"annotations":{"sidecar.istio.io/inject":"false"}}}}}' >/dev/null 2>&1||true
+    kubectl scale deploy/$d -n $NS --replicas=$PRESCALE >/dev/null 2>&1||true
+  done
+  kubectl scale deploy/redis-cart -n $NS --replicas=1 >/dev/null 2>&1||true
+  if [ "$RIGHTSIZE" = 1 ]; then
+    echo "  枠を適正化テーブルで置換: $RSTABLE (対象: ${RS_SERVICES:-全サービス}, 倍率 req×${RS_SCALE} lim×${LIMIT_SCALE})"
+    [ "$LIMIT_X" != 0 ] && echo "  CPU上限(limits)も置換: requests × $LIMIT_X (下限 ${LIMIT_MIN_M}m)"
+    kubectl get deploy -n $NS -o json | TABLE="$RSTABLE" NS="$NS" LIMIT_X="$LIMIT_X" LIMIT_MIN_M="$LIMIT_MIN_M" RS_SERVICES="$RS_SERVICES" \
+      RS_SCALE="$RS_SCALE" LIMIT_SCALE="$LIMIT_SCALE" \
+      python3 "$DIR/apply_rightsize.py" > /tmp/rs-$$.sh
+    bash /tmp/rs-$$.sh; rm -f /tmp/rs-$$.sh
+  fi
+  for d in $(kubectl get deploy -n $NS -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}'); do
+    kubectl rollout status deploy/$d -n $NS --timeout=$ROLLOUT >/dev/null 2>&1||true; done
+  echo "  枠(req/上限lim): $(kubectl get deploy -n $NS -o jsonpath='{range .items[*]}{.metadata.name}={range .spec.template.spec.containers[*]}{.name}:{.resources.requests.cpu}/{.resources.limits.cpu}{","}{end}{" "}{end}')"
+  make_hpa
+  echo "  deploy: $(kubectl get deploy -n $NS --no-headers 2>/dev/null | awk '{printf "%s=%s ",$1,$2}')"
+}
+
+# --- 15秒ごとの時系列採取: HPAが見ている利用率(コンテナ別)・台数・Pending ---
+#     注意: 集計用pythonは別ファイル(sample_hpa.py)。`python3 - <<'PY'` にすると heredoc が
+#     標準入力を占有し、パイプで渡した JSON が python に届かない(第2版スモークで実際に0行になった)。
+sample_once(){ local cyc=$1 arm=$2 rate=$3 t0=$4 brw=${5:-0}
+  kubectl get hpa,deploy,pods -n $NS -o json 2>/dev/null | \
+    CYC="$cyc" ARM="$arm" RATE="$rate" LX="$LIMIT_X" BRW="$brw" T0="$t0" python3 "$DIR/sample_hpa.py" >> "$TL" 2>/dev/null
+}
+
+run_rate(){ local arm=$1 rate=$2 cyc=${3:-1} brw=${4:-0}
+  echo "==== [cyc$cyc][$arm] 購入=${rate}周/秒 閲覧=${brw}周/秒 $(date -Is) ===="
+  kubectl create configmap k6-script -n $NS --from-file=checkout.js=$K6DIR/checkout.js --dry-run=client -o yaml | kubectl apply -f - >/dev/null 2>&1
+  kubectl delete job k6load -n $NS --ignore-not-found --wait=true >/dev/null 2>&1
+  local ev_since=$(date -u +%Y-%m-%dT%H:%M:%SZ)   # k8sのイベント時刻(UTC)と直接比較できる形
+  sed -e "s/__RATE__/$rate/" -e "s/__BROWSE__/$brw/" -e "s/__WARM__/$WARM/" -e "s/__MEAS__/$MEAS/" -e "s/__PRE__/$PRE_VUS/" -e "s/__MAX__/$MAX_VUS/" "$K6DIR/k6-job.yaml" | kubectl apply -f - -n $NS >/dev/null
+  local pod=""
+  for i in $(seq 1 40);do pod=$(kubectl get pods -n $NS -l app=k6load --sort-by=.metadata.creationTimestamp -o jsonpath='{.items[-1].metadata.name}' 2>/dev/null)
+    [ -n "$pod" ]&&[ "$(kubectl get pod $pod -n $NS -o jsonpath='{.status.phase}' 2>/dev/null)" = Running ]&&break; sleep 3;done
+  local t_run=$(date +%s)
+  # --- 時系列採取をバックグラウンドで開始(k6起動直後から。スケールはウォームアップ中に起きるため) ---
+  local FLAG=/tmp/tl-$$-$cyc-$arm-$rate-$brw.flag; touch "$FLAG"
+  ( while [ -f "$FLAG" ]; do sample_once "$cyc" "$arm" "$rate" "$t_run" "$brw"; sleep $SAMPLE; done ) &
+  local SPID=$!
+  local win=$(( MEAS*5/6 )); [ $win -lt 60 ] && win=60
+  # --- 計測窓に入る瞬間の台数を記録。窓の終わりの台数と比べれば「窓の中で増減したか」が分かる ---
+  #     (Podが減るのを見たい場合、ウォームアップで行き過ぎた分が戻り切っているかの確認になる)
+  sleep $WARM
+  local REPL_START; REPL_START=$(kubectl get deploy -n $NS --no-headers 2>/dev/null | awk '{printf "%s:%s ",$1,$4}')
+  sleep $MEAS
+  # --- 資源側の採取(動いているPodと、Pending込みを分けて出す) ---
+  local RUNC PENDC PODS PEND NODE SOFT REPL RES4
+  # 枠は Pod の実体から直接数える(Prometheusのjoinで2度事故ったため。reserved.py 参照)
+  # 時系列の採取はここで止める。以降(k6の終了待ち25秒)は負荷が止まった後の状態なので、
+  # 採り続けると計測窓外のサンプルが時系列CSVに混ざり、集計時に絞り忘れる事故のもとになる。
+  rm -f "$FLAG"; wait $SPID 2>/dev/null
+  RES4=$(kubectl get pods -n $NS -o json 2>/dev/null | python3 "$DIR/reserved.py" 2>/dev/null)
+  RUNC=$(echo "$RES4" | awk '{print $1}'); PENDC=$(echo "$RES4" | awk '{print $2}')
+  PODS=$(echo "$RES4" | awk '{print $3}');  PEND=$(echo "$RES4" | awk '{print $4}')
+  [ -z "$RUNC" ] && { RUNC=0; PENDC=0; PODS=0; PEND=0; }
+  # 計測窓ぴったりのCPU秒。rate×窓長 だと平均区間(win)と窓長(MEAS)がずれ、最初の40秒を外挿することになる。
+  # increase なら「この240秒で消費したCPU秒」そのものが出る(実機で rate[240s]*240 と完全一致を確認)。
+  NODE=$(promq "sum(increase(node_cpu_seconds_total{mode!=\"idle\"}[${MEAS}s]))" | scalar)
+  SOFT=$(promq "sum(increase(node_cpu_seconds_total{mode=\"softirq\"}[${MEAS}s]))" | scalar)
+  # THROT(スロットリング率)と RETR(TCP再送)は削除。
+  #   スロットリング原因説は実験B(2026-08-29, n=3)で否定され、TCP再送は全測定で0だった。
+  #   どちらも kubectl exec + curl の往復が要るので、生きた仮説がない以上は取らない。
+  K6CPU=$(promq "sum(increase(container_cpu_usage_seconds_total{namespace=\"$NS\",pod=~\"k6load.*\",container!=\"\"}[${MEAS}s]))" | scalar)
+  REPL=$(kubectl get deploy -n $NS --no-headers 2>/dev/null | awk '{printf "%s:%s ",$1,$4}')
+  local done_at=$(( t_run + WARM + MEAS + 25 ))
+  while [ "$(date +%s)" -lt "$done_at" ]; do sleep 5; done
+  rm -f "$FLAG"; wait $SPID 2>/dev/null
+  # --- 計測窓のあいだに確保していたCPU量(時間積分)。瞬間値だと窓内の増減が落ちる ---
+  local WRES RESSEC PENDSEC RESAVG NSAMP
+  WRES=$(python3 "$DIR/window_reserved.py" "$TL" "$WARM" "$MEAS" "$cyc" "$arm" "$rate" "$LIMIT_X" "$brw" 2>/dev/null)
+  RESSEC=$(echo "$WRES" | awk '{print $1}'); PENDSEC=$(echo "$WRES" | awk '{print $2}')
+  RESAVG=$(echo "$WRES" | awk '{print $3}'); NSAMP=$(echo "$WRES" | awk '{print $4}')
+  [ -z "$RESSEC" ] && { RESSEC=0; PENDSEC=0; RESAVG=0; NSAMP=0; }
+
+  # --- 台数変更イベントの回収 ---
+  kubectl get events -n $NS --field-selector reason=SuccessfulRescale -o json 2>/dev/null | \
+    CYC="$cyc" ARM="$arm" RATE="$rate" LX="$LIMIT_X" BRW="$brw" SINCE="$ev_since" python3 "$DIR/collect_events.py" >> "$EV" 2>/dev/null
+  # Pod名は「いま」取り直す。backoffLimit>0 だと最初のPodがマウント失敗で作り直されることがあり、
+  # 起動待ちの時点で掴んだ名前が古くなる(2026-09-01 に欠測2件を出した)。
+  local pod_now
+  pod_now=$(kubectl get pods -n $NS -l app=k6load --sort-by=.metadata.creationTimestamp -o jsonpath='{.items[-1].metadata.name}' 2>/dev/null)
+  [ -n "$pod_now" ] && pod="$pod_now"
+  local logs summary; logs=$(kubectl logs "$pod" -n $NS 2>/dev/null)
+  summary=$(printf '%s\n' "$logs" | sed -n '/@@@K6_BEGIN@@@/,/@@@K6_END@@@/p' | grep '{')
+  echo "$summary" | grep -q '{' || { echo "  !! summary回収失敗(pod=$pod)"
+       kubectl get events -n $NS --field-selector involvedObject.name=k6load -o jsonpath='{range .items[*]}     理由: {.reason} {.message}{"\n"}{end}' 2>/dev/null | tail -3
+       kubectl delete job k6load -n $NS --ignore-not-found >/dev/null 2>&1; return; }
+  SUMMARY="$summary" LIMIT_X="$LIMIT_X" REPL0="$REPL_START" RSSCALE="$RS_SCALE" LIMSCALE="$LIMIT_SCALE" RESSEC="$RESSEC" PENDSEC="$PENDSEC" RESAVG="$RESAVG" NSAMP="$NSAMP" python3 - "$arm" "$CSV" "$cyc" "$RUNC" "$PENDC" "$PODS" "$PEND" "$NODE" "$SOFT" "$K6CPU" "$REPL" <<'PY'
+import sys,json,csv,os
+arm,out,cyc,runc,pendc,pods,pend,node,soft,k6cpu,repl=sys.argv[1:12]
+repl0=os.environ.get('REPL0','').strip()
+changed = 'yes' if repl0 and repl0 != repl.strip() else ('no' if repl0 else '')
+d=json.loads(os.environ['SUMMARY'])
+f=lambda x:(float(x) if x not in ('NA','') else 0.0)
+it=d.get('iter_rate') or 0
+eff=(it/f(runc)) if f(runc)>0 else 0
+g=lambda k:round(d.get(k) or 0,1)
+row=[cyc,arm,d.get('target_rate'),round(it,1),d.get('dropped'),round(d.get('failed_rate') or 0,4),
+     round(d.get('p50') or 0,1),round(d.get('p99') or 0,1),round(f(runc),2),round(f(pendc),2),round(eff,1),
+     int(f(pods)),int(f(pend)),round(f(node),1),round(f(soft),2),round(f(k6cpu),2),
+     g('prod_p50'),g('cart_p50'),g('chk_p50'),g('prod_p99'),g('cart_p99'),g('chk_p99'),
+     repl.strip(),os.environ.get('LIMIT_X','0'),
+     d.get('dropped_win'),d.get('started'),repl0,changed,
+     d.get('browse_rate_target'),round(d.get('browse_rate') or 0,1),
+     d.get('browse_dropped_win'),
+     round(d.get('browse_p50') or 0,1),round(d.get('browse_p99') or 0,1),
+     os.environ.get('RSSCALE','1'),os.environ.get('LIMSCALE','0'),
+     os.environ.get('RESSEC','0'),os.environ.get('PENDSEC','0'),
+     os.environ.get('RESAVG','0'),os.environ.get('NSAMP','0')]
+with open(out,'a',newline='') as fh: csv.writer(fh).writerow(row)
+print("  -> 捌けた=%.1f/%s 取りこぼし(窓)=%s (全体%s) p50=%.0f p99=%.0f | 動作中の枠=%.2fコア(Pending分 %.2f) Pod=%d(Pending %d) | CPU時間=%.0f秒(うちsoftirq %.0f秒 / k6 %.0f秒)"
+      %(it,d.get('target_rate'),d.get('dropped_win'),d.get('dropped'),d.get('p50') or 0,d.get('p99') or 0,f(runc),f(pendc),f(pods),f(pend),f(node),f(soft),f(k6cpu)))
+print("     種類別p50: 商品%.0f / カート%.0f / 購入%.0f ms"
+      %(d.get('prod_p50') or 0,d.get('cart_p50') or 0,d.get('chk_p50') or 0))
+print("     確保したCPU: %s コア秒(窓平均 %s コア, %s サンプル) / 使ったCPU: %.0f コア秒"
+      %(os.environ.get('RESSEC','0'),os.environ.get('RESAVG','0'),os.environ.get('NSAMP','0'),f(node)))
+print("     台数: %s"%repl.strip())
+if changed=='yes':
+    print("     !! 計測窓の中で台数が変わった(窓の始め: %s)"%repl0)
+if (d.get('browse_rate_target') or 0)>0:
+    print("     閲覧型: 捌けた=%.1f/%s 取りこぼし(窓)=%s p50=%.0f p99=%.0f ms"
+          %(d.get('browse_rate') or 0,d.get('browse_rate_target'),d.get('browse_dropped_win'),
+            d.get('browse_p50') or 0,d.get('browse_p99') or 0))
+PY
+  kubectl delete job k6load -n $NS --ignore-not-found >/dev/null 2>&1
+}
+
+ensure_promq
+for c in $(seq $CYC_START $(( CYC_START + CYCLES - 1 ))); do
+  echo "################ CYCLE $c / $CYCLES $(date -Is) ################"
+  for arm in $ARMS; do
+    deploy "$arm"; sleep 10
+    for r in $RATES; do for b in $BROWSE_RATE; do run_rate "$arm" "$r" "$c" "$b"; done; done
+  done
+done
+kubectl delete job k6load -n $NS --ignore-not-found >/dev/null 2>&1
+echo "================ BUNDLE-VS-LOSS2 DONE $(date -Is) ================"

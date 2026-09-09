@@ -1,0 +1,18 @@
+================ BUNDLE-VS-LOSS2 START 2026-09-03T15:24:38+09:00 arms=[normal] rates=[100] cycles=1 HPA=70%/1-20台 warm=180s meas=240s browse=0 300周/s sample=15s 様子見=増30s/減60s 開始3台 rightsize=1 limit_x=0 ================
+################ CYCLE 1 / 1 2026-09-03T15:24:38+09:00 ################
+---- deploy normal (HPA 70% コンテナ別, 1-20台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/summer2026/rightsize-requests.csv (対象: frontend productcatalogservice recommendationservice cartservice, 倍率 req×0.3333 lim×0)
+  枠(req/上限lim): adservice=server:300m/500m, cartservice=server:120m/960m, checkoutservice=checkout:800m/1200m, currencyservice=server:800m/1600m, emailservice=email:200m/300m, frontend=server:359m/1600m, paymentservice=payment:200m/300m, productcatalogservice=server:221m/1, recommendationservice=server:247m/1600m, redis-cart=redis:300m/500m, shippingservice=server:320m/560m, 
+  deploy: adservice=3/3 cartservice=3/3 checkoutservice=3/3 currencyservice=3/3 emailservice=3/3 frontend=3/3 paymentservice=3/3 productcatalogservice=3/3 recommendationservice=3/3 redis-cart=1/1 shippingservice=3/3 
+==== [cyc1][normal] 購入=100周/秒 閲覧=0周/秒 2026-09-03T15:26:26+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=6 p99=501 | 動作中の枠=6.24コア(Pending分 0.00) Pod=21(Pending 0) | CPU時間=859秒(うちsoftirq 68秒 / k6 32秒)
+     種類別p50: 商品5 / カート6 / 購入8 ms
+     確保したCPU: 1497.6 コア秒(窓平均 6.240 コア, 16 サンプル) / 使ったCPU: 859 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:1 currencyservice:1 emailservice:1 frontend:4 paymentservice:1 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:1
+==== [cyc1][normal] 購入=100周/秒 閲覧=300周/秒 2026-09-03T15:33:59+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=5 (全体6) p50=9 p99=713 | 動作中の枠=10.01コア(Pending分 0.00) Pod=34(Pending 0) | CPU時間=1494秒(うちsoftirq 120秒 / k6 66秒)
+     種類別p50: 商品7 / カート8 / 購入11 ms
+     確保したCPU: 2401.9 コア秒(窓平均 10.008 コア, 16 サンプル) / 使ったCPU: 1494 コア秒
+     台数: adservice:1 cartservice:6 checkoutservice:1 currencyservice:2 emailservice:1 frontend:7 paymentservice:1 productcatalogservice:6 recommendationservice:7 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=7 p99=762 ms
+================ BUNDLE-VS-LOSS2 DONE 2026-09-03T15:41:32+09:00 ================

@@ -1,0 +1,84 @@
+================ EDGE-TRAFFIC START 2026-09-08T02:00:11+09:00 arm=normal cases=[100:0 0:100 0:200] cycles=2 warm=30s meas=180s (1台固定/HPA無し/枠はマニフェストのまま) ================
+---- deploy normal (1台固定, HPA無し, 枠はマニフェストのまま) ----
+  adservice=1/1   cartservice=1/1   checkoutservice=1/1   currencyservice=1/1   emailservice=1/1   frontend=1/1   paymentservice=1/1   productcatalogservice=1/1   recommendationservice=1/1   redis-cart=1/1   shippingservice=1/1 
+################ CYCLE 1 / 2 2026-09-08T02:00:50+09:00 ################
+==== [cyc1] 購入=100周/秒 閲覧=0周/秒 2026-09-08T02:00:50+09:00 ====
+  -> 購入=100.0/100 閲覧=0.0/0 | 名前空間の受信 578.6 MB / 送信 1086.3 MB | Pod 11個 | 1リクエストあたり受信 31.39 KB
+     adservice                受信     3.59 MB (    33178 pkt)  送信     4.52 MB (    32754 pkt)
+     cartservice              受信    31.19 MB (   278427 pkt)  送信    36.92 MB (   280026 pkt)
+     checkoutservice          受信    47.84 MB (   428708 pkt)  送信    50.02 MB (   421377 pkt)
+     currencyservice          受信    27.49 MB (   271028 pkt)  送信    33.18 MB (   248275 pkt)
+     emailservice             受信     6.24 MB (    35449 pkt)  送信     3.76 MB (    35307 pkt)
+     frontend                 受信   216.17 MB (  1564283 pkt)  送信   669.69 MB (  1560125 pkt)
+     paymentservice           受信     4.19 MB (    35804 pkt)  送信     4.01 MB (    35241 pkt)
+     productcatalogservice    受信   110.36 MB (  1170850 pkt)  送信   230.31 MB (  1143944 pkt)
+     recommendationservice    受信    98.75 MB (   237474 pkt)  送信    29.45 MB (   274172 pkt)
+     redis-cart               受信    17.33 MB (    98686 pkt)  送信     9.82 MB (    95727 pkt)
+     shippingservice          受信    15.43 MB (   145278 pkt)  送信    14.61 MB (   146424 pkt)
+==== [cyc1] 購入=0周/秒 閲覧=100周/秒 2026-09-08T02:04:51+09:00 ====
+  -> 購入=0.0/0 閲覧=100.0/100 | 名前空間の受信 168.9 MB / 送信 314.7 MB | Pod 11個 | 1リクエストあたり受信 9.17 KB
+     adservice                受信     3.59 MB (    33180 pkt)  送信     4.50 MB (    33047 pkt)
+     cartservice              受信     5.71 MB (    54272 pkt)  送信     6.22 MB (    54208 pkt)
+     checkoutservice          受信     0.06 MB (      533 pkt)  送信     0.14 MB (      406 pkt)
+     currencyservice          受信     7.38 MB (    75220 pkt)  送信     9.86 MB (    75118 pkt)
+     emailservice             受信     0.05 MB (      510 pkt)  送信     0.04 MB (      381 pkt)
+     frontend                 受信    79.03 MB (   624197 pkt)  送信   203.69 MB (   594081 pkt)
+     paymentservice           受信     0.03 MB (      389 pkt)  送信     0.03 MB (      299 pkt)
+     productcatalogservice    受信    36.92 MB (   419992 pkt)  送信    78.81 MB (   424386 pkt)
+     recommendationservice    受信    33.25 MB (    83116 pkt)  送信     9.87 MB (    90450 pkt)
+     redis-cart               受信     2.86 MB (    18299 pkt)  送信     1.54 MB (    18154 pkt)
+     shippingservice          受信     0.06 MB (      622 pkt)  送信     0.04 MB (      492 pkt)
+==== [cyc1] 購入=0周/秒 閲覧=200周/秒 2026-09-08T02:08:51+09:00 ====
+  -> 購入=0.0/0 閲覧=200.0/200 | 名前空間の受信 311.1 MB / 送信 579.2 MB | Pod 11個 | 1リクエストあたり受信 8.44 KB
+     adservice                受信     7.00 MB (    64668 pkt)  送信     8.80 MB (    64483 pkt)
+     cartservice              受信    11.40 MB (   108258 pkt)  送信    12.41 MB (   103374 pkt)
+     checkoutservice          受信     0.06 MB (      506 pkt)  送信     0.14 MB (      379 pkt)
+     currencyservice          受信    13.27 MB (   134570 pkt)  送信    17.85 MB (   134736 pkt)
+     emailservice             受信     0.04 MB (      500 pkt)  送信     0.04 MB (      370 pkt)
+     frontend                 受信   142.47 MB (  1100159 pkt)  送信   374.44 MB (  1059584 pkt)
+     paymentservice           受信     0.04 MB (      420 pkt)  送信     0.03 MB (      307 pkt)
+     productcatalogservice    受信    70.44 MB (   755564 pkt)  送信   144.46 MB (   742933 pkt)
+     recommendationservice    受信    60.59 MB (   148625 pkt)  送信    17.96 MB (   163936 pkt)
+     redis-cart               受信     5.71 MB (    36291 pkt)  送信     3.07 MB (    36145 pkt)
+     shippingservice          受信     0.06 MB (      601 pkt)  送信     0.04 MB (      475 pkt)
+################ CYCLE 2 / 2 2026-09-08T02:12:52+09:00 ################
+==== [cyc2] 購入=100周/秒 閲覧=0周/秒 2026-09-08T02:12:52+09:00 ====
+  -> 購入=100.0/100 閲覧=0.0/0 | 名前空間の受信 597.4 MB / 送信 1150.2 MB | Pod 11個 | 1リクエストあたり受信 32.41 KB
+     adservice                受信     3.88 MB (    35977 pkt)  送信     4.88 MB (    35815 pkt)
+     cartservice              受信    31.64 MB (   283586 pkt)  送信    37.32 MB (   285147 pkt)
+     checkoutservice          受信    49.07 MB (   422461 pkt)  送信    51.12 MB (   411883 pkt)
+     currencyservice          受信    28.19 MB (   278930 pkt)  送信    34.02 MB (   258861 pkt)
+     emailservice             受信     5.75 MB (    32785 pkt)  送信     3.49 MB (    32653 pkt)
+     frontend                 受信   242.22 MB (  1781390 pkt)  送信   744.83 MB (  1773126 pkt)
+     paymentservice           受信     4.30 MB (    37063 pkt)  送信     4.13 MB (    36861 pkt)
+     productcatalogservice    受信   105.82 MB (  1124510 pkt)  送信   216.79 MB (  1098266 pkt)
+     recommendationservice    受信    92.33 MB (   223101 pkt)  送信    27.69 MB (   257825 pkt)
+     redis-cart               受信    17.43 MB (    99564 pkt)  送信     9.94 MB (    97307 pkt)
+     shippingservice          受信    16.81 MB (   159790 pkt)  送信    15.96 MB (   142593 pkt)
+==== [cyc2] 購入=0周/秒 閲覧=100周/秒 2026-09-08T02:16:53+09:00 ====
+  -> 購入=0.0/0 閲覧=100.0/100 | 名前空間の受信 157.4 MB / 送信 286.5 MB | Pod 11個 | 1リクエストあたり受信 8.54 KB
+     adservice                受信     3.90 MB (    36237 pkt)  送信     4.91 MB (    34166 pkt)
+     cartservice              受信     5.71 MB (    54286 pkt)  送信     6.22 MB (    54217 pkt)
+     checkoutservice          受信     0.06 MB (      538 pkt)  送信     0.14 MB (      404 pkt)
+     currencyservice          受信     7.35 MB (    74790 pkt)  送信     9.83 MB (    74671 pkt)
+     emailservice             受信     0.04 MB (      487 pkt)  送信     0.03 MB (      360 pkt)
+     frontend                 受信    71.38 MB (   561779 pkt)  送信   183.68 MB (   533418 pkt)
+     paymentservice           受信     0.04 MB (      409 pkt)  送信     0.03 MB (      312 pkt)
+     productcatalogservice    受信    34.95 MB (   376660 pkt)  送信    70.87 MB (   379876 pkt)
+     recommendationservice    受信    31.07 MB (    77042 pkt)  送信     9.20 MB (    84029 pkt)
+     redis-cart               受信     2.86 MB (    18294 pkt)  送信     1.54 MB (    18149 pkt)
+     shippingservice          受信     0.05 MB (      597 pkt)  送信     0.04 MB (      468 pkt)
+==== [cyc2] 購入=0周/秒 閲覧=200周/秒 2026-09-08T02:20:54+09:00 ====
+  -> 購入=0.0/0 閲覧=200.0/200 | 名前空間の受信 320.7 MB / 送信 606.4 MB | Pod 11個 | 1リクエストあたり受信 8.70 KB
+     adservice                受信     7.32 MB (    67598 pkt)  送信     9.20 MB (    67406 pkt)
+     cartservice              受信     9.89 MB (    93917 pkt)  送信    10.76 MB (    93858 pkt)
+     checkoutservice          受信     0.06 MB (      524 pkt)  送信     0.14 MB (      396 pkt)
+     currencyservice          受信    15.44 MB (   147689 pkt)  送信    19.67 MB (   147525 pkt)
+     emailservice             受信     0.04 MB (      495 pkt)  送信     0.04 MB (      372 pkt)
+     frontend                 受信   153.80 MB (  1192844 pkt)  送信   404.97 MB (  1151517 pkt)
+     paymentservice           受信     0.03 MB (      363 pkt)  送信     0.03 MB (      270 pkt)
+     productcatalogservice    受信    68.75 MB (   737611 pkt)  送信   140.78 MB (   724219 pkt)
+     recommendationservice    受信    59.60 MB (   145688 pkt)  送信    17.68 MB (   161303 pkt)
+     redis-cart               受信     5.71 MB (    36293 pkt)  送信     3.07 MB (    36146 pkt)
+     shippingservice          受信     0.06 MB (      615 pkt)  送信     0.04 MB (      468 pkt)
+================ EDGE-TRAFFIC DONE 2026-09-08T02:24:54+09:00 ================

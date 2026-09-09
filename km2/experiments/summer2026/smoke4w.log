@@ -1,0 +1,13 @@
+================ BUNDLE-VS-LOSS2 START 2026-09-03T02:49:28+09:00 arms=[frontrecocartcatalog] rates=[100] cycles=1 HPA=70%/1-8台 warm=60s meas=90s browse=100周/s sample=15s 様子見=増30s/減60s 開始1台 rightsize=1 limit_x=0 ================
+################ CYCLE 1 / 1 2026-09-03T02:49:28+09:00 ################
+---- deploy frontrecocartcatalog (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/summer2026/rightsize-requests.csv (対象: frontend productcatalogservice recommendationservice cartservice)
+  枠(req/上限lim): adservice=server:300m/500m, checkoutservice=checkout:800m/1200m, currencyservice=server:800m/1600m, emailservice=email:200m/300m, frontend=server:1077m/1600m,recommendation:742m/1600m,productcatalog:662m/1,cartservice:361m/960m, paymentservice=payment:200m/300m, redis-cart=redis:300m/500m, shippingservice=server:320m/560m, 
+  deploy: adservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][frontrecocartcatalog] 購入=100周/秒 閲覧=100周/秒 2026-09-03T02:50:21+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=7 p99=457 | 動作中の枠=8.60コア(Pending分 0.00) Pod=9(Pending 0) | CPU時間=407秒(うちsoftirq 23秒 / k6 18秒)
+     種類別p50: 商品5 / カート6 / 購入9 ms
+     確保したCPU: 792.4 コア秒(窓平均 8.804 コア, 6 サンプル) / 使ったCPU: 407 コア秒
+     台数: adservice:1 checkoutservice:1 currencyservice:1 emailservice:1 frontend:2 paymentservice:1 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=100.0/100 取りこぼし(窓)=0 p50=5 p99=717 ms
+================ BUNDLE-VS-LOSS2 DONE 2026-09-03T02:53:25+09:00 ================

@@ -1,0 +1,6 @@
+cycle,arm,target_rate,limit_x,time,object,message
+1,frontcatalog,120,2026-09-01T15:13:28Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+1,frontcatalog,120,2026-09-01T15:13:42Z,adservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+1,frontcatalog,120,2026-09-01T15:13:44Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+1,frontcatalog,120,2026-09-01T15:13:57Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target
+1,frontcatalog,120,2026-09-01T15:14:57Z,adservice,New size: 1; reason: All metrics below target

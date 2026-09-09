@@ -1,0 +1,20 @@
+================ BUNDLE-VS-LOSS2 START 2026-09-03T14:34:33+09:00 arms=[normal] rates=[100] cycles=1 HPA=70%/1-20台 warm=180s meas=240s browse=0 300周/s sample=15s 様子見=増30s/減60s 開始1台 rightsize=1 limit_x=0 ================
+################ CYCLE 1 / 1 2026-09-03T14:34:33+09:00 ################
+---- deploy normal (HPA 70% コンテナ別, 1-20台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/summer2026/rightsize-requests.csv (対象: frontend productcatalogservice recommendationservice cartservice, 倍率 req×0.3333 lim×0.3333)
+  枠(req/上限lim): adservice=server:300m/500m, cartservice=server:120m/320m, checkoutservice=checkout:800m/1200m, currencyservice=server:800m/1600m, emailservice=email:200m/300m, frontend=server:359m/533m, paymentservice=payment:200m/300m, productcatalogservice=server:221m/333m, recommendationservice=server:247m/533m, redis-cart=redis:300m/500m, shippingservice=server:320m/560m, 
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][normal] 購入=100周/秒 閲覧=0周/秒 2026-09-03T14:35:24+09:00 ====
+  -> 捌けた=99.7/100 取りこぼし(窓)=63 (全体2900) p50=1390 p99=14671 | 動作中の枠=6.37コア(Pending分 0.00) Pod=21(Pending 0) | CPU時間=932秒(うちsoftirq 55秒 / k6 44秒)
+     種類別p50: 商品1416 / カート1351 / 購入1393 ms
+     確保したCPU: 1458.4 コア秒(窓平均 6.077 コア, 16 サンプル) / 使ったCPU: 932 コア秒
+     台数: adservice:1 cartservice:3 checkoutservice:1 currencyservice:1 emailservice:1 frontend:4 paymentservice:1 productcatalogservice:3 recommendationservice:4 redis-cart:1 shippingservice:1
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:2 checkoutservice:1 currencyservice:1 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:2 recommendationservice:1 redis-cart:1 shippingservice:1)
+==== [cyc1][normal] 購入=100周/秒 閲覧=300周/秒 2026-09-03T14:42:57+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体241) p50=746 p99=1459 | 動作中の枠=8.75コア(Pending分 0.00) Pod=30(Pending 0) | CPU時間=1451秒(うちsoftirq 92秒 / k6 74秒)
+     種類別p50: 商品726 / カート719 / 購入796 ms
+     確保したCPU: 2122.6 コア秒(窓平均 8.844 コア, 16 サンプル) / 使ったCPU: 1451 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:1 currencyservice:1 emailservice:1 frontend:7 paymentservice:1 productcatalogservice:5 recommendationservice:7 redis-cart:1 shippingservice:1
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:5 checkoutservice:1 currencyservice:1 emailservice:1 frontend:7 paymentservice:1 productcatalogservice:5 recommendationservice:6 redis-cart:1 shippingservice:1)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=777 p99=1362 ms
+================ BUNDLE-VS-LOSS2 DONE 2026-09-03T14:50:31+09:00 ================

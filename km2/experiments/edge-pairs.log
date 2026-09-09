@@ -1,0 +1,69 @@
+================ EDGE-PAIRS START 2026-09-08T03:17:45+09:00 cases=[100:0 0:200] warm=30s meas=180s ================
+---- deploy normal (1台固定, HPA無し) ----
+---- 各Podにネットワーク観測用のエフェメラルコンテナを追加 ----
+  起動 6/11
+  起動 11/11
+  IP対応表 24 件
+==== 購入100_閲覧0  2026-09-08T03:18:38+09:00 ====
+  スナップショットA 2026-09-08T03:19:12+09:00
+  スナップショットB 2026-09-08T03:22:14+09:00
+=== 購入100_閲覧0: 接続ごとの実測(計測窓 180 秒)===
+送信元                     → 宛先                         送信MB     受信MB     合計MB  segs_out   segs_in  rtt ms   最小rtt   接続
+==== 購入0_閲覧200  2026-09-08T03:22:16+09:00 ====
+  スナップショットA 2026-09-08T03:22:50+09:00
+  スナップショットB 2026-09-08T03:25:53+09:00
+=== 購入0_閲覧200: 接続ごとの実測(計測窓 180 秒)===
+送信元                     → 宛先                         送信MB     受信MB     合計MB  segs_out   segs_in  rtt ms   最小rtt   接続
+作業ディレクトリ: /tmp/edge-pairs
+================ EDGE-PAIRS DONE 2026-09-08T03:25:55+09:00 ================
+================ EDGE-PAIRS(計測のみ)START 2026-09-08T03:27:45+09:00 cases=[100:0 0:200] ================
+対象Pod 11個
+IP対応表 24 件
+==== 購入100_閲覧0 2026-09-08T03:27:45+09:00 ====
+  スナップショットA
+  → 333 接続
+  スナップショットB
+  → 33 接続
+=== 購入100_閲覧0: 接続ごとの実測(計測窓 180 秒)===
+送信元                     → 宛先                         送信MB     受信MB     合計MB  segs_out   segs_in  rtt ms   最小rtt   接続
+productcatalogservice-  frontend                    71.20    26.08    97.29    887019    885089    5.32   0.006    1
+productcatalogservice-  recommendationservice       75.75     3.99    79.74    176794    157746    0.04   0.006    1
+recommendationservice-  productcatalogservice        3.99    75.67    79.66    157578    176610    6.45   0.007    1
+currencyservice-fddf8c  frontend                    15.16     7.04    22.19    177242    201238    6.07   0.008    1
+cartservice-969c5668c-  redis-cart                  11.57     3.73    15.30    104098    100265    0.10   0.008    2
+recommendationservice-  frontend                     7.03     5.30    12.34    106459    104931    5.89   0.009    1
+cartservice-969c5668c-  frontend                     3.76     5.39     9.15     99936    101015    6.22   0.008    1
+shippingservice-64f887  checkoutservice              3.31     4.30     7.61     96531     95333    6.14   0.008    1
+checkoutservice-685486  frontend                     3.94     3.41     7.35     50910     49960    6.49   0.008    1
+cartservice-969c5668c-  checkoutservice              2.81     3.39     6.21     65225     66295    6.81   0.007    1
+productcatalogservice-  checkoutservice              4.01     1.50     5.51     56831     48884    7.64   0.006    1
+emailservice-574f74fdf  checkoutservice              1.37     3.80     5.16     33675     33679    8.79   0.013    1
+currencyservice-fddf8c  checkoutservice              2.37     2.74     5.11     67702     69858    6.05   0.008    1
+adservice-6d77488b78-c  frontend                     2.47     1.46     3.93     34105     34500    8.99   0.012    1
+paymentservice-6f6b5b5  checkoutservice              1.63     1.75     3.38     32339     33082    8.79   0.010    1
+shippingservice-64f887  frontend                     1.64     1.57     3.22     49142     48730    7.57   0.008    1
+checkoutservice-685486  10.1.98.63                   0.11     0.01     0.12       108        72    0.06   0.019    1
+==== 購入0_閲覧200 2026-09-08T03:31:24+09:00 ====
+  スナップショットA
+  → 333 接続
+  スナップショットB
+  → 31 接続
+=== 購入0_閲覧200: 接続ごとの実測(計測窓 180 秒)===
+送信元                     → 宛先                         送信MB     受信MB     合計MB  segs_out   segs_in  rtt ms   最小rtt   接続
+productcatalogservice-  frontend                    48.55    18.49    67.05    687435    682564    5.25   0.006    1
+productcatalogservice-  recommendationservice       50.54     2.65    53.19    124758    105977    0.05   0.006    1
+recommendationservice-  productcatalogservice        2.65    50.49    53.14    105866    124633    1.26   0.007    1
+currencyservice-fddf8c  frontend                    10.29     5.04    15.33    153701    153480    5.80   0.008    1
+recommendationservice-  frontend                     4.97     3.92     8.89     70651     70663    5.53   0.009    1
+adservice-6d77488b78-c  frontend                     4.97     2.98     7.95     71212     71216    7.05   0.018    1
+cartservice-969c5668c-  frontend                     1.93     3.52     5.45     71126     71128    7.02   0.008    1
+cartservice-969c5668c-  redis-cart                   3.27     0.68     3.95     35573     35568    0.11   0.008    2
+checkoutservice-685486  10.1.98.63                   0.11     0.01     0.12       108        72    0.04   0.020    1
+shippingservice-64f887  frontend                     0.00     0.00     0.00        12        12    7.57   0.008    1
+shippingservice-64f887  checkoutservice              0.00     0.00     0.00        12        12    6.14   0.008    1
+productcatalogservice-  checkoutservice              0.00     0.00     0.00        12        12    7.64   0.006    1
+paymentservice-6f6b5b5  checkoutservice              0.00     0.00     0.00         0         0    8.79   0.010    1
+emailservice-574f74fdf  checkoutservice              0.00     0.00     0.00         0         0    7.70   0.013    1
+currencyservice-fddf8c  checkoutservice              0.00     0.00     0.00         0         0    6.05   0.008    1
+checkoutservice-685486  frontend                     0.00     0.00     0.00        12        12    6.49   0.008    1
+================ DONE 2026-09-08T03:35:02+09:00 ================

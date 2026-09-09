@@ -1,0 +1,12 @@
+deploy,container,request_m,slope_mc_per_iter,idle_m,old_request_m
+recommendationservice,server,742,4.804,39,1200
+frontend,server,1077,6.008,153,1000
+currencyservice,server,523,2.716,95,800
+checkoutservice,checkout,321,1.958,29,800
+productcatalogservice,server,662,3.764,87,600
+cartservice,server,361,2.118,41,560
+shippingservice,server,133,0.78,15,320
+adservice,server,69,0.248,23,300
+redis-cart,redis,50,0.25,7,300
+paymentservice,payment,84,0.392,19,200
+emailservice,email,119,0.672,16,200
