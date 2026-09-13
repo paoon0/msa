@@ -261,11 +261,12 @@ deploy(){ local arm=$1
   local waited=0
   while [ $waited -lt 420 ]; do
     local notready
-    notready=$(kubectl get deploy -n $NS --no-headers 2>/dev/null | awk '$2!=$4 && $2!="" {printf "%s(%s) ",$1,$2}')
+    # READY 列は "ready/desired" なので "/" で割って比べる(2026-09-13 修正: 以前は $4=AVAILABLE と比べていて常に不一致→毎回420s待ち切っていた)
+    notready=$(kubectl get deploy -n $NS --no-headers 2>/dev/null | awk '{split($2,r,"/"); if(r[1]!=r[2]) printf "%s(%s) ",$1,$2}')
     [ -z "$notready" ] && break
     sleep 10; waited=$((waited+10))
   done
-  [ $waited -ge 420 ] && echo "  !! 全台Readyにならないまま続行(待機${waited}s): $(kubectl get deploy -n $NS --no-headers | awk '$2!=$4{printf "%s=%s ",$1,$2}')"
+  [ $waited -ge 420 ] && echo "  !! 全台Readyにならないまま続行(待機${waited}s): $(kubectl get deploy -n $NS --no-headers | awk '{split($2,r,"/"); if(r[1]!=r[2]) printf "%s=%s ",$1,$2}')"
   [ $waited -gt 0 ] && echo "  全台Ready待ち: ${waited}s"
   echo "  deploy: $(kubectl get deploy -n $NS --no-headers 2>/dev/null | awk '{printf "%s=%s ",$1,$2}')"
 }

@@ -68,3 +68,8 @@ CFP: https://fose.jssst.or.jp/fose2026/cfp.html
 他の未決: 表4を本文3行に落とすか(2ページに表4つは多い)/ 5.1 に実験9/2 の frontcart(+1077m)を足すか
 
 関連: [[bundling-three-terms]] [[demand-mismatch-experiment]] [[edge-traffic-measurement]] [[readiness-probe-blind-spot]] [[hpa-scaling-angle]]
+
+## 2026-09-13 追記(セッション途切れ後の再開用)
+- **正は `km2/approach/fose2026-draft.md` の「執筆メモ」**(構成・数値の出所・未解決の判断・追加実験の指示・進行状況をすべてそこに書いてある)。この memory より md が新しい。
+- 追加実験「全構成5サイクル統一」(mix 24点 + mix2 40点)を 18:41 に自動ラッパーで開始、mix→mix2 と自動継続、完了で `summer2026/.cyc45-done`。見込み完了 翌 03:30〜04:00。完了後の作業は md の「完了後にやること」。
+- `bundle-vs-loss2.sh` の全台Ready待ちバグ(常に420s待ち)を修正済(mix2 から有効)。

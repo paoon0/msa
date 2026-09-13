@@ -204,6 +204,13 @@ bash $DIR/bundle-vs-loss2.sh
 
 `CYC_START=4` にすること(既存が cyc1-3 のため)。mix.csv には frontcatalog / frontrecocatalog / frontrecocartcatalog の cyc4-6 が既にあるが、アームが違うので衝突しない。
 
+### ★進行状況 (2026-09-13 18:41 開始、自動で mix → mix2 と続く)
+- ラッパー `/tmp/claude-1000/-home-mizuki--------msa/013632c7-4050-49fb-a6b4-039521eff418/scratchpad/run-cyc45.sh` が上の2コマンドを順に実行中(PID は `pgrep -af bundle-vs-loss2` で確認)。完了すると `summer2026/.cyc45-done` が作られる。
+- 進捗は `tail -f km2/experiments/summer2026/mix.log`(→ 完了後 `mix2.log`)。1点 約7.5〜7.75分。
+- 見込み: mix 側 24点 → 約 22:30 完了 / mix2 側 40点 → 翌 03:30〜04:00 完了。
+- ★2026-09-13 に `bundle-vs-loss2.sh` の「全台Ready待ち」バグ(READY `1/1` と AVAILABLE `1` を比べていて常に不一致→毎回 420s 待ち)を修正。実行中の mix 側は旧版のまま(6回×7分の空待ちが入るがデータには無害)、mix2 側から修正版が使われる。9/11 の fixed4 も同じ 420s 待ちで回っていた。
+- 実行中の事故対策: `results-mix.csv.bak-20260913` は開始前バックアップ。
+
 ### 完了後にやること
 1. 全構成 cyc1-5 で再集計し、表2 の「需要の伸び」と「粒度損」を更新
 2. §4 冒頭の `(3サイクル)` を `(5サイクル)` に

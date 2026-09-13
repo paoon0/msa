@@ -658,3 +658,189 @@
      台数: adservice:1 checkoutservice:1 currencyservice:2 emailservice:1 frontend:2 paymentservice:1 redis-cart:1 shippingservice:1
      閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=7 p99=741 ms
 ================ BUNDLE-VS-LOSS2 DONE 2026-09-03T07:37:29+09:00 ================
+================ BUNDLE-VS-LOSS2 START 2026-09-13T18:41:03+09:00 arms=[normal frontreco frontcart] rates=[100] cycles=2 HPA=70%/1-8台 warm=180s meas=240s browse=0 100 200 300周/s sample=15s 様子見=増30s/減60s 開始1台 rightsize=1 limit_x=0 ================
+################ CYCLE 4 / 2 2026-09-13T18:41:06+09:00 ################
+---- deploy normal (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/summer2026/rightsize-requests.csv (対象: frontend productcatalogservice recommendationservice cartservice, 倍率 req×1 lim×0)
+  枠(req/上限lim): adservice=server:300m/500m, cartservice=server:361m/960m, checkoutservice=checkout:800m/1200m, currencyservice=server:800m/1600m, emailservice=email:200m/300m, frontend=server:1077m/1600m, paymentservice=payment:200m/300m, productcatalogservice=server:662m/1, recommendationservice=server:742m/1600m, redis-cart=redis:300m/500m, shippingservice=server:320m/560m, 
+  !! 全台Readyにならないまま続行(待機420s): adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+  全台Ready待ち: 420s
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc4][normal] 購入=100周/秒 閲覧=0周/秒 2026-09-13T18:49:05+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=6 p99=452 | 動作中の枠=6.12コア(Pending分 0.00) Pod=12(Pending 0) | CPU時間=870秒(うちsoftirq 67秒 / k6 36秒)
+     種類別p50: 商品5 / カート6 / 購入8 ms
+     確保したCPU: 1469.5 コア秒(窓平均 6.123 コア, 16 サンプル) / 使ったCPU: 870 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:1 emailservice:1 frontend:1 paymentservice:1 productcatalogservice:1 recommendationservice:1 redis-cart:1 shippingservice:1
+==== [cyc4][normal] 購入=100周/秒 閲覧=100周/秒 2026-09-13T18:56:37+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=7 p99=531 | 動作中の枠=8.60コア(Pending分 0.00) Pod=15(Pending 0) | CPU時間=1140秒(うちsoftirq 86秒 / k6 48秒)
+     種類別p50: 商品6 / カート6 / 購入9 ms
+     確保したCPU: 2065.0 コア秒(窓平均 8.604 コア, 16 サンプル) / 使ったCPU: 1140 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:1 emailservice:1 frontend:2 paymentservice:1 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=100.0/100 取りこぼし(窓)=0 p50=6 p99=727 ms
+==== [cyc4][normal] 購入=100周/秒 閲覧=200周/秒 2026-09-13T19:04:10+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=6 (全体29) p50=15 p99=852 | 動作中の枠=10.48コア(Pending分 0.00) Pod=17(Pending 0) | CPU時間=1417秒(うちsoftirq 112秒 / k6 61秒)
+     種類別p50: 商品11 / カート11 / 購入30 ms
+     確保したCPU: 2515.4 コア秒(窓平均 10.481 コア, 16 サンプル) / 使ったCPU: 1417 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=10 p99=818 ms
+==== [cyc4][normal] 購入=100周/秒 閲覧=300周/秒 2026-09-13T19:11:42+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体596) p50=9 p99=600 | 動作中の枠=11.22コア(Pending分 0.00) Pod=18(Pending 0) | CPU時間=1586秒(うちsoftirq 124秒 / k6 70秒)
+     種類別p50: 商品7 / カート8 / 購入11 ms
+     確保したCPU: 2750.4 コア秒(窓平均 11.460 コア, 16 サンプル) / 使ったCPU: 1586 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:2 recommendationservice:3 redis-cart:1 shippingservice:1
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:3 checkoutservice:1 currencyservice:2 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:1)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=7 p99=776 ms
+---- deploy frontreco (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/summer2026/rightsize-requests.csv (対象: frontend productcatalogservice recommendationservice cartservice, 倍率 req×1 lim×0)
+  枠(req/上限lim): adservice=server:300m/500m, cartservice=server:361m/960m, checkoutservice=checkout:800m/1200m, currencyservice=server:800m/1600m, emailservice=email:200m/300m, frontend=server:1077m/1600m,recommendation:742m/1600m, paymentservice=payment:200m/300m, productcatalogservice=server:662m/1, redis-cart=redis:300m/500m, shippingservice=server:320m/560m, 
+  !! 全台Readyにならないまま続行(待機420s): adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+  全台Ready待ち: 420s
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc4][frontreco] 購入=100周/秒 閲覧=0周/秒 2026-09-13T19:27:10+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=6 p99=480 | 動作中の枠=6.12コア(Pending分 0.00) Pod=11(Pending 0) | CPU時間=850秒(うちsoftirq 65秒 / k6 36秒)
+     種類別p50: 商品5 / カート6 / 購入8 ms
+     確保したCPU: 1469.5 コア秒(窓平均 6.123 コア, 16 サンプル) / 使ったCPU: 850 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:1 emailservice:1 frontend:1 paymentservice:1 productcatalogservice:1 redis-cart:1 shippingservice:1
+==== [cyc4][frontreco] 購入=100周/秒 閲覧=100周/秒 2026-09-13T19:34:42+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=8 p99=486 | 動作中の枠=8.60コア(Pending分 0.00) Pod=13(Pending 0) | CPU時間=1084秒(うちsoftirq 81秒 / k6 45秒)
+     種類別p50: 商品6 / カート7 / 購入9 ms
+     確保したCPU: 2065.0 コア秒(窓平均 8.604 コア, 16 サンプル) / 使ったCPU: 1084 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:1 emailservice:1 frontend:2 paymentservice:1 productcatalogservice:2 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=100.0/100 取りこぼし(窓)=0 p50=6 p99=717 ms
+==== [cyc4][frontreco] 購入=100周/秒 閲覧=200周/秒 2026-09-13T19:42:15+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体16) p50=11 p99=756 | 動作中の枠=11.22コア(Pending分 0.00) Pod=15(Pending 0) | CPU時間=1476秒(うちsoftirq 110秒 / k6 62秒)
+     種類別p50: 商品8 / カート8 / 購入14 ms
+     確保したCPU: 2693.5 コア秒(窓平均 11.223 コア, 16 サンプル) / 使ったCPU: 1476 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:2 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=8 p99=772 ms
+==== [cyc4][frontreco] 購入=100周/秒 閲覧=300周/秒 2026-09-13T19:49:48+09:00 ====
+  -> 捌けた=99.8/100 取りこぼし(窓)=59 (全体60) p50=8 p99=781 | 動作中の枠=11.22コア(Pending分 0.00) Pod=15(Pending 0) | CPU時間=1533秒(うちsoftirq 120秒 / k6 66秒)
+     種類別p50: 商品7 / カート7 / 購入10 ms
+     確保したCPU: 2693.5 コア秒(窓平均 11.223 コア, 16 サンプル) / 使ったCPU: 1533 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:2 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=6 p99=779 ms
+---- deploy frontcart (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/summer2026/rightsize-requests.csv (対象: frontend productcatalogservice recommendationservice cartservice, 倍率 req×1 lim×0)
+  枠(req/上限lim): adservice=server:300m/500m, checkoutservice=checkout:800m/1200m, currencyservice=server:800m/1600m, emailservice=email:200m/300m, frontend=server:1077m/1600m,cartservice:361m/960m, paymentservice=payment:200m/300m, productcatalogservice=server:662m/1, recommendationservice=server:742m/1600m, redis-cart=redis:300m/500m, shippingservice=server:320m/560m, 
+  !! 全台Readyにならないまま続行(待機420s): adservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+  全台Ready待ち: 420s
+  deploy: adservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc4][frontcart] 購入=100周/秒 閲覧=0周/秒 2026-09-13T20:05:18+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=6 p99=451 | 動作中の枠=7.20コア(Pending分 0.00) Pod=11(Pending 0) | CPU時間=855秒(うちsoftirq 65秒 / k6 35秒)
+     種類別p50: 商品5 / カート6 / 購入8 ms
+     確保したCPU: 1728.0 コア秒(窓平均 7.200 コア, 16 サンプル) / 使ったCPU: 855 コア秒
+     台数: adservice:1 checkoutservice:1 currencyservice:1 emailservice:1 frontend:2 paymentservice:1 productcatalogservice:1 recommendationservice:1 redis-cart:1 shippingservice:1
+==== [cyc4][frontcart] 購入=100周/秒 閲覧=100周/秒 2026-09-13T20:12:50+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=8 p99=698 | 動作中の枠=8.60コア(Pending分 0.00) Pod=13(Pending 0) | CPU時間=1063秒(うちsoftirq 83秒 / k6 47秒)
+     種類別p50: 商品6 / カート6 / 購入9 ms
+     確保したCPU: 2065.0 コア秒(窓平均 8.604 コア, 16 サンプル) / 使ったCPU: 1063 コア秒
+     台数: adservice:1 checkoutservice:1 currencyservice:1 emailservice:1 frontend:2 paymentservice:1 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=100.0/100 取りこぼし(窓)=0 p50=6 p99=779 ms
+==== [cyc4][frontcart] 購入=100周/秒 閲覧=200周/秒 2026-09-13T20:20:23+09:00 ====
+  -> 捌けた=99.9/100 取りこぼし(窓)=21 (全体22) p50=16 p99=783 | 動作中の枠=9.40コア(Pending分 0.00) Pod=14(Pending 0) | CPU時間=1406秒(うちsoftirq 108秒 / k6 63秒)
+     種類別p50: 商品12 / カート12 / 購入29 ms
+     確保したCPU: 2245.0 コア秒(窓平均 9.354 コア, 16 サンプル) / 使ったCPU: 1406 コア秒
+     台数: adservice:1 checkoutservice:1 currencyservice:2 emailservice:1 frontend:2 paymentservice:1 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 checkoutservice:1 currencyservice:1 emailservice:1 frontend:2 paymentservice:1 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=10 p99=876 ms
+==== [cyc4][frontcart] 購入=100周/秒 閲覧=300周/秒 2026-09-13T20:27:55+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体374) p50=808 p99=1401 | 動作中の枠=11.58コア(Pending分 0.00) Pod=16(Pending 0) | CPU時間=1715秒(うちsoftirq 133秒 / k6 80秒)
+     種類別p50: 商品815 / カート794 / 購入816 ms
+     確保したCPU: 2780.2 コア秒(窓平均 11.584 コア, 16 サンプル) / 使ったCPU: 1715 コア秒
+     台数: adservice:1 checkoutservice:1 currencyservice:2 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:2 recommendationservice:3 redis-cart:1 shippingservice:1
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 checkoutservice:1 currencyservice:2 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=828 p99=1393 ms
+################ CYCLE 5 / 2 2026-09-13T20:35:28+09:00 ################
+---- deploy normal (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/summer2026/rightsize-requests.csv (対象: frontend productcatalogservice recommendationservice cartservice, 倍率 req×1 lim×0)
+  枠(req/上限lim): adservice=server:300m/500m, cartservice=server:361m/960m, checkoutservice=checkout:800m/1200m, currencyservice=server:800m/1600m, emailservice=email:200m/300m, frontend=server:1077m/1600m, paymentservice=payment:200m/300m, productcatalogservice=server:662m/1, recommendationservice=server:742m/1600m, redis-cart=redis:300m/500m, shippingservice=server:320m/560m, 
+  !! 全台Readyにならないまま続行(待機420s): adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+  全台Ready待ち: 420s
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc5][normal] 購入=100周/秒 閲覧=0周/秒 2026-09-13T20:43:26+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=6 p99=486 | 動作中の枠=6.12コア(Pending分 0.00) Pod=12(Pending 0) | CPU時間=848秒(うちsoftirq 66秒 / k6 35秒)
+     種類別p50: 商品5 / カート6 / 購入8 ms
+     確保したCPU: 1469.5 コア秒(窓平均 6.123 コア, 16 サンプル) / 使ったCPU: 848 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:1 emailservice:1 frontend:1 paymentservice:1 productcatalogservice:1 recommendationservice:1 redis-cart:1 shippingservice:1
+==== [cyc5][normal] 購入=100周/秒 閲覧=100周/秒 2026-09-13T20:50:58+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=8 p99=620 | 動作中の枠=8.60コア(Pending分 0.00) Pod=15(Pending 0) | CPU時間=1027秒(うちsoftirq 77秒 / k6 46秒)
+     種類別p50: 商品7 / カート6 / 購入9 ms
+     確保したCPU: 2065.0 コア秒(窓平均 8.604 コア, 16 サンプル) / 使ったCPU: 1027 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:1 emailservice:1 frontend:2 paymentservice:1 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=100.0/100 取りこぼし(窓)=0 p50=7 p99=792 ms
+==== [cyc5][normal] 購入=100周/秒 閲覧=200周/秒 2026-09-13T20:58:30+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体34) p50=9 p99=625 | 動作中の枠=9.40コア(Pending分 0.00) Pod=16(Pending 0) | CPU時間=1330秒(うちsoftirq 107秒 / k6 60秒)
+     種類別p50: 商品8 / カート8 / 購入11 ms
+     確保したCPU: 2257.0 コア秒(窓平均 9.404 コア, 16 サンプル) / 使ったCPU: 1330 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:1 frontend:2 paymentservice:1 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=7 p99=710 ms
+==== [cyc5][normal] 購入=100周/秒 閲覧=300周/秒 2026-09-13T21:06:03+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体302) p50=9 p99=679 | 動作中の枠=10.84コア(Pending分 0.00) Pod=18(Pending 0) | CPU時間=1515秒(うちsoftirq 121秒 / k6 67秒)
+     種類別p50: 商品8 / カート8 / 購入11 ms
+     確保したCPU: 2668.9 コア秒(窓平均 11.120 コア, 16 サンプル) / 使ったCPU: 1515 コア秒
+     台数: adservice:1 cartservice:3 checkoutservice:1 currencyservice:2 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:2 recommendationservice:3 redis-cart:1 shippingservice:1)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=7 p99=765 ms
+---- deploy frontreco (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/summer2026/rightsize-requests.csv (対象: frontend productcatalogservice recommendationservice cartservice, 倍率 req×1 lim×0)
+  枠(req/上限lim): adservice=server:300m/500m, cartservice=server:361m/960m, checkoutservice=checkout:800m/1200m, currencyservice=server:800m/1600m, emailservice=email:200m/300m, frontend=server:1077m/1600m,recommendation:742m/1600m, paymentservice=payment:200m/300m, productcatalogservice=server:662m/1, redis-cart=redis:300m/500m, shippingservice=server:320m/560m, 
+  !! 全台Readyにならないまま続行(待機420s): adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+  全台Ready待ち: 420s
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc5][frontreco] 購入=100周/秒 閲覧=0周/秒 2026-09-13T21:21:32+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=6 p99=433 | 動作中の枠=7.94コア(Pending分 0.00) Pod=12(Pending 0) | CPU時間=820秒(うちsoftirq 64秒 / k6 34秒)
+     種類別p50: 商品5 / カート6 / 購入8 ms
+     確保したCPU: 1906.1 コア秒(窓平均 7.942 コア, 16 サンプル) / 使ったCPU: 820 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:1 emailservice:1 frontend:2 paymentservice:1 productcatalogservice:1 redis-cart:1 shippingservice:1
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:1 checkoutservice:1 currencyservice:1 emailservice:1 frontend:2 paymentservice:1 productcatalogservice:1 redis-cart:1 shippingservice:1)
+==== [cyc5][frontreco] 購入=100周/秒 閲覧=100周/秒 2026-09-13T21:29:03+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=2 (全体3) p50=176 p99=1006 | 動作中の枠=10.42コア(Pending分 0.00) Pod=14(Pending 0) | CPU時間=1410秒(うちsoftirq 104秒 / k6 61秒)
+     種類別p50: 商品177 / カート158 / 購入183 ms
+     確保したCPU: 2501.5 コア秒(窓平均 10.423 コア, 16 サンプル) / 使ったCPU: 1410 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:1 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:2 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=100.0/100 取りこぼし(窓)=0 p50=179 p99=924 ms
+==== [cyc5][frontreco] 購入=100周/秒 閲覧=200周/秒 2026-09-13T21:36:36+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体803) p50=9 p99=779 | 動作中の枠=9.40コア(Pending分 0.00) Pod=14(Pending 0) | CPU時間=1340秒(うちsoftirq 103秒 / k6 59秒)
+     種類別p50: 商品7 / カート7 / 購入10 ms
+     確保したCPU: 2552.2 コア秒(窓平均 10.634 コア, 16 サンプル) / 使ったCPU: 1340 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:1 frontend:2 paymentservice:1 productcatalogservice:2 redis-cart:1 shippingservice:1
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 redis-cart:1 shippingservice:1)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=7 p99=824 ms
+==== [cyc5][frontreco] 購入=100周/秒 閲覧=300周/秒 2026-09-13T21:44:09+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=9 p99=599 | 動作中の枠=9.77コア(Pending分 0.00) Pod=15(Pending 0) | CPU時間=1523秒(うちsoftirq 121秒 / k6 67秒)
+     種類別p50: 商品7 / カート8 / 購入11 ms
+     確保したCPU: 2257.0 コア秒(窓平均 9.404 コア, 16 サンプル) / 使ったCPU: 1523 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:2 emailservice:1 frontend:2 paymentservice:1 productcatalogservice:2 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=7 p99=777 ms
+---- deploy frontcart (HPA 70% コンテナ別, 1-8台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/summer2026/rightsize-requests.csv (対象: frontend productcatalogservice recommendationservice cartservice, 倍率 req×1 lim×0)
+  枠(req/上限lim): adservice=server:300m/500m, checkoutservice=checkout:800m/1200m, currencyservice=server:800m/1600m, emailservice=email:200m/300m, frontend=server:1077m/1600m,cartservice:361m/960m, paymentservice=payment:200m/300m, productcatalogservice=server:662m/1, recommendationservice=server:742m/1600m, redis-cart=redis:300m/500m, shippingservice=server:320m/560m, 
+  !! 全台Readyにならないまま続行(待機420s): adservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+  全台Ready待ち: 420s
+  deploy: adservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc5][frontcart] 購入=100周/秒 閲覧=0周/秒 2026-09-13T21:59:37+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=6 p99=557 | 動作中の枠=7.20コア(Pending分 0.00) Pod=11(Pending 0) | CPU時間=851秒(うちsoftirq 65秒 / k6 36秒)
+     種類別p50: 商品5 / カート6 / 購入8 ms
+     確保したCPU: 1728.0 コア秒(窓平均 7.200 コア, 16 サンプル) / 使ったCPU: 851 コア秒
+     台数: adservice:1 checkoutservice:1 currencyservice:1 emailservice:1 frontend:2 paymentservice:1 productcatalogservice:1 recommendationservice:1 redis-cart:1 shippingservice:1
+==== [cyc5][frontcart] 購入=100周/秒 閲覧=100周/秒 2026-09-13T22:07:09+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=7 p99=631 | 動作中の枠=8.60コア(Pending分 0.00) Pod=13(Pending 0) | CPU時間=1039秒(うちsoftirq 81秒 / k6 44秒)
+     種類別p50: 商品6 / カート6 / 購入9 ms
+     確保したCPU: 2065.0 コア秒(窓平均 8.604 コア, 16 サンプル) / 使ったCPU: 1039 コア秒
+     台数: adservice:1 checkoutservice:1 currencyservice:1 emailservice:1 frontend:2 paymentservice:1 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=100.0/100 取りこぼし(窓)=0 p50=6 p99=716 ms
+==== [cyc5][frontcart] 購入=100周/秒 閲覧=200周/秒 2026-09-13T22:14:41+09:00 ====
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体30) p50=10 p99=721 | 動作中の枠=9.40コア(Pending分 0.00) Pod=14(Pending 0) | CPU時間=1400秒(うちsoftirq 110秒 / k6 61秒)
+     種類別p50: 商品8 / カート8 / 購入12 ms
+     確保したCPU: 2137.0 コア秒(窓平均 8.904 コア, 16 サンプル) / 使ったCPU: 1400 コア秒
+     台数: adservice:1 checkoutservice:1 currencyservice:2 emailservice:1 frontend:2 paymentservice:1 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 checkoutservice:1 currencyservice:1 emailservice:1 frontend:2 paymentservice:1 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=8 p99=750 ms
+==== [cyc5][frontcart] 購入=100周/秒 閲覧=300周/秒 2026-09-13T22:22:14+09:00 ====
+  -> 捌けた=95.2/100 取りこぼし(窓)=1147 (全体2654) p50=800 p99=5911 | 動作中の枠=12.25コア(Pending分 0.00) Pod=17(Pending 0) | CPU時間=1875秒(うちsoftirq 133秒 / k6 83秒)
+     種類別p50: 商品861 / カート767 / 購入796 ms
+     確保したCPU: 2765.4 コア秒(窓平均 11.523 コア, 16 サンプル) / 使ったCPU: 1875 コア秒
+     台数: adservice:1 checkoutservice:1 currencyservice:2 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:1
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 checkoutservice:1 currencyservice:2 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:2 recommendationservice:2 redis-cart:1 shippingservice:1)
+     閲覧型: 捌けた=296.3/300 取りこぼし(窓)=891 p50=914 p99=6123 ms
+================ BUNDLE-VS-LOSS2 DONE 2026-09-13T22:29:47+09:00 ================
