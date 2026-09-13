@@ -77,6 +77,12 @@ REST_ARM=${REST_ARM:-0}
 REST_CYCLE=${REST_CYCLE:-0}
 FIXED_REPLICAS=${FIXED_REPLICAS:-0}
 UNIFORM_REQ_M=${UNIFORM_REQ_M:-0}
+# recommendationservice の readiness/liveness プローブの timeoutSeconds を上書きする(0=マニフェストのまま)。
+#   既定は1秒で、負荷が高いと Python(GIL)の reco が応答しきれず NotReady に落ち、
+#   Service のエンドポイントから外れて残りの台に負荷が集中する連鎖が起きる(2026-09-08 発見)。
+#   これを緩めて分離の容量が回復するかを見るのが目的(= 容量向上の主因の切り分け)。
+#   マニフェストは編集せず、デプロイ後に patch で当てる。3アームすべてに同じ値を当てて条件を揃える。
+PROBE_TIMEOUT=${PROBE_TIMEOUT:-0}
 # mega を複数台にすると Pod内 redis も台数分でき、カートが割れて1周の仕事量が他アームと変わる。
 #   shared = redis だけ Pod の外に出して全 megapod で共有(normal/front3 と同条件)
 MEGA_REDIS=${MEGA_REDIS:-shared}
@@ -236,10 +242,31 @@ deploy(){ local arm=$1
       python3 "$DIR/apply_rightsize.py" > /tmp/rs-$$.sh
     bash /tmp/rs-$$.sh; rm -f /tmp/rs-$$.sh
   fi
+  if [ "$PROBE_TIMEOUT" != 0 ]; then
+    # コンテナは name で突き合わされる(strategic merge patch)ので reco のコンテナだけに当たる。
+    # アームごとに reco が居る Deployment とコンテナ名が違う。
+    for spec in "recommendationservice:server" "frontend:recommendation" "megapod:recommendationservice"; do
+      d=${spec%%:*}; pc=${spec##*:}   # 変数名は c を避ける(外側のサイクル番号と衝突する)
+      kubectl get deploy/$d -n $NS >/dev/null 2>&1 || continue
+      kubectl patch deploy/$d -n $NS -p "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"$pc\",\"readinessProbe\":{\"timeoutSeconds\":$PROBE_TIMEOUT},\"livenessProbe\":{\"timeoutSeconds\":$PROBE_TIMEOUT}}]}}}}" >/dev/null 2>&1 \
+        && echo "  プローブ緩和: $d/$pc timeoutSeconds=$PROBE_TIMEOUT"
+    done
+  fi
   for d in $(kubectl get deploy -n $NS -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}'); do
     kubectl rollout status deploy/$d -n $NS --timeout=$ROLLOUT >/dev/null 2>&1||true; done
   echo "  枠(req/上限lim): $(kubectl get deploy -n $NS -o jsonpath='{range .items[*]}{.metadata.name}={range .spec.template.spec.containers[*]}{.name}:{.resources.requests.cpu}/{.resources.limits.cpu}{","}{end}{" "}{end}')"
   if [ "$FIXED_REPLICAS" = 0 ]; then make_hpa; else echo "  HPAは作らない(${FIXED_REPLICAS}台固定)"; fi
+  # 全 Deployment が所定台数 Ready になるまで待つ。
+  # 2026-09-11: rollout status が先に返ってしまい、Ready 3/4 の状態で負荷を開始して1サイクル無効になった。
+  local waited=0
+  while [ $waited -lt 420 ]; do
+    local notready
+    notready=$(kubectl get deploy -n $NS --no-headers 2>/dev/null | awk '$2!=$4 && $2!="" {printf "%s(%s) ",$1,$2}')
+    [ -z "$notready" ] && break
+    sleep 10; waited=$((waited+10))
+  done
+  [ $waited -ge 420 ] && echo "  !! 全台Readyにならないまま続行(待機${waited}s): $(kubectl get deploy -n $NS --no-headers | awk '$2!=$4{printf "%s=%s ",$1,$2}')"
+  [ $waited -gt 0 ] && echo "  全台Ready待ち: ${waited}s"
   echo "  deploy: $(kubectl get deploy -n $NS --no-headers 2>/dev/null | awk '{printf "%s=%s ",$1,$2}')"
 }
 

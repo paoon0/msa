@@ -1,0 +1,57 @@
+================ ICTER-AFFINITY START 2026-09-10T23:11:16+09:00 arms=[normal front3 mega] rate=100周/s reps=1 warm=30s meas=180s cycles=2 ================
+---- deploy normal (1台固定, HPA無し, 枠はマニフェストのまま) ----
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+---- 各Podに観測用エフェメラルコンテナを追加 ----
+  起動 11/11
+==== [cyc1][normal] 購入=100周/s 2026-09-10T23:12:09+09:00 ====
+  スナップショットA 2026-09-10T23:12:43+09:00
+  スナップショットB 2026-09-10T23:15:46+09:00
+  [normal/1] インタフェース別 合計: eth0: rx=590.3MB tx=1135.0MB
+  k6(クライアント辺): rx=584.0MB tx=29.4MB
+---- deploy front3 (1台固定, HPA無し, 枠はマニフェストのまま) ----
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+---- 各Podに観測用エフェメラルコンテナを追加 ----
+  起動 9/9
+==== [cyc1][front3] 購入=100周/s 2026-09-10T23:16:39+09:00 ====
+  スナップショットA 2026-09-10T23:17:13+09:00
+  スナップショットB 2026-09-10T23:20:15+09:00
+  [front3/1] インタフェース別 合計: eth0: rx=245.1MB tx=792.2MB  lo: rx=352.8MB tx=352.8MB
+  k6(クライアント辺): rx=544.1MB tx=27.3MB
+---- deploy mega (1台固定, HPA無し, 枠はマニフェストのまま) ----
+  deploy: megapod=1/1 
+---- 各Podに観測用エフェメラルコンテナを追加 ----
+  起動 1/1
+==== [cyc1][mega] 購入=100周/s 2026-09-10T23:21:01+09:00 ====
+  スナップショットA 2026-09-10T23:21:35+09:00
+  スナップショットB 2026-09-10T23:24:35+09:00
+  [mega/1] インタフェース別 合計: eth0: rx=29.4MB tx=577.1MB  lo: rx=587.2MB tx=587.2MB
+  k6(クライアント辺): rx=583.7MB tx=29.3MB
+---- deploy normal (1台固定, HPA無し, 枠はマニフェストのまま) ----
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+---- 各Podに観測用エフェメラルコンテナを追加 ----
+  起動 11/11
+==== [cyc2][normal] 購入=100周/s 2026-09-10T23:25:31+09:00 ====
+  スナップショットA 2026-09-10T23:26:05+09:00
+  スナップショットB 2026-09-10T23:29:07+09:00
+  [normal/2] インタフェース別 合計: eth0: rx=590.7MB tx=1137.1MB
+  k6(クライアント辺): rx=583.8MB tx=29.3MB
+---- deploy front3 (1台固定, HPA無し, 枠はマニフェストのまま) ----
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+---- 各Podに観測用エフェメラルコンテナを追加 ----
+  起動 9/9
+==== [cyc2][front3] 購入=100周/s 2026-09-10T23:30:00+09:00 ====
+  スナップショットA 2026-09-10T23:30:34+09:00
+  スナップショットB 2026-09-10T23:33:36+09:00
+  [front3/2] インタフェース別 合計: eth0: rx=245.5MB tx=790.3MB  lo: rx=353.2MB tx=353.2MB
+  k6(クライアント辺): rx=517.2MB tx=24.6MB
+---- deploy mega (1台固定, HPA無し, 枠はマニフェストのまま) ----
+  deploy: megapod=1/1 
+---- 各Podに観測用エフェメラルコンテナを追加 ----
+  起動 1/1
+==== [cyc2][mega] 購入=100周/s 2026-09-10T23:34:22+09:00 ====
+  スナップショットA 2026-09-10T23:34:56+09:00
+  スナップショットB 2026-09-10T23:37:56+09:00
+  [mega/2] インタフェース別 合計: eth0: rx=29.4MB tx=577.7MB  lo: rx=580.3MB tx=580.3MB
+  k6(クライアント辺): rx=554.5MB tx=27.7MB
+作業ディレクトリ: /tmp/icter-aff-3860369
+================ ICTER-AFFINITY DONE 2026-09-10T23:37:58+09:00 ================
