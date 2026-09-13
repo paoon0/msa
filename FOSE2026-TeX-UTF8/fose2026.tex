@@ -1,0 +1,176 @@
+% FOSE2026 ライブ論文 (2ページ以内)
+% 組版: platex -kanji=utf-8 fose2026; pbibtex fose2026; platex ×2; dvipdfmx fose2026.dvi
+\documentclass[T,J]{fose}
+\taikai{2026}
+
+\begin{document}
+
+% 論文のタイトル
+\title{KubernetesのHPA環境下におけるコンテナ集約の適用}
+\setetitle{Container Colocation of Microservices under Autoscaling}
+
+% ★★ TODO: 著者名・所属を実際のものに差し替えてください ★★
+\author{田尾瑞紀
+\ejtitle{Container Colocation of Microservices\\ under Autoscaling}
+\shozoku{Author Name}{和歌山大学 システム工学研究科}
+{Graduate School, University}
+}
+
+\Jabstract{%
+	複数サービスを1つの Pod に同居させる\textbf{部分集約}は通信コストを下げるが，
+	Kubernetes では HPA が Deployment 単位で台数を決めるため，
+	集約すると\textbf{スケールの粒度が粗くなり}予約資源が増える．
+	本稿では Online Boutique を用いた実機実験により，集約がスループットと
+	通信コストを改善する一方，この損失の大きさが\textbf{通信量}と
+	\textbf{ワークロード成分}という独立な2軸で決まることを示す．
+}
+
+\maketitle \thispagestyle{empty}
+
+
+\section{はじめに}
+
+マイクロサービスを細分化すると，サービス間の呼び出しがネットワークスタックを経由するため，
+通信処理のオーバヘッドが生じる．直接通信するサービスを1つの Pod に同居させ，
+通信を \texttt{localhost} 経由にする\textbf{部分集約}はこれを削減する．
+Wickramanayaka ら\cite{wickramanayaka2022}は Docker Swarm 環境で，
+通信量の多いコンテナの適正配置・統合を行い通信量が最大58.5\%減少することを示した．
+
+この効果を，実運用のデファクトスタンダードである Kubernetes に取り入れたい．
+しかし中核機能である HPA は Deployment 単位で台数を決めるため，
+集約すると\textbf{スケールの粒度が粗くなる}という問題が生じる．
+本稿ではこの環境での効果を確認したうえで，相手選びに必要な判断軸を示す．
+
+
+\section{部分集約とオートスケーラの干渉}
+
+HPA は Deployment 単位で台数を決めるため，同居したコンテナは
+\textbf{同じ台数でしか複製できず}，その台数は各コンテナが必要とする台数の最大値になる．
+サービス $s$ の枠 (requests) を $r(s)$，単独で必要な台数を $n(s)$，
+同居した Pod の台数を $N = \max_s n(s)$ とすると，余分に確保される資源 $\Delta$ は
+\begin{equation}
+	\Delta = \sum_{s} \bigl( N - n(s) \bigr) \times r(s)
+	\label{eq:loss}
+\end{equation}
+となる．\textbf{損は「引きずられた側の枠」に比例}し，必要台数が揃えば $\Delta = 0$ である．
+以降この $\Delta$ を\textbf{粒度損}と呼ぶ．
+
+
+\section{実験環境} %追加でonline boutiqueの典拠
+
+対象は Online Boutique\cite{onlineboutique} (11サービス，gRPC 通信) である．
+MicroK8s (単一ノード，16コア) 上にデプロイし，k6を用いて負荷を与えた。
+
+負荷は2種類の利用者を模した (表\ref{table:workload})．
+\textbf{buy} は閲覧・カート追加・購入を，\textbf{view} は閲覧のみを1周とする．
+\textbf{view は checkout・payment・shipping・email に一切到達しない}．
+以降，1秒あたり $x$ 周のレートで与える負荷を buy($x$)・view($x$) と表す．
+
+\begin{table}[tb]
+	\centering
+	\caption{2種類の利用者が到達するサービス}
+	\label{table:workload}
+	\small
+	\doublerulesep=0.3pt
+	\begin{tabular}{ll}
+		\hline\hline\hline
+		利用者 & 到達するサービス \\ \hline
+		buy  & 全10サービス \\ \hline
+		view & frontend, productcatalog, cart, \\
+		     & currency, recommendation, ad \\ \hline
+	\end{tabular}
+\end{table}
+
+評価指標は，粒度損として\textbf{予約枠} (稼働 Pod の requests 合計)，通信コストとして
+\textbf{softirq の CPU 時間}を用いた。
+
+
+\subsection{予備実験: Kubernetes 環境での効果} %後で訂正
+
+分離 (1 Pod 1 サービス)，frontend・recommendation・productcatalog を同居させた
+\textbf{front3}，全サービスを同居させた \textbf{mega} の3構成を比較した．
+台数は4で固定して HPA を切り，全コンテナの枠を150mに揃えたので，
+予約資源はどの構成も 6.3 コアで一致する (3回反復，buy のみ)．
+
+buy(150)--buy(300) ではいずれも目標レートを達成し，取りこぼしと失敗は0であった．
+その条件で1周あたりの softirq は分離に対し front3 で 17--23\%，mega で 43--51\% 少なく，
+\textbf{同居させるほど通信コストが下がる}．
+応答時間は buy(300) で分離だけが不安定になり (p50 が 23--79\,ms，同居は 16--21\,ms)，
+過負荷 (buy(500)) では達成レートが分離 348 周/秒 に対し front3 425，mega 435 と，
+\textbf{同じ予約資源でより多くを処理}できた．
+
+
+\section{本実験}
+
+以降の実験では，枠 (requests) はマニフェストの既定値ではなく，実測から適正化した値を用いる．
+各サービスを1台に固定し HPA を切った状態で負荷を6段階 (10--150周/秒) 与え，
+CPU 使用量を負荷の1次式として最小二乗法で近似し，
+\begin{equation}
+	r = ( c_{0} + c_{1} k ) / 0.7, \quad k = 100
+	\label{eq:sizing}
+\end{equation}
+とした．ここで $c_{0}$ はアイドル時の CPU 使用量，$c_{1}$ は1リクエストあたりの CPU 時間，
+$k$ は基準負荷 [周/秒] である．
+これにより，理想的には全サービスが同じ負荷で目標利用率に到達し，必要台数が一致する．
+その上で，buy(100) を一定に保ちつつ viewを4段階(0・100・200・250周/秒) で変える実験を行った．%具体的に変える
+
+\subsection{ワークロード成分が異なると損は消せない}
+
+buyのみを与えた場合にも粒度損は生じたが，これは email の利用率が
+増設ラインをわずかに超えた (83\%) ためで，%閾値かはっきりする
+\textbf{枠が7\%不足していただけ}であり，buy(150) では両者とも2台となって消える
+(表\ref{table:loss}の上2行)．すなわち\textbf{枠の測定精度に起因する損は除去できる}．
+
+これに対し view(0) を view(300) にすると，
+\textbf{frontend の需要は2.5倍}になるのに対し\textbf{email は1.2倍}にしかならない
+(表\ref{table:loss}の1行目と3行目)．
+
+\begin{table}[tb]
+	\centering
+	\caption{条件による粒度損の変化 (FE+email，いずれも3/3で一致)}
+	\label{table:loss}
+	\small
+	\doublerulesep=0.3pt
+	\setlength{\tabcolsep}{4pt}
+	\begin{tabular}{rrcrr}
+		\hline\hline\hline
+		buy & view & 必要台数 & 引きずら & 粒度損 \\
+		\multicolumn{2}{c}{[周/秒]} & FE/email & れる側 & [mCPU] \\ \hline
+		100 & 0 & \textbf{1} / \textbf{2} & FE (1077\,m) & $\mathbf{+1077}$ \\ \hline
+		150 & 0 & 2 / 2 & --- & \textbf{0} \\ \hline
+		100 & 300 & \textbf{3} / 2 & email (119\,m) & $\mathbf{+119}$ \\ \hline
+	\end{tabular}
+\end{table}
+
+\textbf{同じ組み合わせでありながら，引きずる側と引きずられる側が入れ替わり，損が9倍変化した}．
+損の比 $1077 / 119 = 9.05$ は枠の比と一致し，式(\ref{eq:loss})が両方向で成立している．
+
+枠は各サービスに1つしか与えられないのに対し，
+需要の比はワークロードの混合比によって変化するため，
+\textbf{2つの条件で同時に損をゼロにする枠は存在しない}．
+すなわちこの損は枠の調整では原理的に除去できない．
+
+ただし成分が異なれば必ず損が出るわけではなく，必要台数が一致した際の粒度損はゼロであった．
+
+\section{考察}
+
+便益は通信量で決まり，枠を3倍変えても softirq の削減率は 16.4\%・16.2\% と
+ほぼ変わらない．一方，損は成分で決まる．この独立な2軸から，避けるべきは
+\textbf{「通信量が多く，かつ成分が異なる」組み合わせ}となる．
+しかし実測では太い通信の両端はいずれも同一成分で，成分をまたぐ通信は最大 2.6\% であり，
+本アプリケーションに\textbf{この組み合わせは存在しなかった}．
+便益の大きい相手を選ぶ限り，粒度損の危険は踏まないことになる．
+
+
+\section{今後の課題}
+
+成分を跨ぐアプリケーションでの実行。
+
+また本実験は単一ノードで行っており，ノードをまたぐ通信 (overlay ネットワーク) を含まない．
+先行研究\cite{wickramanayaka2022}が示した効果の大部分は overlay の有無に由来するため，
+マルチノード環境では便益がさらに大きくなると予想される．
+
+\bibliographystyle{jssst}
+\bibliography{fose2026}
+
+\end{document}

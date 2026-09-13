@@ -25,6 +25,6 @@
 - [Demand mismatch experiment](demand-mismatch-experiment.md) — 【2026-09-07完了60点】checkout/emailを束ね需要ズレ最大化。★損の向きが閲覧比率で反転(frontemail 閲覧0=+1077m/閲覧300=+119m、引きずる側が入替)。★エッジなしfrontemailのsoftirqは+0.2%=便益ゼロ対照。★catalogcheckoutは全帯で損ゼロ(必要台数一致)
 - [Bundling: three terms](bundling-three-terms.md) — 【設計則の最終形2026-09-07】束ねは3項に分解: 便益=エッジの太さ(枠無関係)/損(単一ミックス)=枠の測定精度(ペア無関係)/損(ミックス変動)=需要比の変化率、2倍超で枠では直せない=新規性の核
 - [Edge traffic measurement](edge-traffic-measurement.md) — 【2026-09-08】サービス間通信量をエッジ単位で実測(ss -tin をエフェメラルコンテナから)。上位2本で6割超、2位はcatalog↔reco。★ヘッダが49%。★softirq予測はバイトでなく**セグメント数**(旧見立ての逆転)。★呼出グラフ訂正=POST /cartは302でリダイレクト先も走る/frontendはshippingを直接呼ぶ
-- [FOSE2026 live paper](fose2026-live-paper.md) — 【締切2026-09-14 17:00】ライブ論文2ページ。下書き km2/approach/fose2026-draft.md。着地点=相手選びは「通信量」と「ワークロード成分」の2軸。★未決=表1を k6 で取り直すか(容量スイープ案とrecoプローブのリスク)
+- [FOSE2026 live paper](fose2026-live-paper.md) — 【締切2026-09-14 17:00】ライブ論文2ページ。下書き km2/approach/fose2026-draft.md、TeX原稿 FOSE2026-TeX-UTF8/fose2026.tex(現状3ページ・latexmk無しでビルド)。着地点=相手選びは「通信量」と「ワークロード成分」の2軸。★削った記述2件(§1の第二の代償=論理が逆/NotNets引用=配置研究でないので限界指摘が当たらない)と復活手順を記録。★未決=表1を k6 で取り直すか(容量スイープ案とrecoプローブのリスク)
 - [Readiness probe blind spot](readiness-probe-blind-spot.md) — 【2026-09-08】HPAの4つ目の盲点=プローブ失敗のReady落ち(250周/sでrecoが窓の74%)。Pending/HPA上限は302点すべて0件。★束ねPodはReadyが全コンテナのANDなので影響範囲が広がる=粒度損とは別のデメリット
 - [Fixed-replica k6 experiment](fixed-replica-k6.md) — 【2026-09-09完了36点】4台固定・HPA無し・予約6.30コア一致。softirq front3 −23%/mega −48%、CPU時間 mega −8〜10%、300周/sで分離だけp50暴れる。崖は300より上

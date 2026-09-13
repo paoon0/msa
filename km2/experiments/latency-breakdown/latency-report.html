@@ -1,0 +1,492 @@
+<title>レイテンシ内訳レポート 7/12–14</title>
+<style>
+  :root {
+    /* cool-biased neutrals — telemetry ground */
+    --bg: #f5f7f9;
+    --panel: #ffffff;
+    --panel-2: #eef1f5;
+    --ink: #1a2230;
+    --ink-2: #48566b;
+    --ink-3: #7c8aa0;
+    --line: #dbe1ea;
+    --line-2: #c6cfdc;
+    /* two arms */
+    --sep: #6366f1;   /* 分離 normal — indigo */
+    --sep-soft: #ecedfd;
+    --bun: #0e9488;   /* 束ね f3perc — teal */
+    --bun-soft: #d9f2ef;
+    /* latency heat */
+    --ok: #15803d;
+    --ok-bg: #e4f4e9;
+    --warn: #b45309;
+    --warn-bg: #fbefdb;
+    --crit: #be123c;
+    --crit-bg: #fbe0e6;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1017;
+      --panel: #151a23;
+      --panel-2: #1c222d;
+      --ink: #e7ecf3;
+      --ink-2: #a9b5c6;
+      --ink-3: #6f7d92;
+      --line: #262e3a;
+      --line-2: #333d4c;
+      --sep: #8b8dfb;
+      --sep-soft: #21233a;
+      --bun: #2dd4bf;
+      --bun-soft: #10312f;
+      --ok: #4ade80;
+      --ok-bg: #12271a;
+      --warn: #fbbf24;
+      --warn-bg: #2a2110;
+      --crit: #fb7185;
+      --crit-bg: #2c1119;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0d1017; --panel: #151a23; --panel-2: #1c222d;
+    --ink: #e7ecf3; --ink-2: #a9b5c6; --ink-3: #6f7d92;
+    --line: #262e3a; --line-2: #333d4c;
+    --sep: #8b8dfb; --sep-soft: #21233a; --bun: #2dd4bf; --bun-soft: #10312f;
+    --ok: #4ade80; --ok-bg: #12271a; --warn: #fbbf24; --warn-bg: #2a2110;
+    --crit: #fb7185; --crit-bg: #2c1119;
+  }
+  :root[data-theme="light"] {
+    --bg: #f5f7f9; --panel: #ffffff; --panel-2: #eef1f5;
+    --ink: #1a2230; --ink-2: #48566b; --ink-3: #7c8aa0;
+    --line: #dbe1ea; --line-2: #c6cfdc;
+    --sep: #6366f1; --sep-soft: #ecedfd; --bun: #0e9488; --bun-soft: #d9f2ef;
+    --ok: #15803d; --ok-bg: #e4f4e9; --warn: #b45309; --warn-bg: #fbefdb;
+    --crit: #be123c; --crit-bg: #fbe0e6;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 40px 24px 96px; }
+
+  /* header */
+  header { border-bottom: 1px solid var(--line); padding-bottom: 28px; margin-bottom: 8px; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 600; margin: 0 0 10px;
+  }
+  h1 {
+    font-size: clamp(26px, 4vw, 38px); line-height: 1.15; margin: 0 0 14px;
+    letter-spacing: -.02em; text-wrap: balance; font-weight: 700;
+  }
+  .lede { font-size: 16px; color: var(--ink-2); max-width: 64ch; margin: 0; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 20px; font-size: 13px; color: var(--ink-3); }
+  .meta b { color: var(--ink-2); font-weight: 600; }
+
+  /* legend chips */
+  .arms { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600;
+    border: 1px solid var(--line);
+  }
+  .chip .dot { width: 10px; height: 10px; border-radius: 3px; }
+  .chip.sep { background: var(--sep-soft); color: var(--sep); border-color: transparent; }
+  .chip.sep .dot { background: var(--sep); }
+  .chip.bun { background: var(--bun-soft); color: var(--bun); border-color: transparent; }
+  .chip.bun .dot { background: var(--bun); }
+
+  section { margin-top: 52px; }
+  .sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+  .sec-num {
+    font-family: var(--mono); font-size: 13px; color: var(--ink-3);
+    font-weight: 600;
+  }
+  h2 { font-size: 21px; margin: 0; letter-spacing: -.01em; font-weight: 700; }
+  .sec-desc { color: var(--ink-2); font-size: 14.5px; margin: 4px 0 22px; max-width: 68ch; }
+
+  /* callout row */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 22px 0; }
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .card .k { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; }
+  .card .v { font-family: var(--mono); font-size: 27px; font-weight: 600; margin: 6px 0 2px; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+  .card .s { font-size: 13px; color: var(--ink-2); }
+  .card.accent-sep { border-left: 3px solid var(--sep); }
+  .card.accent-bun { border-left: 3px solid var(--bun); }
+  .card.accent-crit { border-left: 3px solid var(--crit); }
+
+  /* chart panel */
+  .panel {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    padding: 22px; margin: 22px 0;
+  }
+  .charts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .chart-title { font-size: 13px; font-weight: 700; margin: 0 0 2px; }
+  .chart-sub { font-size: 11.5px; color: var(--ink-3); margin: 0 0 8px; }
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .axis-lab { fill: var(--ink-3); font-size: 9.5px; font-family: var(--mono); }
+  .grid-line { stroke: var(--line); stroke-width: 1; }
+
+  /* tables */
+  .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 640px; }
+  thead th {
+    background: var(--panel-2); text-align: right; padding: 10px 14px;
+    font-size: 11.5px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-2);
+    font-weight: 600; border-bottom: 1px solid var(--line-2); white-space: nowrap;
+  }
+  thead th:first-child, tbody td:first-child { text-align: left; }
+  tbody td {
+    padding: 9px 14px; text-align: right; border-bottom: 1px solid var(--line);
+    font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--ink);
+  }
+  tbody td:first-child { font-family: var(--sans); color: var(--ink-2); font-weight: 500; }
+  tbody tr:last-child td { border-bottom: none; }
+  .arm-tag { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 7px; vertical-align: middle; }
+  .arm-tag.sep { background: var(--sep); }
+  .arm-tag.bun { background: var(--bun); }
+  tr.grp-top td { border-top: 2px solid var(--line-2); }
+
+  .heat { border-radius: 5px; padding: 2px 7px; font-weight: 600; }
+  .h-ok { background: var(--ok-bg); color: var(--ok); }
+  .h-warn { background: var(--warn-bg); color: var(--warn); }
+  .h-crit { background: var(--crit-bg); color: var(--crit); }
+
+  /* insight blocks */
+  .note {
+    border-left: 3px solid var(--line-2); padding: 2px 0 2px 18px; margin: 20px 0;
+    color: var(--ink-2); font-size: 14.5px;
+  }
+  .note.warn { border-color: var(--crit); }
+  .note b { color: var(--ink); font-weight: 650; }
+  .note code, code.inl {
+    font-family: var(--mono); font-size: .88em; background: var(--panel-2);
+    padding: 1px 6px; border-radius: 5px; color: var(--ink);
+  }
+
+  .caveat {
+    background: var(--warn-bg); border: 1px solid transparent; border-radius: 12px;
+    padding: 16px 18px; font-size: 14px; color: var(--ink); margin-top: 22px;
+  }
+  .caveat b { color: var(--warn); }
+
+  footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--ink-3); }
+  footer code { font-family: var(--mono); }
+  @media (max-width: 720px) { .charts { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: no-preference) { .draw { transition: stroke-dashoffset .9s ease; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">レイテンシ内訳 · Online Boutique 束ね実験</p>
+    <h1>p50 / p90 / p99 と checkout 下流ホップの記録</h1>
+    <p class="lede">7/12–14 に採取した <b>分離(normal)</b> と <b>3サービス束ね(f3perc)</b> の遅延データを一枚に整理。
+      集約・エンドポイント別・レプリカ別の各パーセンタイルと、サービス間で唯一取得している
+      checkout→email / checkout→payment のホップ p50 を収録します。</p>
+    <div class="arms">
+      <span class="chip sep"><span class="dot"></span>normal — 1 Pod 1 サービス(分離)</span>
+      <span class="chip bun"><span class="dot"></span>f3perc — reco+catalog+cart を frontend に束ね</span>
+    </div>
+    <div class="meta">
+      <span><b>負荷</b> Locust / constant_throughput(1) / 1 checkout ≈ 3 req</span>
+      <span><b>出所</b> km2/experiments/latency-breakdown/</span>
+      <span><b>単位</b> レイテンシ = ms、rps = req/s</span>
+    </div>
+  </header>
+
+  <!-- ============ 1. LOAD SWEEP ============ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><h2>負荷スイープ(users 1 → 480)</h2></div>
+    <p class="sec-desc">同一クラスタ・HPA 有りで users を上げたときの集約パーセンタイル。低負荷では両者ほぼ同一、
+      u240 以降で束ね(f3perc)が集約 p50 を大きく下げる。ソースは <code class="inl">latency-sweep.csv</code>。</p>
+
+    <div class="panel">
+      <div class="charts" id="sweepCharts"></div>
+    </div>
+
+    <div class="scroll">
+      <table id="sweepTable">
+        <thead>
+          <tr>
+            <th>アーム / users</th><th>rps</th>
+            <th>agg p50</th><th>agg p90</th><th>agg p99</th>
+            <th>product p50</th><th>cart p50</th><th>checkout p50</th><th>checkout p99</th>
+            <th>fails</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="note"><b>読みどころ:</b> u240 で normal は agg p50 = 360ms に膨らむのに対し、束ねは 78ms。
+      u480 でも束ね 310ms &lt; normal 650ms。低負荷(u≤120)では差はほぼ無い —
+      束ねの遅延メリットは<b>混雑時にのみ</b>現れる。</p>
+  </section>
+
+  <!-- ============ 2. REPLICA SWEEP ============ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><h2>レプリカ・スイープ(u480 固定・HPA 無し)</h2></div>
+    <p class="sec-desc">users=480 を固定し、全サービスのレプリカを 4→1 台に手動で振った時の集約遅延とスループット。
+      束ね(f3perc)は 3–4 台でスループットが頭打ちにならず、normal より高い rps を保つ。
+      ソースは <code class="inl">replica-count-sweep.csv</code> / <code class="inl">fixed-*.log</code>。</p>
+
+    <div class="cards">
+      <div class="card accent-bun"><div class="k">束ね rps @4台</div><div class="v">1101</div><div class="s">normal 1015 → <b>+8.5%</b></div></div>
+      <div class="card accent-bun"><div class="k">束ね agg p50 @4台</div><div class="v">320<span style="font-size:15px">ms</span></div><div class="s">normal 350ms</div></div>
+      <div class="card accent-crit"><div class="k">2台での崩落</div><div class="v">1300<span style="font-size:15px">ms</span></div><div class="s">両者とも p90 が急騰(email 律速)</div></div>
+    </div>
+
+    <div class="scroll">
+      <table id="replicaTable">
+        <thead>
+          <tr><th>アーム</th><th>レプリカ</th><th>rps</th><th>agg p50</th><th>agg p90</th><th>agg p99</th><th>node cores</th><th>email hop p50</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="note warn"><b>2台の異常値に注意:</b> normal・束ねとも 2台のとき agg p50 は下がる(210–220ms)のに
+      agg p90 が 1300ms へ跳ねる。これは <code>emailservice</code>(limit 300m / 1 レプリカ)が飽和し、
+      checkout→email ホップ p50 が <b>1000ms超</b> になったため。checkout 経路だけが詰まり、
+      /cart や /product は速いまま — 集約中央値が実態を隠す典型例。</p>
+  </section>
+
+  <!-- ============ 3. ENDPOINT BREAKDOWN ============ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><h2>エンドポイント別 p50 / p90 / p99(u480 固定)</h2></div>
+    <p class="sec-desc">Locust の 3 エンドポイントごとのパーセンタイル。<code class="inl">/cart/checkout</code> だけが
+      email 律速時に突出する構造がはっきり出る。バーは各行内での p50→p99 の広がりを示す。</p>
+
+    <div class="panel" id="endpointPanel"></div>
+    <p class="note"><b>読みどころ:</b> 健全な 4台構成では 3 エンドポイントの p50 は 200–430ms に収まる。
+      2台に絞ると <code>/cart/checkout</code> だけ p50=1200ms へ跳ね、他 2 経路は 140–150ms のまま。
+      <b>詰まりは経路単位で局在する</b> — サービス間ホップ計測が必要な理由。</p>
+  </section>
+
+  <!-- ============ 4. HOP LATENCY ============ -->
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><h2>サービス間ホップ p50 — checkout → email / payment</h2></div>
+    <p class="sec-desc">今回取得している唯一のサービス間遅延。checkout が同期呼び出しする 2 本のみ。
+      payment は常に 1–6ms で安定する一方、email は負荷とレプリカ数しだいで <b>4ms 〜 1522ms</b> を行き来する
+      — email が束ね実験全体の律速点であることを裏づける。</p>
+
+    <div class="panel" id="hopPanel"></div>
+
+    <div class="caveat">
+      <b>計測範囲の限界:</b> サービス間ホップとして残っているのは <code class="inl">checkout→email</code> と
+      <code class="inl">checkout→payment</code> の 2 本だけです。frontend→各サービス、cart→redis、
+      checkout→shipping/currency/productcatalog などのエッジは今回計測していません。
+      これらが必要なら locust または Istio テレメトリでの追加計測が要ります。
+    </div>
+  </section>
+
+  <footer>
+    データ出所 <code>km2/experiments/latency-breakdown/</code> · 採取 2026-07-12〜14 ·
+    normal = 分離 / f3perc = frontend+reco+catalog+cart 束ね · レイテンシ ms・スループット req/s
+  </footer>
+</div>
+
+<script>
+// ---------- DATA ----------
+const sweep = [
+  // arm, users, rps, ap50, ap90, ap99, prod, cart, cp50, cp99, fails, emailHop, payHop(p50)
+  ["normal",1,3.03,17,21,23,19,16,16,22,0,1,2],
+  ["normal",10,30.1,28,43,920,30,33,21,57,0,2,2],
+  ["normal",40,119.9,53,120,780,44,70,48,550,0,2,1],
+  ["normal",120,356.2,100,250,480,91,150,95,310,0,2,2],
+  ["normal",240,590.5,360,520,870,397,380,340,1100,0,1,1],
+  ["normal",480,711.0,650,740,1200,640,660,660,1300,0,1,1],
+  ["f3perc",1,3.03,17,20,23,19,16,16,22,0,1,2],
+  ["f3perc",10,30.2,24,37,65,27,27,18,48,8,2,2],
+  ["f3perc",40,118.6,54,99,920,49,66,44,160,0,2,1],
+  ["f3perc",120,349.3,140,300,900,98,200,140,980,0,3,2],
+  ["f3perc",240,706.4,78,150,660,64,96,76,210,0,2,2],
+  ["f3perc",480,1172.3,310,500,860,218,440,280,760,0,12,6],
+];
+
+const replica = [
+  // arm, reps, rps, p50, p90, p99, node, emailHop
+  ["normal",4,1015,350,730,1200,13.58,6],
+  ["normal",3,688,690,780,1300,8.53,1],
+  ["normal",2,930,210,1300,1800,10.67,1053],
+  ["normal",1,681,690,880,1200,6.54,6],
+  ["f3perc",4,1101,320,580,1100,13.78,190],
+  ["f3perc",3,1112,350,580,1200,13.34,32],
+  ["f3perc",2,935,220,1300,1800,10.84,1004],
+  ["f3perc",1,640,700,1000,1400,6.00,7],
+];
+
+// endpoint breakdown per replica count (u480 fixed) — arm, reps, {cart:[p50,p90,p99], checkout:[...], product:[...]}
+const endpoints = [
+  ["f3perc",4,[430,560,1100],[250,470,1300],[210,410,940]],
+  ["f3perc",3,[420,560,1100],[360,820,1500],[250,440,900]],
+  ["f3perc",2,[150,310,940],[1200,1500,2000],[140,320,910]],
+  ["f3perc",1,[880,1200,1400],[680,900,1400],[670,860,1100]],
+  ["normal",4,[370,740,1100],[380,750,1400],[300,690,890]],
+  ["normal",3,[700,770,1300],[710,800,1400],[670,750,1100]],
+  ["normal",2,[150,290,680],[1200,1600,2000],[140,290,860]],
+  ["normal",1,[750,970,1300],[670,850,1300],[650,790,950]],
+];
+
+// hop latency — email p50 across the sweep + replica runs (representative points)
+const emailHopSeries = [
+  {label:"u1",   sep:1,    bun:1},
+  {label:"u10",  sep:2,    bun:2},
+  {label:"u40",  sep:2,    bun:2},
+  {label:"u120", sep:2,    bun:3},
+  {label:"u240", sep:1,    bun:2},
+  {label:"u480", sep:1,    bun:12},
+  {label:"2台",  sep:1053, bun:1004},
+];
+
+const COL = { sep: getCS("--sep"), bun: getCS("--bun"), ink3: getCS("--ink-3"), line: getCS("--line") };
+function getCS(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+// ---------- 1. SWEEP LINE CHARTS (log-y) ----------
+const usersAxis = [1,10,40,120,240,480];
+function xln(u){ return Math.log10(u); }
+const XMIN = xln(1), XMAX = xln(480);
+function drawSweepChart(metricIdx, title, sub){
+  const W=300,H=180, pl=34,pr=8,pt=10,pb=26;
+  const iw=W-pl-pr, ih=H-pt-pb;
+  const yTicks=[10,50,100,500,1500];
+  const YMIN=Math.log10(10), YMAX=Math.log10(1500);
+  const yln=v=>Math.log10(Math.max(v,10));
+  const px=u=> pl + (xln(u)-XMIN)/(XMAX-XMIN)*iw;
+  const py=v=> pt + (1-(yln(v)-YMIN)/(YMAX-YMIN))*ih;
+  let g='';
+  yTicks.forEach(t=>{ const y=py(t);
+    g+=`<line class="grid-line" x1="${pl}" y1="${y.toFixed(1)}" x2="${W-pr}" y2="${y.toFixed(1)}"/>`;
+    g+=`<text class="axis-lab" x="${pl-5}" y="${(y+3).toFixed(1)}" text-anchor="end">${t}</text>`;
+  });
+  usersAxis.forEach(u=>{ const x=px(u);
+    g+=`<text class="axis-lab" x="${x.toFixed(1)}" y="${H-8}" text-anchor="middle">${u}</text>`;
+  });
+  ["normal","f3perc"].forEach(arm=>{
+    const col = arm==="normal"?COL.sep:COL.bun;
+    const rows = sweep.filter(r=>r[0]===arm);
+    const pts = rows.map(r=>[px(r[1]), py(r[metricIdx])]);
+    const d = pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+    const len=600;
+    g+=`<path d="${d}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" class="draw" style="stroke-dasharray:${len};stroke-dashoffset:0"/>`;
+    pts.forEach(p=> g+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.6" fill="${col}"/>`);
+  });
+  return `<div><p class="chart-title">${title}</p><p class="chart-sub">${sub}</p>
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${title}">${g}</svg></div>`;
+}
+document.getElementById("sweepCharts").innerHTML =
+  drawSweepChart(3,"集約 p50","中央値 · 対数軸 (ms)") +
+  drawSweepChart(4,"集約 p90","対数軸 (ms)") +
+  drawSweepChart(5,"集約 p99","対数軸 (ms)");
+
+// ---------- 1b. SWEEP TABLE ----------
+{
+  const tb=document.querySelector("#sweepTable tbody");
+  let html="";
+  sweep.forEach((r,i)=>{
+    const arm=r[0], tag=arm==="normal"?"sep":"bun";
+    const top = (i>0 && sweep[i-1][0]!==arm) ? " grp-top":"";
+    html+=`<tr class="${top}">
+      <td><span class="arm-tag ${tag}"></span>${arm} · u${r[1]}</td>
+      <td>${r[2].toFixed(0)}</td>
+      <td>${heat(r[3])}</td><td>${heat(r[4])}</td><td>${heat(r[5])}</td>
+      <td>${r[6]}</td><td>${r[7]}</td><td>${r[8]}</td><td>${heat(r[9])}</td>
+      <td>${r[10]?`<span class="heat h-warn">${r[10]}</span>`:"0"}</td>
+    </tr>`;
+  });
+  tb.innerHTML=html;
+}
+function heat(v){
+  let c = v<200?"h-ok" : v<800?"h-warn":"h-crit";
+  return `<span class="heat ${c}">${v}</span>`;
+}
+
+// ---------- 2. REPLICA TABLE ----------
+{
+  const tb=document.querySelector("#replicaTable tbody");
+  let html="";
+  replica.forEach((r,i)=>{
+    const arm=r[0], tag=arm==="normal"?"sep":"bun";
+    const top = (i>0 && replica[i-1][0]!==arm) ? " grp-top":"";
+    const eh = r[7]>=800?`<span class="heat h-crit">${r[7]}</span>`
+             : r[7]>=100?`<span class="heat h-warn">${r[7]}</span>`
+             : `<span class="heat h-ok">${r[7]}</span>`;
+    html+=`<tr class="${top}">
+      <td><span class="arm-tag ${tag}"></span>${arm}</td>
+      <td>${r[1]} 台</td><td>${r[2]}</td>
+      <td>${heat(r[3])}</td><td>${heat(r[4])}</td><td>${heat(r[5])}</td>
+      <td>${r[6].toFixed(1)}</td><td>${eh}</td>
+    </tr>`;
+  });
+  tb.innerHTML=html;
+}
+
+// ---------- 3. ENDPOINT BREAKDOWN (range bars) ----------
+{
+  const MAXV=2000;
+  const epName={cart:"/cart",checkout:"/cart/checkout",product:"/product"};
+  const groups=[["f3perc","束ね f3perc"],["normal","分離 normal"]];
+  let html=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:26px">`;
+  groups.forEach(([arm,label])=>{
+    const col = arm==="normal"?COL.sep:COL.bun;
+    html+=`<div><p class="chart-title" style="margin-bottom:12px"><span class="arm-tag ${arm==="normal"?"sep":"bun"}"></span>${label}</p>`;
+    endpoints.filter(e=>e[0]===arm).forEach(e=>{
+      html+=`<div style="margin-bottom:14px"><div style="font-size:11.5px;color:var(--ink-3);margin-bottom:5px;font-weight:600">${e[1]} 台構成</div>`;
+      ["cart","checkout","product"].forEach((k,ki)=>{
+        const arr=e[2+ki]; const [p50,p90,p99]=arr;
+        const x50=p50/MAXV*100, x90=p90/MAXV*100, x99=p99/MAXV*100;
+        const crit = p50>=800;
+        html+=`<div style="display:flex;align-items:center;gap:8px;margin:3px 0">
+          <span style="width:96px;font-size:11px;color:var(--ink-2);font-family:var(--mono);text-align:left">${epName[k]}</span>
+          <div style="flex:1;position:relative;height:16px;background:var(--panel-2);border-radius:4px;overflow:hidden">
+            <div style="position:absolute;left:0;top:0;height:100%;width:${x99}%;background:${col};opacity:.18"></div>
+            <div style="position:absolute;left:0;top:0;height:100%;width:${x90}%;background:${col};opacity:.32"></div>
+            <div style="position:absolute;left:0;top:0;height:100%;width:${x50}%;background:${col};opacity:.85"></div>
+          </div>
+          <span style="width:118px;font-size:10.5px;font-family:var(--mono);color:${crit?'var(--crit)':'var(--ink-2)'};text-align:right;font-variant-numeric:tabular-nums">${p50}/${p90}/${p99}</span>
+        </div>`;
+      });
+      html+=`</div>`;
+    });
+    html+=`</div>`;
+  });
+  html+=`</div><p class="chart-sub" style="margin-top:14px;text-align:right">バー = p50(濃)/p90(中)/p99(淡)、右端の数値は p50 / p90 / p99 ms・スケール上限 2000ms</p>`;
+  document.getElementById("endpointPanel").innerHTML=html;
+}
+
+// ---------- 4. HOP LATENCY (grouped bars, log) ----------
+{
+  const W=760,H=220, pl=42,pr=14,pt=14,pb=40;
+  const iw=W-pl-pr, ih=H-pt-pb;
+  const YMIN=Math.log10(1), YMAX=Math.log10(2000);
+  const yln=v=>Math.log10(Math.max(v,1));
+  const py=v=> pt + (1-(yln(v)-YMIN)/(YMAX-YMIN))*ih;
+  const n=emailHopSeries.length;
+  const bw=iw/n;
+  let g='';
+  [1,10,100,1000].forEach(t=>{ const y=py(t);
+    g+=`<line class="grid-line" x1="${pl}" y1="${y.toFixed(1)}" x2="${W-pr}" y2="${y.toFixed(1)}"/>`;
+    g+=`<text class="axis-lab" x="${pl-6}" y="${(y+3).toFixed(1)}" text-anchor="end">${t}</text>`;
+  });
+  emailHopSeries.forEach((d,i)=>{
+    const cx=pl+bw*i+bw/2;
+    const barW=Math.min(26,bw*0.34);
+    const y0=py(0.9);
+    [["sep",COL.sep,-1],["bun",COL.bun,1]].forEach(([k,col,side])=>{
+      const val=d[k];
+      const y=py(val);
+      const x=cx+ (side<0? -barW-2 : 2);
+      const crit=val>=800;
+      g+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${(y0-y).toFixed(1)}" rx="2" fill="${col}" opacity="${crit?1:0.9}"/>`;
+      g+=`<text x="${(x+barW/2).toFixed(1)}" y="${(y-4).toFixed(1)}" text-anchor="middle" class="axis-lab" style="fill:${crit?getCS('--crit'):COL.ink3};font-weight:600">${val}</text>`;
+    });
+    g+=`<text x="${cx.toFixed(1)}" y="${H-16}" text-anchor="middle" class="axis-lab" style="font-family:var(--sans);font-size:11px">${d.label}</text>`;
+  });
+  g+=`<text x="${pl}" y="${H-2}" class="axis-lab" style="font-family:var(--sans)">左=normal / 右=f3perc · email hop p50 (ms, 対数軸)</text>`;
+  document.getElementById("hopPanel").innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="email hop latency">${g}</svg>`;
+}
+</script>
