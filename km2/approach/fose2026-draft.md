@@ -131,6 +131,91 @@ buy のみを与えた場合にも粒度損は生じたが、これは email の
 
 # 執筆メモ(提出時は削除)
 
+## ★★ 追加実験の指示: 全構成を5サイクルに統一 (2026-09-13 ユーザ決定)
+
+### 方針
+表2 の7構成はサイクル数がバラバラ(frontcatalog のみ6、他は3)なので、**全構成5サイクル**に揃える。
+**枠の適正化と実験設計は、mix / mix2 の対応するものと必ず同じにすること。** 片方でも違うと既存データと合算できず、全部やり直しになる。
+
+### 現状と不足
+
+| アーム | 出所 | 現在 | 追加 |
+|---|---|---|---|
+| frontcatalog | mix | 6 (cyc1-6) | **不要**(cyc1-5 を使う) |
+| frontreco | mix | 3 | +2 |
+| frontcart | mix | 3 | +2 |
+| normal | mix | 3 | +2 |
+| frontemail | mix2 | 3 | +2 |
+| frontcheckout | mix2 | 3 | +2 |
+| checkoutemail | mix2 | 3 | +2 |
+| catalogcheckout | mix2 | 3 | +2 |
+| normal | mix2 | 3 | +2 |
+
+追加 64点 (mix 側24点 + mix2 側40点)。**1点 7分45秒 → 約8時間15分。**
+
+### 実行コマンド
+
+**mix 側**(適正化対象 = frontend / productcatalog / **recommendation** / **cart**)
+
+```sh
+cd /home/mizuki/ダウンロード/msa
+DIR=km2/experiments/summer2026
+ARMS="normal frontreco frontcart" \
+RATES="100" BROWSE_RATE="0 100 200 300" \
+CYCLES=2 CYC_START=4 \
+RIGHTSIZE=1 RS_SERVICES="frontend productcatalogservice recommendationservice cartservice" \
+RS_SCALE=1 LIMIT_X=0 LIMIT_SCALE=0 \
+HPA_TARGET=70 HPA_MIN=1 HPA_MAX=8 SU_WIN=30 SD_WIN=60 PRESCALE=1 \
+WARM=180 MEAS=240 SAMPLE=15 PRE_VUS=600 MAX_VUS=4000 \
+CSV=$DIR/results-mix.csv TL=$DIR/timeline-mix.csv EV=$DIR/events-mix.csv LOG=$DIR/mix.log \
+bash $DIR/bundle-vs-loss2.sh
+```
+
+**mix2 側**(適正化対象 = frontend / productcatalog / **checkout** / **email**)
+
+```sh
+ARMS="normal frontemail frontcheckout checkoutemail catalogcheckout" \
+RATES="100" BROWSE_RATE="0 100 200 300" \
+CYCLES=2 CYC_START=4 \
+RIGHTSIZE=1 RS_SERVICES="frontend productcatalogservice checkoutservice emailservice" \
+RS_SCALE=1 LIMIT_X=0 LIMIT_SCALE=0 \
+HPA_TARGET=70 HPA_MIN=1 HPA_MAX=8 SU_WIN=30 SD_WIN=60 PRESCALE=1 \
+WARM=180 MEAS=240 SAMPLE=15 PRE_VUS=600 MAX_VUS=4000 \
+CSV=$DIR/results-mix2.csv TL=$DIR/timeline-mix2.csv EV=$DIR/events-mix2.csv LOG=$DIR/mix2.log \
+bash $DIR/bundle-vs-loss2.sh
+```
+
+### ★絶対に変えてはいけない設定(既存ログから確認済み)
+
+| 項目 | mix (9/2・9/3) | mix2 (9/7) |
+|---|---|---|
+| 購入レート | `RATES=100` | 同じ |
+| 閲覧レート | `BROWSE_RATE="0 100 200 300"` | 同じ |
+| HPA | 目標70% / 1-8台 / 増30s・減60s | 同じ |
+| 開始台数 | **1** (`PRESCALE=1`) | 同じ |
+| ウォームアップ / 計測 | 180s / 240s | 同じ |
+| 採取間隔 | 15s | 同じ |
+| `RIGHTSIZE` | 1 | 1 |
+| `RS_SCALE` / `LIMIT_X` / `LIMIT_SCALE` | 1 / 0 / 0 | 同じ |
+| **`RS_SERVICES`** | frontend productcatalogservice **recommendationservice cartservice** | frontend productcatalogservice **checkoutservice emailservice** |
+| 適正化テーブル | `summer2026/rightsize-requests.csv` | 同じ |
+
+**`RS_SERVICES` だけが両者で異なる。** ここを取り違えると既存データと混ぜられない。
+
+`CYC_START=4` にすること(既存が cyc1-3 のため)。mix.csv には frontcatalog / frontrecocatalog / frontrecocartcatalog の cyc4-6 が既にあるが、アームが違うので衝突しない。
+
+### 完了後にやること
+1. 全構成 cyc1-5 で再集計し、表2 の「需要の伸び」と「粒度損」を更新
+2. §4 冒頭の `(3サイクル)` を `(5サイクル)` に
+3. 表2 の脚注から「frontend+catalog のみ6サイクル」を削除
+
+### ★未解決のまま残る問題(サイクルを増やしても直らない)
+mix と mix2 は **`RS_SERVICES` が違う**ため、同じサービスでも需要の伸びの値がずれる(cart: mix 1.45倍 / mix2 1.94倍)。表2 の**行間で伸びを比較することは厳密にはできない**。
+直すには7構成を1本の実験・単一の枠設定で回す必要があり、3サイクルでも約12時間25分。締切には間に合わないため見送り。
+論文には「枠の適正化は同居対象に限るため、実験ごとに適正化したサービスが異なる」と書いて対応する(§4 冒頭の方針と整合)。
+
+---
+
 ## 分量
 
 **現状3ページ。制限は2ページ。** 実測では本文をソースで約10行削れば入る。

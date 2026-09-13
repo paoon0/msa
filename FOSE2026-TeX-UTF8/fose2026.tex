@@ -85,24 +85,27 @@ MicroK8s (単一ノード，16コア) 上にデプロイし，k6を用いて負�
 \textbf{softirq の CPU 時間}を用いた。
 
 
-\subsection{予備実験: Kubernetes 環境での効果} %後で訂正
+\subsection{予備実験: スケールアウト後も効果は残るか}
 
-分離 (1 Pod 1 サービス)，frontend・recommendation・productcatalog を同居させた
-\textbf{front3}，全サービスを同居させた \textbf{mega} の3構成を比較した．
-台数は4で固定して HPA を切り，全コンテナの枠を150mに揃えたので，
-予約資源はどの構成も 6.3 コアで一致する (3回反復，buy のみ)．
+先行研究\cite{wickramanayaka2022}が示した効果は台数1の比較である．
+HPA 環境では負荷に応じて台数が増え，分離構成では複数の宛先に負荷が分散される．
+そこで\textbf{台数を4に固定して HPA を切り，スケールアウト後の状態}で比較した．
+構成は分離 (1 Pod 1 サービス)，frontend・recommendation・productcatalog を
+同居させた \textbf{front3}，全サービスを同居させた \textbf{mega} の3つである．
+全コンテナの枠を150mに揃えたので予約資源はどの構成も 6.3 コアで一致する
+(3回反復，buy のみ)．
 
 buy(150)--buy(300) ではいずれも目標レートを達成し，取りこぼしと失敗は0であった．
 その条件で1周あたりの softirq は分離に対し front3 で 17--23\%，mega で 43--51\% 少なく，
-\textbf{同居させるほど通信コストが下がる}．
-応答時間は buy(300) で分離だけが不安定になり (p50 が 23--79\,ms，同居は 16--21\,ms)，
-過負荷 (buy(500)) では達成レートが分離 348 周/秒 に対し front3 425，mega 435 と，
-\textbf{同じ予約資源でより多くを処理}できた．
+\textbf{台数4でも同居させるほど通信コストが下がる}．
+さらにレートを上げると分離は約360周/秒 で頭打ちになる一方，
+同居は約440周/秒 まで伸び，\textbf{同じ予約資源で処理できる量が約2割多い}．
 
 
-\section{本実験}
+\section{本実験} %何をまとめたか記述していない
 
-以降の実験では，枠 (requests) はマニフェストの既定値ではなく，実測から適正化した値を用いる．
+式(\ref{eq:loss})のとおり粒度損は枠 (requests) に比例するため，
+枠の選び方が結果を左右する．そこで同居させるサービスの枠は実測から決めた．
 各サービスを1台に固定し HPA を切った状態で負荷を6段階 (10--150周/秒) 与え，
 CPU 使用量を負荷の1次式として最小二乗法で近似し，
 \begin{equation}
@@ -111,46 +114,81 @@ CPU 使用量を負荷の1次式として最小二乗法で近似し，
 \end{equation}
 とした．ここで $c_{0}$ はアイドル時の CPU 使用量，$c_{1}$ は1リクエストあたりの CPU 時間，
 $k$ は基準負荷 [周/秒] である．
-これにより，理想的には全サービスが同じ負荷で目標利用率に到達し，必要台数が一致する．
-その上で，buy(100) を一定に保ちつつ viewを4段階(0・100・200・250周/秒) で変える実験を行った．%具体的に変える
+これにより，適正化したサービスは同じ負荷で目標利用率に達し，必要台数が揃うはずである．
+\textbf{粒度損は同居させたサービスの枠と台数だけで決まる}ため，
+適正化は同居対象に限り，他のサービスはマニフェストの値のままとした．
+その上で，buy(100) を一定に保ちつつ view を0・100・200・300周/秒 の4段階で変え，
+\textbf{7つの組み合わせ}を同じ条件で測った (3サイクル)．
 
-\subsection{ワークロード成分が異なると損は消せない}
+\subsection{どの組み合わせで損が出たか}
 
-buyのみを与えた場合にも粒度損は生じたが，これは email の利用率が
-増設ラインをわずかに超えた (83\%) ためで，%閾値かはっきりする
-\textbf{枠が7\%不足していただけ}であり，buy(150) では両者とも2台となって消える
-(表\ref{table:loss}の上2行)．すなわち\textbf{枠の測定精度に起因する損は除去できる}．
+結果を表\ref{table:pairs}に示す．
+ここで\textbf{需要}とは利用率と台数の積，すなわち何台分の負荷がかかっているかを表す．
+view を0から300周/秒 に増やしたとき，この需要が何倍になるかは
+サービスによって 1.1--2.5倍 と幅がある．
 
-これに対し view(0) を view(300) にすると，
-\textbf{frontend の需要は2.5倍}になるのに対し\textbf{email は1.2倍}にしかならない
-(表\ref{table:loss}の1行目と3行目)．
+両者を分けるのは，同居した2サービスの\textbf{伸びが揃っているかどうか}である．
+伸びが近い3つでは粒度損が生じなかった．
+一方，伸びが食い違う組み合わせでは損が生じ，view 比率によって
+\textbf{引きずる側と引きずられる側が入れ替わった}．
+ただし伸びが違っても必要台数が同じ整数に落ちれば損は出ない
+(catalog+checkout)．伸びの差は損の必要条件であって十分条件ではない．
 
 \begin{table}[tb]
 	\centering
-	\caption{条件による粒度損の変化 (FE+email，いずれも3/3で一致)}
+	\caption{組み合わせごとの需要の伸びと粒度損 (buy(100) 固定，view 0→300周/秒)}
+	\label{table:pairs}
+	\small
+	\doublerulesep=0.3pt
+	\setlength{\tabcolsep}{4pt}
+	\begin{tabular}{lcl}
+		\hline\hline\hline
+		組み合わせ & 需要の伸び & 粒度損 \\ \hline
+		frontend+catalog  & 2.4 / 2.1 倍 & なし \\
+		frontend+reco     & 2.4 / 2.2 倍 & なし \\
+		checkout+email    & 1.3 / 1.1 倍 & なし \\ \hline
+		frontend+cart     & 2.4 / 1.5 倍 & \textbf{あり} \\
+		catalog+checkout  & 2.1 / 1.3 倍 & ほぼなし \\
+		frontend+checkout & 2.5 / 1.3 倍 & \textbf{あり} \\
+		frontend+email    & 2.5 / 1.1 倍 & \textbf{あり} \\ \hline
+	\end{tabular}
+\end{table}
+
+\subsection{損が枠では消せない理由}
+
+最も比が動いた frontend+email を詳しく見る (表\ref{table:loss})．
+frontend は emailservice を呼び出さないため，この組み合わせに通信削減の便益はない．
+
+view(0) では email だけが2台を要し，frontend が引きずられて1台分が無駄になる．
+view(300) では逆に frontend が3台を要し，今度は email が引きずられる．
+\textbf{引きずる側と引きずられる側が入れ替わり，損が9倍変化した}．
+損の比 $1077/119 = 9.05$ は枠の比と一致し，式(\ref{eq:loss})が両方向で成立している．
+
+\begin{table}[tb]
+	\centering
+	\caption{view による粒度損の変化 (FE+email，buy(100) 固定，いずれも3/3で一致)}
 	\label{table:loss}
 	\small
 	\doublerulesep=0.3pt
 	\setlength{\tabcolsep}{4pt}
-	\begin{tabular}{rrcrr}
+	\begin{tabular}{rccl}
 		\hline\hline\hline
-		buy & view & 必要台数 & 引きずら & 粒度損 \\
-		\multicolumn{2}{c}{[周/秒]} & FE/email & れる側 & [mCPU] \\ \hline
-		100 & 0 & \textbf{1} / \textbf{2} & FE (1077\,m) & $\mathbf{+1077}$ \\ \hline
-		150 & 0 & 2 / 2 & --- & \textbf{0} \\ \hline
-		100 & 300 & \textbf{3} / 2 & email (119\,m) & $\mathbf{+119}$ \\ \hline
+		view & 必要台数 & 需要比 & 粒度損 [mCPU] \\
+		{[}周/秒] & FE/email & FE/email & (引きずられる側) \\ \hline
+		0   & \textbf{1} / \textbf{2} & 0.85 & $\mathbf{+1077}$ (FE) \\ \hline
+		100 & 2 / 2 & 1.24 & \textbf{0} \\ \hline
+		300 & \textbf{3} / 2 & 1.90 & $\mathbf{+119}$ (email) \\ \hline
 	\end{tabular}
 \end{table}
 
-\textbf{同じ組み合わせでありながら，引きずる側と引きずられる側が入れ替わり，損が9倍変化した}．
-損の比 $1077 / 119 = 9.05$ は枠の比と一致し，式(\ref{eq:loss})が両方向で成立している．
-
-枠は各サービスに1つしか与えられないのに対し，
-需要の比はワークロードの混合比によって変化するため，
-\textbf{2つの条件で同時に損をゼロにする枠は存在しない}．
-すなわちこの損は枠の調整では原理的に除去できない．
-
-ただし成分が異なれば必ず損が出るわけではなく，必要台数が一致した際の粒度損はゼロであった．
+view(100) では両者とも2台となり損は消える．
+しかしこれは一点にすぎない．view を0から300に増やすと
+\textbf{frontend の需要は2.5倍}になるのに対し\textbf{email は1.1倍}にとどまり，
+両者の\textbf{需要比は2.2倍変化する}．
+枠は各サービスに1つしか与えられないのに対し需要比は動くため，
+\textbf{全帯で損をゼロにする枠は存在しない}．
+対照として productcatalog と checkout を同居させた構成では，
+需要比がほとんど動かず粒度損は12点中10点でゼロであった．
 
 \section{考察}
 
