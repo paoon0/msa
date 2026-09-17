@@ -79,3 +79,15 @@ bash bundle-vs-loss2.sh
 - `dropped`(全体)にはウォームアップ中の取りこぼしが混ざる。判定には `dropped_win`(計測窓のみ)を使う
 - サイクル2の normal に重複行がある(中断前 + 再開後)。解析では後の行を基準にする
 - 250周/s は開始1台では不安定。安定させるには開始3台(実験8/30で 3/3 健全を確認)
+
+## FOSE2026 ライブ論文 (2026-09-14 提出) の数値を再計算するスクリプト
+
+出所と再現状況の一覧は `FOSE2026-TeX-UTF8/fose2026-data-provenance.md`。
+
+| スクリプト | 論文の箇所 | 入力 |
+|---|---|---|
+| `table1_mismatch.py` | 表1 必要台数の食い違い | `results-mix.csv`, `results-mix2.csv` |
+| `fixed4_summary.py` | §3.1 softirq 削減率・飽和帯スループット | `fixed4-all-points.csv` |
+| `requests_shift_search.py` | §5 予約枠のずらし探索 5--9% / 28--48% (awk 原本の Python 移植、一致) | `timeline-mix*.csv`, `results-mix*.csv` |
+| `../icter_affinity_summary.py` | §3 バイト量 +2--4% | `../results-icter-affinity.csv` |
+| `../edge_pair_shares.py` | §5 affinity 割合 | `../results-edge-pairs.csv` |

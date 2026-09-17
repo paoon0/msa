@@ -1,0 +1,145 @@
+This is e-upTeX, Version 3.141592653-p4.1.2-u2.02-251130-2.6 (utf8.sjis) (TeX Live 2026) (preloaded format=platex 2026.9.9)  14 SEP 2026 16:50
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**fose2026
+(./fose2026.tex
+pLaTeX2e <2023-02-14>+1, based on
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-08-10>
+(./fose.cls
+Document Class: fose 2024/04/12 ver 0.11
+(./fose.sty
+Document Style `compsoft' ascii version <23 Mar 92>.
+\@maxsep=\dimen166
+\@dblmaxsep=\dimen167
+\JQ=\dimen168
+\Q=\dimen169
+\@Baseline=\dimen170
+\jspaceskip=\dimen171
+\jmathkanjiskip=\dimen172
+\@mojihaba=\dimen173
+\c@part=\count276
+\c@section=\count277
+\c@subsection=\count278
+\c@subsubsection=\count279
+\c@paragraph=\count280
+\c@subparagraph=\count281
+\@currentmojihaba=\skip49
+\twodigits=\skip50
+\bibbox=\box70
+\@beforecaptionskip=\skip51
+\@aftercaptionskip=\skip52
+\@tempboxb=\box71
+\c@figure=\count282
+\c@table=\count283
+\@floatheight=\dimen174
+\@floatlinecount=\count284
+\@temptitlebox=\box72
+\strokeinterval=\dimen175
+\strokewidth=\dimen176
+\rightstrokewidth=\dimen177
+\boxinterval=\dimen178
+\boxwidth=\dimen179
+\leftboxwidth=\dimen180
+\choshaspacebox=\box73
+\tempsplitbox=\box74
+\nobreakcount=\count285
+\c@volpageoffset=\count286
+\c@巻数=\count287
+\c@号数=\count288
+\c@年数=\count289
+\c@firstpage=\count290
+\c@lastpage=\count291
+\dimen@@=\dimen181
+\@interlinegap=\skip53
+\@leftcolumnfootnote=\box75
+\@rightcolumnfootnote=\box76
+\adjustbox=\box77
+\adjustheight=\dimen182
+\adjustlinecount=\count292
+))
+\currentYear=\count293
+\currentKai=\count294
+\conferenceYear=\count295
+ (c:/texlive/2026/texmf-dist/tex/latex/l3kernel/l3backend-dvips.def
+File: l3backend-dvips.def 2026-08-10 L3 backend support: dvips
+\l__pdfannot_backend_content_box=\box78
+\l__pdfannot_backend_model_box=\box79
+\g__pdfannot_backend_int=\count296
+\g__pdfannot_backend_link_int=\count297
+\g__pdfannot_backend_link_sf_int=\count298
+)
+(./fose2026.aux)
+\openout1 = `fose2026.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for JY1/mc/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for JT1/mc/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Font shape `JT1/gt/bx/n' in size <17.28> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 30.
+LaTeX Font Info:    Font shape `JY1/gt/bx/n' in size <17.28> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 30.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <14.4> on input line 30.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 30.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 30.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 30.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 30.
+LaTeX Font Info:    Font shape `JT1/gt/bx/n' in size <10> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 33.
+LaTeX Font Info:    Font shape `JY1/gt/bx/n' in size <10> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 33.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <9> on input line 46.
+ [1
+
+
+]
+LaTeX Font Info:    Font shape `JT1/gt/bx/n' in size <9> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 81.
+LaTeX Font Info:    Font shape `JY1/gt/bx/n' in size <9> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 81.
+LaTeX Font Info:    Font shape `JT1/gt/bx/n' in size <8> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 107.
+LaTeX Font Info:    Font shape `JY1/gt/bx/n' in size <8> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 107.
+ (./fose2026.bbl
+Underfull \hbox (badness 6575) in paragraph at lines 4--7
+[]\OT1/cmr/m/n/8 Google Cloud Plat-form: On-line Bou-tique
+ []
+
+LaTeX Font Info:    Font shape `JT1/mc/m/it' in size <8> not available
+(Font)              Font shape `JT1/mc/m/n' tried instead on input line 10.
+LaTeX Font Info:    Font shape `JY1/mc/m/it' in size <8> not available
+(Font)              Font shape `JY1/mc/m/n' tried instead on input line 10.
+) [2] (./fose2026.aux) ) 
+Here is how much of TeX's memory you used:
+ 770 strings out of 469220
+ 12399 string characters out of 5461589
+ 451675 words of memory out of 5000000
+ 30038 multiletter control sequences out of 15000+600000
+ 643820 words of font info for 102 fonts, out of 8000000 for 9000
+ 36 hyphenation exceptions out of 8191
+ 35i,10n,38p,213b,320s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+Output written on fose2026.dvi (2 pages, 25092 bytes).
