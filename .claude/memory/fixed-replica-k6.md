@@ -17,7 +17,7 @@ HPA を切って**全 Deployment を4台に固定**し、「オートスケー�
 ## スクリプトに足したつまみ(`bundle-vs-loss2.sh`)
 - `FIXED_REPLICAS=N` … HPA を作らず全 Deployment を N 台に固定(redis-cart は1)
 - `UNIFORM_REQ_M=150` … requests を一律化(limits は触らない)
-- `mega` アーム … `km2/all/all.yaml`。**`MEGA_REDIS=shared`(既定)で redis を Pod の外に出す**。複数台にすると Pod内 redis が台数分でき、カートが割れて1周の仕事量が他アームと変わるため。`extract_redis.py` で redis-cart を切り出し、megapod から redis コンテナを JSON patch で除去し `REDIS_ADDR=redis-cart:6379` に向ける。
+- `mega` アーム … `km2/variants/all/all.yaml`。**`MEGA_REDIS=shared`(既定)で redis を Pod の外に出す**。複数台にすると Pod内 redis が台数分でき、カートが割れて1周の仕事量が他アームと変わるため。`extract_redis.py` で redis-cart を切り出し、megapod から redis コンテナを JSON patch で除去し `REDIS_ADDR=redis-cart:6379` に向ける。
 
 ## ★結果(3サイクル平均±sd。全36点で取りこぼし0・失敗0・実測=目標)
 **softirq [ms/周]**: 150周/s normal 3.034±0.028 / front3 2.340±0.006(**−22.9%**) / mega 1.499±0.029(**−50.6%**)。

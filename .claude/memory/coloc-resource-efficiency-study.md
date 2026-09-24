@@ -21,6 +21,6 @@ metadata:
 
 **スクリプトの既知バグ:** `net_cpu_per_req`(=node−app)列は両方負値で使い物にならない。原因=node 側は idle baseline(アプリ Pod の idle CPU 込み)を引くのに app 側は負荷時フルを引く二重差引。**見出し指標は net ではなく node_cpu_per_req のトポロジ間比較を使う**こと。
 
-**次回の TODO(優先順):** ①measure_cpu_per_req.py の net 定義修正 + 「同一RPSでの総ノードCPU(cores, 背景差引なし生)」列を追加 → ②各トポロジ3〜5回反復で平均±ばらつき → ③負荷を飽和近くまで上げるスイープ(サブ指標=最大スループット)。loadgen は exp に `kubectl apply -f km2/loadgenerator.yaml -n exp`、同居切替は `km2/outmail/outmail.yaml`。計測は run 完了後に `--port-forward measure --topology <sep/colo> --baseline <①の値>`。
+**次回の TODO(優先順):** ①measure_cpu_per_req.py の net 定義修正 + 「同一RPSでの総ノードCPU(cores, 背景差引なし生)」列を追加 → ②各トポロジ3〜5回反復で平均±ばらつき → ③負荷を飽和近くまで上げるスイープ(サブ指標=最大スループット)。loadgen は exp に `kubectl apply -f km2/loadgenerator.yaml -n exp`、同居切替は `km2/variants/outmail/outmail.yaml`。計測は run 完了後に `--port-forward measure --topology <sep/colo> --baseline <①の値>`。
 
 関連: [[monitoring-stack]] [[exact-window-measurement]]

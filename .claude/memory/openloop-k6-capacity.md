@@ -72,7 +72,7 @@ run1=`k6-sweep-run1.csv`(1GB,過負荷OOM欠測), run2=`k6-sweep.csv`(4GB,全10�
 - **★方法論の教訓**: 単発は膝付近で不安定(normal300 dropped 166↔0, bundle100 p99 11↔478)。**過負荷域(400/500)の差だけが2runで一貫**。要replication(HPA実験のように3cycle推奨)。次=各点3反復 or 図化。
 
 ## ★★★3アーム×3サイクル本走 完了(2026-07-17 ~05:00)= `k6-sweep-3arm-3cyc.csv`(45点,失敗0)
-ユーザ指示でmega追加・3反復。スクリプトにmega分岐(km2/all/all.yaml, megapod単一Deploy全11container+redis同居,全SERVICE_ADDR=localhost, frontend Svc selector app=megapod)とCYCLES対応(cycle列,サイクル外側=時間ドリフト対策)を実装。k6 mem 4GB。統計は`verify-numbers-python`でPython再計算。
+ユーザ指示でmega追加・3反復。スクリプトにmega分岐(km2/variants/all/all.yaml, megapod単一Deploy全11container+redis同居,全SERVICE_ADDR=localhost, frontend Svc selector app=megapod)とCYCLES対応(cycle列,サイクル外側=時間ドリフト対策)を実装。k6 mem 4GB。統計は`verify-numbers-python`でPython再計算。
 
 ### 達成スループット iter_rate 平均±SD(周/秒)= 容量
 | off | normal | bundle | mega |

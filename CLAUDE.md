@@ -32,24 +32,38 @@ kubernetes-manifests/には、計算資源が少ないマシン用のマニフ�
 
 全ディレクトリの`kustomization.yaml`は利用せず、ディレクトリ単位でapplyしている。
 
-### km2/ のディレクトリ構成 (2026-07 に再編。パスが変わったので注意)
+### km2/ のディレクトリ構成 (2026-07 に再編、2026-09-18 にバリアントを `variants/` へ集約。パスが変わったので注意)
 
-- `km2/normal/` — **分離 (1 Pod 1 サービス) の各サービスマニフェスト** (旧 `km2/` 直下から移動)。比較のベースライン。`CMD` (認証情報メモ) と個別 `loadgenerator.yaml` もここ。
-- `km2/all/` — `all.yaml` (全 11 コンテナを 1 Pod に同居させた megapod) と `README.md` のみ。
-- `km2/experiments/` — **実験の実体**。スクリプト (`*.sh`)、結果 CSV (`results-*.csv`)、計測用負荷マニフェスト (`loadgen-csv.yaml`/`loadgen-csv-fail.yaml`)、図、調査記録 (`*.md`)。`README.md` が実験→スクリプト→CSV の索引。使い捨てログ (`*.log`,`last-logs-*.txt`) は随時削除可。`latency-breakdown/` はレイテンシ/固定台数の追加調査サブフォルダ。
-- `km2/frontrecocatalogcart/` — **束ね (front3): frontend+recommendation+productcatalog を 1 Pod に同居**したトポロジ (主力の co-location アーム)。
-- `km2/outmail/`,`paymail/`,`outpy/` 等 — 部分集約バリアント (下記)。
+- `km2/normal/` — **分離 (1 Pod 1 サービス) の各サービスマニフェスト**。比較のベースライン。`CMD` (認証情報メモ) と個別 `loadgenerator.yaml` もここ。
+- `km2/variants/` — **ベースライン以外のトポロジをすべてここに集約** (2026-09-18 まで `km2/` 直下にあった)。
+  - `all/` — `all.yaml` (全 11 コンテナを 1 Pod に同居させた megapod) と `README.md`。
+  - `frontrecocatalogcart/` — **束ね (front3): frontend+recommendation+productcatalog を 1 Pod に同居**したトポロジ (主力の co-location アーム)。
+  - `frontcart/`,`frontcatalog/`,`frontreco/`,`outmail/`,`paymail/`,`outpaymail/`,`outpy/`,`productshipping/` — 部分集約バリアント (下記)。
+- `km2/experiments/` — **実験の実体** (2026-09-18 にテーマ別フォルダへ整理)。**ここで作業するときは `km2/experiments/CLAUDE.md`** (実行の作法・出力規約・アーム名↔マニフェスト対応・指標定義) を読む。人向け索引は `README.md`。
+  - `shared/` — 全実験共通の負荷マニフェスト (`loadgen-csv.yaml`)。
+  - `softirq/` (2026-06〜07) — 分離 vs 部分集約 vs 全部入りの softirq/req 用量反応。
+  - `hpa/` (2026-07) — HPA 下の比較、ボトルネック診断、fails の正体。
+  - `latency-breakdown/` — レイテンシ分解と固定台数 (HPA 無し) スイープ。
+  - `k6/` — k6 による開ループ負荷生成 (summer2026 以降の標準)。`k6/README.md`。
+  - `perservice-cpu/` (2026-08-18) — サービス別利用率カーブ (枠適正化の元データ)。
+  - `summer2026/` (2026-08〜09) — **主力実験**。ドライバ `bundle-vs-loss2.sh`、索引 `EXPERIMENTS.md`、解析 `analysis-*.md`。`smoke/` はスモーク出力、`manifests/` は夏休み用束ねマニフェスト。
+  - `edge-traffic/` (2026-09-08〜10) — サービスペア単位の通信量実測と ICTer 指標の再現。
+  - `archive-202606/` — 6 月の初期 megapod 実験 CSV。
+  - ログの扱い: `*.log` のうち論文の数値出所 (`FOSE2026-TeX-UTF8/fose2026-data-provenance.md`) やスクリプトから参照されるものは生データなので消さない。`last-logs-*.txt` 等は再生成されるので削除可。
+- `km2/approach/` — 研究計画・記録・先行研究メモ・HPA 実験手順書 (`hpa-experiment-method.md`)。`echo/`,`comm-experiment/` は初期の通信時間実験。
+- `km2/locust/` — アドホックな locust マニフェスト。
+- `FOSE2026-TeX-UTF8/` (リポジトリ直下) — FOSE2026 投稿論文の TeX 一式。`submitted-20260914/` が提出時スナップショット、`fose2026-data-provenance.md` が全数値の出所と再計算スクリプト。
 
-スクリプトは絶対パス参照なので、これらを移動する際は参照側 (`km2/experiments/*.sh`、`.claude/memory/`、`km2/approach/`) も一緒に書き換えること。
+スクリプトは絶対パス参照なので、これらを移動する際は参照側 (`km2/experiments/**/*.sh`、`.claude/memory/`、`~/.claude/projects/.../memory/`、`km2/approach/`、`FOSE2026-TeX-UTF8/*.md`) も一緒に書き換えること。
 
 ### トポロジのバリアント (実験の本題)
 
-`km2/` の各サブディレクトリは、それぞれ異なるサービス配置の実験です。テストしているパターンは、**複数のサービスを 1 つの Pod 内にサイドカーとして同居させる** (`localhost` 経由で通信) 方式と、通常の 1 Pod 1 サービス構成 (クラスタの `Service` DNS 名経由で通信) 方式の比較です。バリアントの `checkoutservice.yaml`/結合マニフェストを `km2/normal/checkoutservice.yaml` (分離ベースライン) と比較すると、何が変わったか分かります。
+`km2/variants/` の各サブディレクトリは、それぞれ異なるサービス配置の実験です。テストしているパターンは、**複数のサービスを 1 つの Pod 内にサイドカーとして同居させる** (`localhost` 経由で通信) 方式と、通常の 1 Pod 1 サービス構成 (クラスタの `Service` DNS 名経由で通信) 方式の比較です。バリアントの `checkoutservice.yaml`/結合マニフェストを `km2/normal/checkoutservice.yaml` (分離ベースライン) と比較すると、何が変わったか分かります。
 
 - `outmail/` — emailservice を checkout の Pod 内へサイドカーとして移動。checkout は `emailservice:5000` ではなく `EMAIL_SERVICE_ADDR=localhost:8080` で到達する。
 - `paymail/`、`outpaymail/` — payment や email を checkout と同居させる。
 - `outpy/`、`productshipping/` — さらなる同居の組み合わせ。
-- `grafana/` — エクスポートしたダッシュボード JSON。`locust/` — アドホックな locust マニフェスト/テスト。
+- `km2/locust/` — アドホックな locust マニフェスト/テスト。
 
 バリアントを編集する際、`*_SERVICE_ADDR` 環境変数が localhost 経由かクラスタ内ルーティングかを選択するもので、これが実験で操作するレバーです。
 
@@ -62,9 +76,9 @@ kubernetes-manifests/には、計算資源が少ないマシン用のマニフ�
 ```sh
 # --- 実験のデプロイ/撤去 (ローカル MicroK8s) ---
 kubectl label namespace default istio-injection=enabled   # バリアントは Istio サイドカーを前提とする
-kubectl apply -k km2/                                      # コアサービス (kustomize)
-kubectl apply -f km2/loadgenerator.yaml                    # 負荷実行を開始 (Job)
-kubectl apply -f km2/outmail/                              # 代わりに特定のバリアントをデプロイ
+kubectl apply -f km2/normal/                               # 分離ベースライン (ディレクトリ単位で apply)
+kubectl apply -f km2/normal/loadgenerator.yaml             # 負荷実行を開始 (Job)
+kubectl apply -f km2/variants/outmail/                     # 代わりに特定のバリアントをデプロイ
 
 kubectl get pods
 kubectl port-forward deployment/frontend 8080:8080        # :8080 でストアを閲覧

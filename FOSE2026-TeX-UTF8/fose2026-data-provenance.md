@@ -29,7 +29,7 @@
 - クラスタ: MicroK8s 単一ノード 16 コア (`km2/approach/hpa-experiment-method.md` に詳細)
 - 負荷: k6 (open-loop, constant-arrival-rate)。スクリプト `km2/experiments/k6/checkout.js`, Job `km2/experiments/k6/k6-job.yaml`
 - 同居の実現: 同一 Pod に複数コンテナ、呼び出し元の `*_SERVICE_ADDR` を `localhost:<port>` に変更。
-  マニフェスト `km2/experiments/summer2026/manifests/*.yaml` (ペア), `km2/frontrecocatalogcart/` (front3), `km2/all/all.yaml` (mega)
+  マニフェスト `km2/experiments/summer2026/manifests/*.yaml` (ペア), `km2/variants/frontrecocatalogcart/` (front3), `km2/variants/all/all.yaml` (mega)
 - 主指標: node の softirq モード CPU (`node_cpu_seconds_total{mode="softirq"}` を Prometheus から `sum(rate(...))`)。
   取得の実装は各実験スクリプト内 (`promq` 関数)
 
@@ -41,10 +41,10 @@
 
 | 項目 | 値 |
 |---|---|
-| データ | `km2/experiments/results-icter-affinity.csv` (2026-09-10, `icter-affinity.sh`) |
+| データ | `km2/experiments/edge-traffic/results-icter-affinity.csv` (2026-09-10, `icter-affinity.sh`) |
 | 条件 | 分離 / front3 / mega、全サービス 1 台固定・HPA 無し・buy(100)、ウォーム 30 s・計測 180 s・2 サイクル |
 | 測り方 | 各 Pod の netns の `/proc/net/dev` を計測窓の前後で読み差分 (デバイス層 = ヘッダ込み)。k6→frontend のクライアント辺は k6 Pod の cAdvisor 送信バイトを差し引く |
-| 計算 | `km2/experiments/icter_affinity_summary.py` |
+| 計算 | `km2/experiments/edge-traffic/icter_affinity_summary.py` |
 | 結果 | 分離 31,173 B/周、front3 31,797 (+2.0%)、mega 32,478 (+4.2%)。パケット数 232→227 |
 | 再現 | **一致** |
 
@@ -63,7 +63,7 @@
 
 | 項目 | 値 |
 |---|---|
-| データ | `km2/experiments/results-perservice-cpu.csv` (2026-08-18 B測定: 分離・1 台固定・HPA 無し・buy 10/30/60/90/120/150 周/s の 6 点) |
+| データ | `km2/experiments/perservice-cpu/results-perservice-cpu.csv` (2026-08-18 B測定: 分離・1 台固定・HPA 無し・buy 10/30/60/90/120/150 周/s の 6 点) |
 | 計算 | `km2/experiments/summer2026/rightsize.py` (最小二乗で 1 次近似、frontend は上限到達の 2 点を除外) → `rightsize-requests.csv` |
 | 使用値 | frontend 1077m, catalog 662m, reco 742m, cart 560m, checkout 321m, email 119m (列 `request_m`) |
 | 適用 | `bundle-vs-loss2.sh` の `RIGHTSIZE=1 RS_SERVICES=...` (`apply_rightsize.py`)。limits は据え置き |
@@ -109,9 +109,9 @@ HPA は `autoscaling/v2`、コンテナごとに `ContainerResource` (cpu, Utili
 
 | 項目 | 値 |
 |---|---|
-| データ | `km2/experiments/results-edge-pairs.csv` (2026-09-08, `edge-pairs.sh` + `edge_pairs.py`: 各 Pod にエフェメラルコンテナ netshoot を入れ `ss -tin` を窓の前後で読み接続ごとに差分) |
+| データ | `km2/experiments/edge-traffic/results-edge-pairs.csv` (2026-09-08, `edge-pairs.sh` + `edge_pairs.py`: 各 Pod にエフェメラルコンテナ netshoot を入れ `ss -tin` を窓の前後で読み接続ごとに差分) |
 | 条件 | ラベル `購入100_閲覧0` (buy(100) のみ、分離・全サービス 1 台固定・HPA 無し) |
-| 計算 | `km2/experiments/edge_pair_shares.py` — ヘッダ込みバイト = ペイロード + 66 B × セグメント数、分母はサービス間エッジ 15 本の合計。エッジは両端から観測されるので片側のみ採用、IP 直指定 (k6) は除外 |
+| 計算 | `km2/experiments/edge-traffic/edge_pair_shares.py` — ヘッダ込みバイト = ペイロード + 66 B × セグメント数、分母はサービス間エッジ 15 本の合計。エッジは両端から観測されるので片側のみ採用、IP 直指定 (k6) は除外 |
 | 再現 | **一致** (2026-09-14 に同じ計算で TeX に記載) |
 
 ### 3.7b 計算を伴わない記述の根拠 (前セッションの記録より)
@@ -130,10 +130,10 @@ HPA は `autoscaling/v2`、コンテナごとに `ContainerResource` (cpu, Utili
 ## 4. 再現コマンド一覧
 
 ```sh
-cd km2/experiments
+cd km2/experiments/edge-traffic
 python3 icter_affinity_summary.py          # §3  +2--4%
 python3 edge_pair_shares.py                # §5  affinity 割合
-cd summer2026
+cd ../summer2026
 python3 fixed4_summary.py                  # §3.1 softirq 削減率・飽和帯スループット
 python3 table1_mismatch.py                 # 表1
 python3 requests_shift_search.py           # §5  5--9% / 28--48% (awk 原本の移植、一致。ただしウォームアップ込み)

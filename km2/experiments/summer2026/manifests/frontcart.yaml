@@ -1,4 +1,4 @@
-# 夏休み実験用: km2/frontcart/frontcart.yaml から redis を Pod の外へ出したもの。
+# 夏休み実験用: km2/variants/frontcart/frontcart.yaml から redis を Pod の外へ出したもの。
 # 理由: HPA で frontend+cart の Pod を増やすと、同居した redis も複製されカートの保管場所が分裂する。
 # frontend と cartservice の同居(localhost:7070)はそのまま。redis だけ redis-cart Service 経由に戻した。
 # frontcart: frontend + cartservice + redis を 1 Pod に同居させ、2ホップを loopback 化する:

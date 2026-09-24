@@ -29,7 +29,7 @@ recommendationservice は **Python の gRPC** で、readiness は gRPC ヘルス
 8月の「Ready落ちは構成でなく負荷で決まる(300周/sで全構成13〜31%)」の続きで、今回はサービスを特定でき割合も74%と桁が上がった。
 
 ## ★★束ねると影響範囲が広がる(論文で使える)
-`km2/frontrecocatalogcart/frontrecocatalogcart.yaml` の3コンテナすべてに readiness プローブがある:
+`km2/variants/frontrecocatalogcart/frontrecocatalogcart.yaml` の3コンテナすべてに readiness プローブがある:
 `server(http, timeout既定1s, period既定10s)` / `recommendation(gRPC, timeout既定1s, **period 5s**)` / `productcatalog(gRPC, timeout既定1s, period既定10s)`
 **Pod の Ready は全コンテナの AND** なので、reco だけ落ちても **frontend と catalog も巻き添えで Service から外れる**。分離なら reco 1台が外れるだけ。
 ⇒ 粒度損とは別の、**部分集約のデメリット**。容量比較の実験では束ねが不利に出る要因にもなる。

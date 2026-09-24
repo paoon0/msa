@@ -322,7 +322,7 @@ mix と mix2 は **`RS_SERVICES` が違う**ため、同じサービスでも需
 
 14. **7 月の HPA 実験 (locust) の集計** (L810, L1617 / 09-10 06:54, 09-11 07:45)
     - (1) users=240、3 サイクル: f3perc rps 704.7±5.9 vs normal 639.2±32.5 (+10%)、softirq/req 0.632 vs 0.932 (−32%)、Pod 14.3 vs 18.3、fails は cyc3 のみ (f3avg 7 件・f3perc 112 件)
-    - (2) `km2/experiments/results-hpapercont-allscale.csv`
+    - (2) `km2/experiments/hpa/results-hpapercont-allscale.csv`
     - (4) 初版 §3.1 予備実験に使用 → locust は閉ループでスループットが遅延の代理指標にしかならない (ユーザ指摘) ため、k6・4 台固定の fixed4 に差し替え。`latency-breakdown/replica-count-sweep.csv` も不採用 (執筆メモ「未解決の判断」2)
 
 15. **probe5 (プローブ timeout 1→5 s の対照)** (L1832 / 09-13 07:53)
@@ -362,7 +362,7 @@ mix と mix2 は **`RS_SERVICES` が違う**ため、同じサービスでも需
 | 表2 view(300) | `summer2026/results-mix2.csv` (実験9/7) |
 | email 1台で83% | `summer2026/timeline-mix2.csv` / `timeline-ratesweep2.csv` |
 | 枠を3倍変えても −16.4% / −16.2% | `summer2026/results-mix.csv` (9/2) と `results-scale3.csv` (9/4) |
-| 成分をまたぐ通信は最大 2.6% | `km2/experiments/results-edge-pairs.csv` (2026-09-08、`ss -tin`) |
+| 成分をまたぐ通信は最大 2.6% | `km2/experiments/edge-traffic/results-edge-pairs.csv` (2026-09-08、`ss -tin`) |
 
 ## 未解決の判断
 

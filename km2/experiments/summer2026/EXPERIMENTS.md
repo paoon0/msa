@@ -4,8 +4,8 @@
 
 | 呼び名 | 日付 | 内容 | 結果CSV | 時系列 | ログ |
 |---|---|---|---|---|---|
-| **通信量実測(エッジ単位)** | 2026-09-08 | **サービスペアごとの通信量を `ss -tin` で実測**(全Podにエフェメラルコンテナを入れnetnsから読む)。ペイロード/セグメント/RTT/再送をエッジ単位で取得。両端から観測して0.1〜0.3%で一致 | `../results-edge-pairs.csv` | — | `../edge-pairs.log` |
-| **通信量実測(Pod単位)** | 2026-09-08 | cAdvisor の per-Pod ネットワークカウンタ。ヘッダ込みの実線量。閲覧型/購入型を分けて流し差分で定常分を除去 | `../results-edge-traffic.csv` | — | `../edge-traffic.log` |
+| **通信量実測(エッジ単位)** | 2026-09-08 | **サービスペアごとの通信量を `ss -tin` で実測**(全Podにエフェメラルコンテナを入れnetnsから読む)。ペイロード/セグメント/RTT/再送をエッジ単位で取得。両端から観測して0.1〜0.3%で一致 | `../edge-traffic/results-edge-pairs.csv` | — | `../edge-traffic/edge-pairs.log` |
+| **通信量実測(Pod単位)** | 2026-09-08 | cAdvisor の per-Pod ネットワークカウンタ。ヘッダ込みの実線量。閲覧型/購入型を分けて流し差分で定常分を除去 | `../edge-traffic/results-edge-traffic.csv` | — | `../edge-traffic/edge-traffic.log` |
 | **実験9/7(需要ズレ最大)** | 2026-09-07 | **frontemail / frontcheckout / checkoutemail / catalogcheckout + normal × 閲覧型0/100/200/300 × 3サイクル**。checkout・email は閲覧型に反応しないので需要のズレが最大になる。枠は適正化・等倍(frontend/catalog/checkout/email のみ)。解析 → `analysis-mix2.md` | `results-mix2.csv` | `timeline-mix2.csv` | `mix2.log` |
 | **実験9/7(購入スイープ)** | 2026-09-07 | 9/7と同じ5構成 × **購入型100/150/200/250周/s** × 3サイクル(閲覧0固定)。★**購入150周/sで4ペアすべて損ゼロ**=枠が揃えば損は消える証拠。**250周/sは全構成が崩壊**(取りこぼし1064〜6802・p50 2.9〜5.7秒)で比較不能。reco の Ready落ちが窓の74% | `results-ratesweep2.csv` | `timeline-ratesweep2.csv` | `ratesweep2.log` |
 | **実験9/4(枠1/3)** | 2026-09-04 | **5構成 × 閲覧型0/100/200/300 × 3サイクル。束ね候補4つの requests のみ1/3(台数約3倍)、limits は等倍**。解析 → `analysis-scale3.md`(2026-09-07) | `results-scale3.csv` | `timeline-scale3.csv` | `scale3.log` |
@@ -19,7 +19,7 @@
 | 負荷スイープ | 2026-08-20 | 4構成 × 150/200/250/300 × 2 | `results-loadsweep.csv` | `timeline-loadsweep.csv` | `loadsweep.log` |
 | 適正化検証 | 2026-08-19 | 枠の適正化 @200周/s × 3 | `results-rightsized.csv` | `timeline-rightsized.csv` | `rightsized.log` |
 | 決着実験 第2版 | 2026-08-19 | 束ね vs 粒度損 | `results-bundle-vs-loss2.csv` | `timeline-bundle-vs-loss2.csv` | `bundle-vs-loss2.log` |
-| **B測定(利用率カーブ)** | 2026-08-18 | 分離・**全サービス1台固定・HPA無し・枠はマニフェストのまま**で 10/30/60/90/120/150周/s の6点。最小二乗法で1次近似し `枠=(アイドル+1周CPU×100)/0.7` の適正化テーブルを作成。frontendは上限に当たった2点を除外し4点 | `../results-perservice-cpu.csv` | — | `../perservice-cpu.log` |
+| **B測定(利用率カーブ)** | 2026-08-18 | 分離・**全サービス1台固定・HPA無し・枠はマニフェストのまま**で 10/30/60/90/120/150周/s の6点。最小二乗法で1次近似し `枠=(アイドル+1周CPU×100)/0.7` の適正化テーブルを作成。frontendは上限に当たった2点を除外し4点 | `../perservice-cpu/results-perservice-cpu.csv` | — | `../perservice-cpu/perservice-cpu.log` |
 | 決着実験 第1版 | 2026-08-19 | 同上(結論撤回済み) | `results-bundle-vs-loss.csv` | — | `bundle-vs-loss.log` |
 
 ---
@@ -89,5 +89,5 @@ bash bundle-vs-loss2.sh
 | `table1_mismatch.py` | 表1 必要台数の食い違い | `results-mix.csv`, `results-mix2.csv` |
 | `fixed4_summary.py` | §3.1 softirq 削減率・飽和帯スループット | `fixed4-all-points.csv` |
 | `requests_shift_search.py` | §5 予約枠のずらし探索 5--9% / 28--48% (awk 原本の Python 移植、一致) | `timeline-mix*.csv`, `results-mix*.csv` |
-| `../icter_affinity_summary.py` | §3 バイト量 +2--4% | `../results-icter-affinity.csv` |
-| `../edge_pair_shares.py` | §5 affinity 割合 | `../results-edge-pairs.csv` |
+| `../edge-traffic/icter_affinity_summary.py` | §3 バイト量 +2--4% | `../edge-traffic/results-icter-affinity.csv` |
+| `../edge-traffic/edge_pair_shares.py` | §5 affinity 割合 | `../edge-traffic/results-edge-pairs.csv` |

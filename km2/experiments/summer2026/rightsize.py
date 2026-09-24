@@ -10,7 +10,7 @@
     高さが揃えば同じ負荷で一斉に台数が増えるので、粒度損は原理的にゼロになるはず。
     それでも残る損があれば、それは設定の粗さではなく「サービスの素性(アイドル分の重さ)」に由来する本質的な損。
 
-入力: km2/experiments/results-perservice-cpu.csv (2026-08-18 の測定: 分離・1台固定・HPA無し・10〜150周/s)
+入力: km2/experiments/perservice-cpu/results-perservice-cpu.csv (2026-08-18 の測定: 分離・1台固定・HPA無し・10〜150周/s)
 出力: km2/experiments/summer2026/rightsize-requests.csv  (deploy,container,request_m)
       + 現状の枠との比較表を標準出力へ
 
@@ -22,7 +22,7 @@ import csv, argparse, os
 from collections import defaultdict
 
 ap = argparse.ArgumentParser()
-ap.add_argument('--src', default='km2/experiments/results-perservice-cpu.csv')
+ap.add_argument('--src', default='km2/experiments/perservice-cpu/results-perservice-cpu.csv')
 ap.add_argument('--out', default='km2/experiments/summer2026/rightsize-requests.csv')
 ap.add_argument('--k', type=float, default=100.0, help='1台に担当させる負荷[周/秒]')
 ap.add_argument('--target', type=float, default=0.70, help='HPA目標利用率')

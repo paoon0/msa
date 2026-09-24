@@ -63,14 +63,14 @@ apply_arm(){ local arm=$1
     normal)       for f in frontend checkoutservice cartservice productcatalogservice currencyservice \
                             paymentservice shippingservice emailservice recommendationservice adservice; do
                     kubectl apply -f $REPO/km2/normal/$f.yaml -n $NS >/dev/null; done ;;
-    frontcatalog) for y in $REPO/km2/frontcatalog/*.yaml;do case "$y" in *kustomization*|*loadgenerator*)continue;;esac
+    frontcatalog) for y in $REPO/km2/variants/frontcatalog/*.yaml;do case "$y" in *kustomization*|*loadgenerator*)continue;;esac
                     kubectl apply -f "$y" -n $NS >/dev/null; done ;;
-    frontreco)    for y in $REPO/km2/frontreco/*.yaml;do case "$y" in *kustomization*|*loadgenerator*)continue;;esac
+    frontreco)    for y in $REPO/km2/variants/frontreco/*.yaml;do case "$y" in *kustomization*|*loadgenerator*)continue;;esac
                     kubectl apply -f "$y" -n $NS >/dev/null; done ;;
     frontcart)    # frontend+cart は夏休み用(redis外出し)を使い、redis-cart は単独で立てる
                   kubectl apply -f $DIR/manifests/frontcart.yaml -n $NS >/dev/null
                   kubectl apply -f $DIR/manifests/redis-cart.yaml -n $NS >/dev/null
-                  for y in $REPO/km2/frontcart/*.yaml;do case "$y" in *kustomization*|*loadgenerator*|*frontcart.yaml)continue;;esac
+                  for y in $REPO/km2/variants/frontcart/*.yaml;do case "$y" in *kustomization*|*loadgenerator*|*frontcart.yaml)continue;;esac
                     kubectl apply -f "$y" -n $NS >/dev/null; done ;;
   esac
 }

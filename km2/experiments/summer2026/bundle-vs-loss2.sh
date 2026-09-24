@@ -126,17 +126,17 @@ apply_arm(){ local arm=$1
     normal)       for f in frontend checkoutservice cartservice productcatalogservice currencyservice \
                             paymentservice shippingservice emailservice recommendationservice adservice; do
                     kubectl apply -f $REPO/km2/normal/$f.yaml -n $NS >/dev/null; done ;;
-    frontcatalog) for y in $REPO/km2/frontcatalog/*.yaml;do case "$y" in *kustomization*|*loadgenerator*)continue;;esac
+    frontcatalog) for y in $REPO/km2/variants/frontcatalog/*.yaml;do case "$y" in *kustomization*|*loadgenerator*)continue;;esac
                     kubectl apply -f "$y" -n $NS >/dev/null; done ;;
-    frontreco)    for y in $REPO/km2/frontreco/*.yaml;do case "$y" in *kustomization*|*loadgenerator*)continue;;esac
+    frontreco)    for y in $REPO/km2/variants/frontreco/*.yaml;do case "$y" in *kustomization*|*loadgenerator*)continue;;esac
                     kubectl apply -f "$y" -n $NS >/dev/null; done ;;
     frontrecocartcatalog)
                   # 4つ束ね: frontend + recommendation + productcatalog + cartservice を1Podに同居。
                   # redis-cart だけ束ねの外(状態を持つため)。cart→redis は ClusterIP。
-                  # 3つ束ね(km2/frontrecocatalogcart/)に cartservice を足したもの。2026-09-03 作成。
+                  # 3つ束ね(km2/variants/frontrecocatalogcart/)に cartservice を足したもの。2026-09-03 作成。
                   kubectl apply -f $DIR/manifests/frontrecocartcatalog.yaml -n $NS >/dev/null
                   # cartservice の Deployment は不要(同居)。redis と他サービスは3つ束ねの定義を流用
-                  for y in $REPO/km2/frontrecocatalogcart/*.yaml;do
+                  for y in $REPO/km2/variants/frontrecocatalogcart/*.yaml;do
                     case "$y" in *kustomization*|*loadgenerator*|*hpa-percontainer*|*frontrecocatalogcart.yaml)continue;;esac
                     case "$y" in *cartservice.yaml)
                       # cartservice.yaml には redis-cart も入っているので redis だけ取り出す
@@ -152,7 +152,7 @@ apply_arm(){ local arm=$1
                   # cart は redis の分裂を避けるため束ねの外(別Pod, ClusterIP)。
                   # ディレクトリ名は frontrecocatalogcart だが中身は3コンテナ(名前は旧計画の名残)。
                   # hpa-percontainer.yaml は同梱HPAなので除外(make_hpa で作り直すため)
-                  for y in $REPO/km2/frontrecocatalogcart/*.yaml;do
+                  for y in $REPO/km2/variants/frontrecocatalogcart/*.yaml;do
                     case "$y" in *kustomization*|*loadgenerator*|*hpa-percontainer*)continue;;esac
                     kubectl apply -f "$y" -n $NS >/dev/null; done ;;
     # --- 2026-09-07 追加: 需要のズレを最大化する束ね(閲覧型は checkout/email に届かない) ---
@@ -165,8 +165,8 @@ apply_arm(){ local arm=$1
                      kubectl apply -f $DIR/manifests/checkoutemail.yaml -n $NS >/dev/null ;;
     catalogcheckout) apply_normal_except productcatalogservice checkoutservice
                      kubectl apply -f $DIR/manifests/catalogcheckout.yaml -n $NS >/dev/null ;;
-    mega)         # 全部入り: 11サービスを1Podに同居(km2/all/all.yaml)。
-                  kubectl apply -f $REPO/km2/all/all.yaml -n $NS >/dev/null
+    mega)         # 全部入り: 11サービスを1Podに同居(km2/variants/all/all.yaml)。
+                  kubectl apply -f $REPO/km2/variants/all/all.yaml -n $NS >/dev/null
                   if [ "$MEGA_REDIS" = shared ]; then
                     # redis だけ Pod の外へ(複数台にすると Pod内 redis が分裂しカートが割れるため)
                     python3 "$DIR/extract_redis.py" $REPO/km2/normal/cartservice.yaml | kubectl apply -f - -n $NS >/dev/null
@@ -177,7 +177,7 @@ apply_arm(){ local arm=$1
                   fi ;;
     frontcart)    kubectl apply -f $DIR/manifests/frontcart.yaml -n $NS >/dev/null
                   kubectl apply -f $DIR/manifests/redis-cart.yaml -n $NS >/dev/null
-                  for y in $REPO/km2/frontcart/*.yaml;do case "$y" in *kustomization*|*loadgenerator*|*frontcart.yaml)continue;;esac
+                  for y in $REPO/km2/variants/frontcart/*.yaml;do case "$y" in *kustomization*|*loadgenerator*|*frontcart.yaml)continue;;esac
                     kubectl apply -f "$y" -n $NS >/dev/null; done ;;
   esac
 }

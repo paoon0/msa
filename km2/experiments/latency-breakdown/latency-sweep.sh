@@ -17,9 +17,9 @@ RATE=${RATE:-40}
 WARM=${WARM:-30}          # ウォームアップ秒
 MEAS=${MEAS:-90}          # 本計測秒
 HPA_TARGET=70; HPA_MIN=1; HPA_MAX=4
-LOAD=$REPO/km2/experiments/loadgen-csv.yaml
+LOAD=$REPO/km2/experiments/shared/loadgen-csv.yaml
 LOADGEN=/tmp/loadgen-latsweep.yaml
-PC_HPA=$REPO/km2/frontrecocatalogcart/hpa-percontainer.yaml
+PC_HPA=$REPO/km2/variants/frontrecocatalogcart/hpa-percontainer.yaml
 CSV=${CSV:-$REPO/km2/experiments/latency-breakdown/latency-sweep.csv}
 LOG=${LOG:-$REPO/km2/experiments/latency-breakdown/latency-sweep.log}
 PROM="http://prometheus-grafana-kube-pr-prometheus.monitoring.svc:9090"
@@ -44,14 +44,14 @@ promq(){ local q="$1" i out; for i in 1 2 3 4 5;do ensure_promq
 deploy(){ local arm=$1
   echo "---- deploy $arm ----"
   kubectl delete hpa --all -n $NS >/dev/null 2>&1
-  kubectl delete -f $REPO/km2/all/all.yaml -n $NS --ignore-not-found >/dev/null 2>&1
+  kubectl delete -f $REPO/km2/variants/all/all.yaml -n $NS --ignore-not-found >/dev/null 2>&1
   for f in "${NORMAL[@]}";do kubectl delete -f $REPO/km2/normal/$f.yaml -n $NS --ignore-not-found >/dev/null 2>&1;done
   for i in $(seq 1 40);do [ -z "$(kubectl get deploy -n $NS -o name 2>/dev/null)" ]&&break;sleep 3;done
   if [ "$arm" = normal ];then
     for f in "${NORMAL[@]}";do kubectl apply -f $REPO/km2/normal/$f.yaml -n $NS >/dev/null;done
     local ds=("${NORMAL[@]}" redis-cart); local scale=("${NORMAL[@]}")
   else
-    for y in $REPO/km2/frontrecocatalogcart/*.yaml;do case "$y" in *kustomization*|*loadgenerator*|*hpa-percontainer*)continue;;esac;kubectl apply -f "$y" -n $NS >/dev/null;done
+    for y in $REPO/km2/variants/frontrecocatalogcart/*.yaml;do case "$y" in *kustomization*|*loadgenerator*|*hpa-percontainer*)continue;;esac;kubectl apply -f "$y" -n $NS >/dev/null;done
     local ds=("${FRONT3[@]}"); local scale=(frontend "${COMMON[@]}")
   fi
   for d in "${ds[@]}";do kubectl patch deploy/$d -n $NS --type=merge -p '{"spec":{"template":{"metadata":{"annotations":{"sidecar.istio.io/inject":"false"}}}}}' >/dev/null 2>&1||true;done

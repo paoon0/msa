@@ -5,7 +5,7 @@ metadata:
   type: project
 ---
 
-**資産: `km2/experiments/icter-affinity.sh` + `icter_affinity.py` + `results-icter-affinity.csv`。**
+**資産: `km2/experiments/edge-traffic/icter-affinity.sh` + `icter_affinity.py` + `results-icter-affinity.csv`。**
 
 ## 何をしたか
 先行研究 ICTer 2022 の指標 **communication affinity = サービス間のオンザワイヤ総バイト量(カプセル化込み)** を、Kubernetes の Pod 同居で再現測定した。目的は批判ではなく「**K8s環境でも削減が効くか**」の確認。

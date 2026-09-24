@@ -8,7 +8,7 @@ metadata:
   modified: 2026-08-18T14:13:27.230Z
 ---
 
-**2026-08-18 実施。判定平面の【縦軸=粒度損の予測子】を作る測定が完了。** 資産: `km2/experiments/perservice-cpu.sh`(測定) / `perservice-cpu-analyze.py`(解析) / `results-perservice-cpu.csv`(6レート×11コンテナ) / `perservice-cpu.log`。
+**2026-08-18 実施。判定平面の【縦軸=粒度損の予測子】を作る測定が完了。** 資産: `km2/experiments/perservice-cpu/perservice-cpu.sh`(測定) / `perservice-cpu-analyze.py`(解析) / `results-perservice-cpu.csv`(6レート×11コンテナ) / `perservice-cpu.log`。
 
 **条件(ユーザ確定)**: 分離(normal)・**全サービス1台固定**・**枠(requests/limits)はマニフェストのまま一切変更しない**(=つまみ固定)・HPA無し・Istio無し・k6開ループ 10/30/60/90/120/150 周/s(warm30s+計測180s)・1サイクル。全点 failed=0、drop は120で9・150で20のみ。
 
@@ -36,6 +36,6 @@ metadata:
 - 冷たいサービスの70%到達は外挿値(測定帯150周/sでは届かない)。定性的な群分けには十分だが数値として引用する時は外挿と明記。
 - 1サイクルのみ=反復未実施。群分けの結論は堅いが、個々の到達レートは±で語ること([[verify-numbers-python]])。
 
-**次の一手**: HPA有りで frontend+catalog / frontend+reco / frontend+cart を比べ、**「達成スループット ÷ 総予約枠」と Pod 数**で 2軸ルールの予測(cart≧reco, catalog最強)が当たるか検証。マニフェストは `km2/frontcatalog/` `km2/frontreco/` `km2/frontcart/` に既存(枠は分離時と同値のまま同居)。
+**次の一手**: HPA有りで frontend+catalog / frontend+reco / frontend+cart を比べ、**「達成スループット ÷ 総予約枠」と Pod 数**で 2軸ルールの予測(cart≧reco, catalog最強)が当たるか検証。マニフェストは `km2/variants/frontcatalog/` `km2/variants/frontreco/` `km2/variants/frontcart/` に既存(枠は分離時と同値のまま同居)。
 
 関連: [[coloc-bundling-decision-rule]] [[softirq-cpu-metric]] [[hpa-scaling-angle]] [[openloop-k6-capacity]]

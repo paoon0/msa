@@ -47,10 +47,10 @@ deploy(){ local arm=$1
     SCALE=("${NORMAL[@]}")
   elif [ "$arm" = mega ];then
     # 全11コンテナ+redisを1Podに同居(megapod)。全*_SERVICE_ADDRがlocalhost。frontend ServiceはmegapodをSelect。
-    kubectl apply -f $REPO/km2/all/all.yaml -n $NS >/dev/null
+    kubectl apply -f $REPO/km2/variants/all/all.yaml -n $NS >/dev/null
     SCALE=(megapod)
   else
-    for y in $REPO/km2/frontrecocatalogcart/*.yaml;do case "$y" in *kustomization*|*loadgenerator*|*hpa-percontainer*)continue;;esac;kubectl apply -f "$y" -n $NS >/dev/null;done
+    for y in $REPO/km2/variants/frontrecocatalogcart/*.yaml;do case "$y" in *kustomization*|*loadgenerator*|*hpa-percontainer*)continue;;esac;kubectl apply -f "$y" -n $NS >/dev/null;done
     SCALE=("${BUNDLE_SCALE[@]}")
   fi
   kubectl delete hpa --all -n $NS >/dev/null 2>&1  # 束ね同梱HPAを消す

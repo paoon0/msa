@@ -16,7 +16,7 @@ USERS=${USERS:-480}
 RATE=${RATE:-40}
 WARM=${WARM:-120}
 MEAS=${MEAS:-150}
-LOAD=$REPO/km2/experiments/loadgen-csv.yaml
+LOAD=$REPO/km2/experiments/shared/loadgen-csv.yaml
 LOADGEN=/tmp/loadgen-fixed.yaml
 OUT=$REPO/km2/experiments/latency-breakdown/fixed-replicas.txt
 PROM="http://prometheus-grafana-kube-pr-prometheus.monitoring.svc:9090"
@@ -55,7 +55,7 @@ if [ "$ARM" = normal ];then
   for f in "${NORMAL[@]}";do kubectl apply -f $REPO/km2/normal/$f.yaml -n $NS >/dev/null;done
   SCALE=("${NORMAL[@]}")
 elif [ "$ARM" = mega ];then
-  kubectl apply -f $REPO/km2/all/all.yaml -n $NS >/dev/null
+  kubectl apply -f $REPO/km2/variants/all/all.yaml -n $NS >/dev/null
   SCALE=(megapod)
   if [ "$MEGA_REDIS" = shared ];then
     # redis-cart(Deployment+Service)だけ km2/normal/cartservice.yaml から切り出して外に置く
@@ -71,7 +71,7 @@ elif [ "$ARM" = mega ];then
     echo "  mega: redis を外出し(redis-cart:6379 共有)。megapod のコンテナ数=$(kubectl get deploy megapod -n $NS -o jsonpath='{.spec.template.spec.containers[*].name}' | wc -w)"
   fi
 else  # f3perc(束ね)
-  for y in $REPO/km2/frontrecocatalogcart/*.yaml;do case "$y" in *kustomization*|*loadgenerator*|*hpa-percontainer*)continue;;esac;kubectl apply -f "$y" -n $NS >/dev/null;done
+  for y in $REPO/km2/variants/frontrecocatalogcart/*.yaml;do case "$y" in *kustomization*|*loadgenerator*|*hpa-percontainer*)continue;;esac;kubectl apply -f "$y" -n $NS >/dev/null;done
   SCALE=("${BUNDLE_SCALE[@]}")
 fi
 kubectl delete hpa --all -n $NS >/dev/null 2>&1   # マニフェスト同梱HPA(束ねのfrontrecocatalogcart.yaml等)を消して真の固定台数にする
