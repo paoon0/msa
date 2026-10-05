@@ -6,7 +6,7 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: fose2026.bib
 You've used 2 entries,
             2588 wiz_defined-function locations,
-            586 strings with 4899 characters,
+            586 strings with 4926 characters,
 and the built_in function-call counts, 535 in all, are:
 = -- 40
 > -- 26

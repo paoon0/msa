@@ -1,11 +1,11 @@
 ---
 name: fose2026-live-paper
-description: 【提出済 2026-09-14】FOSE2026ライブ論文。スナップショット submitted-20260914/、数値の出所と再計算スクリプトは fose2026-data-provenance.md。全数値を再計算で一致確認済(§5の5–9%/28–48%は前セッションのawkをPython移植)。カメラレディ 9/25 17:00
+description: 【提出済 2026-09-14／カメラレディ作業中 9/25】FOSE2026ライブ論文。数値の出所は fose2026-data-provenance.md。カメラレディ チェックリストの確認結果とTeX環境の落とし穴(jssst.bstはurl無視/2段組にURLは\linebreak必須/popplerは和文CIDを列挙しない)を後半に記録
 metadata: 
   node_type: memory
   type: project
   originSessionId: 2ed618a3-3070-43c7-841c-86ff649e1e9a
-  modified: 2026-09-17T16:05:26.562Z
+  modified: 2026-09-24T18:28:59.044Z
 ---
 
 **2026-09-14 に EasyChair (conf=fose2026) へ提出済み。** 採否 9/18、カメラレディ 9/25 17:00。CFP: https://fose.jssst.or.jp/fose2026/cfp.html
@@ -38,5 +38,18 @@ metadata:
 - 指示された箇所以外を勝手に書き換えない。まず提案して判断を仰ぐ (ユーザ指示 2026-09-10、09-14 にも「変更を急に加えすぎないで」)
 - このシェル (Bash ツール) は `\\` を `\` に潰す。TeX や正規表現のバックスラッシュを含む sed/perl/heredoc は壊れるので、Write ツールでスクリプトを書いてから実行する
 - Python は `py -3`、日本語出力は `PYTHONIOENCODING=utf-8`
+
+## カメラレディ チェックリスト対応 (2026-09-25)
+- **済**: 和文あらまし (`\Jabstract` のみ = 和文論文では正) / 著者・所属 (`\shozoku` 3引数 = 英文氏名・和文所属・英文所属。`Graduate School of Systems Engineering` は複数形 Systems が正で大学ポートレート JPCUP と一致、`IR Office` は**満田先生に確認済み**) / 句読点 (．45 ，58、。、は0件、和文隣接の半角 . , も0件) / 図は**1枚も無い** (`\includegraphics` 0件・画像XObject 0 なので300dpi要件は該当なし。`image/sampleFig.png` は sample.tex 専用で未使用) / フォント埋め込み (17書体すべて FontFile あり) / BibTeX 使用 (upBibTeX + jssst.bst) / 文献の並び順 (yomi で自動ソート、google→wickramanayaka で著者アルファベット順)
+- **変更した箇所**: ①`\ejtitle` の `\\` を削除 (左下英文タイトルが3行→2行) ②本文の半角括弧を**全角（）に統一** (24箇所。数式・`buy()`/`view()` の記法・`式(\ref{})`・コメントは半角のまま) ③文献[1]に**タグURL** `.../releases/tag/v0.10.3` を追加 (参照日は**書かない** = タグは不変なので意味が無い、というユーザ判断) ④`.bib` の引用キー `Wickramanayaka20223345` → `wickramanayaka2022` に戻した (本文4箇所の `\cite` と不一致で全部 `[?]` になる寸前だった) ⑤URLの `\texttt` を外し本文書体に
+- **未了**: 37行目 `Docker環境で` / 40行目 `であるHPA` / 137行目 `affinityの順に` の和欧間スペース (他82箇所は空けているので不統一。中黒隣接の22箇所は約物なので正しい)
+- zip 同梱リスト = `fose2026.tex` `fose2026.bib` `fose2026.bbl` `fose.cls` `fose.sty` `jssst.bst` + PDF (+任意で `.latexmkrc`)。`newsletr.sty` は `\def\ds@newsletr` 内なので**不要**。`sample.*` `compsoft-guide.pdf` `image/` は除外
+
+## TeX 環境の落とし穴 (このリポジトリ固有・再利用可)
+- **`jssst.bst` の ENTRY に `url` も `doi` も無い** → `.bib` に書いても**警告なしで捨てられる**。URL/DOI は `howpublished` か `note` に文字列で入れる (`@misc` の出力順 = 著者: タイトル, howpublished, 年. note.)
+- **2段組(段幅7.5cm)に GitHub のURLは入らない**。`\url{}`・`\urlstyle{rm}`・`\UrlBreaks`拡張・`\sloppy`・`\allowbreak` は**全部 Overfull**(22–57pt)。唯一成立するのは `.bib` 内で手動 `\linebreak` を置く方法。書体は `\texttt` を外すと同じURLが約1.2cm短くなる。Underfull(行が緩む)は残るが Overfull(枠外)を避ける必然の代償で対処不要
+- **`pdffonts`(poppler) は和文CIDフォントを列挙しない** (`Unknown character collection 'Adobe-Japan1'` で欧文15個しか出ない)。埋め込み検証は `dvipdfmx -v` の `[CIDFontType0]` 行か、PDFのストリームを zlib 展開して `/BaseFont` と `/FontFile*` を対応させる自作スクリプト。同じ理由で `pdftotext`/`pdftoppm` も和文を出せないので**日本語の見た目は目視できない** → 改行位置の変化はDVIのバイト比較で確認する
+- `compsoft-guide.pdf` (学会の様式解説書) は**パスワード保護**で Read ツールから開けない。様式の一次情報が必要なときはユーザに開いてもらう
+- Online Boutique のバージョン確認法 = `helm-chart/Chart.yaml` の `appVersion: "v0.10.3"` (最も確実) / `release/kubernetes-manifests.yaml` の image タグ / `km2/normal/*.yaml` の image タグ。`git tag` は空で remote は `paoon0/msa` (upstream を1コミットで取り込んだ形) なので**git からは辿れない**。★km2/normal は checkoutservice だけ `mizuki0118/mygo:bunpupaymail`、loadgenerator は `mylocust:run1` = 10サービス中2つは upstream でない → 本文§3「アプリケーションの変更はない」と整合するか**未確認** (`src/checkoutservice` に first commit 後3コミットあり)
 
 関連: [[softirq-cpu-metric]] [[icter-affinity-replication]] [[edge-traffic-measurement]] [[mixed-workload-experiment]] [[demand-mismatch-experiment]] [[fixed-replica-k6]] [[verify-numbers-python]] [[readiness-probe-blind-spot]]

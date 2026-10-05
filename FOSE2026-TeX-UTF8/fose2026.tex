@@ -6,12 +6,12 @@
 \begin{document}
 
 % 論文のタイトル
-\title{Kubernetes HPA 環境下におけるコンテナ同居の効果と選択条件}
+\title{Kubernetes HPA 環境下における\\コンテナ同居の効果と選択条件}
 \setetitle{Effects and Selection Conditions of Container Colocation under Kubernetes HPA}
 
 % ★ 英語表記が正式名称と異なる場合は差し替えてください
 \author{田尾 瑞紀　満田 成紀
-\ejtitle{Effects and Selection Conditions of Container Colocation\\ under Kubernetes HPA}
+\ejtitle{Effects and Selection Conditions of Container Colocation under Kubernetes HPA}
 \shozoku{Mizuki Tao}{和歌山大学大学院 システム工学研究科}
 {Graduate School of Systems Engineering, Wakayama University}
 \shozoku{Naruki Mitsuda}{和歌山大学戦略情報室}
@@ -19,9 +19,9 @@
 }
 
 \Jabstract{%
-	複数サービスを1つの Pod に配置すること (以下，同居) は通信処理の CPU 負荷を下げるが，
+	複数サービスを1つの Pod に配置すること（以下，同居）は通信処理の CPU 負荷を下げるが，
 	Kubernetes では HPA が Deployment 単位で台数を決めるため，
-	同居するとスケールの粒度が粗くなり CPU requests (以下，予約枠) が増える．
+	同居するとスケールの粒度が粗くなり CPU requests（以下，予約枠）が増える．
 	本稿では Online Boutique を用いた実機実験により，スケールアウト後も同居の便益が
 	保たれることを確認したうえで，負荷に応じて必要台数の大小が入れ替わる相手では
 	予約枠を調整しても損が残り，通信量の大小だけでは相手を選べないことを示す．
@@ -34,20 +34,20 @@
 
 マイクロサービスのサービス間呼び出しはネットワークスタックを経由し，通信処理のオーバヘッドが生じる．直接通信するサービスを1つの Pod に配置し，
 通信を \texttt{localhost} 経由にする同居はこれを削減する．
-Wickramanayaka ら\cite{wickramanayaka2022}は Docker環境で，
-通信量の多いコンテナを同一ホストに集め，affinity (サービス間通信のカプセル化込みバイト量) が
+Wickramanayaka ら\cite{wickramanayaka2022}は Docker 環境で，
+通信量の多いコンテナを同一ホストに集め，affinity（サービス間通信のカプセル化込みバイト量）が
 最大58.5\%減少することを示した．この効果を広く利用される Kubernetes に取り入れたいが，
-中核機能であるHPA（Horizontal Pod Autoscaler，水平方向オートスケーラ）と干渉し，同居するとスケールの粒度が粗くなる．
+中核機能である HPA（Horizontal Pod Autoscaler，水平方向オートスケーラ）と干渉し，同居するとスケールの粒度が粗くなる．
 
 
 \section{同居とオートスケーラの干渉}
 
 HPA は Deployment 単位で台数を決めるため，同居したコンテナは同じ台数でしか複製できない．
-サービス $s$ の予約枠を $r(s)$ (単位 millicore) とする．
+サービス $s$ の予約枠を $r(s)$（単位 millicore）とする．
 HPA は CPU 使用量を予約枠で割った利用率が目標値に収まるよう台数を増減する．
 $s$ を単独の Pod で配置したとき HPA が到達する台数を $s$ の必要台数 $n(s)$ とする．
 同居 Pod の台数は，全コンテナの必要台数を満たす $N = \max_s n(s)$ と定義する
-(本稿の HPA はコンテナ別利用率を指標とし，実際にも最大値を採る)．
+（本稿の HPA はコンテナ別利用率を指標とし，実際にも最大値を採る）．
 このとき $n(s) < N$ のサービスは必要以上に複製され，その予約枠が余分に要求される．
 その総量
 \begin{equation}
@@ -59,35 +59,35 @@ $s$ を単独の Pod で配置したとき HPA が到達する台数を $s$ の�
 
 \section{実験環境}
 
-対象は Online Boutique\cite{onlineboutique} (10サービス) で，
-MicroK8s (単一ノード，16コア) 上に置き k6 で負荷を与えた．
+対象は Online Boutique\cite{onlineboutique}（10サービス）で，
+MicroK8s（単一ノード，16コア）上に置き k6 で負荷を与えた．
 同居は，複数のコンテナを1つの Pod に置き，呼び出し元の宛先環境変数を
-\texttt{localhost:<port>} に変えて実現した (アプリケーションの変更はない)．
+\texttt{localhost:<port>} に変えて実現した（アプリケーションの変更はない）．
 
-負荷は2種類 (buy・view) の利用者を模した．
+負荷は2種類（buy・view）の利用者を模した．
 buy は閲覧・カート追加・購入を1周とし，全10サービスに到達する．
-view は閲覧のみを1周とし，frontend・productcatalog (以下 catalog)・cart・currency・
-recommendation (以下 reco)・ad の6つに到達する一方，
+view は閲覧のみを1周とし，frontend・productcatalog（以下 catalog）・cart・currency・
+recommendation（以下 reco）・ad の6つに到達する一方，
 checkout・payment・shipping・email には一切到達しない．
 以降，1秒あたり $x$ 周のレートで与える負荷を buy($x$)・view($x$) と表す．
 
 評価指標は，粒度損が式(\ref{eq:loss})の $\Delta$，通信処理の負荷が softirq の CPU 時間である．
 先行研究の削減は主にホスト間通信を同一ホスト内に収めてカプセル化を減らしたものであるため
 \cite{wickramanayaka2022}，
-単一ノードではバイト量がほとんど変わらない (実測 +2--4\%)．
+単一ノードではバイト量がほとんど変わらない（実測 +2--4\%）．
 同居で減るのは Pod 間転送のカーネル処理時間であるため，同一ノードの便益は softirq で測る．
 
 
 \subsection{予備実験: スケールアウト後の便益検証}
 
 先行研究\cite{wickramanayaka2022}の効果は台数1の比較なので，スケールアウト後の状態を模擬し，
-HPA を切って台数を4に固定した．構成は分離 (1 Pod 1 サービス)，frontend・reco・catalog を
-同居させた front3，全サービスを同居させた mega の3つで，予約枠は全コンテナ一律 (合計 6.3 コア) とした．
+HPA を切って台数を4に固定した．構成は分離（1 Pod 1 サービス），frontend・reco・catalog を
+同居させた front3，全サービスを同居させた mega の3つで，予約枠は全コンテナ一律（合計 6.3 コア）とした．
 負荷は基本帯 buy(150--300，50刻み) を3サイクル，飽和帯 buy(350--450) を6サイクル与えた．
 
 基本帯では3構成とも目標レートを達成し，1周あたりの softirq は分離に対し
 front3 で 17--23\%，mega で 43--51\% 少なく，台数4でも同居の便益は保たれる．
-飽和帯の buy(450) では同居が約440周/秒に達し，分離 ($359.6 \pm 22.9$ 周/秒) を約2割上回った．
+飽和帯の buy(450) では同居が約440周/秒に達し，分離（$359.6 \pm 22.9$ 周/秒）を約2割上回った．
 
 
 \subsection{本実験}\label{sec:main}
@@ -99,7 +99,7 @@ HPA は目標利用率 70\%，台数 1--8，安定化窓を増設 30 秒・削�
 アイドル分 $c_{0}$ と1周あたり $c_{1}$ を求め，予約枠を $(c_{0} + 100 c_{1}) / 0.7$ とした．
 buy(100) で利用率 70\% に揃える設計である．
 その上で buy(100) を一定に保ちつつ view(0・100・200・300) の4段階で与え，
-6つの組み合わせを測った (5サイクル)．
+6つの組み合わせを測った（5サイクル）．
 表\ref{table:pairs}に必要台数の食い違いを示す．上段の3組は反転せず，下段の3組は反転した．
 
 \begin{table}[tb]
@@ -111,7 +111,7 @@ buy(100) で利用率 70\% に揃える設計である．
 	\setlength{\tabcolsep}{3pt}
 	\begin{tabular}{lccccc}
 		\hline\hline\hline
-		組み合わせ & \multicolumn{4}{c}{view のレート (周/秒)} & 計 \\ \cline{2-5}
+		組み合わせ & \multicolumn{4}{c}{view のレート（周/秒）} & 計 \\ \cline{2-5}
 		                  & 0 & 100 & 200 & 300 & \\ \hline
 		frontend+reco     & --- & --- & $1{>}$ & $2{>}$ & 3/20 \\
 		frontend+catalog  & --- & --- & $2{>}$ & $5{>}$ & 7/20 \\
@@ -122,28 +122,27 @@ buy(100) で利用率 70\% に揃える設計である．
 	\end{tabular}
 
 	{\footnotesize $n{<}$ は左，$n{>}$ は右のサービスが $n$ 回引きずられた
-	(相手に合わせて余分に複製された) ことを表す．}
+	（相手に合わせて余分に複製された）ことを表す．}
 \end{table}
 
 \section{考察}
 
 向きが反転するペアの損は予約枠の調整では抑えられない．
 各組の全20点で損を消せる予約枠を探すと，向きが一定な3組は適正値から
-5--9\% ずらすだけで解が得られた一方，反転する3組は 28--48\% を要した．
+7--11\% ずらすだけで解が得られた一方，反転する3組は 19--42\% を要した．
 必要台数の伸び方が異なるペアでは，負荷の種類や量が変わる度に別の値が必要になる可能性が高い．
 したがって伸び方が異なるペアは同居相手として選ばないのが妥当である．
 
-一方，affinity の大小と反転の有無は対応しない．
-6組を同居で取り込む affinityの順に
-並べると，反転したのは frontend+cart (4.1\%)・frontend+checkout (2.5\%) のみで，
-上位の frontend+catalog (38.8\%)・frontend+reco (4.8\%) も最下位の checkout+email (1.7\%) も
-向きは一定である．
+一方，同居で取り込む affinity の大小と反転の有無は対応しない．
+反転した3組は frontend+cart（affinity 全体の 4.1\%）・frontend+checkout（2.5\%）・
+frontend+email（0\%）で，frontend+catalog（38.8\%）・frontend+reco（4.8\%）・
+checkout+email（1.7\%）は向きが一定である．
 すなわち affinity だけでは相手を選べず，伸び方が揃うかの確認が要る．
 
 
 \section{今後の課題}
 
-向きの反転 (表\ref{table:pairs}) は buy と view の比率で生じたため，
+向きの反転（表\ref{table:pairs}）は buy と view の比率で生じたため，
 危険な組み合わせはワークロード構成に依存する．
 利用者の種類が多いアプリケーションと複数ノードでの検証が今後の課題である．
 
