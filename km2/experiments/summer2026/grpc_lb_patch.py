@@ -79,6 +79,8 @@ for d in data['deploy']['items']:
         new_img = next((m for k, m in IMG_MAP if k in img), None)
         if new_img:
             p['image'] = new_img
+            # タグを上書きで作り直すことがあるので、ノードに残った古いイメージを使わせない
+            p['imagePullPolicy'] = 'Always'
         else:
             print('echo "  !! %s/%s: 負荷分散対応イメージが未指定 (%s)。宛先だけ headless にするので、'
                   'このコンテナからの呼び出しは偏ったまま"' % (dname, c['name'], img))

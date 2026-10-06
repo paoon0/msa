@@ -128,3 +128,8 @@ zipp==3.17.0
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
+
+# 2026-10-07 追加: opentelemetry-instrumentation 0.41b0 は pkg_resources (setuptools 同梱) を import する。
+# 上の行のとおり setuptools は固定されておらず、今ビルドすると pkg_resources を外した新しい setuptools が入り、
+# 起動時に ModuleNotFoundError: No module named 'pkg_resources' で落ちる (mizuki0118/mygo:reco-lb 初版で実測)。
+setuptools<81
