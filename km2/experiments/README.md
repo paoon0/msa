@@ -66,6 +66,16 @@ frontend や checkout に特定サービスを1つずつ同居させ、softirq/r
 | `perservice-cpu.sh` | `results-perservice-cpu.csv`, `perservice-cpu.log`(生データ) | 分離・全サービス1台固定・HPA無しで 10〜150周/s の6点を測り、各サービスの利用率カーブ(枠に対する高さ)を取る |
 | `perservice-cpu-analyze.py` | (stdout) | 上のCSVを1次近似し `枠=(アイドル+1周CPU×100)/0.7` の適正化テーブルを出す |
 
+- ※ `perservice-cpu.sh` は 2026-09-18 の再編後、存在しない `perservice-cpu/k6/` を参照していて動かない。後継は `rightsizing/measure-class-cpu.sh`
+
+## 6b. 枠適正化の第2版(2026-10〜)(`rightsizing/`)
+手順書: `km2/approach/rightsizing-procedure.md`。第1版の診断(設計点で cart/email が+10〜12%ずれ、view項なし)を受けて作り直したもの。
+| スクリプト | 出力 | 役割 |
+|---|---|---|
+| `measure-class-cpu.sh` + `_write_point.py` | `results-class-cpu.csv`, `results-class-cpu.log` | STEP 1/2: クラス(buy/view)を1つずつ流して1台固定のCPUカーブ、2台との差でアイドル分 c0 |
+| `rightsize2.py` | `rightsize2-requests.csv` | STEP 3: 設計点周辺の局所近似で枠を計算、標準誤差%を出す(`--old-format` で第1版データも読める) |
+| `calibrate.py` | `rightsize2-requests-cal1.csv` | STEP 4/5: HPA下の時系列から1台時利用率を出し、合格帯66〜74%外のサービスだけ較正 |
+
 ## 7. 通信量の実測(エッジ単位, 2026-09-08〜10)(`edge-traffic/`)
 softirq から間接的に推定していた「エッジの太さ」を直接測る。
 | スクリプト | 出力 | 何を見たか |

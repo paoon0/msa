@@ -231,10 +231,11 @@ func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string) {
 	var err error
 	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
 	defer cancel()
-	*conn, err = grpc.DialContext(ctx, addr,
+	target, lbOpts := lbDialOptions(addr) // GRPC_LB_POLICY 未設定なら従来どおり (grpclb.go)
+	*conn, err = grpc.DialContext(ctx, target, append([]grpc.DialOption{
 		grpc.WithInsecure(),
 		grpc.WithUnaryInterceptor(otelgrpc.UnaryClientInterceptor()),
-		grpc.WithStreamInterceptor(otelgrpc.StreamClientInterceptor()))
+		grpc.WithStreamInterceptor(otelgrpc.StreamClientInterceptor())}, lbOpts...)...)
 	if err != nil {
 		panic(errors.Wrapf(err, "grpc: failed to connect %s", addr))
 	}

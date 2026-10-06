@@ -1,0 +1,18 @@
+================ BUNDLE-VS-LOSS2 START 2026-10-06T13:09:57+09:00 arms=[normal] rates=[200 300] cycles=1 HPA=70%/1-8台 warm=90s meas=120s browse=0周/s sample=15s 様子見=増30s/減60s 開始4台 rightsize=0 limit_x=0 ================
+################ CYCLE 1 / 1 2026-10-06T13:10:00+09:00 ################
+---- deploy normal (HPA無し・4台固定, 枠 req=150m一律/limits据置) ----
+  枠(requests)を一律 150m に(limits は据え置き。redis-cart は除く)
+  枠(req/上限lim): adservice=server:150m/500m, cartservice=server:150m/960m, checkoutservice=checkout:150m/1200m, currencyservice=server:150m/1600m, emailservice=email:150m/300m, frontend=server:150m/1600m, paymentservice=payment:150m/300m, productcatalogservice=server:150m/1, recommendationservice=server:150m/1600m, redis-cart=redis:300m/500m, shippingservice=server:150m/560m, 
+  HPAは作らない(4台固定)
+  deploy: adservice=4/4 cartservice=4/4 checkoutservice=4/4 currencyservice=4/4 emailservice=4/4 frontend=4/4 paymentservice=4/4 productcatalogservice=4/4 recommendationservice=4/4 redis-cart=1/1 shippingservice=4/4 
+==== [cyc1][normal] 購入=200周/秒 閲覧=0周/秒 2026-10-06T13:11:34+09:00 ====
+  -> 捌けた=200.0/200 取りこぼし(窓)=0 (全体0) p50=8 p99=635 | 動作中の枠=6.30コア(Pending分 0.00) Pod=41(Pending 0) | CPU時間=906秒(うちsoftirq 70秒 / k6 33秒)
+     種類別p50: 商品7 / カート7 / 購入10 ms
+     確保したCPU: 756.0 コア秒(窓平均 6.300 コア, 8 サンプル) / 使ったCPU: 906 コア秒
+     台数: adservice:4 cartservice:4 checkoutservice:4 currencyservice:4 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4
+==== [cyc1][normal] 購入=300周/秒 閲覧=0周/秒 2026-10-06T13:15:37+09:00 ====
+  -> 捌けた=300.0/300 取りこぼし(窓)=0 (全体0) p50=43 p99=1048 | 動作中の枠=6.30コア(Pending分 0.00) Pod=41(Pending 0) | CPU時間=1436秒(うちsoftirq 107秒 / k6 58秒)
+     種類別p50: 商品32 / カート35 / 購入66 ms
+     確保したCPU: 756.0 コア秒(窓平均 6.300 コア, 8 サンプル) / 使ったCPU: 1436 コア秒
+     台数: adservice:4 cartservice:4 checkoutservice:4 currencyservice:4 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4
+================ BUNDLE-VS-LOSS2 DONE 2026-10-06T13:19:39+09:00 ================

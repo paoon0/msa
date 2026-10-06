@@ -16,6 +16,7 @@
 
 import os
 import random
+import threading
 import time
 import traceback
 from concurrent import futures
@@ -129,8 +130,31 @@ if __name__ == "__main__":
     if catalog_addr == "":
         raise Exception('PRODUCT_CATALOG_SERVICE_ADDR environment variable not set')
     logger.info("product catalog address: " + catalog_addr)
-    channel = grpc.insecure_channel(catalog_addr)
-    product_catalog_stub = demo_pb2_grpc.ProductCatalogServiceStub(channel)
+    # gRPC のクライアント側負荷分散 (2026-10-06 追加。Go 側は src/frontend/grpclb.go と同じ考え方)。
+    # GRPC_LB_POLICY 未設定なら従来どおり (接続1本 = 呼ばれる側の1 Pod に偏る)。
+    # round_robin のときは headless Service の全 Pod に振り分け、GRPC_RESOLVE_EVERY 秒ごとに
+    # チャネルを作り直して DNS を引き直す (HPA が途中で足した Pod を見つけるため)。
+    lb_policy = os.environ.get('GRPC_LB_POLICY', '')
+    if lb_policy and not catalog_addr.startswith(('localhost:', '127.0.0.1:')):
+        lb_target = 'dns:///' + catalog_addr.split(':///')[-1]
+        lb_every = int(os.environ.get('GRPC_RESOLVE_EVERY', '30'))
+        def new_stub():
+            ch = grpc.insecure_channel(lb_target, options=[('grpc.lb_policy_name', lb_policy)])
+            return ch, demo_pb2_grpc.ProductCatalogServiceStub(ch)
+        channel, product_catalog_stub = new_stub()
+        def refresh():
+            global channel, product_catalog_stub
+            while True:
+                time.sleep(lb_every)
+                old_ch = channel
+                channel, product_catalog_stub = new_stub()
+                # 実行中の呼び出しが終わるのを待ってから古いチャネルを閉じる
+                threading.Timer(10, old_ch.close).start()
+        threading.Thread(target=refresh, daemon=True).start()
+        logger.info("gRPC LB: %s, re-resolve every %ds, target %s" % (lb_policy, lb_every, lb_target))
+    else:
+        channel = grpc.insecure_channel(catalog_addr)
+        product_catalog_stub = demo_pb2_grpc.ProductCatalogServiceStub(channel)
 
     # create gRPC server
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

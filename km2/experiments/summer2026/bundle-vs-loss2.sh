@@ -63,6 +63,13 @@ RS_SERVICES=${RS_SERVICES:-"frontend productcatalogservice recommendationservice
 # LIMIT_SCALE は requests と同じ倍率にすること(片方だけ縮めると絞りの条件が変わる)。
 RS_SCALE=${RS_SCALE:-1}
 LIMIT_SCALE=${LIMIT_SCALE:-0}
+# gRPC のクライアント側負荷分散 (2026-10-06 追加, grpc_lb_patch.py)。0 = 従来どおり (接続1本で呼ばれる側の Pod に偏る)。
+# 1 = 呼び出し側を負荷分散対応イメージに替え、宛先を headless Service にして、呼び出しごとに全 Pod へ振り分ける。
+GRPC_LB=${GRPC_LB:-0}
+GRPC_RESOLVE_EVERY=${GRPC_RESOLVE_EVERY:-30}   # DNS を引き直す間隔[秒] (HPA が足した Pod を見つけるまでの最大遅れ)
+LB_IMG_FRONTEND=${LB_IMG_FRONTEND:-mizuki0118/mygo:frontend-lb}
+LB_IMG_CHECKOUT=${LB_IMG_CHECKOUT:-mizuki0118/mygo:checkout-lb}
+LB_IMG_RECO=${LB_IMG_RECO:-mizuki0118/mygo:reco-lb}
 # --- 2026-09-09 追加: 台数固定モード(HPA無し) ---
 #   FIXED_REPLICAS > 0 で HPA を作らず、全 Deployment をこの台数に固定する(redis-cart は常に1)。
 #   狙い: 「HPAが何台選んだか」という交絡を外し、同じ台数・同じ枠で通信の得だけを見る。
@@ -96,7 +103,7 @@ PROM="http://prometheus-grafana-kube-pr-prometheus.monitoring.svc:9090"
 ROLLOUT=300s
 
 exec > >(tee -a "$LOG") 2>&1
-echo "================ BUNDLE-VS-LOSS2 START $(date -Is) arms=[$ARMS] rates=[$RATES] cycles=$CYCLES HPA=${HPA_TARGET}%/${HPA_MIN}-${HPA_MAX}台 warm=${WARM}s meas=${MEAS}s browse=${BROWSE_RATE}周/s sample=${SAMPLE}s 様子見=増${SU_WIN}s/減${SD_WIN}s 開始${PRESCALE}台 rightsize=${RIGHTSIZE} limit_x=${LIMIT_X} ================"
+echo "================ BUNDLE-VS-LOSS2 START $(date -Is) arms=[$ARMS] rates=[$RATES] cycles=$CYCLES HPA=${HPA_TARGET}%/${HPA_MIN}-${HPA_MAX}台 warm=${WARM}s meas=${MEAS}s browse=${BROWSE_RATE}周/s sample=${SAMPLE}s 様子見=増${SU_WIN}s/減${SD_WIN}s 開始${PRESCALE}台 rightsize=${RIGHTSIZE} limit_x=${LIMIT_X} grpc_lb=${GRPC_LB} ================"
 [ -s "$CSV" ] || echo "cycle,arm,target_rate,iter_rate,dropped,failed_rate,p50,p99,running_cores,pending_cores,eff_iter_per_running_core,pods,pending,node_cpu_sec,softirq_cpu_sec,k6_cpu_sec,prod_p50,cart_p50,chk_p50,prod_p99,cart_p99,chk_p99,replicas,limit_x,dropped_win,started,replicas_at_window_start,replicas_changed_in_window,browse_rate_target,browse_rate,browse_dropped_win,browse_p50,browse_p99,rs_scale,limit_scale,reserved_core_sec,pending_core_sec,reserved_avg_cores,n_samples" > "$CSV"
 [ -s "$TL" ] || echo "cycle,arm,target_rate,limit_x,browse_rate,t_rel,deploy,container,hpa_util_pct,current_replicas,desired_replicas,ready_replicas,pending_pods,ns_running_cores,ns_pending_cores" > "$TL"
 [ -s "$EV" ] || echo "cycle,arm,target_rate,limit_x,browse_rate,time,object,message" > "$EV"
@@ -241,6 +248,13 @@ deploy(){ local arm=$1
       RS_SCALE="$RS_SCALE" LIMIT_SCALE="$LIMIT_SCALE" \
       python3 "$DIR/apply_rightsize.py" > /tmp/rs-$$.sh
     bash /tmp/rs-$$.sh; rm -f /tmp/rs-$$.sh
+  fi
+  if [ "$GRPC_LB" = 1 ]; then
+    echo "  gRPC 負荷分散: round_robin + headless Service (引き直し ${GRPC_RESOLVE_EVERY}s)"
+    { printf '{"deploy":'; kubectl get deploy -n $NS -o json; printf ',"svc":'; kubectl get svc -n $NS -o json; printf '}'; } \
+      | NS="$NS" GRPC_RESOLVE_EVERY="$GRPC_RESOLVE_EVERY" LB_IMG_FRONTEND="$LB_IMG_FRONTEND" \
+        LB_IMG_CHECKOUT="$LB_IMG_CHECKOUT" LB_IMG_RECO="$LB_IMG_RECO" python3 "$DIR/grpc_lb_patch.py" > /tmp/lb-$$.sh
+    bash /tmp/lb-$$.sh; rm -f /tmp/lb-$$.sh
   fi
   if [ "$PROBE_TIMEOUT" != 0 ]; then
     # コンテナは name で突き合わされる(strategic merge patch)ので reco のコンテナだけに当たる。
