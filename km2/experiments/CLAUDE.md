@@ -57,7 +57,7 @@
 
 ## 主要スクリプトの環境変数(bundle-vs-loss2.sh)
 
-`ARMS`(空白区切り)/`RATES`(購入型 周/s)/`BROWSE_RATE`(閲覧型 周/s)/`CYCLES`/`WARM`(既定180s)/`MEAS`(既定240s)/`PRESCALE`(開始台数)/`HPA_MIN`/`HPA_MAX`/`HPA_TARGET`(既定70)/`RIGHTSIZE=1`(枠を `rightsize-requests.csv` で置換)/`RS_SCALE`(枠の倍率、1/3 実験は 0.333)/`LIMIT_SCALE`(limits の倍率、**0=据え置きが正解**)/`FIXED_REPLICAS=N`(HPA 無し固定台数)/`UNIFORM_REQ_M`(requests 一律)/`PROBE_TIMEOUT`(readiness timeoutSeconds)/`MEGA_REDIS`/`CYC_START`(サイクル番号の通し)。
+`ARMS`(空白区切り)/`RATES`(購入型 周/s)/`BROWSE_RATE`(閲覧型 周/s)/`CYCLES`/`WARM`(既定180s)/`MEAS`(既定240s)/`PRESCALE`(開始台数)/`HPA_MIN`/`HPA_MAX`/`HPA_TARGET`(既定70)/`RIGHTSIZE=1`(枠を `rightsize-requests.csv` で置換)/`RS_SCALE`(枠の倍率、1/3 実験は 0.333)/`LIMIT_SCALE`(limits の倍率、**0=据え置きが正解**)/`FIXED_REPLICAS=N`(HPA 無し固定台数)/`UNIFORM_REQ_M`(requests 一律)/`PROBE_TIMEOUT`(readiness timeoutSeconds)/`GRPC_LB`(gRPC の振り分け。**2026-10-07 から既定 1**、0=それ以前の条件、2=新イメージのみの対照。中身は `grpc_lb_patch.py`)/`MEGA_REDIS`/`CYC_START`(サイクル番号の通し)。
 再現コマンドの実例は `summer2026/EXPERIMENTS.md` の各実験の「再現コマンド」に残してある。**新しい実験を回したら同じ形式で行を足す**。
 
 ## 指標の定義(名前が紛らわしいもの)

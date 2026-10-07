@@ -13,6 +13,11 @@
 #   * アイドル分 c0 を「台数を変えた差」で測る(C0_REPLICAS)。第1版は直線の切片で、過大に出ていた
 #   * ウォームアップ既定 60s(JVM 等の立ち上がりを捨てる。Sock Shop の Java サービスはさらに長く)
 #   * 第1版の壊れ(存在しない perservice-cpu/k6/ を参照、__BROWSE__ を埋めていない)を修正
+# 2026-10-07 の修正 (手順書の修正項目 3 と gRPC 振り分け):
+#   * デプロイごとに慣らし負荷 PREWARM 秒 (既定 180s) を流して捨てる。起動直後の跳ね上がりを測定点に入れない
+#   * c0 の対 (2台と1台) は、測る順番をサイクルごとに入れ替える (奇数サイクル=2台が先、偶数=1台が先)
+#   * GRPC_LB=1 (既定) で bundle-vs-loss2.sh と同じ gRPC 振り分けを入れる (summer2026/grpc_lb_patch.py)。
+#     1台の点では振り分け先が1つなので変わらないが、c0 の2台点と、以後の実験 (既定 GRPC_LB=1) に条件を揃える
 #
 # 測り方の約束(第1版と同じ):
 #   * HPA は必ず切る / 台数固定 / requests・limits はマニフェストのまま(使用量は requests に依存しない)
@@ -61,13 +66,21 @@ PRE_VUS=${PRE_VUS:-300}
 MAX_VUS=${MAX_VUS:-3000}
 CYCLES=${CYCLES:-3}
 SHUFFLE=${SHUFFLE:-1}              # 1 = サイクルごとに (クラス, 負荷) の順番をシャッフル(時間ドリフト対策)
+PREWARM=${PREWARM:-180}            # デプロイ直後に流して捨てる慣らし負荷の秒数 (0 で無し)
+PREWARM_CLASS=${PREWARM_CLASS:-buy}
+PREWARM_RATE=${PREWARM_RATE:-100}
+GRPC_LB=${GRPC_LB:-1}              # 1 = gRPC 振り分けあり (2026-10-07 からの既定)、0 = 無し
+GRPC_RESOLVE_EVERY=${GRPC_RESOLVE_EVERY:-30}
+LB_IMG_FRONTEND=${LB_IMG_FRONTEND:-mizuki0118/mygo:frontend-lb}
+LB_IMG_CHECKOUT=${LB_IMG_CHECKOUT:-mizuki0118/mygo:checkout-lb}
+LB_IMG_RECO=${LB_IMG_RECO:-mizuki0118/mygo:reco-lb}
 CSV=${CSV:-$DIR/results-class-cpu.csv}
 LOG=${LOG:-${CSV%.csv}.log}
 PROM="http://prometheus-grafana-kube-pr-prometheus.monitoring.svc:9090"
 ROLLOUT=300s
 
 exec > >(tee -a "$LOG") 2>&1
-echo "================ MEASURE-CLASS-CPU START $(date -Is) classes=[$CLASSES] buy=[$RATES_buy] view=[$RATES_view] c0=[${C0_REPLICAS:-なし}台@$C0_CLASS:$C0_RATE] cycles=$CYCLES warm=${WARM}s meas=${MEAS}s shuffle=$SHUFFLE (HPA無し, 枠はマニフェストのまま) ================"
+echo "================ MEASURE-CLASS-CPU START $(date -Is) classes=[$CLASSES] buy=[$RATES_buy] view=[$RATES_view] c0=[${C0_REPLICAS:-なし}台@$C0_CLASS:$C0_RATE] cycles=$CYCLES warm=${WARM}s meas=${MEAS}s shuffle=$SHUFFLE prewarm=${PREWARM}s@$PREWARM_CLASS:$PREWARM_RATE grpc_lb=$GRPC_LB (HPA無し, 枠はマニフェストのまま) ================"
 [ -s "$CSV" ] || echo "cycle,class,replicas,target_rate,achieved_rate,dropped_win,failed_rate,p99,deploy,container,usage_mc,req_mc,util_pct,throttle_pct,node_cores" > "$CSV"
 
 ensure_promq(){ [ "$(kubectl get pod promq -n $NS -o jsonpath='{.status.phase}' 2>/dev/null)" = Running ] && return
@@ -83,13 +96,33 @@ deploy(){ local reps=$1
   kubectl delete hpa --all -n $NS >/dev/null 2>&1
   kubectl delete deploy --all -n $NS >/dev/null 2>&1
   for i in $(seq 1 40);do [ -z "$(kubectl get deploy -n $NS -o name 2>/dev/null)" ]&&break;sleep 3;done
-  for f in "${SERVICES[@]}" "${STATEFUL[@]}";do kubectl apply -f $MANIFEST_DIR/$f.yaml -n $NS >/dev/null;done
+  for f in "${SERVICES[@]}" "${STATEFUL[@]}";do [ -f $MANIFEST_DIR/$f.yaml ] && kubectl apply -f $MANIFEST_DIR/$f.yaml -n $NS >/dev/null;done   # redis-cart は cartservice.yaml の中
   kubectl delete hpa --all -n $NS >/dev/null 2>&1
   for d in "${SERVICES[@]}";do kubectl scale deploy/$d -n $NS --replicas=$reps >/dev/null 2>&1||true;done
   for d in "${STATEFUL[@]}";do kubectl scale deploy/$d -n $NS --replicas=1 >/dev/null 2>&1||true;done
+  if [ "$GRPC_LB" = 1 ]; then
+    echo "  gRPC 負荷分散: round_robin + headless Service (引き直し ${GRPC_RESOLVE_EVERY}s)"
+    { printf '{"deploy":'; kubectl get deploy -n $NS -o json; printf ',"svc":'; kubectl get svc -n $NS -o json; printf '}'; } \
+      | NS="$NS" GRPC_RESOLVE_EVERY="$GRPC_RESOLVE_EVERY" LB_IMG_FRONTEND="$LB_IMG_FRONTEND" \
+        LB_IMG_CHECKOUT="$LB_IMG_CHECKOUT" LB_IMG_RECO="$LB_IMG_RECO" LB_IMAGES_ONLY=0 \
+        python3 "$REPO/km2/experiments/summer2026/grpc_lb_patch.py" > /tmp/lb-$$.sh
+    bash /tmp/lb-$$.sh; rm -f /tmp/lb-$$.sh
+  fi
   for d in "${SERVICES[@]}" "${STATEFUL[@]}";do kubectl rollout status deploy/$d -n $NS --timeout=$ROLLOUT >/dev/null 2>&1||true;done
   echo "  deploy: $(kubectl get deploy -n $NS --no-headers 2>/dev/null | awk '{printf "%s=%s ",$1,$2}')"
   sleep $SETTLE
+  [ "$PREWARM" -gt 0 ] && prewarm
+}
+
+# 慣らし負荷: 結果は捨てる (起動直後の JIT・接続確立・キャッシュの跳ね上がりを測定点に入れない)
+prewarm(){ local ev; ev=$(class_env "$PREWARM_CLASS" "$PREWARM_RATE") || return
+  echo "  慣らし負荷 ${PREWARM}s ($PREWARM_CLASS ${PREWARM_RATE}周/秒, 結果は捨てる)"
+  kubectl create configmap k6-script -n $NS --from-file=checkout.js=$K6DIR/checkout.js --dry-run=client -o yaml | kubectl apply -f - >/dev/null 2>&1
+  kubectl delete job k6load -n $NS --ignore-not-found --wait=true >/dev/null 2>&1
+  sed -e "s/__RATE__/${ev% *}/" -e "s/__BROWSE__/${ev#* }/" -e "s/__WARM__/0/" -e "s/__MEAS__/$PREWARM/" \
+      -e "s/__PRE__/$PRE_VUS/" -e "s/__MAX__/$MAX_VUS/" "$K6DIR/k6-job.yaml" | kubectl apply -f - -n $NS >/dev/null
+  kubectl wait --for=condition=complete job/k6load -n $NS --timeout=$(( PREWARM + 120 ))s >/dev/null 2>&1 || true
+  kubectl delete job k6load -n $NS --ignore-not-found --wait=true >/dev/null 2>&1
 }
 
 run_point(){ local cyc=$1 cls=$2 rate=$3 reps=$4
@@ -131,12 +164,14 @@ for c in $(seq 1 $CYCLES); do
   deploy 1
   if [ "$SHUFFLE" = 1 ]; then list=$(points | shuf); else list=$(points); fi
   while read -r cls r; do [ -n "$cls" ] && run_point "$c" "$cls" "$r" 1; done <<< "$list"
-  # アイドル分 c0: 同じ負荷で台数だけ変える。差 = 1台増えたぶんのアイドル CPU
+  # アイドル分 c0: 同じ負荷で台数だけ変える。差 = 1台増えたぶんのアイドル CPU。
+  # 1台側も同じサイクル内で測り直して対にする。順番は奇数サイクル=n台が先、偶数=1台が先 (時間ドリフトを相殺)
   for n in $C0_REPLICAS; do
-    deploy "$n"
-    run_point "$c" "$C0_CLASS" "$C0_RATE" "$n"
-    deploy 1                                   # 1台側も同じサイクル内で測り直して対にする
-    run_point "$c" "$C0_CLASS" "$C0_RATE" 1
+    if [ $(( c % 2 )) = 1 ]; then order="$n 1"; else order="1 $n"; fi
+    for m in $order; do
+      deploy "$m"
+      run_point "$c" "$C0_CLASS" "$C0_RATE" "$m"
+    done
   done
 done
 kubectl delete job k6load -n $NS --ignore-not-found >/dev/null 2>&1

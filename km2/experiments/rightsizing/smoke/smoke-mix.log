@@ -1,0 +1,84 @@
+================ MEASURE-MIX-CPU START 2026-10-07T11:27:09+09:00 points=[b100 b100v150] replicas=[1 2] cycles=1 warm=30s meas=90s prewarm=60s@b100 limits=[frontend=3000m] grpc_lb=1 (HPA無し) ================
+################ CYCLE 1 / 1 2026-10-07T11:27:09+09:00 ################
+---- deploy 分離 (固定1台, HPA無し) ----
+error: the path "/home/mizuki/ダウンロード/msa/km2/normal/redis-cart.yaml" does not exist
+  limits 上書き: frontend cpu=3000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+  枠(req/上限lim): adservice=server:300m/500m, cartservice=server:560m/960m, checkoutservice=checkout:800m/1200m, currencyservice=server:800m/1600m, emailservice=email:200m/300m, frontend=server:1/3, paymentservice=payment:200m/300m, productcatalogservice=server:600m/1, recommendationservice=server:1200m/1600m, redis-cart=redis:300m/500m, shippingservice=server:320m/560m, 
+  慣らし負荷 60s (b100, 結果は捨てる)
+==== [cyc1][×1台] b100v150 (buy=100 view=150 周/秒) 2026-10-07T11:31:16+09:00 ====
+  -> buy 100.0/100 view 150.0/150 周/秒  取りこぼし(窓) buy=0 view=0  p50 buy=7 view=6 ms  ノード=4.69 コア  周波数=3.24 GHz  最高温度=74.0℃
+     deploy                   container       Pod      使用m     上限m     絞り%
+     frontend                 server            1   1146.8    3000     0.0
+     recommendationservice    server            1    764.3    1600     0.0
+     productcatalogservice    server            1    660.6    1000    17.1
+     currencyservice          server            1    526.4    1600     0.0
+     cartservice              server            1    348.4     960     0.0
+     checkoutservice          checkout          1    256.2    1200     0.0
+     k6load                   k6                1    188.3    2000     0.0
+     emailservice             email             1     99.9     300     0.5
+     shippingservice          server            1     94.2     560     0.0
+     adservice                server            1     93.5     500     0.3
+     paymentservice           payment           1     73.0     300     0.2
+     redis-cart               redis             1     39.5     500     0.0
+     !! 絞り 5% 超 (解析で捨てる): productcatalogservice/server=17%
+==== [cyc1][×1台] b100 (buy=100 view=0 周/秒) 2026-10-07T11:33:38+09:00 ====
+  -> buy 100.0/100 view 0.0/0 周/秒  取りこぼし(窓) buy=0 view=0  p50 buy=6 view=0 ms  ノード=3.39 コア  周波数=3.199 GHz  最高温度=74.0℃
+     deploy                   container       Pod      使用m     上限m     絞り%
+     frontend                 server            1    765.5    3000     0.0
+     recommendationservice    server            1    489.6    1600     0.0
+     productcatalogservice    server            1    436.1    1000     3.5
+     currencyservice          server            1    329.7    1600     0.0
+     cartservice              server            1    266.0     960     0.0
+     checkoutservice          checkout          1    226.5    1200     0.0
+     k6load                   k6                1    142.7    2000     0.0
+     shippingservice          server            1     95.2     560     0.0
+     emailservice             email             1     91.6     300     1.4
+     paymentservice           payment           1     68.7     300     0.0
+     adservice                server            1     37.2     500     0.2
+     redis-cart               redis             1     29.9     500     0.0
+---- deploy 分離 (固定2台, HPA無し) ----
+error: the path "/home/mizuki/ダウンロード/msa/km2/normal/redis-cart.yaml" does not exist
+  limits 上書き: frontend cpu=3000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  枠(req/上限lim): adservice=server:300m/500m, cartservice=server:560m/960m, checkoutservice=checkout:800m/1200m, currencyservice=server:800m/1600m, emailservice=email:200m/300m, frontend=server:1/3, paymentservice=payment:200m/300m, productcatalogservice=server:600m/1, recommendationservice=server:1200m/1600m, redis-cart=redis:300m/500m, shippingservice=server:320m/560m, 
+  慣らし負荷 60s (b100, 結果は捨てる)
+==== [cyc1][×2台] b100v150 (buy=100 view=150 周/秒) 2026-10-07T11:40:17+09:00 ====
+  -> buy 100.0/100 view 150.0/150 周/秒  取りこぼし(窓) buy=0 view=0  p50 buy=7 view=6 ms  ノード=5.41 コア  周波数=3.157 GHz  最高温度=88.0℃
+     deploy                   container       Pod      使用m     上限m     絞り%
+     frontend                 server            2   1280.7    6000     0.0
+     recommendationservice    server            2    829.9    3200     0.0
+     productcatalogservice    server            2    765.4    2000     0.0
+     currencyservice          server            2    662.5    3200     0.0
+     cartservice              server            2    459.8    1920     0.0
+     checkoutservice          checkout          2    270.6    2400     0.0
+     k6load                   k6                1    220.5    2000     0.0
+     adservice                server            2    168.2    1000     4.5
+     shippingservice          server            2    113.8    1120     0.0
+     emailservice             email             2    103.2     600     0.0
+     paymentservice           payment           2     76.5     600     0.0
+     redis-cart               redis             1     42.2     500     0.0
+==== [cyc1][×2台] b100 (buy=100 view=0 周/秒) 2026-10-07T11:42:39+09:00 ====
+  -> buy 100.0/100 view 0.0/0 周/秒  取りこぼし(窓) buy=0 view=0  p50 buy=6 view=0 ms  ノード=3.81 コア  周波数=3.326 GHz  最高温度=74.0℃
+     deploy                   container       Pod      使用m     上限m     絞り%
+     frontend                 server            2    848.6    6000     0.0
+     recommendationservice    server            2    541.3    3200     0.0
+     currencyservice          server            2    469.7    3200     0.0
+     productcatalogservice    server            2    467.6    2000     0.0
+     cartservice              server            2    311.9    1920     0.2
+     checkoutservice          checkout          2    237.5    2400     0.0
+     k6load                   k6                1    151.6    2000     0.0
+     shippingservice          server            2     97.2    1120     0.0
+     emailservice             email             2     96.9     600     0.0
+     paymentservice           payment           2     66.6     600     1.3
+     adservice                server            2     39.3    1000     0.0
+     redis-cart               redis             1     31.5     500     0.0
+================ MEASURE-MIX-CPU DONE 2026-10-07T11:45:02+09:00 ================

@@ -7,7 +7,9 @@
       a_sj  = クラス j のリクエスト 1周/秒 あたりの CPU [m/(周/秒)]
       x_j   = その Pod 1台が担当するクラス j の負荷 [周/秒]
 枠:
-    r_s = U_ref,s / θ     U_ref = 基準ミックス (k_j) を1台で担当したときの CPU、θ = HPA 目標(0.70)
+    r_s = U_ref,s / θ     U_ref = 基準ミックス (k_j) を1台で担当したときの CPU、θ = 設計利用率 (既定 0.66)
+    θ を HPA 目標 0.70 より下げる理由 (2026-10-07, 手順書の修正項目 2): HPA は 70〜77% では台数を変えないが、
+    いったん2台になると 70% 以下でないと1台に戻らない。1台時の利用率を 64〜68% (採用条件 (i)) に置くための値。
 
 第1版(summer2026/rightsize.py)からの変更点 — 手順書 km2/approach/rightsizing-procedure.md:
   1. クラス別の傾き a_sj を出す(第1版は buy だけ)。
@@ -15,6 +17,9 @@
      (第1版は 10〜150 周/s 全体の直線 → カーブが曲がっている分だけ設計点で外れた)。
   3. c0 は台数を変えた差 U(2台) − U(1台) から出す(データがあれば)。無ければ切片で代用し「未分離」と表示。
   4. 設計点での推定の不確かさ(標準誤差 %)を出す。HPA の許容幅 ±10% に対して十分小さいかを見る。
+     2026-10-07 修正 (修正項目 5): サイクルごとに設計点の値を出し、そのサイクル間のばらつきから標準誤差を出す
+     (= sd ÷ √サイクル数)。全点をまとめた回帰の残差から出すと、同じサイクル内の点どうしが似ている分だけ小さく出すぎる。
+     サイクルが2つ未満のときだけ、回帰の残差から出して「回帰」と表示する。
 
 入力: measure-class-cpu.sh の CSV(--src、複数可)。第1版の CSV は --old-format で読める(class=buy, 1台扱い)。
 出力: --out の CSV。先頭3列 (deploy,container,request_m) は summer2026/apply_rightsize.py がそのまま読める。
@@ -32,7 +37,7 @@ ap.add_argument('--src', nargs='+', default=['km2/experiments/rightsizing/result
 ap.add_argument('--old-format', action='store_true', help='第1版 perservice-cpu の CSV を読む')
 ap.add_argument('--out', default='km2/experiments/rightsizing/rightsize2-requests.csv')
 ap.add_argument('--ref', default='buy=100', help='基準ミックス: 1台が担当する負荷。例 "buy=100" "buy=100,view=50"')
-ap.add_argument('--target', type=float, default=0.70, help='HPA 目標利用率 θ')
+ap.add_argument('--target', type=float, default=0.66, help='設計利用率 θ (HPA 目標 0.70 とは別。上の説明を参照)')
 ap.add_argument('--window', type=float, default=0.4, help='設計点の周辺とみなす幅(±割合)。0.4 なら k の 0.6〜1.4 倍')
 ap.add_argument('--throttle-max', type=float, default=5.0, help='この%%を超えて絞られた点は捨てる')
 ap.add_argument('--achieve-min', type=float, default=0.97, help='達成率がこれ未満の点(取りこぼし)は捨てる')
@@ -102,7 +107,20 @@ for key in sorted(pts, key=lambda k: -cur_req.get(k, 0)):
         f_loc = slope_all[main]; note.append('周辺の点不足→全範囲')
     s_m, b_m, se_m = f_loc
     U_ref = s_m * k + b_m
-    se = se_m(k) if not math.isnan(se_m(k)) else float('nan')
+    # 標準誤差: サイクルごとの設計点の値のばらつきから (点が3つ以上あるサイクルだけ)
+    per_cyc = []
+    for cy in sorted({p[0] for p in near}):
+        P = [p for p in near if p[0] == cy]
+        if len({p[1] for p in P}) >= 3:
+            g = ols(P)
+            if g: per_cyc.append(g[0] * k + g[1])
+    if len(per_cyc) >= 2:
+        mean_c = sum(per_cyc) / len(per_cyc)
+        se = math.sqrt(sum((u - mean_c) ** 2 for u in per_cyc) / (len(per_cyc) - 1)) / math.sqrt(len(per_cyc))
+        se_how = 'サイクル間(n=%d)' % len(per_cyc)
+    else:
+        se = se_m(k) if not math.isnan(se_m(k)) else float('nan')
+        se_how = '回帰'
     # 他のクラスの寄与(傾き × 基準負荷)。切片は main 側に含まれているので足さない
     for c, kc in ref.items():
         if c == main or kc == 0:
@@ -126,7 +144,7 @@ for key in sorted(pts, key=lambda k: -cur_req.get(k, 0)):
         c0 = slope_all[main][1]; c0m = '切片(未分離)'
     req = max(U_ref / a.target, a.min_req)
     row = dict(deploy=key[0], container=key[1], request_m=round(req), U_ref_m=round(U_ref, 1),
-               se_pct=round(se / U_ref * 100, 1) if U_ref > 0 and se == se else '',
+               se_pct=round(se / U_ref * 100, 1) if U_ref > 0 and se == se else '', se_method=se_how,
                c0_m=round(c0, 1), c0_method=c0m, old_request_m=round(cur_req.get(key, 0)),
                n_points=sum(len(v) for v in one.values()), note=';'.join(note))
     for c in sorted(slope_all):
@@ -135,7 +153,7 @@ for key in sorted(pts, key=lambda k: -cur_req.get(k, 0)):
     rows.append(row)
 
 classes = sorted({k[2:] for r in rows for k in r if k.startswith('a_') and not k.endswith('_local')})
-cols = ['deploy', 'container', 'request_m', 'U_ref_m', 'se_pct', 'c0_m', 'c0_method'] + \
+cols = ['deploy', 'container', 'request_m', 'U_ref_m', 'se_pct', 'se_method', 'c0_m', 'c0_method'] + \
        ['a_%s' % c for c in classes] + ['a_%s_local' % main, 'old_request_m', 'n_points', 'note']
 with open(a.out, 'w', newline='') as f:
     w = csv.DictWriter(f, fieldnames=cols)
@@ -145,11 +163,12 @@ with open(a.out, 'w', newline='') as f:
 
 print("基準ミックス(1台あたり): %s   θ=%.2f   周辺幅 ±%.0f%%   除外した点 %d"
       % (a.ref, a.target, a.window * 100, dropped_pts))
-print("%-22s %8s %8s %6s %7s %-14s %s" % ("deploy", "枠m", "U_ref", "誤差%", "c0", "c0の出し方",
+print("%-22s %8s %8s %6s %-14s %7s %-14s %s" % ("deploy", "枠m", "U_ref", "誤差%", "誤差の出し方", "c0", "c0の出し方",
                                           "  ".join("a_%s" % c for c in classes)))
 for r in rows:
-    print("%-22s %8d %8.0f %6s %7.1f %-14s %s %s" % (
-        r['deploy'], r['request_m'], r['U_ref_m'], r['se_pct'], r['c0_m'], r['c0_method'],
+    print("%-22s %8d %8.0f %6s %-14s %7.1f %-14s %s %s" % (
+        r['deploy'], r['request_m'], r['U_ref_m'], r['se_pct'], r['se_method'], r['c0_m'], r['c0_method'],
         "  ".join("%6.3f" % r.get('a_%s' % c, float('nan')) for c in classes), r['note']))
-print("\n誤差% = 設計点での推定値の標準誤差 ÷ U_ref。HPA の許容幅は ±10% なので、2倍しても 5% 未満が目安。")
+print("\n誤差% = 設計点での推定値の標準誤差 ÷ U_ref (サイクル間のばらつきから)。採用条件 (i) の帯 64〜68% は")
+print("        設計値 66% の ±3% (相対) なので、2倍しても 3% 未満が目安。超えたら STEP 1 のサイクルを足す。")
 print("書き出し: %s  → 次は STEP 4(検証): bundle-vs-loss2.sh に RIGHTSIZE=1 RSTABLE=<このCSV> RS_SERVICES=\"<全サービス名>\"(空にすると既定の4サービスに戻るので列挙する)" % a.out)

@@ -24,12 +24,14 @@ import json, os, sys
 NS = os.environ.get('NS', 'exp')
 EVERY = os.environ.get('GRPC_RESOLVE_EVERY', '30')
 POLICY = os.environ.get('GRPC_LB_POLICY', 'round_robin')
+# 1 = 対照用。負荷分散対応イメージに差し替えるだけで、振り分けは有効にしない (GRPC_LB=2 のとき)
+IMAGES_ONLY = os.environ.get('LB_IMAGES_ONLY', '0') == '1'
 # 呼び出し側のイメージの見分け方 (イメージ名の一部) → 差し替え先
-IMG_MAP = [
-    ('/frontend:', os.environ.get('LB_IMG_FRONTEND', '')),
-    ('mygo:', os.environ.get('LB_IMG_CHECKOUT', '')),
-    ('/checkoutservice:', os.environ.get('LB_IMG_CHECKOUT', '')),
-    ('/recommendationservice:', os.environ.get('LB_IMG_RECO', '')),
+IMG_MAP = [   # 上から順に照合 (frontend-lb / reco-lb も mygo: を含むので checkout より先に見る)
+    ('frontend', os.environ.get('LB_IMG_FRONTEND', '')),
+    ('reco', os.environ.get('LB_IMG_RECO', '')),
+    ('checkout', os.environ.get('LB_IMG_CHECKOUT', '')),
+    ('mygo:', os.environ.get('LB_IMG_CHECKOUT', '')),   # checkout の独自イメージ mygo:bunpupaymail
 ]
 
 data = json.load(sys.stdin)
@@ -70,18 +72,24 @@ for d in data['deploy']['items']:
                 continue
             need_hl[base + '-hl'] = (base, tp)
             env_new.append({'name': n, 'value': '%s-hl:%d' % (base, tp)})
-        if not env_new:
-            continue
-        env_new += [{'name': 'GRPC_LB_POLICY', 'value': POLICY},
-                    {'name': 'GRPC_RESOLVE_EVERY', 'value': str(EVERY)}]
-        p = {'name': c['name'], 'env': env_new}
         img = c.get('image', '')
-        new_img = next((m for k, m in IMG_MAP if k in img), None)
+        new_img = next((m for k, m in IMG_MAP if k in img and m), None)
+        if not env_new and not new_img:
+            continue
+        if IMAGES_ONLY:
+            env_new = []   # 対照: イメージだけ差し替え、宛先と振り分けは従来どおり (GRPC_LB_POLICY 未設定)
+        elif env_new:
+            env_new += [{'name': 'GRPC_LB_POLICY', 'value': POLICY},
+                        {'name': 'GRPC_RESOLVE_EVERY', 'value': str(EVERY)}]
+        p = {'name': c['name']}
+        if env_new:
+            p['env'] = env_new
+        # 呼び出し側のイメージは、宛先が全部 localhost (同居) のコンテナも含めて全アームで同じ版に揃える
         if new_img:
             p['image'] = new_img
             # タグを上書きで作り直すことがあるので、ノードに残った古いイメージを使わせない
             p['imagePullPolicy'] = 'Always'
-        else:
+        elif env_new:
             print('echo "  !! %s/%s: 負荷分散対応イメージが未指定 (%s)。宛先だけ headless にするので、'
                   'このコンテナからの呼び出しは偏ったまま"' % (dname, c['name'], img))
         patches.append(p)
@@ -90,7 +98,7 @@ for d in data['deploy']['items']:
         out.append("kubectl patch deploy/%s -n %s -p '%s' >/dev/null && echo '  gRPC負荷分散: %s (%s)'" % (
             dname, NS, body, dname, ', '.join('%s%s' % (p['name'], '+img' if 'image' in p else '') for p in patches)))
 
-for hl, (base, tp) in sorted(need_hl.items()):
+for hl, (base, tp) in ([] if IMAGES_ONLY else sorted(need_hl.items())):
     s = {'apiVersion': 'v1', 'kind': 'Service',
          'metadata': {'name': hl, 'labels': {'grpc-lb': 'headless'}},
          'spec': {'clusterIP': 'None', 'selector': svcs[base]['spec']['selector'],

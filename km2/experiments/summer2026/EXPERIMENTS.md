@@ -2,8 +2,11 @@
 
 日付で呼び出せるようにした索引。「実験9/1」と言えばこの表の該当行を指す。
 
+> **★2026-10-07 から gRPC の振り分けが既定で有効 (`GRPC_LB=1`)。** それ以前の実験はすべて振り分けなし (呼ばれる側の Pod に負荷が偏る状態) で測っている。下の表の再現コマンドを当時と同じ条件で回すときは **`GRPC_LB=0` を付ける**こと。経緯: 振り分けなしでは backend の4台中1台がほぼ遊び (偏り 1.5〜3.3)、振り分けると偏りは 1.0〜1.1 に消えるが CPU 合計が +9〜18% 増える (イメージ差ではない、対照で確認)。
+
 | 呼び名 | 日付 | 内容 | 結果CSV | 時系列 | ログ |
 |---|---|---|---|---|---|
+| **gRPC 振り分けの確認** | 2026-10-06〜07 | 分離・4台固定・枠150m一律 × 購入200/300 × 1回。**lbcheck = 振り分けなし (偏り確認)、lbfix = 振り分けあり (GRPC_LB=1)、lbctl = 対照 (新イメージのみ, GRPC_LB=2)**。集計 `../rightsizing/pod_balance.py --log <log>` | `smoke/results-lb{check,fix,ctl}.csv` | `smoke/timeline-lb*.csv` | `smoke/lb{check,fix,ctl}.log` |
 | **通信量実測(エッジ単位)** | 2026-09-08 | **サービスペアごとの通信量を `ss -tin` で実測**(全Podにエフェメラルコンテナを入れnetnsから読む)。ペイロード/セグメント/RTT/再送をエッジ単位で取得。両端から観測して0.1〜0.3%で一致 | `../edge-traffic/results-edge-pairs.csv` | — | `../edge-traffic/edge-pairs.log` |
 | **通信量実測(Pod単位)** | 2026-09-08 | cAdvisor の per-Pod ネットワークカウンタ。ヘッダ込みの実線量。閲覧型/購入型を分けて流し差分で定常分を除去 | `../edge-traffic/results-edge-traffic.csv` | — | `../edge-traffic/edge-traffic.log` |
 | **実験9/7(需要ズレ最大)** | 2026-09-07 | **frontemail / frontcheckout / checkoutemail / catalogcheckout + normal × 閲覧型0/100/200/300 × 3サイクル**。checkout・email は閲覧型に反応しないので需要のズレが最大になる。枠は適正化・等倍(frontend/catalog/checkout/email のみ)。解析 → `analysis-mix2.md` | `results-mix2.csv` | `timeline-mix2.csv` | `mix2.log` |

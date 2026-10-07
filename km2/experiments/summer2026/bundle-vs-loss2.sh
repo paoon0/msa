@@ -63,9 +63,10 @@ RS_SERVICES=${RS_SERVICES:-"frontend productcatalogservice recommendationservice
 # LIMIT_SCALE は requests と同じ倍率にすること(片方だけ縮めると絞りの条件が変わる)。
 RS_SCALE=${RS_SCALE:-1}
 LIMIT_SCALE=${LIMIT_SCALE:-0}
-# gRPC のクライアント側負荷分散 (2026-10-06 追加, grpc_lb_patch.py)。0 = 従来どおり (接続1本で呼ばれる側の Pod に偏る)。
+# gRPC のクライアント側負荷分散 (2026-10-06 追加, grpc_lb_patch.py)。0 = 2026-10-06 までの全実験の条件 (接続1本で呼ばれる側の Pod に偏る)。
 # 1 = 呼び出し側を負荷分散対応イメージに替え、宛先を headless Service にして、呼び出しごとに全 Pod へ振り分ける。
-GRPC_LB=${GRPC_LB:-0}
+# 2 = 対照。イメージだけ負荷分散対応版に替え、振り分けは従来どおり (イメージ差と振り分けの効果を分けるため)。
+GRPC_LB=${GRPC_LB:-1}   # 2026-10-07 から既定 1 (ユーザ決定)。それ以前の実験の再現は GRPC_LB=0
 GRPC_RESOLVE_EVERY=${GRPC_RESOLVE_EVERY:-30}   # DNS を引き直す間隔[秒] (HPA が足した Pod を見つけるまでの最大遅れ)
 LB_IMG_FRONTEND=${LB_IMG_FRONTEND:-mizuki0118/mygo:frontend-lb}
 LB_IMG_CHECKOUT=${LB_IMG_CHECKOUT:-mizuki0118/mygo:checkout-lb}
@@ -249,11 +250,12 @@ deploy(){ local arm=$1
       python3 "$DIR/apply_rightsize.py" > /tmp/rs-$$.sh
     bash /tmp/rs-$$.sh; rm -f /tmp/rs-$$.sh
   fi
-  if [ "$GRPC_LB" = 1 ]; then
-    echo "  gRPC 負荷分散: round_robin + headless Service (引き直し ${GRPC_RESOLVE_EVERY}s)"
+  if [ "$GRPC_LB" = 1 ] || [ "$GRPC_LB" = 2 ]; then
+    if [ "$GRPC_LB" = 1 ]; then echo "  gRPC 負荷分散: round_robin + headless Service (引き直し ${GRPC_RESOLVE_EVERY}s)"
+    else echo "  gRPC 負荷分散の対照: イメージだけ差し替え、振り分けは従来どおり (pick_first)"; fi
     { printf '{"deploy":'; kubectl get deploy -n $NS -o json; printf ',"svc":'; kubectl get svc -n $NS -o json; printf '}'; } \
       | NS="$NS" GRPC_RESOLVE_EVERY="$GRPC_RESOLVE_EVERY" LB_IMG_FRONTEND="$LB_IMG_FRONTEND" \
-        LB_IMG_CHECKOUT="$LB_IMG_CHECKOUT" LB_IMG_RECO="$LB_IMG_RECO" python3 "$DIR/grpc_lb_patch.py" > /tmp/lb-$$.sh
+        LB_IMG_CHECKOUT="$LB_IMG_CHECKOUT" LB_IMG_RECO="$LB_IMG_RECO" LB_IMAGES_ONLY=$([ "$GRPC_LB" = 2 ] && echo 1 || echo 0) python3 "$DIR/grpc_lb_patch.py" > /tmp/lb-$$.sh
     bash /tmp/lb-$$.sh; rm -f /tmp/lb-$$.sh
   fi
   if [ "$PROBE_TIMEOUT" != 0 ]; then
