@@ -7,9 +7,8 @@
       a_sj  = クラス j のリクエスト 1周/秒 あたりの CPU [m/(周/秒)]
       x_j   = その Pod 1台が担当するクラス j の負荷 [周/秒]
 枠:
-    r_s = U_ref,s / θ     U_ref = 基準ミックス (k_j) を1台で担当したときの CPU、θ = 設計利用率 (既定 0.66)
-    θ を HPA 目標 0.70 より下げる理由 (2026-10-07, 手順書の修正項目 2): HPA は 70〜77% では台数を変えないが、
-    いったん2台になると 70% 以下でないと1台に戻らない。1台時の利用率を 64〜68% (採用条件 (i)) に置くための値。
+    r_s = U_ref,s / θ     U_ref = 基準ミックス (k_j) を1台で担当したときの CPU、θ = 設計利用率 (既定 0.70、全サービス共通)
+    2026-10-08 に θ を 0.66 → 0.70 (全サービス共通, FOSE と同じ) に戻した。理由: 0.66 は「2台にしても合計 CPU は増えない (κ=0)」前提で 70〜77% の帯を避ける値だったが、混合負荷 CPU 実験 (results-mix-cpu.csv) で 2台目のコスト κ が +15〜30% と分かり、1台に戻れる上限は 70/(1+κ) = 54〜61% になった = 0.66 では目的を果たさない。θ をサービスごとに変えると利用率がずれてペアの増えるタイミングが揃わなくなるので、θ は共通の「使い方のつまみ」とし、履歴依存はペア予測 (predict_pairs.py) の中で「不明」として扱う。採用条件 (i)(ii) は精度の条件ではなく、その枠を HPA で使ったときの記述に格下げ。
 
 第1版(summer2026/rightsize.py)からの変更点 — 手順書 km2/approach/rightsizing-procedure.md:
   1. クラス別の傾き a_sj を出す(第1版は buy だけ)。
@@ -37,7 +36,7 @@ ap.add_argument('--src', nargs='+', default=['km2/experiments/rightsizing/result
 ap.add_argument('--old-format', action='store_true', help='第1版 perservice-cpu の CSV を読む')
 ap.add_argument('--out', default='km2/experiments/rightsizing/rightsize2-requests.csv')
 ap.add_argument('--ref', default='buy=100', help='基準ミックス: 1台が担当する負荷。例 "buy=100" "buy=100,view=50"')
-ap.add_argument('--target', type=float, default=0.66, help='設計利用率 θ (HPA 目標 0.70 とは別。上の説明を参照)')
+ap.add_argument('--target', type=float, default=0.70, help='設計利用率 θ (全サービス共通。上の説明を参照)')
 ap.add_argument('--window', type=float, default=0.4, help='設計点の周辺とみなす幅(±割合)。0.4 なら k の 0.6〜1.4 倍')
 ap.add_argument('--throttle-max', type=float, default=5.0, help='この%%を超えて絞られた点は捨てる')
 ap.add_argument('--achieve-min', type=float, default=0.97, help='達成率がこれ未満の点(取りこぼし)は捨てる')
@@ -169,6 +168,6 @@ for r in rows:
     print("%-22s %8d %8.0f %6s %-14s %7.1f %-14s %s %s" % (
         r['deploy'], r['request_m'], r['U_ref_m'], r['se_pct'], r['se_method'], r['c0_m'], r['c0_method'],
         "  ".join("%6.3f" % r.get('a_%s' % c, float('nan')) for c in classes), r['note']))
-print("\n誤差% = 設計点での推定値の標準誤差 ÷ U_ref (サイクル間のばらつきから)。採用条件 (i) の帯 64〜68% は")
-print("        設計値 66% の ±3% (相対) なので、2倍しても 3% 未満が目安。超えたら STEP 1 のサイクルを足す。")
+print("\n誤差% = 設計点での推定値の標準誤差 ÷ U_ref (サイクル間のばらつきから)。2倍しても 3% 未満が目安。")
+print("        超えたら STEP 1 のサイクルを足す。")
 print("書き出し: %s  → 次は STEP 4(検証): bundle-vs-loss2.sh に RIGHTSIZE=1 RSTABLE=<このCSV> RS_SERVICES=\"<全サービス名>\"(空にすると既定の4サービスに戻るので列挙する)" % a.out)

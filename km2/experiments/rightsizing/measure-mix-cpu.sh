@@ -53,7 +53,10 @@ MAX_VUS=${MAX_VUS:-3000}
 LIMIT_OVERRIDE=${LIMIT_OVERRIDE-"frontend=3000m productcatalogservice=3000m adservice=1000m"}
 # ↑ 2026-10-07 ユーザ了承 (frontend)。スモークで catalog が 660m/上限1000m で絞り 17%、ad が 2台で 4.5% だったので同じ扱いに広げた。
 #   Go は GOMAXPROCS=16 で瞬間的に CPU を使うので、平均が上限の半分程度でも 100ms 周期で絞られる。空文字を渡すとマニフェストのまま
-GRPC_LB=${GRPC_LB:-1}
+# 測定中だけ requests を上書き (2026-10-07 追加)。HPA 無しなので requests は CPU 使用量に効かない (ノードに空きがある限り)。
+#   全サービス3台固定は既定の枠だと予約合計 約18コア > ノード16 で Pending になるので、そのときだけ 1/3 にする用。空ならマニフェストのまま
+REQUEST_OVERRIDE=${REQUEST_OVERRIDE-""}
+GRPC_LB=${GRPC_LB:-1}              # 1 = round_robin + headless / 2 = 対照 (同じ -lb イメージ、振り分けなし) / 0 = 何もしない
 GRPC_RESOLVE_EVERY=${GRPC_RESOLVE_EVERY:-30}
 LB_IMG_FRONTEND=${LB_IMG_FRONTEND:-mizuki0118/mygo:frontend-lb}
 LB_IMG_CHECKOUT=${LB_IMG_CHECKOUT:-mizuki0118/mygo:checkout-lb}
@@ -65,7 +68,7 @@ PROM="http://prometheus-grafana-kube-pr-prometheus.monitoring.svc:9090"
 ROLLOUT=300s
 
 exec > >(tee -a "$LOG") 2>&1
-echo "================ MEASURE-MIX-CPU START $(date -Is) points=[$POINTS] replicas=[$REPLICAS] cycles=$CYCLES warm=${WARM}s meas=${MEAS}s prewarm=${PREWARM}s@$PREWARM_POINT limits=[${LIMIT_OVERRIDE:-マニフェスト}] grpc_lb=$GRPC_LB (HPA無し) ================"
+echo "================ MEASURE-MIX-CPU START $(date -Is) points=[$POINTS] replicas=[$REPLICAS] cycles=$CYCLES warm=${WARM}s meas=${MEAS}s prewarm=${PREWARM}s@$PREWARM_POINT limits=[${LIMIT_OVERRIDE:-マニフェスト}] requests=[${REQUEST_OVERRIDE:-マニフェスト}] grpc_lb=$GRPC_LB (HPA無し) ================"
 
 # 点の名前 → "buy view"
 parse_point(){ local p=$1 b=0 v=0
@@ -107,11 +110,16 @@ deploy(){ local reps=$1
   for kv in $LIMIT_OVERRIDE; do
     kubectl set resources deploy/${kv%%=*} -n $NS --limits=cpu=${kv#*=} >/dev/null && echo "  limits 上書き: ${kv%%=*} cpu=${kv#*=} (requests はそのまま)"
   done
-  if [ "$GRPC_LB" = 1 ]; then
-    echo "  gRPC 負荷分散: round_robin + headless Service (引き直し ${GRPC_RESOLVE_EVERY}s)"
+  for kv in $REQUEST_OVERRIDE; do
+    kubectl set resources deploy/${kv%%=*} -n $NS --requests=cpu=${kv#*=} >/dev/null && echo "  requests 上書き: ${kv%%=*} cpu=${kv#*=}"
+  done
+  if [ "$GRPC_LB" = 1 ] || [ "$GRPC_LB" = 2 ]; then
+    local imgonly=0; [ "$GRPC_LB" = 2 ] && imgonly=1
+    if [ "$GRPC_LB" = 1 ]; then echo "  gRPC 負荷分散: round_robin + headless Service (引き直し ${GRPC_RESOLVE_EVERY}s)"
+    else echo "  gRPC 対照: -lb イメージに差し替えるだけ (振り分けなし = pick_first)"; fi
     { printf '{"deploy":'; kubectl get deploy -n $NS -o json; printf ',"svc":'; kubectl get svc -n $NS -o json; printf '}'; } \
       | NS="$NS" GRPC_RESOLVE_EVERY="$GRPC_RESOLVE_EVERY" LB_IMG_FRONTEND="$LB_IMG_FRONTEND" \
-        LB_IMG_CHECKOUT="$LB_IMG_CHECKOUT" LB_IMG_RECO="$LB_IMG_RECO" LB_IMAGES_ONLY=0 \
+        LB_IMG_CHECKOUT="$LB_IMG_CHECKOUT" LB_IMG_RECO="$LB_IMG_RECO" LB_IMAGES_ONLY=$imgonly \
         python3 "$REPO/km2/experiments/summer2026/grpc_lb_patch.py" > /tmp/lb-$$.sh
     bash /tmp/lb-$$.sh; rm -f /tmp/lb-$$.sh
   fi

@@ -3,6 +3,8 @@
 
 STEP 4 (検証): 新しい枠を当て、HPA を入れて基準ミックスの負荷をかけた時系列(bundle-vs-loss2.sh の
   timeline-*.csv、分離アーム)から、各サービスの枠 r_s を「採用してよいか」を判定する。
+  ★2026-10-08: θ を 0.70 に戻した (rightsize2.py の説明参照)。2台目のコスト κ (+15〜30%) のため (i) と (ii) は両立しないことが多い。
+  以下の (i)(ii) は精度の条件ではなく「その枠を HPA で使ったらどうなるか」の記述として出す (--band は参考値)。
   次の2つを両方満たしたら採用 (2026-10-07 に定義。旧版の「合格帯 66〜74%」は廃止):
     採用条件 (i)  1台時の利用率 u1 が 64% 以上 68% 以下 (--band)。
                   u1 = 1台で担当したときの CPU ÷ r_s。サイクルごとに中央値を取り、サイクル間で平均する。
@@ -11,7 +13,7 @@ STEP 4 (検証): 新しい枠を当て、HPA を入れて基準ミックスの�
   帯の根拠: HPA は 70%×1.1 = 77% を超えると増やすが、いったん2台になると、合計の需要が 1台の 70% 以下に
   ならないと1台に戻らない。だから 70〜77% は「履歴次第で1台にも2台にもなる帯」。上限 68% はそこから
   サイクル間ばらつき (約2ポイント) を離した値、幅 4 ポイントはサービス間で u1 を揃えるため。
-STEP 5 (較正): 採用条件を満たさないサービスだけ  枠 ← U1 / θ  (θ = 0.66) に置き換えた表を書き出す。
+STEP 5 (較正): 採用条件を満たさないサービスだけ  枠 ← U1 / θ  (θ = 0.70) に置き換えた表を書き出す。
   その表で STEP 4 をもう一度回す。
 
 精度として報告するのは「較正前」の誤差だけ (修正項目 6)。較正後は STEP 4 の実測に合わせ込んだ値なので、
@@ -43,7 +45,7 @@ ap.add_argument('--rate', default='100', help='購入型の負荷 (timeline の 
 ap.add_argument('--browse', default='0', help='閲覧型の負荷 (timeline の browse_rate)')
 ap.add_argument('--warm', type=float, default=180, help='これより前のサンプルは捨てる [s]')
 ap.add_argument('--settle', type=float, default=60, help='台数が変わってからこの秒数のサンプルは捨てる [s]')
-ap.add_argument('--target', type=float, default=0.66, help='設計利用率 θ (較正後の枠 = U1 / θ)')
+ap.add_argument('--target', type=float, default=0.70, help='設計利用率 θ (較正後の枠 = U1 / θ)。2026-10-08 に 0.66→0.70')
 ap.add_argument('--band', type=float, nargs=2, default=[0.64, 0.68], help='採用条件 (i) の帯 (1台時の利用率)')
 ap.add_argument('--services', nargs='*', help='見るサービス(省略で表の全サービス)')
 ap.add_argument('--no-c0', action='store_true', help='c0 で1台時に換算しない')
