@@ -83,3 +83,15 @@
 - スモークで adservice (Java) が負荷開始直後に利用率 291% まで跳ね、5〜6 台に増えた。ad は採点対象外だが、ノード負荷として記録する。
 
 ※ 旧既定 (b100v0, θ = 0.70) の `predictions-pairs.csv` / `rightsize3-requests.csv` も副次の比較用に同じコミットに入れる。
+
+**追記 (2026-10-08、採点スクリプトのコミット時。本走の出力はまだ誰も開いていない):**
+採点は `score_pairval.py` (偽データのテスト `test_score_pairval.py` は 28/28 OK) で、次のコマンドで行う:
+```sh
+python3 score_pairval.py --strict-browse --ready-ignore adservice              # 主評価 (K=1)
+python3 score_pairval.py --strict-browse --ready-ignore adservice --pred predictions-pairval-K2.csv --out score-pairval-cells-K2.csv
+```
+§4 の文言で解釈が分かれる3点は、結果を見る前に次のように決めた:
+- R1 の「組」= 片方だけが {checkout, payment, shipping, email} に属する組 (クラスをまたぐ組)。
+- Ready 落ちの無効化は adservice を除く (ad は採点対象外で、負荷開始直後の跳ね上がりが既知)。他の Deployment の Ready 落ちは無効にする。
+- 閲覧型の取りこぼし (browse_dropped_win > 0) も無効にする (負荷が流れていないため)。
+- その他の細部 (窓 = t_rel ≥ WARM、台数の最頻値は Deployment 単位、Ready 落ちは timeline の ready_replicas の減少で検出、無効サイクルは票から外す) は score_pairval.py の docstring のとおり。
