@@ -17,6 +17,15 @@
 #   ※ 束ねと無関係なサービスの HPA は外さない(ユーザ判断)。代わりに台数を全部記録し、
 #     事後に「束ねに関係する部分」だけ抜き出して比較する。
 #
+# 【2026-10-08 追加】同居ペアの前向き検証用に、新しいつまみを環境変数で足した (既定ではすべて従来どおり)。
+#   RESET_EACH_POINT=1 ... 点 (POINTS) × 開始台数 (STARTS) ごとに HPA を消し、全 Deployment を開始台数に戻し、
+#                          全 Pod Ready を待ってから k6 を開始し、直後に HPA を作る。results/timeline/events に
+#                          point,start_replicas 列 (results には start_ok,frames_ok も) が増える。
+#   POINTS / STARTS / SHUFFLE_POINTS / SHUFFLE_SEED / ROTATE_ARMS / POINT_SETTLE / POINT_READY_TIMEOUT
+#   RS_STRICT / CHECK_FRAMES / LIMIT_OVERRIDE ... 枠の置換の取り違え防止と、コンテナ単位の limits 上書き
+#   アーム pairsX / pairsY / pairsY2 ... manifests/pairs*.yaml (3 Pod 同時に同居)
+#   各変数の意味は下の変数定義のコメントを見ること。
+#
 # 出力:
 #   results-bundle-vs-loss2.csv  … 1点1行のまとめ
 #   timeline-bundle-vs-loss2.csv … 15秒ごとの時系列(コンテナ別利用率・台数)
@@ -95,6 +104,30 @@ PROBE_TIMEOUT=${PROBE_TIMEOUT:-0}
 #   shared = redis だけ Pod の外に出して全 megapod で共有(normal/front3 と同条件)
 MEGA_REDIS=${MEGA_REDIS:-shared}
 CYC_START=${CYC_START:-1}     # サイクル番号の開始値(条件を交互に回すとき、番号を通しにするために使う)
+# --- 2026-10-08 追加: 同居ペアの前向き検証用 (すべて既定では従来どおりの挙動) ---
+# 枠の置換の取り違え防止。RS_STRICT=1 なら、対象サービスが RSTABLE に無いとき警告だけで続けず、そのアームを中止する。
+RS_STRICT=${RS_STRICT:-0}
+# CHECK_FRAMES=1 なら、デプロイ後 (RESET_EACH_POINT では各点の前にも) 全コンテナの requests が表どおりか、
+# LIMIT_OVERRIDE の limits が指定どおりか、requests <= limits かを検査し、1つでも違えば「!! 枠不一致」を出してそのアーム/点を中止する。
+# RIGHTSIZE=1 が前提。RS_SERVICES を渡し忘れると既定の4サービスだけが対象になる (全10サービスを明示して渡すこと)。
+CHECK_FRAMES=${CHECK_FRAMES:-0}
+# サービス名=値 (空白区切り) で limits.cpu を**コンテナ単位**に上書き。requests は触らない (枠の置換のあとに当てる)。
+# 例: LIMIT_OVERRIDE="frontend=3000m productcatalogservice=3000m adservice=1000m" (rightsizing/measure-mix-cpu.sh と同じ書式)。RIGHTSIZE=1 が前提。
+LIMIT_OVERRIDE=${LIMIT_OVERRIDE:-}
+# RESET_EACH_POINT=1: 各アームのデプロイは1サイクルに1回。そのあと POINTS × STARTS の各組について
+#   HPA 全削除 → 全 Deployment を開始台数に scale (redis-cart は1) → 全 Pod Ready 待ち → k6 開始 → 直後に HPA 作成 → 従来どおり計測。
+#   RATES / BROWSE_RATE は使わない (点は POINTS で指定)。FIXED_REPLICAS とは併用しない。
+RESET_EACH_POINT=${RESET_EACH_POINT:-0}
+POINTS=${POINTS:-}               # 点の名前 b<購入型 周/秒>v<閲覧型 周/秒> (rightsizing/measure-mix-cpu.sh と同じ形式。例 "b100v0 b100v100 b100v150")
+STARTS=${STARTS:-"1 2"}          # 開始台数 (全 Deployment を最初にこの台数にする。redis-cart は常に1)
+SHUFFLE_POINTS=${SHUFFLE_POINTS:-0}   # 1 = (点 × 開始台数) の順番をサイクルごとに並べ替える。乱数は SHUFFLE_SEED とサイクル番号で固定 (再現できる)
+SHUFFLE_SEED=${SHUFFLE_SEED:-1}
+ROTATE_ARMS=${ROTATE_ARMS:-0}    # 1 = ARMS の先頭アームをサイクルごとに1つずつ回転 (cyc1: A B C D / cyc2: B C D A ...)。CYC_START 基準
+# リセット後、k6 を始める前に置く待ち時間[秒]。gRPC の負荷分散 (GRPC_LB=1) は DNS を GRPC_RESOLVE_EVERY 秒ごとにしか引き直さず、
+#   scale で増減した Pod を既存の呼び出し側が見つけるまで最大その秒数かかるので、それより少し長く置く (HPA はまだ無いので無負荷の空白は HPA に影響しない)。
+POINT_SETTLE=${POINT_SETTLE:-$(( GRPC_RESOLVE_EVERY + 5 ))}
+POINT_READY_TIMEOUT=${POINT_READY_TIMEOUT:-300}   # リセット後に全台 Ready にならない場合、この秒数で点を中止する
+FRAMES_OK=NA                     # 直近の枠検査の結果 (1=全部一致 / 0=不一致 / NA=検査していない (CHECK_FRAMES=0))。results の frames_ok 列に入る
 CSV=${CSV:-$DIR/results-bundle-vs-loss2.csv}
 TL=${TL:-$DIR/timeline-bundle-vs-loss2.csv}
 EV=${EV:-$DIR/events-bundle-vs-loss2.csv}
@@ -105,9 +138,51 @@ ROLLOUT=300s
 
 exec > >(tee -a "$LOG") 2>&1
 echo "================ BUNDLE-VS-LOSS2 START $(date -Is) arms=[$ARMS] rates=[$RATES] cycles=$CYCLES HPA=${HPA_TARGET}%/${HPA_MIN}-${HPA_MAX}台 warm=${WARM}s meas=${MEAS}s browse=${BROWSE_RATE}周/s sample=${SAMPLE}s 様子見=増${SU_WIN}s/減${SD_WIN}s 開始${PRESCALE}台 rightsize=${RIGHTSIZE} limit_x=${LIMIT_X} grpc_lb=${GRPC_LB} ================"
-[ -s "$CSV" ] || echo "cycle,arm,target_rate,iter_rate,dropped,failed_rate,p50,p99,running_cores,pending_cores,eff_iter_per_running_core,pods,pending,node_cpu_sec,softirq_cpu_sec,k6_cpu_sec,prod_p50,cart_p50,chk_p50,prod_p99,cart_p99,chk_p99,replicas,limit_x,dropped_win,started,replicas_at_window_start,replicas_changed_in_window,browse_rate_target,browse_rate,browse_dropped_win,browse_p50,browse_p99,rs_scale,limit_scale,reserved_core_sec,pending_core_sec,reserved_avg_cores,n_samples" > "$CSV"
-[ -s "$TL" ] || echo "cycle,arm,target_rate,limit_x,browse_rate,t_rel,deploy,container,hpa_util_pct,current_replicas,desired_replicas,ready_replicas,pending_pods,ns_running_cores,ns_pending_cores" > "$TL"
-[ -s "$EV" ] || echo "cycle,arm,target_rate,limit_x,browse_rate,time,object,message" > "$EV"
+[ "$RESET_EACH_POINT" = 1 ] && echo "  点ごとリセット: points=[$POINTS] starts=[$STARTS] shuffle=$SHUFFLE_POINTS(seed $SHUFFLE_SEED) rotate_arms=$ROTATE_ARMS settle=${POINT_SETTLE}s ready_timeout=${POINT_READY_TIMEOUT}s rs_strict=$RS_STRICT check_frames=$CHECK_FRAMES limit_override=[${LIMIT_OVERRIDE}] rs_services=[${RS_SERVICES}]"
+
+# 点の名前 → "購入型 閲覧型" (rightsizing/measure-mix-cpu.sh の parse_point と同じ規則)。b100 / v200 / b100v150。
+parse_point(){ local p=$1 b=0 v=0
+  [[ $p =~ ^b([0-9]+) ]] && b=${BASH_REMATCH[1]}
+  [[ $p =~ v([0-9]+)$ ]] && v=${BASH_REMATCH[1]}
+  [[ $p =~ ^(b[0-9]+)?(v[0-9]+)?$ ]] && [ -n "$p" ] || { echo "!! 点の名前が不正: $p" >&2; return 1; }
+  echo "$b $v"; }
+
+# --- 設定の取り違えは測定を始める前に止める ---
+if [ "$RESET_EACH_POINT" = 1 ]; then
+  [ -n "$POINTS" ] || { echo "!! RESET_EACH_POINT=1 には POINTS が要る"; exit 1; }
+  [ "$FIXED_REPLICAS" = 0 ] || { echo "!! RESET_EACH_POINT=1 は FIXED_REPLICAS と併用しない"; exit 1; }
+  for p in $POINTS; do parse_point "$p" >/dev/null || exit 1; done
+  for n in $STARTS; do [[ $n =~ ^[1-9][0-9]*$ ]] || { echo "!! STARTS が不正: $n"; exit 1; }; done
+fi
+if [ "$CHECK_FRAMES" = 1 ] || [ -n "$LIMIT_OVERRIDE" ]; then
+  [ "$RIGHTSIZE" = 1 ] || { echo "!! CHECK_FRAMES / LIMIT_OVERRIDE は RIGHTSIZE=1 が前提"; exit 1; }
+fi
+if [ "$CHECK_FRAMES" = 1 ]; then
+  # RS_SERVICES の既定は4サービスだけ。渡し忘れると残り6サービスの枠がマニフェストのままになるので、全10サービスが入っているかを先に確かめる
+  for sv in frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice; do
+    case " $RS_SERVICES " in *" $sv "*) ;; *) echo "!! CHECK_FRAMES=1 なのに RS_SERVICES に $sv が無い (全10サービスを明示して渡すこと): [$RS_SERVICES]"; exit 1;; esac
+  done
+fi
+
+# 出力ファイルのヘッダ。RESET_EACH_POINT=1 のときだけ列が増えるので、形式の違うファイルへの追記は止める。
+H_CSV="cycle,arm,target_rate,iter_rate,dropped,failed_rate,p50,p99,running_cores,pending_cores,eff_iter_per_running_core,pods,pending,node_cpu_sec,softirq_cpu_sec,k6_cpu_sec,prod_p50,cart_p50,chk_p50,prod_p99,cart_p99,chk_p99,replicas,limit_x,dropped_win,started,replicas_at_window_start,replicas_changed_in_window,browse_rate_target,browse_rate,browse_dropped_win,browse_p50,browse_p99,rs_scale,limit_scale,reserved_core_sec,pending_core_sec,reserved_avg_cores,n_samples"
+H_TL="cycle,arm,target_rate,limit_x,browse_rate,t_rel,deploy,container,hpa_util_pct,current_replicas,desired_replicas,ready_replicas,pending_pods,ns_running_cores,ns_pending_cores"
+H_EV="cycle,arm,target_rate,limit_x,browse_rate,time,object,message"
+if [ "$RESET_EACH_POINT" = 1 ]; then
+  H_CSV="$H_CSV,point,start_replicas,start_ok,frames_ok"; H_TL="$H_TL,point,start_replicas"; H_EV="$H_EV,point,start_replicas"
+fi
+for pair in "$CSV:$H_CSV" "$TL:$H_TL" "$EV:$H_EV"; do
+  f=${pair%%:*}; h=${pair#*:}
+  if [ -s "$f" ]; then
+    if [ "$RESET_EACH_POINT" = 1 ] && [ "$(head -1 "$f")" != "$h" ]; then
+      echo "!! 既存ファイルの列が RESET_EACH_POINT=1 の形式と違う (別名の出力先を使うこと): $f"; exit 1; fi
+    if [ "$RESET_EACH_POINT" != 1 ] && head -1 "$f" | grep -q 'start_replicas'; then
+      echo "!! 既存ファイルは RESET_EACH_POINT=1 の形式 (列が増える)。RESET_EACH_POINT=1 で追記するか別名にすること: $f"; exit 1; fi
+  fi
+done
+[ -s "$CSV" ] || echo "$H_CSV" > "$CSV"
+[ -s "$TL" ] || echo "$H_TL" > "$TL"
+[ -s "$EV" ] || echo "$H_EV" > "$EV"
 
 ensure_promq(){ [ "$(kubectl get pod promq -n $NS -o jsonpath='{.status.phase}' 2>/dev/null)" = Running ] && return
   kubectl delete pod promq -n $NS --ignore-not-found >/dev/null 2>&1
@@ -173,6 +248,14 @@ apply_arm(){ local arm=$1
                      kubectl apply -f $DIR/manifests/checkoutemail.yaml -n $NS >/dev/null ;;
     catalogcheckout) apply_normal_except productcatalogservice checkoutservice
                      kubectl apply -f $DIR/manifests/catalogcheckout.yaml -n $NS >/dev/null ;;
+    # --- 2026-10-08 追加: 同居ペアの前向き検証 (3 Pod を同時に同居。束ねていない4サービスは normal のまま、redis-cart は別 Pod) ---
+    #   各ペアの中身は manifests/pairs*.yaml の冒頭コメントを参照。
+    pairsX)  apply_normal_except productcatalogservice recommendationservice checkoutservice paymentservice shippingservice emailservice
+             kubectl apply -f $DIR/manifests/pairsX.yaml -n $NS >/dev/null ;;
+    pairsY)  apply_normal_except productcatalogservice paymentservice shippingservice recommendationservice frontend checkoutservice
+             kubectl apply -f $DIR/manifests/pairsY.yaml -n $NS >/dev/null ;;
+    pairsY2) apply_normal_except productcatalogservice emailservice paymentservice recommendationservice frontend shippingservice
+             kubectl apply -f $DIR/manifests/pairsY2.yaml -n $NS >/dev/null ;;
     mega)         # 全部入り: 11サービスを1Podに同居(km2/variants/all/all.yaml)。
                   kubectl apply -f $REPO/km2/variants/all/all.yaml -n $NS >/dev/null
                   if [ "$MEGA_REDIS" = shared ]; then
@@ -189,6 +272,59 @@ apply_arm(){ local arm=$1
                     kubectl apply -f "$y" -n $NS >/dev/null; done ;;
   esac
 }
+
+# 枠の検査 (CHECK_FRAMES=1)。いまの Deployment の requests / limits が表どおりかを apply_rightsize.py の CHECK=1 で調べる。
+# 戻り値 0 = 全部一致 / 1 = 不一致あり (不一致の一覧を「!! 枠不一致」付きで出す)。
+check_frames(){ local out rc
+  out=$(kubectl get deploy -n $NS -o json | CHECK=1 TABLE="$RSTABLE" NS="$NS" RS_SERVICES="$RS_SERVICES" RS_SCALE="$RS_SCALE" \
+          LIMIT_OVERRIDE="$LIMIT_OVERRIDE" python3 "$DIR/apply_rightsize.py" 2>&1); rc=$?
+  if [ $rc -ne 0 ]; then
+    FRAMES_OK=0
+    echo "  !! 枠不一致 (rc=$rc): 表=$RSTABLE"; printf '%s\n' "$out" | sed 's/^/     /'
+    return 1
+  fi
+  FRAMES_OK=1; echo "  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[${LIMIT_OVERRIDE:-なし}], requests<=limits)"; return 0; }
+
+# 点の開始状態を作る (RESET_EACH_POINT=1)。HPA 全削除 → 全 Deployment を n0 台に (redis-cart は1) → 全台 Ready と旧 Pod の消滅を待つ → 待ち時間。
+# 戻り値 0 = 準備完了 / 1 = 中止 (枠不一致 or Ready にならない)。
+reset_point(){ local arm=$1 n0=$2 pt=$3 d waited=0 notready term=0
+  echo "---- 点のリセット [$arm][$pt] 開始${n0}台 $(date -Is) ----"
+  kubectl delete hpa --all -n $NS >/dev/null 2>&1
+  if [ "$CHECK_FRAMES" = 1 ]; then check_frames || { echo "!! 点中止 [$arm][$pt] 開始${n0}台: 枠不一致"; return 1; }; fi
+  for d in $(kubectl get deploy -n $NS -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}'); do
+    if [ "$d" = redis-cart ]; then kubectl scale deploy/$d -n $NS --replicas=1 >/dev/null 2>&1||true
+    else kubectl scale deploy/$d -n $NS --replicas=$n0 >/dev/null 2>&1||true; fi
+  done
+  while [ $waited -lt $POINT_READY_TIMEOUT ]; do
+    # READY 列は ready/desired。desired が狙いの台数 (redis-cart は1) と違うものも未完了とみなす。
+    notready=$(kubectl get deploy -n $NS --no-headers 2>/dev/null | awk -v n0=$n0 '{split($2,r,"/"); w=($1=="redis-cart")?1:n0; if(r[1]!=r[2]||r[2]!=w) printf "%s(%s) ",$1,$2}')
+    # 台数を減らしたあとの終了処理中 (Terminating) の Pod も、全部消えるまで待つ (k6load/promq は除く)
+    term=$(kubectl get pods -n $NS --no-headers 2>/dev/null | awk '$1!~/^(k6load|promq)/ && $3=="Terminating"{n++} END{print n+0}')
+    [ -z "$notready" ] && [ "$term" = 0 ] && break
+    sleep 5; waited=$((waited+5))
+  done
+  if [ $waited -ge $POINT_READY_TIMEOUT ]; then
+    echo "!! 点中止 [$arm][$pt] 開始${n0}台: 全台Readyにならない(待機${waited}s): $(kubectl get deploy -n $NS --no-headers | awk '{printf "%s=%s ",$1,$2}') Terminating=${term}"
+    return 1
+  fi
+  echo "  リセット完了 (全台Ready待ち ${waited}s)。gRPC 引き直し待ち ${POINT_SETTLE}s: $(kubectl get deploy -n $NS --no-headers 2>/dev/null | awk '{printf "%s=%s ",$1,$2}')"
+  sleep $POINT_SETTLE
+  return 0; }
+
+# 1サイクルぶんの (点 × 開始台数) を "点:開始台数" の並びで出す。SHUFFLE_POINTS=1 ならサイクル番号と SHUFFLE_SEED で固定した乱数で並べ替える。
+order_points(){ python3 - "$1" "$SHUFFLE_POINTS" "$SHUFFLE_SEED" "$POINTS" "$STARTS" <<'PY'
+import sys, random
+cyc, shuf, seed, points, starts = sys.argv[1:6]
+combos = ["%s:%s" % (p, n) for p in points.split() for n in starts.split()]
+if shuf == '1':
+    random.Random("%s-%s" % (seed, cyc)).shuffle(combos)   # 文字列シードは実行ごとに変わらない (PYTHONHASHSEED の影響なし)
+print(" ".join(combos))
+PY
+}
+
+# ARMS を k 個ぶん左へ回転して出す (ROTATE_ARMS=1 用)
+rotate_arms(){ local k=$1 a n i out=""; read -r -a a <<< "$ARMS"; n=${#a[@]}
+  for ((i=0;i<n;i++)); do out="$out ${a[$(( (i+k) % n ))]}"; done; echo $out; }
 
 make_hpa(){ local d cs c yaml
   for d in $(kubectl get deploy -n $NS -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'); do
@@ -245,9 +381,12 @@ deploy(){ local arm=$1
   if [ "$RIGHTSIZE" = 1 ]; then
     echo "  枠を適正化テーブルで置換: $RSTABLE (対象: ${RS_SERVICES:-全サービス}, 倍率 req×${RS_SCALE} lim×${LIMIT_SCALE})"
     [ "$LIMIT_X" != 0 ] && echo "  CPU上限(limits)も置換: requests × $LIMIT_X (下限 ${LIMIT_MIN_M}m)"
+    [ -n "$LIMIT_OVERRIDE" ] && echo "  limits をコンテナ単位で上書き: $LIMIT_OVERRIDE (requests はそのまま)"
     kubectl get deploy -n $NS -o json | TABLE="$RSTABLE" NS="$NS" LIMIT_X="$LIMIT_X" LIMIT_MIN_M="$LIMIT_MIN_M" RS_SERVICES="$RS_SERVICES" \
-      RS_SCALE="$RS_SCALE" LIMIT_SCALE="$LIMIT_SCALE" \
+      RS_SCALE="$RS_SCALE" LIMIT_SCALE="$LIMIT_SCALE" RS_STRICT="$RS_STRICT" LIMIT_OVERRIDE="$LIMIT_OVERRIDE" \
       python3 "$DIR/apply_rightsize.py" > /tmp/rs-$$.sh
+    if [ $? -ne 0 ] && [ "$RS_STRICT" = 1 ]; then
+      echo "!! アーム中止 [$arm]: 枠の置換に失敗 (RS_STRICT=1。表に無いコンテナ等。stderr の「!!」行を見ること)"; rm -f /tmp/rs-$$.sh; return 1; fi
     bash /tmp/rs-$$.sh; rm -f /tmp/rs-$$.sh
   fi
   if [ "$GRPC_LB" = 1 ] || [ "$GRPC_LB" = 2 ]; then
@@ -271,7 +410,9 @@ deploy(){ local arm=$1
   for d in $(kubectl get deploy -n $NS -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}'); do
     kubectl rollout status deploy/$d -n $NS --timeout=$ROLLOUT >/dev/null 2>&1||true; done
   echo "  枠(req/上限lim): $(kubectl get deploy -n $NS -o jsonpath='{range .items[*]}{.metadata.name}={range .spec.template.spec.containers[*]}{.name}:{.resources.requests.cpu}/{.resources.limits.cpu}{","}{end}{" "}{end}')"
-  if [ "$FIXED_REPLICAS" = 0 ]; then make_hpa; else echo "  HPAは作らない(${FIXED_REPLICAS}台固定)"; fi
+  if [ "$CHECK_FRAMES" = 1 ]; then check_frames || { echo "!! アーム中止 [$arm]: 枠不一致"; return 1; }; fi
+  if [ "$RESET_EACH_POINT" = 1 ]; then echo "  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)"
+  elif [ "$FIXED_REPLICAS" = 0 ]; then make_hpa; else echo "  HPAは作らない(${FIXED_REPLICAS}台固定)"; fi
   # 全 Deployment が所定台数 Ready になるまで待つ。
   # 2026-09-11: rollout status が先に返ってしまい、Ready 3/4 の状態で負荷を開始して1サイクル無効になった。
   local waited=0
@@ -295,12 +436,20 @@ sample_once(){ local cyc=$1 arm=$2 rate=$3 t0=$4 brw=${5:-0}
     CYC="$cyc" ARM="$arm" RATE="$rate" LX="$LIMIT_X" BRW="$brw" T0="$t0" python3 "$DIR/sample_hpa.py" >> "$TL" 2>/dev/null
 }
 
-run_rate(){ local arm=$1 rate=$2 cyc=${3:-1} brw=${4:-0}
-  echo "==== [cyc$cyc][$arm] 購入=${rate}周/秒 閲覧=${brw}周/秒 $(date -Is) ===="
+# 第5・6引数 pt, n0 は RESET_EACH_POINT=1 のときだけ渡す (点の名前と開始台数。results/timeline/events の追加列になる)
+run_rate(){ local arm=$1 rate=$2 cyc=${3:-1} brw=${4:-0} pt=${5:-} n0=${6:-}
+  echo "==== [cyc$cyc][$arm] 購入=${rate}周/秒 閲覧=${brw}周/秒${pt:+ 点=$pt 開始${n0}台} $(date -Is) ===="
+  # sample_hpa.py / collect_events.py は TL_POINT があれば末尾に point,start_replicas を足す
+  if [ -n "$pt" ]; then export TL_POINT="$pt" TL_N0="$n0"; else unset TL_POINT TL_N0; fi
   kubectl create configmap k6-script -n $NS --from-file=checkout.js=$K6DIR/checkout.js --dry-run=client -o yaml | kubectl apply -f - >/dev/null 2>&1
   kubectl delete job k6load -n $NS --ignore-not-found --wait=true >/dev/null 2>&1
   local ev_since=$(date -u +%Y-%m-%dT%H:%M:%SZ)   # k8sのイベント時刻(UTC)と直接比較できる形
   sed -e "s/__RATE__/$rate/" -e "s/__BROWSE__/$brw/" -e "s/__WARM__/$WARM/" -e "s/__MEAS__/$MEAS/" -e "s/__PRE__/$PRE_VUS/" -e "s/__MAX__/$MAX_VUS/" "$K6DIR/k6-job.yaml" | kubectl apply -f - -n $NS >/dev/null
+  if [ "$RESET_EACH_POINT" = 1 ]; then
+    # k6 を始めた直後に HPA を作る (無負荷の時間を挟まない)。k6 の Pod 起動を待つ前に作り、作成にかかった秒数をログに残す。
+    local _h0; _h0=$(date +%s); make_hpa
+    echo "  HPA作成: k6 Job の apply 直後から $(( $(date +%s) - _h0 )) 秒で完了"
+  fi
   local pod=""
   for i in $(seq 1 40);do pod=$(kubectl get pods -n $NS -l app=k6load --sort-by=.metadata.creationTimestamp -o jsonpath='{.items[-1].metadata.name}' 2>/dev/null)
     [ -n "$pod" ]&&[ "$(kubectl get pod $pod -n $NS -o jsonpath='{.status.phase}' 2>/dev/null)" = Running ]&&break; sleep 3;done
@@ -339,10 +488,17 @@ run_rate(){ local arm=$1 rate=$2 cyc=${3:-1} brw=${4:-0}
   rm -f "$FLAG"; wait $SPID 2>/dev/null
   # --- 計測窓のあいだに確保していたCPU量(時間積分)。瞬間値だと窓内の増減が落ちる ---
   local WRES RESSEC PENDSEC RESAVG NSAMP
-  WRES=$(python3 "$DIR/window_reserved.py" "$TL" "$WARM" "$MEAS" "$cyc" "$arm" "$rate" "$LIMIT_X" "$brw" 2>/dev/null)
+  WRES=$(python3 "$DIR/window_reserved.py" "$TL" "$WARM" "$MEAS" "$cyc" "$arm" "$rate" "$LIMIT_X" "$brw" $pt $n0 2>/dev/null)
   RESSEC=$(echo "$WRES" | awk '{print $1}'); PENDSEC=$(echo "$WRES" | awk '{print $2}')
   RESAVG=$(echo "$WRES" | awk '{print $3}'); NSAMP=$(echo "$WRES" | awk '{print $4}')
   [ -z "$RESSEC" ] && { RESSEC=0; PENDSEC=0; RESAVG=0; NSAMP=0; }
+  # RESET_EACH_POINT=1: 点と開始台数でも絞り直す。start_ok = 開始15秒以内の全 Deployment の台数が n0 と一致したか
+  local SOK="" XCOLS=""
+  if [ -n "$pt" ]; then
+    SOK=$(python3 "$DIR/start_ok.py" "$TL" "$cyc" "$arm" "$rate" "$LIMIT_X" "$brw" "$pt" "$n0" 2>/dev/null); SOK=${SOK:-0}
+    [ "$SOK" = 1 ] || echo "  !! start_ok=$SOK: 開始15秒以内に全 Deployment が ${n0}台ではなかった (または時系列が足りない)"
+    XCOLS="$pt,$n0,$SOK,$FRAMES_OK"
+  fi
 
   # --- 台数変更イベントの回収 ---
   kubectl get events -n $NS --field-selector reason=SuccessfulRescale -o json 2>/dev/null | \
@@ -357,7 +513,7 @@ run_rate(){ local arm=$1 rate=$2 cyc=${3:-1} brw=${4:-0}
   echo "$summary" | grep -q '{' || { echo "  !! summary回収失敗(pod=$pod)"
        kubectl get events -n $NS --field-selector involvedObject.name=k6load -o jsonpath='{range .items[*]}     理由: {.reason} {.message}{"\n"}{end}' 2>/dev/null | tail -3
        kubectl delete job k6load -n $NS --ignore-not-found >/dev/null 2>&1; return; }
-  SUMMARY="$summary" LIMIT_X="$LIMIT_X" REPL0="$REPL_START" RSSCALE="$RS_SCALE" LIMSCALE="$LIMIT_SCALE" RESSEC="$RESSEC" PENDSEC="$PENDSEC" RESAVG="$RESAVG" NSAMP="$NSAMP" python3 - "$arm" "$CSV" "$cyc" "$RUNC" "$PENDC" "$PODS" "$PEND" "$NODE" "$SOFT" "$K6CPU" "$REPL" <<'PY'
+   EXTRA_COLS="$XCOLS" SUMMARY="$summary" LIMIT_X="$LIMIT_X" REPL0="$REPL_START" RSSCALE="$RS_SCALE" LIMSCALE="$LIMIT_SCALE" RESSEC="$RESSEC" PENDSEC="$PENDSEC" RESAVG="$RESAVG" NSAMP="$NSAMP" python3 - "$arm" "$CSV" "$cyc" "$RUNC" "$PENDC" "$PODS" "$PEND" "$NODE" "$SOFT" "$K6CPU" "$REPL" <<'PY'
 import sys,json,csv,os
 arm,out,cyc,runc,pendc,pods,pend,node,soft,k6cpu,repl=sys.argv[1:12]
 repl0=os.environ.get('REPL0','').strip()
@@ -379,6 +535,8 @@ row=[cyc,arm,d.get('target_rate'),round(it,1),d.get('dropped'),round(d.get('fail
      os.environ.get('RSSCALE','1'),os.environ.get('LIMSCALE','0'),
      os.environ.get('RESSEC','0'),os.environ.get('PENDSEC','0'),
      os.environ.get('RESAVG','0'),os.environ.get('NSAMP','0')]
+# RESET_EACH_POINT=1 のときだけ末尾に point,start_replicas,start_ok,frames_ok を足す (既定では列は従来どおり)
+if os.environ.get('EXTRA_COLS'): row += os.environ['EXTRA_COLS'].split(',')
 with open(out,'a',newline='') as fh: csv.writer(fh).writerow(row)
 print("  -> 捌けた=%.1f/%s 取りこぼし(窓)=%s (全体%s) p50=%.0f p99=%.0f | 動作中の枠=%.2fコア(Pending分 %.2f) Pod=%d(Pending %d) | CPU時間=%.0f秒(うちsoftirq %.0f秒 / k6 %.0f秒)"
       %(it,d.get('target_rate'),d.get('dropped_win'),d.get('dropped'),d.get('p50') or 0,d.get('p99') or 0,f(runc),f(pendc),f(pods),f(pend),f(node),f(soft),f(k6cpu)))
@@ -400,9 +558,21 @@ PY
 ensure_promq
 for c in $(seq $CYC_START $(( CYC_START + CYCLES - 1 ))); do
   echo "################ CYCLE $c / $CYCLES $(date -Is) ################"
-  for arm in $ARMS; do
-    deploy "$arm"; sleep 10
-    for r in $RATES; do for b in $BROWSE_RATE; do run_rate "$arm" "$r" "$c" "$b"; done; done
+  ARMS_C=$ARMS
+  [ "$ROTATE_ARMS" = 1 ] && { ARMS_C=$(rotate_arms $(( c - CYC_START ))); echo "  このサイクルのアーム順 (回転): $ARMS_C"; }
+  for arm in $ARMS_C; do
+    deploy "$arm" || { echo "!! アーム中止 [cyc$c][$arm]: デプロイ失敗 (上の「!!」行を見ること)。次のアームへ"; continue; }
+    sleep 10
+    if [ "$RESET_EACH_POINT" = 1 ]; then
+      combos=$(order_points "$c"); echo "  [cyc$c][$arm] 点×開始台数の順番: $combos"
+      for combo in $combos; do
+        pt=${combo%%:*}; n0=${combo##*:}; bv=$(parse_point "$pt")
+        reset_point "$arm" "$n0" "$pt" || { echo "  (この点は記録なし: cyc=$c arm=$arm point=$pt start=$n0)"; continue; }
+        run_rate "$arm" "${bv% *}" "$c" "${bv#* }" "$pt" "$n0"
+      done
+    else
+      for r in $RATES; do for b in $BROWSE_RATE; do run_rate "$arm" "$r" "$c" "$b"; done; done
+    fi
     if [ "$REST_ARM" != 0 ]; then echo "---- 休憩 ${REST_ARM}s (アーム間) $(date -Is) ----"; sleep $REST_ARM; fi
   done
   if [ "$REST_CYCLE" != 0 ]; then echo "######## 休憩 ${REST_CYCLE}s (サイクル間) $(date -Is) ########"; sleep $REST_CYCLE; fi

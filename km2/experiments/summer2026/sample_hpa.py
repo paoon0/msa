@@ -6,6 +6,8 @@
   desired_replicas = HPA が「こうしたい」と決めた台数(実際に立つ前の意思が見える)
   pending_pods = そのDeploymentでノードに載れず Pending の Pod 数
 環境変数 CYC/ARM/RATE/LX/T0 で文脈を渡す(T0=k6起動時刻のepoch秒, LX=limitsの倍率)。
+環境変数 TL_POINT / TL_N0 が設定されているときだけ、行の末尾に point,start_replicas の2列を足す
+(2026-10-08 追加。bundle-vs-loss2.sh の RESET_EACH_POINT=1 用。同じ (cycle,arm,rate,browse) で開始台数だけが違う測定を区別する)。
 ※ パイプで JSON を渡すため heredoc は使わない(heredocは標準入力を奪ってしまう)。
 """
 import sys, json, os, time, csv
@@ -62,6 +64,7 @@ for it in d.get('items', []):
             elif phase == 'Pending':
                 ns_pend_m += tot
 
+extra = [os.environ['TL_POINT'], os.environ.get('TL_N0', '')] if 'TL_POINT' in os.environ else []
 w = csv.writer(sys.stdout)
 for name, (spec, ready) in sorted(dep.items()):
     cur, des, mets = hpa.get(name, (spec, spec, {}))
@@ -70,4 +73,4 @@ for name, (spec, ready) in sorted(dep.items()):
     for c, u in sorted(mets.items()):
         w.writerow([cyc, arm, rate, lx, brw, t, name, c, '' if u is None else u,
                     cur, des, ready, pend.get(name, 0),
-                    round(ns_run_m / 1000.0, 3), round(ns_pend_m / 1000.0, 3)])
+                    round(ns_run_m / 1000.0, 3), round(ns_pend_m / 1000.0, 3)] + extra)

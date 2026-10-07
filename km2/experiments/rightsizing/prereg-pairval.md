@@ -74,6 +74,12 @@
 
 `results-mix-cpu.csv` / `-series.csv` / `.log`、`measure-mix-cpu.sh`、`predict_pairs.py`、`predictions-pairval-K1.csv`、`predictions-pairval-K2.csv`、`rightsize-pairval.csv`、`pairval_design_search.py`、`pairval-design-search.txt`、このファイル。
 
-ドライバの改修 (`summer2026/bundle-vs-loss2.sh`) と同居マニフェスト (`summer2026/manifests/pairs{X,Y,Y2}.yaml`)、採点スクリプトは、本走の前に別のコミットで固定する。
+ドライバの改修 (`summer2026/bundle-vs-loss2.sh` ほか) と同居マニフェスト (`summer2026/manifests/pairs{X,Y,Y2}.yaml`) は、本走の前に別のコミットで固定する。
+
+**追記 (2026-10-08 02:15、本走開始の直前):**
+- スモーク (`summer2026/smoke/*smoke-pairval*`、normal と pairsY2 を1点ずつ) で、枠検査 OK、limits の上書き、点ごとのリセットを確認した。start_ok が HPA 作成直後の空欄で 0 になる不具合があったので、空欄のときは ready_replicas で代用するよう `start_ok.py` を直した。
+- 熱の影響を避けるため、アーム間 60 s・サイクル間 300 s の休憩を入れる (REST_ARM=60 REST_CYCLE=300)。
+- **採点スクリプトは本走の開始後に書き、結果ファイルを開く前にコミットする** (予定より順番が遅れる。偽データで空回しして確認する)。
+- スモークで adservice (Java) が負荷開始直後に利用率 291% まで跳ね、5〜6 台に増えた。ad は採点対象外だが、ノード負荷として記録する。
 
 ※ 旧既定 (b100v0, θ = 0.70) の `predictions-pairs.csv` / `rightsize3-requests.csv` も副次の比較用に同じコミットに入れる。

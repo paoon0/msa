@@ -16,11 +16,15 @@
   「使ったCPU秒」(node_cpu_sec) と同じ単位になるので、そのまま割れば
   「確保したうちどれだけ実際に使ったか」が出る。
 
-引数: TL WARM MEAS CYC ARM RATE LX BRW
+引数: TL WARM MEAS CYC ARM RATE LX BRW [POINT N0]
+  POINT N0 を渡すと、時系列 CSV の point / start_replicas 列でも絞る (RESET_EACH_POINT=1 用。2026-10-08 追加)。
+  省略時は従来どおり。
 """
 import csv, sys, collections
 
 tl, warm, meas, cyc, arm, rate, lx, brw = sys.argv[1:9]
+pt_f = sys.argv[9] if len(sys.argv) > 10 else None
+n0_f = sys.argv[10] if len(sys.argv) > 10 else None
 warm, meas = float(warm), float(meas)
 lo, hi = warm, warm + meas
 
@@ -32,7 +36,8 @@ except Exception:
 # 同じ条件の行だけを拾う。t_rel が戻る箇所で測定が変わるので、最後の測定ぶんだけを使う。
 sel = [r for r in rows
        if r.get('cycle') == cyc and r.get('arm') == arm and r.get('target_rate') == rate
-       and r.get('limit_x', '0') == lx and r.get('browse_rate', '0') == brw]
+       and r.get('limit_x', '0') == lx and r.get('browse_rate', '0') == brw
+       and (pt_f is None or (r.get('point') == pt_f and r.get('start_replicas') == n0_f))]
 blocks, cur, prev = [], [], None
 for r in sel:
     t = float(r['t_rel'])
