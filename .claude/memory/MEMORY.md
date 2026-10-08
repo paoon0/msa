@@ -33,4 +33,4 @@
 - [ICTer affinity replication](icter-affinity-replication.md) — 【2026-09-10】先行研究と同じ指標(カプセル化込みバイト量)で測ると通信量は減らない(+2〜4%、パケット数も不変)。同じ移動でsoftirqは−47%。bridge→loopbackで減るのはEthヘッダ14Bのみ=K8s同一ノードではバイト量が指標として機能しない=softirqを使う積極的理由
 - [Subagent setup](subagent-setup.md) — 【2026-10-06】サブエージェント3体を .claude/agents/ に定義(役割はCLAUDE.md)。★一覧はセッション開始時固定=作成後は再起動が必要(実測エラー)。paper-refereeはWrite/Edit無し&最優先軸=数値の取得方法の妥当性。査読役は2026-10-06に anubis (アヌビス) へ改名
 - [Memory is in the repo](memory-synced-via-git.md) — メモリ置き場はリポジトリ .claude/memory/ へのシンボリックリンク=コミットしないと消える/2台間はgitで同期
-- [Pair prediction validation](pair-prediction-validation.md) — 【2026-10-08本走中】同居ペアの台数・損の予測(predict_pairs.py, θ0.50/基準b50v100)を事前登録して前向き検証。採点 score_pairval.py
+- [Pair prediction validation](pair-prediction-validation.md) — 【2026-10-08完了・合格】同居ペアの台数・損の予測(θ0.50/基準b50v100)を事前登録で前向き検証→確定セル30/30的中・R1 64%/R2 97%(R2との差は1セル)、損ありは5セルのみ

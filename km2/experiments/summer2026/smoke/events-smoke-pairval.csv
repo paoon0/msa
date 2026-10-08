@@ -1,0 +1,4 @@
+cycle,arm,target_rate,limit_x,browse_rate,time,object,message,point,start_replicas
+1,normal,100,2026-10-07T17:05:02Z,adservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v100,2
+1,pairsY2,100,2026-10-07T17:09:09Z,adservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b100v100,2
+1,pairsY2,100,2026-10-07T17:09:11Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v100,2

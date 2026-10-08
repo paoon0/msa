@@ -95,3 +95,11 @@ python3 score_pairval.py --strict-browse --ready-ignore adservice --pred predict
 - Ready 落ちの無効化は adservice を除く (ad は採点対象外で、負荷開始直後の跳ね上がりが既知)。他の Deployment の Ready 落ちは無効にする。
 - 閲覧型の取りこぼし (browse_dropped_win > 0) も無効にする (負荷が流れていないため)。
 - その他の細部 (窓 = t_rel ≥ WARM、台数の最頻値は Deployment 単位、Ready 落ちは timeline の ready_replicas の減少で検出、無効サイクルは票から外す) は score_pairval.py の docstring のとおり。
+
+**追記 (2026-10-08 13:05、本走終了後):**
+- **途中で結果を見たことの開示:** 08:55 ごろ (72 点中 44 点の時点)、ユーザの依頼で途中データのコピーに採点スクリプトをそのまま当てて結果を見た。予測ファイル・採点規則・実験の進行はいずれも変えていない。
+- 本走は 72 点すべて完了 (13:03)。無効セル (有効サイクル 0) は 0 個なので、§4-2 の再実行は行わない。無効サイクルは 6 (理由はすべて adservice 以外の Ready 落ち)、不安定 0、得 0、閲覧型の取りこぼし 0。
+- 上の 2 コマンドで採点した結果 → `score-pairval-K1.txt` / `score-pairval-K2.txt`、セル表 `score-pairval-cells.csv` / `score-pairval-cells-K2.csv`。**判定: 合格** ((i) 30/30、(ii) 11/11)。
+- 結果を読むときの注意 (事前登録の限界の再掲と、結果から分かった追加分):
+  - 損ありの確定セルは 5 個で、すべて b100v0・開始 1 台。
+  - 識別セル 11 個のうち 10 個は R1 との食い違い、R2 と食い違うのは 1 個 (shipping+reco b100v100 開始 2) だけ。R2 に対する優位は 1 セル分の証拠しかない。

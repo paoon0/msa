@@ -1,0 +1,155 @@
+cycle,arm,target_rate,limit_x,browse_rate,time,object,message,point,start_replicas
+1,normal,100,2026-10-07T17:18:31Z,adservice,New size: 5; reason: All metrics below target,b100v150,1
+1,normal,100,2026-10-07T17:19:01Z,adservice,New size: 4; reason: All metrics below target,b100v150,1
+1,normal,100,2026-10-07T17:19:31Z,adservice,New size: 3; reason: All metrics below target,b100v150,1
+1,normal,100,2026-10-07T17:24:03Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+1,normal,100,2026-10-07T17:24:04Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+1,normal,100,2026-10-07T17:24:17Z,adservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+1,normal,100,2026-10-07T17:28:17Z,adservice,New size: 2; reason: All metrics below target,b100v100,1
+1,normal,100,2026-10-07T17:42:15Z,adservice,New size: 4; reason: All metrics below target,b100v100,2
+1,normal,100,2026-10-07T17:43:16Z,adservice,New size: 3; reason: All metrics below target,b100v100,2
+1,normal,100,2026-10-07T17:43:46Z,adservice,New size: 2; reason: All metrics below target,b100v100,2
+1,pairsX,100,2026-10-07T18:11:15Z,adservice,New size: 7; reason: All metrics below target,b100v150,1
+1,pairsX,100,2026-10-07T18:11:30Z,adservice,New size: 5; reason: All metrics below target,b100v150,1
+1,pairsX,100,2026-10-07T18:12:15Z,adservice,New size: 4; reason: All metrics below target,b100v150,1
+1,pairsX,100,2026-10-07T18:13:15Z,adservice,New size: 3; reason: All metrics below target,b100v150,1
+1,pairsX,100,2026-10-07T18:17:27Z,productcatalogservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+1,pairsX,100,2026-10-07T18:18:12Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+1,pairsX,100,2026-10-07T18:34:50Z,adservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v100,2
+1,pairsX,100,2026-10-07T18:37:05Z,adservice,New size: 4; reason: All metrics below target,b100v100,2
+1,pairsX,100,2026-10-07T18:37:35Z,adservice,New size: 3; reason: All metrics below target,b100v100,2
+1,pairsX,100,2026-10-07T18:38:05Z,adservice,New size: 2; reason: All metrics below target,b100v100,2
+1,pairsY,100,2026-10-07T19:02:20Z,adservice,New size: 8; reason: cpu container resource utilization (percentage of request) above target,b100v150,1
+1,pairsY,100,2026-10-07T19:05:05Z,adservice,New size: 6; reason: All metrics below target,b100v150,1
+1,pairsY,100,2026-10-07T19:05:20Z,adservice,New size: 5; reason: All metrics below target,b100v150,1
+1,pairsY,100,2026-10-07T19:06:05Z,adservice,New size: 4; reason: All metrics below target,b100v150,1
+1,pairsY,100,2026-10-07T19:07:05Z,adservice,New size: 3; reason: All metrics below target,b100v150,1
+1,pairsY,100,2026-10-07T19:11:46Z,adservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+1,pairsY,100,2026-10-07T19:13:16Z,adservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+1,pairsY,100,2026-10-07T19:28:10Z,adservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b100v100,2
+1,pairsY,100,2026-10-07T19:30:55Z,adservice,New size: 4; reason: All metrics below target,b100v100,2
+1,pairsY,100,2026-10-07T19:31:40Z,adservice,New size: 3; reason: All metrics below target,b100v100,2
+1,pairsY,100,2026-10-07T19:31:55Z,adservice,New size: 2; reason: All metrics below target,b100v100,2
+1,pairsY2,100,2026-10-07T19:56:24Z,cartservice,New size: 2; reason: All metrics below target,b100v150,1
+1,pairsY2,100,2026-10-07T19:57:54Z,adservice,New size: 6; reason: All metrics below target,b100v150,1
+1,pairsY2,100,2026-10-07T19:58:09Z,adservice,New size: 5; reason: All metrics below target,b100v150,1
+1,pairsY2,100,2026-10-07T19:58:54Z,adservice,New size: 4; reason: All metrics below target,b100v150,1
+1,pairsY2,100,2026-10-07T19:59:54Z,adservice,New size: 3; reason: All metrics below target,b100v150,1
+1,pairsY2,100,2026-10-07T20:04:23Z,adservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+1,pairsY2,100,2026-10-07T20:05:38Z,adservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+1,pairsY2,100,2026-10-07T20:08:09Z,adservice,New size: 4; reason: All metrics below target,b100v100,1
+1,pairsY2,100,2026-10-07T20:08:24Z,adservice,New size: 3; reason: All metrics below target,b100v100,1
+1,pairsY2,100,2026-10-07T20:14:08Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+1,pairsY2,100,2026-10-07T20:21:07Z,adservice,New size: 4; reason: All metrics below target,b100v100,2
+1,pairsY2,100,2026-10-07T20:22:37Z,adservice,New size: 2; reason: All metrics below target,b100v100,2
+2,pairsX,100,2026-10-07T20:54:31Z,adservice,New size: 3; reason: All metrics below target,b100v0,1
+2,pairsX,100,2026-10-07T20:55:16Z,adservice,New size: 2; reason: All metrics below target,b100v0,1
+2,pairsX,100,2026-10-07T20:57:16Z,adservice,New size: 1; reason: All metrics below target,b100v0,1
+2,pairsX,100,2026-10-07T21:03:57Z,adservice,New size: 7; reason: All metrics below target,b100v150,2
+2,pairsX,100,2026-10-07T21:04:12Z,adservice,New size: 5; reason: All metrics below target,b100v150,2
+2,pairsX,100,2026-10-07T21:04:57Z,adservice,New size: 3; reason: All metrics below target,b100v150,2
+2,pairsX,100,2026-10-07T21:05:57Z,adservice,New size: 2; reason: All metrics below target,b100v150,2
+2,pairsX,100,2026-10-07T21:20:31Z,adservice,New size: 2; reason: All metrics below target,b100v100,2
+2,pairsX,100,2026-10-07T21:26:57Z,adservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v150,1
+2,pairsX,100,2026-10-07T21:28:27Z,adservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v150,1
+2,pairsX,100,2026-10-07T21:30:42Z,adservice,New size: 4; reason: All metrics below target,b100v150,1
+2,pairsX,100,2026-10-07T21:30:57Z,adservice,New size: 3; reason: All metrics below target,b100v150,1
+2,pairsX,100,2026-10-07T21:31:42Z,adservice,New size: 2; reason: All metrics below target,b100v150,1
+2,pairsX,100,2026-10-07T21:36:08Z,adservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+2,pairsX,100,2026-10-07T21:37:53Z,adservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+2,pairsX,100,2026-10-07T21:39:08Z,adservice,New size: 6; reason: All metrics below target,b100v100,1
+2,pairsX,100,2026-10-07T21:39:53Z,adservice,New size: 5; reason: All metrics below target,b100v100,1
+2,pairsX,100,2026-10-07T21:40:08Z,adservice,New size: 4; reason: All metrics below target,b100v100,1
+2,pairsY,100,2026-10-07T21:48:30Z,adservice,New size: 2; reason: All metrics below target,b100v0,1
+2,pairsY,100,2026-10-07T21:50:00Z,adservice,New size: 1; reason: All metrics below target,b100v0,1
+2,pairsY,100,2026-10-07T21:55:26Z,adservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b100v150,2
+2,pairsY,100,2026-10-07T21:57:56Z,adservice,New size: 5; reason: All metrics below target,b100v150,2
+2,pairsY,100,2026-10-07T21:58:11Z,adservice,New size: 4; reason: All metrics below target,b100v150,2
+2,pairsY,100,2026-10-07T21:58:41Z,adservice,New size: 3; reason: All metrics below target,b100v150,2
+2,pairsY,100,2026-10-07T21:59:41Z,adservice,New size: 2; reason: All metrics below target,b100v150,2
+2,pairsY,100,2026-10-07T22:14:30Z,adservice,New size: 3; reason: All metrics below target,b100v100,2
+2,pairsY,100,2026-10-07T22:15:30Z,adservice,New size: 2; reason: All metrics below target,b100v100,2
+2,pairsY,100,2026-10-07T22:21:41Z,adservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v150,1
+2,pairsY,100,2026-10-07T22:23:11Z,adservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b100v150,1
+2,pairsY,100,2026-10-07T22:25:42Z,adservice,New size: 6; reason: All metrics below target,b100v150,1
+2,pairsY,100,2026-10-07T22:25:57Z,adservice,New size: 5; reason: All metrics below target,b100v150,1
+2,pairsY,100,2026-10-07T22:29:52Z,adservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+2,pairsY,100,2026-10-07T22:33:22Z,adservice,New size: 2; reason: All metrics below target,b100v100,1
+2,pairsY2,100,2026-10-07T22:41:34Z,adservice,New size: 3; reason: All metrics below target,b100v0,1
+2,pairsY2,100,2026-10-07T22:42:04Z,adservice,New size: 2; reason: All metrics below target,b100v0,1
+2,pairsY2,100,2026-10-07T22:44:34Z,adservice,New size: 1; reason: All metrics below target,b100v0,1
+2,pairsY2,100,2026-10-07T22:51:00Z,adservice,New size: 4; reason: All metrics below target,b100v150,2
+2,pairsY2,100,2026-10-07T22:52:00Z,adservice,New size: 3; reason: All metrics below target,b100v150,2
+2,pairsY2,100,2026-10-07T22:52:45Z,adservice,New size: 2; reason: All metrics below target,b100v150,2
+2,pairsY2,100,2026-10-07T23:05:49Z,adservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b100v100,2
+2,pairsY2,100,2026-10-07T23:08:34Z,adservice,New size: 4; reason: All metrics below target,b100v100,2
+2,pairsY2,100,2026-10-07T23:08:49Z,adservice,New size: 3; reason: All metrics below target,b100v100,2
+2,pairsY2,100,2026-10-07T23:09:34Z,adservice,New size: 2; reason: All metrics below target,b100v100,2
+2,pairsY2,100,2026-10-07T23:14:19Z,adservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v150,1
+2,pairsY2,100,2026-10-07T23:14:34Z,adservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v150,1
+2,pairsY2,100,2026-10-07T23:15:49Z,adservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b100v150,1
+2,pairsY2,100,2026-10-07T23:17:19Z,adservice,New size: 5; reason: All metrics below target,b100v150,1
+2,pairsY2,100,2026-10-07T23:18:19Z,adservice,New size: 4; reason: All metrics below target,b100v150,1
+2,pairsY2,100,2026-10-07T23:19:04Z,adservice,New size: 3; reason: All metrics below target,b100v150,1
+2,pairsY2,100,2026-10-07T23:19:19Z,adservice,New size: 2; reason: All metrics below target,b100v150,1
+2,normal,100,2026-10-07T23:34:21Z,adservice,New size: 3; reason: All metrics below target,b100v0,1
+2,normal,100,2026-10-07T23:34:51Z,adservice,New size: 2; reason: All metrics below target,b100v0,1
+2,normal,100,2026-10-07T23:36:51Z,adservice,New size: 1; reason: All metrics below target,b100v0,1
+2,normal,100,2026-10-07T23:42:03Z,adservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b100v150,2
+2,normal,100,2026-10-07T23:44:33Z,adservice,New size: 6; reason: All metrics below target,b100v150,2
+2,normal,100,2026-10-07T23:45:03Z,adservice,New size: 4; reason: All metrics below target,b100v150,2
+2,normal,100,2026-10-07T23:45:33Z,adservice,New size: 3; reason: All metrics below target,b100v150,2
+2,normal,100,2026-10-07T23:46:03Z,adservice,New size: 2; reason: All metrics below target,b100v150,2
+2,normal,100,2026-10-08T00:01:12Z,adservice,New size: 3; reason: All metrics below target,b100v100,2
+2,normal,100,2026-10-08T00:01:42Z,adservice,New size: 2; reason: All metrics below target,b100v100,2
+2,normal,100,2026-10-08T00:08:28Z,adservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b100v150,1
+2,normal,100,2026-10-08T00:11:13Z,adservice,New size: 6; reason: All metrics below target,b100v150,1
+2,normal,100,2026-10-08T00:11:28Z,adservice,New size: 4; reason: All metrics below target,b100v150,1
+2,normal,100,2026-10-08T00:12:14Z,adservice,New size: 3; reason: All metrics below target,b100v150,1
+2,normal,100,2026-10-08T00:15:31Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+3,pairsY,100,2026-10-08T00:30:52Z,adservice,New size: 8; reason: cpu container resource utilization (percentage of request) above target,b100v150,2
+3,pairsY,100,2026-10-08T00:31:23Z,productcatalogservice,New size: 2; reason: All metrics below target,b100v150,2
+3,pairsY,100,2026-10-08T00:33:37Z,adservice,New size: 6; reason: All metrics below target,b100v150,2
+3,pairsY,100,2026-10-08T00:33:52Z,adservice,New size: 5; reason: All metrics below target,b100v150,2
+3,pairsY,100,2026-10-08T00:34:37Z,adservice,New size: 4; reason: All metrics below target,b100v150,2
+3,pairsY,100,2026-10-08T00:35:37Z,adservice,New size: 3; reason: All metrics below target,b100v150,2
+3,pairsY,100,2026-10-08T00:49:46Z,adservice,New size: 1; reason: All metrics below target,b100v0,2
+3,pairsY,100,2026-10-08T00:57:12Z,adservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v150,1
+3,pairsY,100,2026-10-08T00:57:12Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v150,1
+3,pairsY,100,2026-10-08T00:58:27Z,adservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v150,1
+3,pairsY,100,2026-10-08T00:59:27Z,cartservice,New size: 2; reason: All metrics below target,b100v150,1
+3,pairsY,100,2026-10-08T01:01:27Z,adservice,New size: 3; reason: All metrics below target,b100v150,1
+3,pairsY,100,2026-10-08T01:14:50Z,adservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+3,pairsY,100,2026-10-08T01:16:35Z,adservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+3,pairsY,100,2026-10-08T01:18:51Z,adservice,New size: 3; reason: All metrics below target,b100v100,1
+3,pairsY2,100,2026-10-08T01:24:27Z,adservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b100v150,2
+3,pairsY2,100,2026-10-08T01:27:12Z,adservice,New size: 5; reason: All metrics below target,b100v150,2
+3,pairsY2,100,2026-10-08T01:27:42Z,adservice,New size: 4; reason: All metrics below target,b100v150,2
+3,pairsY2,100,2026-10-08T01:27:57Z,adservice,New size: 3; reason: All metrics below target,b100v150,2
+3,pairsY2,100,2026-10-08T01:28:12Z,adservice,New size: 2; reason: All metrics below target,b100v150,2
+3,pairsY2,100,2026-10-08T01:42:37Z,adservice,New size: 2; reason: All metrics below target,b100v0,2
+3,pairsY2,100,2026-10-08T01:43:22Z,adservice,New size: 1; reason: All metrics below target,b100v0,2
+3,pairsY2,100,2026-10-08T01:49:51Z,adservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v150,1
+3,pairsY2,100,2026-10-08T01:51:21Z,adservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v150,1
+3,pairsY2,100,2026-10-08T01:54:06Z,adservice,New size: 3; reason: All metrics below target,b100v150,1
+3,pairsY2,100,2026-10-08T02:06:15Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+3,normal,100,2026-10-08T02:18:08Z,adservice,New size: 7; reason: All metrics below target,b100v150,2
+3,normal,100,2026-10-08T02:19:39Z,adservice,New size: 4; reason: All metrics below target,b100v150,2
+3,normal,100,2026-10-08T02:20:09Z,adservice,New size: 3; reason: All metrics below target,b100v150,2
+3,normal,100,2026-10-08T02:20:39Z,adservice,New size: 2; reason: All metrics below target,b100v150,2
+3,normal,100,2026-10-08T02:34:37Z,adservice,New size: 1; reason: All metrics below target,b100v0,2
+3,normal,100,2026-10-08T02:43:07Z,adservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v150,1
+3,normal,100,2026-10-08T02:44:37Z,adservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b100v150,1
+3,normal,100,2026-10-08T02:45:37Z,adservice,New size: 4; reason: All metrics below target,b100v150,1
+3,normal,100,2026-10-08T02:46:38Z,adservice,New size: 3; reason: All metrics below target,b100v150,1
+3,pairsX,100,2026-10-08T03:08:57Z,adservice,New size: 8; reason: cpu container resource utilization (percentage of request) above target,b100v150,2
+3,pairsX,100,2026-10-08T03:10:27Z,adservice,New size: 7; reason: All metrics below target,b100v150,2
+3,pairsX,100,2026-10-08T03:11:12Z,adservice,New size: 6; reason: All metrics below target,b100v150,2
+3,pairsX,100,2026-10-08T03:12:13Z,adservice,New size: 3; reason: All metrics below target,b100v150,2
+3,pairsX,100,2026-10-08T03:13:13Z,adservice,New size: 2; reason: All metrics below target,b100v150,2
+3,pairsX,100,2026-10-08T03:28:34Z,adservice,New size: 1; reason: All metrics below target,b100v0,2
+3,pairsX,100,2026-10-08T03:35:15Z,adservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v150,1
+3,pairsX,100,2026-10-08T03:38:45Z,adservice,New size: 2; reason: All metrics below target,b100v150,1
+3,pairsX,100,2026-10-08T03:52:38Z,adservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+3,pairsX,100,2026-10-08T03:54:08Z,adservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
+3,pairsX,100,2026-10-08T03:55:38Z,adservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v100,1
