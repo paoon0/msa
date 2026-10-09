@@ -61,6 +61,14 @@ GRPC_RESOLVE_EVERY=${GRPC_RESOLVE_EVERY:-30}
 LB_IMG_FRONTEND=${LB_IMG_FRONTEND:-mizuki0118/mygo:frontend-lb}
 LB_IMG_CHECKOUT=${LB_IMG_CHECKOUT:-mizuki0118/mygo:checkout-lb}
 LB_IMG_RECO=${LB_IMG_RECO:-mizuki0118/mygo:reco-lb}
+# マシンを休ませる設定 (2026-10-09 追加。既定は 0/空 = 従来どおり休みなし)
+#   前回 (10/07) は CPU 温度が最高 95℃ に達した。各点の前に coretemp の最高値が COOL_TEMP 以下になるまで待ち
+#   (最長 COOL_MAX_WAIT 秒)、点の後・台数ブロックの後・サイクルの後に休む。各点を同じくらいの温度から始める意味もある
+REST_POINT=${REST_POINT:-0}
+REST_BLOCK=${REST_BLOCK:-0}
+REST_CYCLE=${REST_CYCLE:-0}
+COOL_TEMP=${COOL_TEMP:-""}
+COOL_MAX_WAIT=${COOL_MAX_WAIT:-600}
 CSV=${CSV:-$DIR/results-mix-cpu.csv}
 SERIES=${SERIES:-${CSV%.csv}-series.csv}
 LOG=${LOG:-${CSV%.csv}.log}
@@ -68,7 +76,7 @@ PROM="http://prometheus-grafana-kube-pr-prometheus.monitoring.svc:9090"
 ROLLOUT=300s
 
 exec > >(tee -a "$LOG") 2>&1
-echo "================ MEASURE-MIX-CPU START $(date -Is) points=[$POINTS] replicas=[$REPLICAS] cycles=$CYCLES warm=${WARM}s meas=${MEAS}s prewarm=${PREWARM}s@$PREWARM_POINT limits=[${LIMIT_OVERRIDE:-マニフェスト}] requests=[${REQUEST_OVERRIDE:-マニフェスト}] grpc_lb=$GRPC_LB (HPA無し) ================"
+echo "================ MEASURE-MIX-CPU START $(date -Is) points=[$POINTS] replicas=[$REPLICAS] cycles=$CYCLES warm=${WARM}s meas=${MEAS}s prewarm=${PREWARM}s@$PREWARM_POINT limits=[${LIMIT_OVERRIDE:-マニフェスト}] requests=[${REQUEST_OVERRIDE:-マニフェスト}] grpc_lb=$GRPC_LB rest=${REST_POINT}/${REST_BLOCK}/${REST_CYCLE}s cool=${COOL_TEMP:-なし}℃ (HPA無し) ================"
 
 # 点の名前 → "buy view"
 parse_point(){ local p=$1 b=0 v=0
@@ -136,6 +144,18 @@ deploy(){ local reps=$1
   fi
 }
 
+# CPU (coretemp) の最高温度 [℃]。取れなければ空
+cpu_temp(){ local m=0 f v; for f in /sys/class/hwmon/hwmon*/; do [ "$(cat ${f}name 2>/dev/null)" = coretemp ] || continue
+  for v in $(cat ${f}temp*_input 2>/dev/null); do [ $(( v / 1000 )) -gt $m ] && m=$(( v / 1000 )); done; done
+  [ $m -gt 0 ] && echo $m; }
+cool_down(){ [ -z "$COOL_TEMP" ] && return; local t0=$(date +%s) t
+  while :; do t=$(cpu_temp); [ -z "$t" ] && { echo "  (温度が読めないので冷却待ちなし)"; return; }
+    [ "$t" -le "$COOL_TEMP" ] && break
+    [ $(( $(date +%s) - t0 )) -ge "$COOL_MAX_WAIT" ] && { echo "  !! 冷却待ちが上限 ${COOL_MAX_WAIT}s に達した (${t}℃) のまま開始"; break; }
+    sleep 10; done
+  echo "  冷却待ち $(( $(date +%s) - t0 ))s → ${t}℃"; }
+rest(){ [ "${1:-0}" -gt 0 ] && { echo "  休憩 ${1}s ($2)"; sleep "$1"; }; return 0; }
+
 run_point(){ local cyc=$1 pt=$2 reps=$3 bv b v
   bv=$(parse_point "$pt"); b=${bv% *}; v=${bv#* }
   echo "==== [cyc$cyc][×${reps}台] $pt (buy=$b view=$v 周/秒) $(date -Is) ===="
@@ -174,8 +194,10 @@ for c in $(seq 1 $CYCLES); do
   if [ $(( c % 2 )) = 1 ]; then order=$REPLICAS; else order=$(echo $REPLICAS | tr ' ' '\n' | tac | tr '\n' ' '); fi
   for n in $order; do
     deploy "$n"
-    for p in $(echo $POINTS | tr ' ' '\n' | shuf); do run_point "$c" "$p" "$n"; done
+    for p in $(echo $POINTS | tr ' ' '\n' | shuf); do cool_down; run_point "$c" "$p" "$n"; rest $REST_POINT 点の後; done
+    rest $REST_BLOCK 台数ブロックの後
   done
+  [ "$c" -lt "$CYCLES" ] && rest $REST_CYCLE サイクルの後
 done
 kubectl delete job k6load -n $NS --ignore-not-found >/dev/null 2>&1
 echo "================ MEASURE-MIX-CPU DONE $(date -Is) ================"
