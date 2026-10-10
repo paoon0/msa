@@ -1,0 +1,65 @@
+================ MEASURE-MIX-CPU START 2026-10-09T17:57:35+09:00 points=[v300 b25v300 b50v300] replicas=[1] cycles=1 warm=30s meas=90s prewarm=30s@b100 limits=[frontend=3000m productcatalogservice=3000m adservice=1000m] requests=[マニフェスト] grpc_lb=1 rest=10/0/0s cool=70℃ (HPA無し) ================
+################ CYCLE 1 / 1 2026-10-09T17:57:38+09:00 ################
+---- deploy 分離 (固定1台, HPA無し) ----
+  limits 上書き: frontend cpu=3000m (requests はそのまま)
+  limits 上書き: productcatalogservice cpu=3000m (requests はそのまま)
+  limits 上書き: adservice cpu=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+  枠(req/上限lim): adservice=server:300m/1, cartservice=server:560m/960m, checkoutservice=checkout:800m/1200m, currencyservice=server:800m/1600m, emailservice=email:200m/300m, frontend=server:1/3, paymentservice=payment:200m/300m, productcatalogservice=server:600m/3, recommendationservice=server:1200m/1600m, redis-cart=redis:300m/500m, shippingservice=server:320m/560m, 
+  慣らし負荷 30s (b100, 結果は捨てる)
+  冷却待ち 0s → 49℃
+==== [cyc1][×1台] v300 (buy=0 view=300 周/秒) 2026-10-09T18:01:18+09:00 ====
+  -> buy 0.0/0 view 300.0/300 周/秒  取りこぼし(窓) buy=0 view=0  p50 buy=0 view=5 ms  ノード=2.82 コア  周波数=2.878 GHz  最高温度=84.0℃
+     deploy                   container       Pod      使用m     上限m     絞り%
+     frontend                 server            1    724.0    3000     0.0
+     recommendationservice    server            1    488.7    1600     0.0
+     productcatalogservice    server            1    415.9    3000     0.0
+     currencyservice          server            1    311.6    1600     0.0
+     cartservice              server            1    155.4     960     0.0
+     k6load                   k6                1    130.6    2000     0.0
+     adservice                server            1     93.0    1000     0.0
+     redis-cart               redis             1     16.7     500     0.0
+     checkoutservice          checkout          1      1.0    1200     0.0
+     emailservice             email             1      0.7     300     0.0
+     paymentservice           payment           1      0.2     300     0.0
+     shippingservice          server            1      0.2     560     0.0
+  休憩 10s (点の後)
+  冷却待ち 0s → 45℃
+==== [cyc1][×1台] b50v300 (buy=50 view=300 周/秒) 2026-10-09T18:03:51+09:00 ====
+  -> buy 50.0/50 view 300.0/300 周/秒  取りこぼし(窓) buy=0 view=0  p50 buy=7 view=5 ms  ノード=4.18 コア  周波数=3.048 GHz  最高温度=80.0℃
+     deploy                   container       Pod      使用m     上限m     絞り%
+     frontend                 server            1   1073.1    3000     0.0
+     recommendationservice    server            1    719.6    1600     0.0
+     productcatalogservice    server            1    610.9    3000     0.0
+     currencyservice          server            1    476.8    1600     0.0
+     cartservice              server            1    274.3     960     0.0
+     k6load                   k6                1    196.1    2000     0.0
+     checkoutservice          checkout          1    124.9    1200     0.0
+     adservice                server            1    108.6    1000     0.0
+     shippingservice          server            1     52.5     560     0.0
+     emailservice             email             1     49.8     300     0.0
+     paymentservice           payment           1     35.5     300     0.0
+     redis-cart               redis             1     30.0     500     0.0
+  休憩 10s (点の後)
+  冷却待ち 10s → 46℃
+==== [cyc1][×1台] b25v300 (buy=25 view=300 周/秒) 2026-10-09T18:06:33+09:00 ====
+  -> buy 25.0/25 view 300.0/300 周/秒  取りこぼし(窓) buy=0 view=0  p50 buy=6 view=5 ms  ノード=3.47 コア  周波数=3.226 GHz  最高温度=85.0℃
+     deploy                   container       Pod      使用m     上限m     絞り%
+     frontend                 server            1    893.4    3000     0.0
+     recommendationservice    server            1    601.9    1600     0.0
+     productcatalogservice    server            1    509.7    3000     0.0
+     currencyservice          server            1    391.3    1600     0.0
+     cartservice              server            1    206.7     960     0.0
+     k6load                   k6                1    162.0    2000     0.0
+     adservice                server            1     97.5    1000     0.0
+     checkoutservice          checkout          1     64.3    1200     0.0
+     shippingservice          server            1     26.8     560     0.0
+     emailservice             email             1     25.2     300     0.0
+     redis-cart               redis             1     23.9     500     0.0
+     paymentservice           payment           1     20.0     300     0.0
+  休憩 10s (点の後)
+================ MEASURE-MIX-CPU DONE 2026-10-09T18:09:06+09:00 ================
