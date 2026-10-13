@@ -271,11 +271,13 @@ apply_arm(){ local arm=$1
     pairsY2) apply_normal_except productcatalogservice emailservice paymentservice recommendationservice frontend shippingservice
              kubectl apply -f $DIR/manifests/pairsY2.yaml -n $NS >/dev/null ;;
     # --- 2026-10-13 追加: ペア距離実験 (P の近さ)。中身は manifests/pairsP*.yaml の冒頭コメント ---
-    pairsP1) apply_normal_except frontend recommendationservice paymentservice emailservice currencyservice shippingservice
+    pairsP1) apply_normal_except frontend adservice checkoutservice shippingservice productcatalogservice recommendationservice
              kubectl apply -f $DIR/manifests/pairsP1.yaml -n $NS >/dev/null ;;
-    pairsP2) apply_normal_except frontend paymentservice recommendationservice emailservice
+    #   pairsP2: normal/cartservice.yaml は redis-cart も含むので、cartservice を外すと redis-cart も消える → redis-cart.yaml を別途 apply (frontcart と同じ)
+    pairsP2) apply_normal_except frontend cartservice productcatalogservice checkoutservice
+             kubectl apply -f $DIR/manifests/redis-cart.yaml -n $NS >/dev/null
              kubectl apply -f $DIR/manifests/pairsP2.yaml -n $NS >/dev/null ;;
-    pairsP3) apply_normal_except frontend productcatalogservice checkoutservice shippingservice
+    pairsP3) apply_normal_except frontend productcatalogservice checkoutservice currencyservice
              kubectl apply -f $DIR/manifests/pairsP3.yaml -n $NS >/dev/null ;;
     mega)         # 全部入り: 11サービスを1Podに同居(km2/variants/all/all.yaml)。
                   kubectl apply -f $REPO/km2/variants/all/all.yaml -n $NS >/dev/null

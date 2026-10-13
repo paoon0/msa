@@ -78,6 +78,9 @@ CONTAINER_TO_SERVICE = {
     'payment':        ('paymentservice', 'payment'),
     'redis':          ('redis-cart', 'redis'),
     'shipping':       ('shippingservice', 'server'),   # 2026-10-08: frontend+shipping 同居 (pairsY2) の相乗り側
+    # 2026-10-13 (pdist, pairsP1/P3): frontend+ad / checkout+currency の相乗り側
+    'ad':             ('adservice', 'server'),
+    'currency':       ('currencyservice', 'server'),
 }
 
 req = {}

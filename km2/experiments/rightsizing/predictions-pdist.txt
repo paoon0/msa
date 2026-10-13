@@ -1,0 +1,64 @@
+事前予測 (枠 rightsize-pdist.csv、θ=0.50 基準 b50v150。点に b50v250 があればそれは内挿)
+pair               arm      point    開始  n_s n_t n_st  引きずり 引きずられた側  Δn  損[m]  u1_s  u1_t  R1    flag
+front+ad           pairsP1  b100v0     1    1   1    1  なし     -                0      0  0.53  0.28  損なし  
+front+ad           pairsP1  b100v0     2    1   1    1  なし     -                0      0  0.53  0.28  損なし  
+front+ad           pairsP1  b50v150    1    1   1    1  なし     -                0      0  0.50  0.50  損なし  
+front+ad           pairsP1  b50v150    2    1   1    1  なし     -                0      0  0.50  0.50  損なし  
+front+ad           pairsP1  b50v300    1    1   2    2  あり     front            1   1431  0.74  0.89  損なし  
+front+ad           pairsP1  b50v300    2    2   2    2  なし     -                0      0  0.74  0.89  損なし  
+checkout+shipping  pairsP1  b100v0     1    2   2    2  なし     -                0      0  0.96  0.99  損なし  
+checkout+shipping  pairsP1  b100v0     2    2   2    2  なし     -                0      0  0.96  0.99  損なし  
+checkout+shipping  pairsP1  b50v150    1    1   1    1  なし     -                0      0  0.50  0.50  損なし  
+checkout+shipping  pairsP1  b50v150    2    1   1    1  なし     -                0      0  0.50  0.50  損なし  
+checkout+shipping  pairsP1  b50v300    1    1   1    1  なし     -                0      0  0.53  0.54  損なし  
+checkout+shipping  pairsP1  b50v300    2    1   1    1  なし     -                0      0  0.53  0.54  損なし  
+catalog+reco       pairsP1  b100v0     1    1   1    1  なし     -                0      0  0.53  0.51  損なし  
+catalog+reco       pairsP1  b100v0     2    1   1    1  なし     -                0      0  0.53  0.51  損なし  
+catalog+reco       pairsP1  b50v150    1    1   1    1  なし     -                0      0  0.50  0.50  損なし  
+catalog+reco       pairsP1  b50v150    2    1   1    1  なし     -                0      0  0.50  0.50  損なし  
+catalog+reco       pairsP1  b50v300    1    1   1    1  なし     -                0      0  0.72  0.76  損なし  
+catalog+reco       pairsP1  b50v300    2    2   2    2  なし     -                0      0  0.72  0.76  損なし  
+front+cart         pairsP2  b100v0     1    1   1    1  なし     -                0      0  0.53  0.70  損なし  
+front+cart         pairsP2  b100v0     2    1   2    2  あり     front            1   1431  0.53  0.70  損なし  
+front+cart         pairsP2  b50v150    1    1   1    1  なし     -                0      0  0.50  0.50  損なし  
+front+cart         pairsP2  b50v150    2    1   1    1  なし     -                0      0  0.50  0.50  損なし  
+front+cart         pairsP2  b50v300    1    1   1    1  なし     -                0      0  0.74  0.72  損なし  
+front+cart         pairsP2  b50v300    2    2   2    2  なし     -                0      0  0.74  0.72  損なし  
+catalog+checkout   pairsP2  b100v0     1    1   2    2  あり     catalog          1    829  0.53  0.96  損あり  
+catalog+checkout   pairsP2  b100v0     2    1   2    2  あり     catalog          1    829  0.53  0.96  損あり  
+catalog+checkout   pairsP2  b50v150    1    1   1    1  なし     -                0      0  0.50  0.50  損なし  
+catalog+checkout   pairsP2  b50v150    2    1   1    1  なし     -                0      0  0.50  0.50  損なし  
+catalog+checkout   pairsP2  b50v300    1    1   1    1  なし     -                0      0  0.72  0.53  損なし  
+catalog+checkout   pairsP2  b50v300    2    2   1    2  あり     checkout         1    234  0.72  0.53  損なし  
+front+catalog      pairsP3  b100v0     1    1   1    1  なし     -                0      0  0.53  0.53  損なし  
+front+catalog      pairsP3  b100v0     2    1   1    1  なし     -                0      0  0.53  0.53  損なし  
+front+catalog      pairsP3  b50v150    1    1   1    1  なし     -                0      0  0.50  0.50  損なし  
+front+catalog      pairsP3  b50v150    2    1   1    1  なし     -                0      0  0.50  0.50  損なし  
+front+catalog      pairsP3  b50v300    1    1   1    1  なし     -                0      0  0.74  0.72  損なし  
+front+catalog      pairsP3  b50v300    2    2   2    2  なし     -                0      0  0.74  0.72  損なし  
+currency+checkout  pairsP3  b100v0     1    1   2    2  あり     currency         1    661  0.59  0.96  損あり  
+currency+checkout  pairsP3  b100v0     2    1   2    2  あり     currency         1    661  0.59  0.96  損あり  
+currency+checkout  pairsP3  b50v150    1    1   1    1  なし     -                0      0  0.50  0.50  損なし  
+currency+checkout  pairsP3  b50v150    2    1   1    1  なし     -                0      0  0.50  0.50  損なし  
+currency+checkout  pairsP3  b50v300    1    1   1    1  なし     -                0      0  0.71  0.53  損なし  
+currency+checkout  pairsP3  b50v300    2    2   1    2  あり     checkout         1    234  0.71  0.53  損なし  
+
+予測と R1 が食い違うセル (識別セル):
+  front+ad b50v300 開始1: 予測 引きずりあり / R1 損なし
+  front+cart b100v0 開始2: 予測 引きずりあり / R1 損なし
+  catalog+checkout b50v300 開始2: 予測 引きずりあり / R1 損なし
+  currency+checkout b50v300 開始2: 予測 引きずりあり / R1 損なし
+
+ワークロード成分ごとの近さ M_W (1 台、P は b50v150 で正規化。ln(0.77/0.50) = 0.43 が 1 台→2 台の境目の目安)
+  買い寄り (view/buy≤1): b100 b100v75 b25 b50 b75 b75v75
+  中間 (1<view/buy≤3): b100v150 b25v75 b50v150 b50v75 b75v150
+  見る寄り (view/buy>3): b25v150 b25v300 b50v300
+  全域 (buy>0): b100 b100v150 b100v75 b25 b25v150 b25v300 b25v75 b50 b50v150 b50v300 b50v75 b75 b75v150 b75v75
+pair                 買い寄り (   中間 (1<   見る寄り (   全域 (bu
+front+ad               0.83     0.23     0.23     0.83
+checkout+shipping      0.03     0.06     0.02     0.06
+catalog+reco           0.11     0.03     0.06     0.11
+front+cart             0.28     0.14     0.08     0.28
+catalog+checkout       0.62     0.30     0.81     0.81
+front+catalog          0.03     0.02     0.03     0.03
+currency+checkout      0.49     0.29     0.77     0.77

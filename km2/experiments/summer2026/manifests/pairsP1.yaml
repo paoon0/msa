@@ -1,17 +1,19 @@
-# pairsP1: ペア距離実験 (P の近さ) の第1配置 (2026-10-13 作成)。3 Pod を同時に同居させる。
-#   frontend        + recommendationservice  (frontend → reco は localhost:8090 = 実辺あり)
-#   paymentservice  + emailservice           (辺なしペア)
-#   currencyservice + shippingservice        (辺なしペア)
-# 束ねていない checkoutservice / cartservice(+redis-cart) / productcatalogservice / adservice は km2/normal のまま (bundle-vs-loss2.sh の apply_arm が別途 apply)。
+# pairsP1: ペア距離実験 (P の近さ) の第1配置 (2026-10-13 作成、同日ペア入替で全面改訂)。3 Pod を同時に同居させる。
+#   frontend            + adservice              (frontend → ad は localhost:9555 = 実辺あり)
+#   checkoutservice     + shippingservice        (checkout → shipping は localhost:50051 = 実辺あり)
+#   productcatalogservice + recommendationservice (reco → catalog は localhost:3550 = 実辺あり。pairsX.yaml と同じブロック)
+# 束ねていない cartservice(+redis-cart) / currencyservice / paymentservice / emailservice は km2/normal のまま (bundle-vs-loss2.sh の apply_arm が別途 apply)。
 # Deployment 名とコンテナ名 (枠の置換 apply_rightsize.py / sample_hpa.py と整合):
-#   Deployment frontend       : コンテナ server(frontend:8080) / recommendation(reco:8090 に remap)
-#   Deployment paymentservice : コンテナ payment(50051) / email(8080。Service は 5000→8080)
-#   Deployment currencyservice: コンテナ server(currency:7000) / shipping(50051)
-# 吸収される側の Service (recommendationservice / emailservice / shippingservice) は同居 Pod のラベルを向ける。
-#   recommendationservice は port 8080 のまま targetPort 8090 (frontreco.yaml と同じ。数値の targetPort なので grpc_lb_patch.py も正しく書き換えられる)。
+#   Deployment frontend              : コンテナ server(frontend:8080) / ad(9555)
+#   Deployment checkoutservice       : コンテナ checkout(5050,metrics 9464) / shipping(50051)
+#   Deployment productcatalogservice : コンテナ server(catalog:3550) / recommendation(reco:8080)
+#   ※ ad は apply_rightsize.py の CONTAINER_TO_SERVICE に 2026-10-13 追加 (ad → adservice/server)。
+# 吸収される側の Service (adservice / shippingservice / recommendationservice) は同居 Pod のラベルを向ける。
+#   frontend (別 Pod 含む) からの shippingservice:50051 は checkout Pod の shipping に着く (Service 経由のまま)。
+#   frontend → reco は recommendationservice:8080 のまま Service 経由で catalog Pod の reco に着く。
 # frontend-external (LoadBalancer) は作らない (k6 は frontend:80 を叩く)。
-# Pod 内ポート衝突なし: frontend 8080 / reco 8090 | payment 50051 / email 8080 | currency 7000 / shipping 50051。
-# localhost にしたのは frontend→reco の 1 本だけ (frontend→reco の remap 先 8090)。reco→catalog 等は Service 名のまま。
+# Pod 内ポート衝突なし: frontend 8080 / ad 9555 | checkout 5050,9464 / shipping 50051 | catalog 3550 / reco 8080。
+# localhost にしたのは frontend→ad / checkout→shipping / reco→catalog の 3 本。他の宛先は従来の Service 名のまま。
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -64,148 +66,86 @@ spec:
         - { name: PRODUCT_CATALOG_SERVICE_ADDR, value: "productcatalogservice:3550" }
         - { name: CURRENCY_SERVICE_ADDR, value: "currencyservice:7000" }
         - { name: CART_SERVICE_ADDR, value: "cartservice:7070" }
-        - { name: RECOMMENDATION_SERVICE_ADDR, value: "localhost:8090" }   # ← 同居先へ loopback
+        - { name: RECOMMENDATION_SERVICE_ADDR, value: "recommendationservice:8080" }
         - { name: SHIPPING_SERVICE_ADDR, value: "shippingservice:50051" }
         - { name: CHECKOUT_SERVICE_ADDR, value: "checkoutservice:5050" }
-        - { name: AD_SERVICE_ADDR, value: "adservice:9555" }
+        - { name: AD_SERVICE_ADDR, value: "localhost:9555" }   # ← 同居先へ loopback
         - { name: SHOPPING_ASSISTANT_SERVICE_ADDR, value: "shoppingassistantservice:80" }
         - { name: ENABLE_PROFILER, value: "0" }
         resources:
           requests: { cpu: 1000m, memory: 128Mi }
           limits:   { cpu: 1600m, memory: 256Mi }
 
-      - name: recommendation
+      - name: ad
         securityContext:
           allowPrivilegeEscalation: false
           capabilities: { drop: [ALL] }
           privileged: false
           readOnlyRootFilesystem: true
-        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice:v0.10.3
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3
         ports:
-        - containerPort: 8090
+        - containerPort: 9555
         readinessProbe:
-          periodSeconds: 5
-          grpc: { port: 8090 }
+          initialDelaySeconds: 20
+          periodSeconds: 15
+          grpc: { port: 9555 }
         livenessProbe:
+          initialDelaySeconds: 50
           periodSeconds: 30
-          grpc: { port: 8090 }
+          grpc: { port: 9555 }
         env:
-        - { name: PORT, value: "8090" }
+        - { name: PORT, value: "9555" }
+        resources:
+          requests: { cpu: 300m, memory: 100Mi }
+          limits:   { cpu: 500m, memory: 200Mi }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkoutservice
+  labels:
+    app: checkoutservice
+spec:
+  selector:
+    matchLabels:
+      app: checkoutservice
+  template:
+    metadata:
+      labels:
+        app: checkoutservice
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: checkoutservice
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: checkout
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: mizuki0118/mygo:bunpupaymail
+        ports:
+        - { name: grpc,    containerPort: 5050 }
+        - { name: metrics, containerPort: 9464 }
+        readinessProbe: { grpc: { port: 5050 } }
+        livenessProbe:  { grpc: { port: 5050 } }
+        env:
+        - { name: PORT, value: "5050" }
         - { name: PRODUCT_CATALOG_SERVICE_ADDR, value: "productcatalogservice:3550" }
-        - { name: DISABLE_PROFILER, value: "1" }
-        resources:
-          requests: { cpu: 1200m, memory: 220Mi }
-          limits:   { cpu: 1600m, memory: 450Mi }
-
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: paymentservice
-  labels:
-    app: paymentservice
-spec:
-  selector:
-    matchLabels:
-      app: paymentservice
-  template:
-    metadata:
-      labels:
-        app: paymentservice
-      annotations:
-        sidecar.istio.io/inject: "false"
-    spec:
-      serviceAccountName: paymentservice
-      terminationGracePeriodSeconds: 5
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
-      containers:
-      - name: payment
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities: { drop: [ALL] }
-          privileged: false
-          readOnlyRootFilesystem: true
-        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice:v0.10.3
-        ports:
-        - containerPort: 50051
-        readinessProbe: { grpc: { port: 50051 } }
-        livenessProbe:  { grpc: { port: 50051 } }
-        env:
-        - { name: PORT, value: "50051" }
-        - { name: DISABLE_PROFILER, value: "1" }
-        resources:
-          requests: { cpu: 200m, memory: 64Mi }
-          limits:   { cpu: 300m, memory: 128Mi }
-
-      - name: email
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities: { drop: [ALL] }
-          privileged: false
-          readOnlyRootFilesystem: true
-        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice:v0.10.3
-        ports:
-        - containerPort: 8080
-        readinessProbe:
-          periodSeconds: 5
-          grpc: { port: 8080 }
-        livenessProbe:
-          periodSeconds: 30
-          grpc: { port: 8080 }
-        env:
-        - { name: PORT, value: "8080" }
-        - { name: DISABLE_PROFILER, value: "1" }
-        resources:
-          requests: { cpu: 200m, memory: 64Mi }
-          limits:   { cpu: 300m, memory: 128Mi }
-
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: currencyservice
-  labels:
-    app: currencyservice
-spec:
-  selector:
-    matchLabels:
-      app: currencyservice
-  template:
-    metadata:
-      labels:
-        app: currencyservice
-      annotations:
-        sidecar.istio.io/inject: "false"
-    spec:
-      serviceAccountName: currencyservice
-      terminationGracePeriodSeconds: 5
-      securityContext:
-        fsGroup: 1000
-        runAsGroup: 1000
-        runAsNonRoot: true
-        runAsUser: 1000
-      containers:
-      - name: server
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities: { drop: [ALL] }
-          privileged: false
-          readOnlyRootFilesystem: true
-        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice:v0.10.3
-        ports:
-        - { name: grpc, containerPort: 7000 }
-        readinessProbe: { grpc: { port: 7000 } }
-        livenessProbe:  { grpc: { port: 7000 } }
-        env:
-        - { name: PORT, value: "7000" }
-        - { name: DISABLE_PROFILER, value: "1" }
+        - { name: SHIPPING_SERVICE_ADDR, value: "localhost:50051" }   # ← 同居先へ loopback
+        - { name: PAYMENT_SERVICE_ADDR, value: "paymentservice:50051" }
+        - { name: EMAIL_SERVICE_ADDR, value: "emailservice:5000" }
+        - { name: CURRENCY_SERVICE_ADDR, value: "currencyservice:7000" }
+        - { name: CART_SERVICE_ADDR, value: "cartservice:7070" }
         resources:
           requests: { cpu: 800m, memory: 64Mi }
-          limits:   { cpu: 1600m, memory: 128Mi }
+          limits:   { cpu: 1200m, memory: 128Mi }
 
       - name: shipping
         securityContext:
@@ -228,6 +168,72 @@ spec:
           requests: { cpu: 320m, memory: 64Mi }
           limits:   { cpu: 560m, memory: 128Mi }
 ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productcatalogservice
+  labels:
+    app: productcatalogservice
+spec:
+  selector:
+    matchLabels:
+      app: productcatalogservice
+  template:
+    metadata:
+      labels:
+        app: productcatalogservice
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: productcatalogservice
+      terminationGracePeriodSeconds: 5
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: server
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice:v0.10.3
+        ports:
+        - containerPort: 3550
+        readinessProbe: { grpc: { port: 3550 } }
+        livenessProbe:  { grpc: { port: 3550 } }
+        env:
+        - { name: PORT, value: "3550" }
+        - { name: DISABLE_PROFILER, value: "1" }
+        resources:
+          requests: { cpu: 600m, memory: 64Mi }
+          limits:   { cpu: 1000m, memory: 128Mi }
+
+      - name: recommendation
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice:v0.10.3
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          periodSeconds: 5
+          grpc: { port: 8080 }
+        livenessProbe:
+          periodSeconds: 30
+          grpc: { port: 8080 }
+        env:
+        - { name: PORT, value: "8080" }
+        - { name: PRODUCT_CATALOG_SERVICE_ADDR, value: "localhost:3550" }   # ← 同居先へ loopback
+        - { name: DISABLE_PROFILER, value: "1" }
+        resources:
+          requests: { cpu: 1200m, memory: 220Mi }
+          limits:   { cpu: 1600m, memory: 450Mi }
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -242,46 +248,25 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: recommendationservice
-  labels: { app: recommendationservice }
+  name: adservice
+  labels: { app: adservice }
 spec:
   type: ClusterIP
   selector: { app: frontend }
   ports:
-  - { name: grpc, port: 8080, targetPort: 8090 }
+  - { name: grpc, port: 9555, targetPort: 9555 }
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: paymentservice
-  labels: { app: paymentservice }
+  name: checkoutservice
+  labels: { app: checkoutservice }
 spec:
   type: ClusterIP
-  selector: { app: paymentservice }
+  selector: { app: checkoutservice }
   ports:
-  - { name: grpc, port: 50051, targetPort: 50051 }
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: emailservice
-  labels: { app: emailservice }
-spec:
-  type: ClusterIP
-  selector: { app: paymentservice }
-  ports:
-  - { name: grpc, port: 5000, targetPort: 8080 }
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: currencyservice
-  labels: { app: currencyservice }
-spec:
-  type: ClusterIP
-  selector: { app: currencyservice }
-  ports:
-  - { name: grpc, port: 7000, targetPort: 7000 }
+  - { name: grpc, port: 5050, targetPort: 5050 }
+  - { name: metrics, port: 9464, targetPort: 9464 }
 ---
 apiVersion: v1
 kind: Service
@@ -290,9 +275,31 @@ metadata:
   labels: { app: shippingservice }
 spec:
   type: ClusterIP
-  selector: { app: currencyservice }
+  selector: { app: checkoutservice }
   ports:
   - { name: grpc, port: 50051, targetPort: 50051 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: productcatalogservice
+  labels: { app: productcatalogservice }
+spec:
+  type: ClusterIP
+  selector: { app: productcatalogservice }
+  ports:
+  - { name: grpc, port: 3550, targetPort: 3550 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: recommendationservice
+  labels: { app: recommendationservice }
+spec:
+  type: ClusterIP
+  selector: { app: productcatalogservice }
+  ports:
+  - { name: grpc, port: 8080, targetPort: 8080 }
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -300,20 +307,20 @@ metadata: { name: frontend }
 ---
 apiVersion: v1
 kind: ServiceAccount
-metadata: { name: recommendationservice }
+metadata: { name: adservice }
 ---
 apiVersion: v1
 kind: ServiceAccount
-metadata: { name: paymentservice }
----
-apiVersion: v1
-kind: ServiceAccount
-metadata: { name: emailservice }
----
-apiVersion: v1
-kind: ServiceAccount
-metadata: { name: currencyservice }
+metadata: { name: checkoutservice }
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata: { name: shippingservice }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: productcatalogservice }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: recommendationservice }
