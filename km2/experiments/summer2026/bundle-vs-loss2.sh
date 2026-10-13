@@ -23,7 +23,7 @@
 #                          point,start_replicas 列 (results には start_ok,frames_ok も) が増える。
 #   POINTS / STARTS / SHUFFLE_POINTS / SHUFFLE_SEED / ROTATE_ARMS / POINT_SETTLE / POINT_READY_TIMEOUT
 #   RS_STRICT / CHECK_FRAMES / LIMIT_OVERRIDE ... 枠の置換の取り違え防止と、コンテナ単位の limits 上書き
-#   アーム pairsX / pairsY / pairsY2 ... manifests/pairs*.yaml (3 Pod 同時に同居)
+#   アーム pairsX / pairsY / pairsY2 / pairsP1 / pairsP2 / pairsP3 ... manifests/pairs*.yaml (pairsX/Y/Y2/P1 は 3 Pod、P2/P3 は 2 Pod 同時に同居)
 #   各変数の意味は下の変数定義のコメントを見ること。
 #
 # 出力:
@@ -92,6 +92,20 @@ LB_IMG_RECO=${LB_IMG_RECO:-mizuki0118/mygo:reco-lb}
 # 休憩中は負荷が無いので、その間にノードが冷える。
 REST_ARM=${REST_ARM:-0}
 REST_CYCLE=${REST_CYCLE:-0}
+# 【2026-10-13 追加】点ごとの冷却待ち (RESET_EACH_POINT=1 のときだけ効く)。各点のリセットの前に、
+#   CPU (coretemp) の最高温度が COOL_TEMP [℃] 以下になるまで待つ (最長 COOL_MAX_WAIT 秒)。
+#   rightsizing/measure-mix-cpu.sh と同じ規則。既定は空 = 待たない (従来どおり)。
+COOL_TEMP=${COOL_TEMP:-""}
+COOL_MAX_WAIT=${COOL_MAX_WAIT:-600}
+cpu_temp(){ local m=0 f v; for f in /sys/class/hwmon/hwmon*/; do [ "$(cat ${f}name 2>/dev/null)" = coretemp ] || continue
+  for v in $(cat ${f}temp*_input 2>/dev/null); do [ $(( v / 1000 )) -gt $m ] && m=$(( v / 1000 )); done; done
+  [ $m -gt 0 ] && echo $m; }
+cool_down(){ [ -z "$COOL_TEMP" ] && return; local t0=$(date +%s) t
+  while :; do t=$(cpu_temp); [ -z "$t" ] && { echo "  (温度が読めないので冷却待ちなし)"; return; }
+    [ "$t" -le "$COOL_TEMP" ] && break
+    [ $(( $(date +%s) - t0 )) -ge "$COOL_MAX_WAIT" ] && { echo "  !! 冷却待ちが上限 ${COOL_MAX_WAIT}s に達した (${t}℃) のまま開始"; break; }
+    sleep 10; done
+  echo "  冷却待ち $(( $(date +%s) - t0 ))s → ${t}℃"; }
 FIXED_REPLICAS=${FIXED_REPLICAS:-0}
 UNIFORM_REQ_M=${UNIFORM_REQ_M:-0}
 # recommendationservice の readiness/liveness プローブの timeoutSeconds を上書きする(0=マニフェストのまま)。
@@ -138,7 +152,7 @@ ROLLOUT=300s
 
 exec > >(tee -a "$LOG") 2>&1
 echo "================ BUNDLE-VS-LOSS2 START $(date -Is) arms=[$ARMS] rates=[$RATES] cycles=$CYCLES HPA=${HPA_TARGET}%/${HPA_MIN}-${HPA_MAX}台 warm=${WARM}s meas=${MEAS}s browse=${BROWSE_RATE}周/s sample=${SAMPLE}s 様子見=増${SU_WIN}s/減${SD_WIN}s 開始${PRESCALE}台 rightsize=${RIGHTSIZE} limit_x=${LIMIT_X} grpc_lb=${GRPC_LB} ================"
-[ "$RESET_EACH_POINT" = 1 ] && echo "  点ごとリセット: points=[$POINTS] starts=[$STARTS] shuffle=$SHUFFLE_POINTS(seed $SHUFFLE_SEED) rotate_arms=$ROTATE_ARMS settle=${POINT_SETTLE}s ready_timeout=${POINT_READY_TIMEOUT}s rs_strict=$RS_STRICT check_frames=$CHECK_FRAMES limit_override=[${LIMIT_OVERRIDE}] rs_services=[${RS_SERVICES}]"
+[ "$RESET_EACH_POINT" = 1 ] && echo "  点ごとリセット: points=[$POINTS] starts=[$STARTS] shuffle=$SHUFFLE_POINTS(seed $SHUFFLE_SEED) rotate_arms=$ROTATE_ARMS settle=${POINT_SETTLE}s ready_timeout=${POINT_READY_TIMEOUT}s rs_strict=$RS_STRICT check_frames=$CHECK_FRAMES limit_override=[${LIMIT_OVERRIDE}] rs_services=[${RS_SERVICES}] cool=${COOL_TEMP:-なし}℃"
 
 # 点の名前 → "購入型 閲覧型" (rightsizing/measure-mix-cpu.sh の parse_point と同じ規則)。b100 / v200 / b100v150。
 parse_point(){ local p=$1 b=0 v=0
@@ -256,6 +270,13 @@ apply_arm(){ local arm=$1
              kubectl apply -f $DIR/manifests/pairsY.yaml -n $NS >/dev/null ;;
     pairsY2) apply_normal_except productcatalogservice emailservice paymentservice recommendationservice frontend shippingservice
              kubectl apply -f $DIR/manifests/pairsY2.yaml -n $NS >/dev/null ;;
+    # --- 2026-10-13 追加: ペア距離実験 (P の近さ)。中身は manifests/pairsP*.yaml の冒頭コメント ---
+    pairsP1) apply_normal_except frontend recommendationservice paymentservice emailservice currencyservice shippingservice
+             kubectl apply -f $DIR/manifests/pairsP1.yaml -n $NS >/dev/null ;;
+    pairsP2) apply_normal_except frontend paymentservice recommendationservice emailservice
+             kubectl apply -f $DIR/manifests/pairsP2.yaml -n $NS >/dev/null ;;
+    pairsP3) apply_normal_except frontend productcatalogservice checkoutservice shippingservice
+             kubectl apply -f $DIR/manifests/pairsP3.yaml -n $NS >/dev/null ;;
     mega)         # 全部入り: 11サービスを1Podに同居(km2/variants/all/all.yaml)。
                   kubectl apply -f $REPO/km2/variants/all/all.yaml -n $NS >/dev/null
                   if [ "$MEGA_REDIS" = shared ]; then
@@ -567,6 +588,7 @@ for c in $(seq $CYC_START $(( CYC_START + CYCLES - 1 ))); do
       combos=$(order_points "$c"); echo "  [cyc$c][$arm] 点×開始台数の順番: $combos"
       for combo in $combos; do
         pt=${combo%%:*}; n0=${combo##*:}; bv=$(parse_point "$pt")
+        cool_down
         reset_point "$arm" "$n0" "$pt" || { echo "  (この点は記録なし: cyc=$c arm=$arm point=$pt start=$n0)"; continue; }
         run_rate "$arm" "${bv% *}" "$c" "${bv#* }" "$pt" "$n0"
       done

@@ -1,0 +1,222 @@
+# pairsP2: ペア距離実験 (P の近さ) の第2配置 (2026-10-13 作成)。2 Pod を同時に同居させる。
+#   frontend              + paymentservice  (直接の辺なし。checkout が payment を呼ぶ)
+#   recommendationservice + emailservice    (辺なしペア)
+# 束ねていない checkoutservice / cartservice(+redis-cart) / productcatalogservice / currencyservice / shippingservice / adservice は km2/normal のまま。
+# Deployment 名とコンテナ名 (枠の置換 apply_rightsize.py / sample_hpa.py と整合):
+#   Deployment frontend              : コンテナ server(frontend:8080) / payment(50051)
+#   Deployment recommendationservice : コンテナ server(reco:8080) / email(8081 に remap。Service は 5000→8081)
+# 吸収される側の Service (paymentservice / emailservice) は同居 Pod のラベルを向ける。
+#   checkout (別 Pod) からの paymentservice:50051 は frontend Pod に着く、emailservice:5000 は reco Pod の 8081 に着く。
+# frontend-external (LoadBalancer) は作らない (k6 は frontend:80 を叩く)。
+# Pod 内ポート衝突なし: frontend 8080 / payment 50051 | reco 8080 / email 8081 (frontemail.yaml と同じ 8081 remap)。
+# localhost にした辺は無い (両ペアとも直接の辺なし)。
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: frontend
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: server
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend:v0.10.3
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          initialDelaySeconds: 10
+          httpGet:
+            path: "/_healthz"
+            port: 8080
+            httpHeaders:
+            - { name: "Cookie", value: "shop_session-id=x-readiness-probe" }
+        livenessProbe:
+          initialDelaySeconds: 10
+          httpGet:
+            path: "/_healthz"
+            port: 8080
+            httpHeaders:
+            - { name: "Cookie", value: "shop_session-id=x-liveness-probe" }
+        env:
+        - { name: PORT, value: "8080" }
+        - { name: PRODUCT_CATALOG_SERVICE_ADDR, value: "productcatalogservice:3550" }
+        - { name: CURRENCY_SERVICE_ADDR, value: "currencyservice:7000" }
+        - { name: CART_SERVICE_ADDR, value: "cartservice:7070" }
+        - { name: RECOMMENDATION_SERVICE_ADDR, value: "recommendationservice:8080" }
+        - { name: SHIPPING_SERVICE_ADDR, value: "shippingservice:50051" }
+        - { name: CHECKOUT_SERVICE_ADDR, value: "checkoutservice:5050" }
+        - { name: AD_SERVICE_ADDR, value: "adservice:9555" }
+        - { name: SHOPPING_ASSISTANT_SERVICE_ADDR, value: "shoppingassistantservice:80" }
+        - { name: ENABLE_PROFILER, value: "0" }
+        resources:
+          requests: { cpu: 1000m, memory: 128Mi }
+          limits:   { cpu: 1600m, memory: 256Mi }
+
+      - name: payment
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice:v0.10.3
+        ports:
+        - containerPort: 50051
+        readinessProbe: { grpc: { port: 50051 } }
+        livenessProbe:  { grpc: { port: 50051 } }
+        env:
+        - { name: PORT, value: "50051" }
+        - { name: DISABLE_PROFILER, value: "1" }
+        resources:
+          requests: { cpu: 200m, memory: 64Mi }
+          limits:   { cpu: 300m, memory: 128Mi }
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendationservice
+  labels:
+    app: recommendationservice
+spec:
+  selector:
+    matchLabels:
+      app: recommendationservice
+  template:
+    metadata:
+      labels:
+        app: recommendationservice
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: recommendationservice
+      terminationGracePeriodSeconds: 5
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: server
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice:v0.10.3
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          periodSeconds: 5
+          grpc: { port: 8080 }
+        livenessProbe:
+          periodSeconds: 30
+          grpc: { port: 8080 }
+        env:
+        - { name: PORT, value: "8080" }
+        - { name: PRODUCT_CATALOG_SERVICE_ADDR, value: "productcatalogservice:3550" }
+        - { name: DISABLE_PROFILER, value: "1" }
+        resources:
+          requests: { cpu: 1200m, memory: 220Mi }
+          limits:   { cpu: 1600m, memory: 450Mi }
+
+      - name: email
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice:v0.10.3
+        ports:
+        - containerPort: 8081
+        readinessProbe:
+          periodSeconds: 5
+          grpc: { port: 8081 }
+        livenessProbe:
+          periodSeconds: 30
+          grpc: { port: 8081 }
+        env:
+        - { name: PORT, value: "8081" }
+        - { name: DISABLE_PROFILER, value: "1" }
+        resources:
+          requests: { cpu: 200m, memory: 64Mi }
+          limits:   { cpu: 300m, memory: 128Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels: { app: frontend }
+spec:
+  type: ClusterIP
+  selector: { app: frontend }
+  ports:
+  - { name: http, port: 80, targetPort: 8080 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paymentservice
+  labels: { app: paymentservice }
+spec:
+  type: ClusterIP
+  selector: { app: frontend }
+  ports:
+  - { name: grpc, port: 50051, targetPort: 50051 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: recommendationservice
+  labels: { app: recommendationservice }
+spec:
+  type: ClusterIP
+  selector: { app: recommendationservice }
+  ports:
+  - { name: grpc, port: 8080, targetPort: 8080 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: emailservice
+  labels: { app: emailservice }
+spec:
+  type: ClusterIP
+  selector: { app: recommendationservice }
+  ports:
+  - { name: grpc, port: 5000, targetPort: 8081 }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: frontend }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: paymentservice }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: recommendationservice }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: emailservice }
