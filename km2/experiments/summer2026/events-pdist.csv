@@ -1,0 +1,109 @@
+cycle,arm,target_rate,limit_x,browse_rate,time,object,message,point,start_replicas
+1,normal,50,2026-10-13T15:16:14Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,2026-10-13T15:17:14Z,paymentservice,New size: 1; reason: All metrics below target,b50v300,1
+1,normal,50,2026-10-13T15:18:27Z,adservice,New size: 5; reason: All metrics below target,b50v300,1
+1,normal,50,2026-10-13T15:18:42Z,adservice,New size: 4; reason: All metrics below target,b50v300,1
+1,normal,50,2026-10-13T15:19:12Z,adservice,New size: 3; reason: All metrics below target,b50v300,1
+1,normal,50,2026-10-13T15:19:42Z,adservice,New size: 2; reason: All metrics below target,b50v300,1
+1,normal,50,2026-10-13T15:41:42Z,cartservice,New size: 1; reason: All metrics below target,b50v150,2
+1,normal,50,2026-10-13T15:43:27Z,adservice,New size: 1; reason: All metrics below target,b50v150,2
+1,normal,50,2026-10-13T15:50:26Z,paymentservice,New size: 1; reason: All metrics below target,b50v300,2
+1,normal,50,2026-10-13T15:51:54Z,adservice,New size: 3; reason: All metrics below target,b50v300,2
+1,normal,50,2026-10-13T15:52:54Z,adservice,New size: 2; reason: All metrics below target,b50v300,2
+1,pairsP1,50,2026-10-13T16:08:28Z,frontend,New size: 2; reason: All metrics below target,b50v300,1
+1,pairsP1,50,2026-10-13T16:08:29Z,paymentservice,New size: 1; reason: All metrics below target,b50v300,1
+1,pairsP1,50,2026-10-13T16:16:28Z,frontend,New size: 1; reason: All metrics below target,b50v150,1
+1,pairsP1,50,2026-10-13T16:33:47Z,frontend,New size: 1; reason: All metrics below target,b50v150,2
+1,pairsP1,50,2026-10-13T16:41:58Z,paymentservice,New size: 1; reason: All metrics below target,b50v300,2
+1,pairsP1,50,2026-10-13T16:42:12Z,frontend,New size: 2; reason: All metrics below target,b50v300,2
+1,pairsP2,50,2026-10-13T17:00:02Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,pairsP2,50,2026-10-13T17:01:01Z,paymentservice,New size: 1; reason: All metrics below target,b50v300,1
+1,pairsP2,50,2026-10-13T17:01:30Z,adservice,New size: 8; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,pairsP2,50,2026-10-13T17:01:32Z,productcatalogservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,pairsP2,50,2026-10-13T17:02:30Z,adservice,New size: 5; reason: All metrics below target,b50v300,1
+1,pairsP2,50,2026-10-13T17:02:45Z,adservice,New size: 4; reason: All metrics below target,b50v300,1
+1,pairsP2,50,2026-10-13T17:03:30Z,adservice,New size: 3; reason: All metrics below target,b50v300,1
+1,pairsP2,50,2026-10-13T17:26:05Z,adservice,New size: 2; reason: All metrics below target,b50v150,2
+1,pairsP2,50,2026-10-13T17:27:05Z,adservice,New size: 1; reason: All metrics below target,b50v150,2
+1,pairsP2,50,2026-10-13T17:33:47Z,paymentservice,New size: 1; reason: All metrics below target,b50v300,2
+1,pairsP2,50,2026-10-13T17:36:16Z,adservice,New size: 3; reason: All metrics below target,b50v300,2
+1,pairsP2,50,2026-10-13T17:37:01Z,adservice,New size: 2; reason: All metrics below target,b50v300,2
+1,pairsP2,100,2026-10-13T17:44:37Z,currencyservice,New size: 1; reason: All metrics below target,b100v0,2
+1,pairsP3,50,2026-10-13T17:52:50Z,adservice,New size: 8; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,pairsP3,50,2026-10-13T17:53:37Z,paymentservice,New size: 1; reason: All metrics below target,b50v300,1
+1,pairsP3,50,2026-10-13T17:55:20Z,adservice,New size: 6; reason: All metrics below target,b50v300,1
+1,pairsP3,50,2026-10-13T17:55:35Z,adservice,New size: 5; reason: All metrics below target,b50v300,1
+1,pairsP3,50,2026-10-13T17:56:06Z,adservice,New size: 4; reason: All metrics below target,b50v300,1
+1,pairsP3,50,2026-10-13T17:56:21Z,adservice,New size: 3; reason: All metrics below target,b50v300,1
+1,pairsP3,50,2026-10-13T17:57:06Z,adservice,New size: 2; reason: All metrics below target,b50v300,1
+1,pairsP3,50,2026-10-13T18:18:41Z,adservice,New size: 2; reason: All metrics below target,b50v150,2
+1,pairsP3,50,2026-10-13T18:19:41Z,adservice,New size: 1; reason: All metrics below target,b50v150,2
+1,pairsP3,50,2026-10-13T18:26:33Z,paymentservice,New size: 1; reason: All metrics below target,b50v300,2
+1,pairsP3,50,2026-10-13T18:28:32Z,adservice,New size: 4; reason: All metrics below target,b50v300,2
+1,pairsP3,50,2026-10-13T18:29:02Z,adservice,New size: 3; reason: All metrics below target,b50v300,2
+1,pairsP3,50,2026-10-13T18:29:32Z,adservice,New size: 2; reason: All metrics below target,b50v300,2
+2,pairsP1,100,2026-10-13T18:45:00Z,frontend,New size: 1; reason: All metrics below target,b100v0,1
+2,pairsP1,50,2026-10-13T18:53:56Z,frontend,New size: 2; reason: All metrics below target,b50v300,2
+2,pairsP1,50,2026-10-13T19:11:42Z,frontend,New size: 1; reason: All metrics below target,b50v150,2
+2,pairsP2,100,2026-10-13T19:38:55Z,adservice,New size: 1; reason: All metrics below target,b100v0,1
+2,pairsP2,50,2026-10-13T19:46:32Z,adservice,New size: 7; reason: All metrics below target,b50v300,2
+2,pairsP2,50,2026-10-13T19:47:32Z,adservice,New size: 6; reason: All metrics below target,b50v300,2
+2,pairsP2,50,2026-10-13T19:47:47Z,adservice,New size: 4; reason: All metrics below target,b50v300,2
+2,pairsP2,50,2026-10-13T19:48:17Z,adservice,New size: 3; reason: All metrics below target,b50v300,2
+2,pairsP2,50,2026-10-13T19:48:47Z,adservice,New size: 2; reason: All metrics below target,b50v300,2
+2,pairsP2,100,2026-10-13T19:56:38Z,frontend,New size: 1; reason: All metrics below target,b100v0,2
+2,pairsP2,50,2026-10-13T20:03:04Z,adservice,New size: 1; reason: All metrics below target,b50v150,2
+2,pairsP2,50,2026-10-13T20:11:43Z,adservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,pairsP2,50,2026-10-13T20:14:13Z,adservice,New size: 3; reason: All metrics below target,b50v300,1
+2,pairsP2,50,2026-10-13T20:15:13Z,adservice,New size: 2; reason: All metrics below target,b50v300,1
+2,pairsP3,100,2026-10-13T20:30:37Z,adservice,New size: 1; reason: All metrics below target,b100v0,1
+2,pairsP3,50,2026-10-13T20:39:04Z,adservice,New size: 2; reason: All metrics below target,b50v300,2
+2,pairsP3,50,2026-10-13T20:56:00Z,adservice,New size: 1; reason: All metrics below target,b50v150,2
+2,pairsP3,50,2026-10-13T21:02:41Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,pairsP3,50,2026-10-13T21:02:55Z,adservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,pairsP3,50,2026-10-13T21:04:25Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,pairsP3,50,2026-10-13T21:05:55Z,adservice,New size: 4; reason: All metrics below target,b50v300,1
+2,pairsP3,50,2026-10-13T21:06:40Z,adservice,New size: 3; reason: All metrics below target,b50v300,1
+2,pairsP3,50,2026-10-13T21:07:40Z,adservice,New size: 2; reason: All metrics below target,b50v300,1
+2,normal,100,2026-10-13T21:22:51Z,adservice,New size: 1; reason: All metrics below target,b100v0,1
+2,normal,100,2026-10-13T21:24:21Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+2,normal,50,2026-10-13T21:31:18Z,adservice,New size: 2; reason: All metrics below target,b50v300,2
+2,normal,100,2026-10-13T21:38:41Z,currencyservice,New size: 1; reason: All metrics below target,b100v0,2
+2,normal,50,2026-10-13T21:48:08Z,adservice,New size: 1; reason: All metrics below target,b50v150,2
+2,normal,50,2026-10-13T21:55:18Z,adservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,2026-10-13T21:58:18Z,adservice,New size: 2; reason: All metrics below target,b50v300,1
+3,pairsP2,50,2026-10-13T22:13:14Z,paymentservice,New size: 1; reason: All metrics below target,b50v300,2
+3,pairsP2,50,2026-10-13T22:15:13Z,adservice,New size: 6; reason: All metrics below target,b50v300,2
+3,pairsP2,50,2026-10-13T22:15:28Z,adservice,New size: 4; reason: All metrics below target,b50v300,2
+3,pairsP2,50,2026-10-13T22:15:58Z,adservice,New size: 3; reason: All metrics below target,b50v300,2
+3,pairsP2,50,2026-10-13T22:16:28Z,adservice,New size: 2; reason: All metrics below target,b50v300,2
+3,pairsP2,100,2026-10-13T22:30:10Z,currencyservice,New size: 1; reason: All metrics below target,b100v0,2
+3,pairsP2,50,2026-10-13T22:38:27Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,pairsP2,50,2026-10-13T22:41:25Z,adservice,New size: 2; reason: All metrics below target,b50v300,1
+3,pairsP3,50,2026-10-13T23:04:47Z,adservice,New size: 8; reason: cpu container resource utilization (percentage of request) above target,b50v300,2
+3,pairsP3,50,2026-10-13T23:04:49Z,paymentservice,New size: 1; reason: All metrics below target,b50v300,2
+3,pairsP3,50,2026-10-13T23:07:02Z,adservice,New size: 6; reason: All metrics below target,b50v300,2
+3,pairsP3,50,2026-10-13T23:07:17Z,adservice,New size: 4; reason: All metrics below target,b50v300,2
+3,pairsP3,50,2026-10-13T23:08:02Z,adservice,New size: 3; reason: All metrics below target,b50v300,2
+3,pairsP3,50,2026-10-13T23:08:47Z,adservice,New size: 2; reason: All metrics below target,b50v300,2
+3,pairsP3,50,2026-10-13T23:31:07Z,adservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,pairsP3,50,2026-10-13T23:31:09Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,pairsP3,50,2026-10-13T23:34:07Z,adservice,New size: 2; reason: All metrics below target,b50v300,1
+3,normal,50,2026-10-13T23:57:37Z,paymentservice,New size: 1; reason: All metrics below target,b50v300,2
+3,normal,50,2026-10-13T23:58:20Z,adservice,New size: 5; reason: All metrics below target,b50v300,2
+3,normal,50,2026-10-13T23:59:20Z,adservice,New size: 3; reason: All metrics below target,b50v300,2
+3,normal,50,2026-10-14T00:00:20Z,adservice,New size: 2; reason: All metrics below target,b50v300,2
+3,normal,100,2026-10-14T00:15:05Z,adservice,New size: 1; reason: All metrics below target,b100v0,2
+3,normal,50,2026-10-14T00:22:36Z,adservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,2026-10-14T00:22:52Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,2026-10-14T00:22:52Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,2026-10-14T00:23:08Z,productcatalogservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,2026-10-14T00:24:06Z,adservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,2026-10-14T00:26:36Z,adservice,New size: 4; reason: All metrics below target,b50v300,1
+3,normal,50,2026-10-14T00:27:06Z,adservice,New size: 3; reason: All metrics below target,b50v300,1
+3,normal,50,2026-10-14T00:27:36Z,adservice,New size: 2; reason: All metrics below target,b50v300,1
+3,pairsP1,50,2026-10-14T00:48:49Z,frontend,New size: 3; reason: All metrics below target,b50v300,2
+3,pairsP1,50,2026-10-14T00:48:49Z,paymentservice,New size: 1; reason: All metrics below target,b50v300,2
+3,pairsP1,50,2026-10-14T00:49:04Z,frontend,New size: 2; reason: All metrics below target,b50v300,2
+3,pairsP1,100,2026-10-14T01:05:30Z,frontend,New size: 1; reason: All metrics below target,b100v0,2
+3,pairsP1,50,2026-10-14T01:15:28Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
