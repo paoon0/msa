@@ -1,23 +1,30 @@
 #!/usr/bin/env python3
-"""pdist-k3 本走の解析 (plan-pdist-k3.md §5 のとおり)。予測の的中率は出さない。
+"""pdist-k3 本走の解析 (plan-pdist-k3.md §5 と追記 2・3 のとおり)。予測の的中率は出さない。
 
-入力: summer2026/results-<NAME>.csv, timeline-<NAME>.csv (NAME 既定 pdistk3)、rightsizing/<枠表> (既定 rightsize-pdist-k3.csv)
-計測窓 = t_rel ∈ [180, 420] s。
+入力: summer2026/results-<PAIR>.csv, timeline-<PAIR>.csv (同居、既定 pdistk3pair)
+      summer2026/results-<SEP>.csv,  timeline-<SEP>.csv  (分離 12 サイクル、既定 pdistk3sep)
+      rightsizing/<枠表> (既定 rightsize-pdist-k3.csv)
+計測窓 = t_rel ∈ [180, 420] s。台数 = 窓内の current_replicas の最頻値 (同数なら大きい方)。
 
-主判定 (同じ Pod の中で): サンプルごとに 希望 = n (|u/70 − 1| ≤ 0.1) / ceil(n·u/70) (1〜HPA_MAX)、
-  窓内の最頻値 < n_st (窓内の current_replicas の最頻値) → 引きずられた。Δn = n_st − 希望。
-副判定 (分離との比較): 同じサイクル・点・開始台数の normal の台数 n_x (最頻値)。n_x < n_st → 引きずられた。
-  Δn' = n_st − n_x、損 = n_st(r_s + r_t) − (n_s r_s + n_t r_t) [m]。
-印: 取りこぼし (窓) が目標周回数 × 240 s の 1% 超、Pending、Ready 落ち (窓内、そのペアのホスト Deployment / normal 側の 2 サービス)。
+主判定 (追記 2): 同居 Pod の台数 n_st と、同じ配合の分離 12 回の台数の最頻値 n_x を比べる。
+  n_x < n_st → その側は引きずられた。Δn = max(n_st − n_x, 0) (両側の大きい方)。
+  損 = n_st(r_s + r_t) − (n_x,s r_s + n_x,t r_t) [m]。
+回ごとの比較: 同じサイクル番号の分離の台数と比べた判定も併記する。
+補助 (同じ Pod の中で): サンプルごとの希望台数 = n (|u/70 − 1| ≤ 0.1) / ceil(n·u/70) の窓内最頻値 < n_st。
+ブレの印 (除かずに併記):
+  回ごと = その配合で分離 12 回の台数が 1 種類にそろわないサービス (s または t)
+  窓内   = 同居 Pod の台数が計測窓の中で変わった回
+その他の印: 取りこぼし (窓) が目標周回数 × 240 s の 1% 超、Pending、Ready 落ち (同居 Pod)、結果なし (k6 集計の回収失敗)。
 
-使い方: python3 analyze_pdist_k3.py [NAME] [枠表] > analysis-<NAME>.txt
+使い方: python3 analyze_pdist_k3.py [PAIR] [SEP] [枠表] > analysis-pdistk3.txt
 """
 import csv, collections, math, os, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 S26 = os.path.join(HERE, '..', 'summer2026')
-NAME = sys.argv[1] if len(sys.argv) > 1 else 'pdistk3'
-TABLE = sys.argv[2] if len(sys.argv) > 2 else 'rightsize-pdist-k3.csv'
+PAIR = sys.argv[1] if len(sys.argv) > 1 else 'pdistk3pair'
+SEP = sys.argv[2] if len(sys.argv) > 2 else 'pdistk3sep'
+TABLE = sys.argv[3] if len(sys.argv) > 3 else 'rightsize-pdist-k3.csv'
 WARM, MEAS, HPA_MAX = 180, 240, 12
 LO, HI = WARM, WARM + MEAS
 
@@ -40,16 +47,19 @@ TRAFFIC = {'checkout+shipping': 3.7, 'catalog+reco': 18.4, 'front+cart': 4.1, 'c
            'currency+checkout': 2.6, 'front+currency': 8.5, 'checkout+cart': 2.7, 'front+reco': 4.8, 'checkout+front': 2.5}
 DEP = {'front': 'frontend', 'catalog': 'productcatalogservice', 'reco': 'recommendationservice', 'currency': 'currencyservice',
        'cart': 'cartservice', 'checkout': 'checkoutservice', 'shipping': 'shippingservice'}
-POINTS = ['b100v0', 'b50v150', 'b50v300']
+POINTS = ['b100v0', 'b50v150', 'b50v300', 'b100v200']
 
-R = {r['deploy']: float(r['request_m']) for r in csv.DictReader(open(os.path.join(HERE, TABLE)))}
-res = {(r['cycle'], r['arm'], r['point'], r['start_replicas']): r
-       for r in csv.DictReader(open(os.path.join(S26, f'results-{NAME}.csv')))}
-tl = collections.defaultdict(list)
-for r in csv.DictReader(open(os.path.join(S26, f'timeline-{NAME}.csv'))):
-    if LO <= float(r['t_rel']) <= HI:
-        tl[(r['cycle'], r['arm'], r['point'], r['start_replicas'])].append(r)
-STARTS = sorted({k[3] for k in tl}, key=int)
+R = {r['deploy']: float(r['request_m']) for r in csv.DictReader(open(os.path.join(HERE, TABLE), newline=''))}
+
+
+def load(name):
+    res = {(r['cycle'], r['arm'], r['point']): r
+           for r in csv.DictReader(open(os.path.join(S26, f'results-{name}.csv')))}
+    tl = collections.defaultdict(list)
+    for r in csv.DictReader(open(os.path.join(S26, f'timeline-{name}.csv'))):
+        if LO <= float(r['t_rel']) <= HI:
+            tl[(r['cycle'], r['arm'], r['point'])].append(r)
+    return res, tl
 
 
 def mode(xs):
@@ -68,21 +78,37 @@ def series(rows, dep, cont):
                   and r['hpa_util_pct'] not in ('', None) and r['current_replicas'] not in ('', None))
 
 
+def reps(rows, dep):
+    return [int(r['current_replicas']) for r in sorted(rows, key=lambda r: float(r['t_rel']))
+            if r['deploy'] == dep and r['container'] != '-' and r['current_replicas']]
+
+
 def nrep(rows, dep):
-    xs = [int(r['current_replicas']) for r in rows if r['deploy'] == dep and r['container'] != '-' and r['current_replicas']]
+    xs = reps(rows, dep)
     return mode(xs) if xs else None
 
 
-def marks(key, deps):
+def changes(rows, dep):
+    """窓内の台数の変化を 't秒:a→b' の列で返す (1 Deployment 内の複数コンテナ行は同じ台数なので先頭コンテナだけ見る)"""
+    conts = sorted({r['container'] for r in rows if r['deploy'] == dep and r['container'] != '-'})
+    if not conts:
+        return []
+    ser = sorted((float(r['t_rel']), int(r['current_replicas'])) for r in rows
+                 if r['deploy'] == dep and r['container'] == conts[0] and r['current_replicas'])
+    return [f'{int(t)}s:{a}→{b}' for (_, a), (t, b) in zip(ser, ser[1:]) if a != b]
+
+
+def marks(res, tl, key, deps):
+    m = []
     r = res.get(key)
     if r is None:
-        return ['結果なし']
-    m = []
-    b, v = float(r['target_rate']), float(r['browse_rate_target'] or 0)
-    if float(r['dropped_win'] or 0) > 0.01 * b * MEAS:
-        m.append('取りこぼし購入')
-    if v > 0 and float(r['browse_dropped_win'] or 0) > 0.01 * v * MEAS:
-        m.append('取りこぼし閲覧')
+        m.append('結果なし')
+    else:
+        b, v = float(r['target_rate']), float(r['browse_rate_target'] or 0)
+        if float(r['dropped_win'] or 0) > 0.01 * b * MEAS:
+            m.append('取りこぼし購入')
+        if v > 0 and float(r['browse_dropped_win'] or 0) > 0.01 * v * MEAS:
+            m.append('取りこぼし閲覧')
     rows = tl[key]
     if any(int(x['pending_pods'] or 0) > 0 for x in rows if x['deploy'] in deps):
         m.append('Pending')
@@ -92,69 +118,90 @@ def marks(key, deps):
     return m
 
 
+pres, ptl = load(PAIR)
+sres, stl = load(SEP)
+
+# 分離: 配合 × サービスごとの 12 回の台数と最頻値
+sep_n = collections.defaultdict(dict)      # (pt, short) -> {cycle: n}
+for (cyc, arm, pt), rows in stl.items():
+    if arm != 'normal':
+        continue
+    for short, d in DEP.items():
+        n = nrep(rows, d)
+        if n is not None:
+            sep_n[(pt, short)][cyc] = n
+sep_mode = {k: mode(list(v.values())) for k, v in sep_n.items()}
+sep_bure = {k: len(set(v.values())) > 1 for k, v in sep_n.items()}
+
 obs = []
-for (cyc, arm, pt, n0), rows in sorted(tl.items()):
+for (cyc, arm, pt), rows in sorted(ptl.items()):
     if arm not in ARMS:
         continue
-    nkey = (cyc, 'normal', pt, n0)
     for pair, dep, cmap, (s, t) in ARMS[arm]:
         nst = nrep(rows, dep)
         per = {}
         for cname, short in cmap.items():
             ser = series(rows, dep, cname)
             per[short] = dict(want=mode([want(n, u) for _, n, u in ser]), u=sum(u for *_, u in ser) / len(ser))
-        dragged = [x for x in (s, t) if per[x]['want'] < nst]
-        dn = max([nst - per[x]['want'] for x in (s, t)] + [0])
-        ns_, nt_ = nrep(tl[nkey], DEP[s]), nrep(tl[nkey], DEP[t])
-        ok2 = ns_ is not None and nt_ is not None
-        dragged2 = [x for x, nx in ((s, ns_), (t, nt_)) if ok2 and nx < nst]
-        dn2 = max([nst - nx for nx in (ns_, nt_)] + [0]) if ok2 else None
-        loss = nst * (R[DEP[s]] + R[DEP[t]]) - (ns_ * R[DEP[s]] + nt_ * R[DEP[t]]) if ok2 else None
-        mk = marks((cyc, arm, pt, n0), {dep}) + [f'normal:{x}' for x in marks(nkey, {DEP[s], DEP[t]})]
-        obs.append(dict(cyc=cyc, arm=arm, pt=pt, n0=n0, pair=pair, s=s, t=t, nst=nst, ws=per[s]['want'], wt=per[t]['want'],
-                        us=per[s]['u'], ut=per[t]['u'], dragged=dragged, dn=dn, ns=ns_, nt=nt_, dragged2=dragged2,
-                        dn2=dn2, loss=loss, marks=mk))
+        nx = {x: sep_mode[(pt, x)] for x in (s, t)}
+        dragged = [x for x in (s, t) if nx[x] < nst]
+        dn = max([nst - nx[x] for x in (s, t)] + [0])
+        loss = nst * (R[DEP[s]] + R[DEP[t]]) - (nx[s] * R[DEP[s]] + nx[t] * R[DEP[t]])
+        nc = {x: sep_n[(pt, x)].get(cyc) for x in (s, t)}          # 同じサイクル番号の分離
+        dragged_c = [x for x in (s, t) if nc[x] is not None and nc[x] < nst]
+        aux = [x for x in (s, t) if per[x]['want'] < nst]
+        bure = [x for x in (s, t) if sep_bure[(pt, x)]]
+        chg = changes(rows, dep)
+        mk = marks(pres, ptl, (cyc, arm, pt), {dep})
+        obs.append(dict(cyc=cyc, arm=arm, pt=pt, pair=pair, s=s, t=t, nst=nst, nx=nx, dragged=dragged, dn=dn, loss=loss,
+                        nc=nc, dragged_c=dragged_c, aux=aux, us=per[s]['u'], ut=per[t]['u'], bure=bure, chg=chg, marks=mk))
 
-ORDER = sorted(TRAFFIC, key=lambda p: (abs(RHO[p.split('+')[0]] - RHO[p.split('+')[1]]), -TRAFFIC[p]))
 drho = lambda p: abs(RHO[p.split('+')[0]] - RHO[p.split('+')[1]])
-print(f'pdist-k3 の解析 ({NAME}、枠 {TABLE})。窓 = t_rel 180–420 s')
-print(f'観測: {len(obs)} (= 同居アームの回 × ペア)、開始台数 {STARTS}\n')
+ORDER = sorted(TRAFFIC, key=lambda p: (drho(p), -TRAFFIC[p]))
+print(f'pdist-k3 の解析 (同居 {PAIR}、分離 {SEP}、枠 {TABLE})。窓 = t_rel 180–420 s')
+print(f'観測: {len(obs)} (= 同居アームの回 × ペア)\n')
 
-print('§1 対照 (b50v150) で各サービスが何台になったか (normal、全回の最頻値の分布)')
-for s, d in DEP.items():
-    c = collections.Counter(nrep(rows, d) for k, rows in tl.items() if k[1] == 'normal' and k[2] == 'b50v150')
-    print(f'  {s:9} {dict(sorted(c.items(), key=lambda x: (x[0] is None, x[0] or 0)))}')
+print('§1 分離の台数 (配合ごとの 12 回の分布。* = 回ごとのブレ)')
+print(f'  {"":9} ' + ' '.join(f'{pt:>16}' for pt in POINTS))
+for x in DEP:
+    cells = []
+    for pt in POINTS:
+        c = collections.Counter(sep_n[(pt, x)].values())
+        cells.append(('*' if sep_bure[(pt, x)] else ' ') + ','.join(f'{k}×{v}' for k, v in sorted(c.items())))
+    print(f'  {x:9} ' + ' '.join(f'{c:>16}' for c in cells))
 
-print('\n§2 ρ の差の順に 10 組 (各 18 回 = 3 点 × 開始 2 × 3 サイクル)。主 = 同じ Pod 内、副 = 分離と比較')
-print(f'{"pair":18} {"Δρ":>5} {"通信%":>6} | 主:回数 Δn平均 | 副:回数 Δn平均 損平均[m] | 点ごとの主の回数 b100v0/b50v150/b50v300')
+print('\n§2 ρ の差の順に 10 組 (各 12 回 = 4 配合 × 3 サイクル)。主 = 分離 12 回の最頻値と比較')
+print(f'{"pair":18} {"Δρ":>5} {"通信%":>6} | 主:回数 Δn平均 損平均[m] | 回ごと比較 | 補助(Pod内) | ブレ印付き 窓内変化 | 配合ごとの主の回数 ' + '/'.join(POINTS))
 for p in ORDER:
     os_ = [o for o in obs if o['pair'] == p]
     if not os_:
         print(f'{p:18} データなし'); continue
-    k1 = sum(1 for o in os_ if o['dragged']); k2 = sum(1 for o in os_ if o['dragged2'])
-    dn1 = sum(o['dn'] for o in os_) / len(os_)
-    d2 = [o['dn2'] for o in os_ if o['dn2'] is not None]; ls = [o['loss'] for o in os_ if o['loss'] is not None]
+    k = sum(1 for o in os_ if o['dragged']); kc = sum(1 for o in os_ if o['dragged_c']); ka = sum(1 for o in os_ if o['aux'])
+    kb = sum(1 for o in os_ if o['bure']); kw = sum(1 for o in os_ if o['chg'])
     per = '/'.join(str(sum(1 for o in os_ if o['pt'] == pt and o['dragged'])) for pt in POINTS)
-    print(f'{p:18} {drho(p):5.2f} {TRAFFIC[p]:6.1f} | {k1:2}/{len(os_)} {dn1:5.2f} | {k2:2}/{len(os_)} '
-          f'{(sum(d2) / len(d2)) if d2 else float("nan"):5.2f} {(sum(ls) / len(ls)) if ls else float("nan"):8.0f} | {per}')
+    print(f'{p:18} {drho(p):5.2f} {TRAFFIC[p]:6.1f} | {k:2}/{len(os_)} {sum(o["dn"] for o in os_) / len(os_):5.2f} '
+          f'{sum(o["loss"] for o in os_) / len(os_):8.0f} | {kc:2}/{len(os_)} | {ka:2}/{len(os_)} | {kb:2} {kw:2} | {per}')
 
-print('\n§3 セル (ペア × 点 × 開始台数) ごとの 3 サイクル: n_st (同居の台数)、主判定で引きずられた側と Δn、normal の n_s/n_t、損')
+print('\n§3 ペア × 配合ごと: 分離の最頻値 n_x(s)/n_x(t) と、各サイクルの同居 Pod の台数 n_st [引きずられた側 Δn] 損')
+print('   B = 回ごとのブレのある側、W = 窓内の変化、u = 窓平均の利用率 s/t、(c n/n) = 同じサイクルの分離')
 for p in ORDER:
     for pt in POINTS:
-        for n0 in STARTS:
-            os_ = [o for o in obs if o['pair'] == p and o['pt'] == pt and o['n0'] == n0]
-            if not os_:
-                continue
-            cells = '  '.join(f'c{o["cyc"]}: {o["nst"]} [{"/".join(o["dragged"]) or "-"} {o["dn"]}] u{o["us"]:.0f}/{o["ut"]:.0f} '
-                              f'| {o["ns"]}/{o["nt"]} {o["loss"] if o["loss"] is not None else float("nan"):+.0f}'
-                              f'{" *" + ",".join(o["marks"]) if o["marks"] else ""}' for o in os_)
-            print(f'{p:18} {pt:8} 開始{n0}  {cells}')
+        os_ = [o for o in obs if o['pair'] == p and o['pt'] == pt]
+        if not os_:
+            continue
+        o0 = os_[0]
+        head = f'{p:18} {pt:8} 分離 {o0["nx"][o0["s"]]}/{o0["nx"][o0["t"]]}' + (f' B:{"/".join(o0["bure"])}' if o0['bure'] else '')
+        cells = '  '.join(f'c{o["cyc"]}: {o["nst"]} [{"/".join(o["dragged"]) or "-"} {o["dn"]}] {o["loss"]:+.0f}m '
+                          f'u{o["us"]:.0f}/{o["ut"]:.0f} (c {o["nc"][o["s"]]}/{o["nc"][o["t"]]})'
+                          f'{" W:" + ",".join(o["chg"]) if o["chg"] else ""}'
+                          f'{" *" + ",".join(o["marks"]) if o["marks"] else ""}' for o in os_)
+        print(f'{head}  {cells}')
     print()
 
-print('§4 印付きの観測と、印を除いた主判定の回数')
+print('§4 印')
 nmark = [o for o in obs if o['marks']]
-print(f'  印付き {len(nmark)}/{len(obs)}  内訳 {dict(collections.Counter(m for o in nmark for m in o["marks"]))}')
+print(f'  その他の印付き {len(nmark)}/{len(obs)}  内訳 {dict(collections.Counter(m for o in nmark for m in o["marks"]))}')
 for p in ORDER:
-    cl = [o for o in obs if o['pair'] == p and not o['marks']]
+    cl = [o for o in obs if o['pair'] == p and not o['bure'] and not o['chg']]
     if cl:
-        print(f'  {p:18} 印なし {len(cl):2} 回中 主 {sum(1 for o in cl if o["dragged"])} / 副 {sum(1 for o in cl if o["dragged2"])}')
+        print(f'  {p:18} ブレの印なし {len(cl):2} 回中 主 {sum(1 for o in cl if o["dragged"])}')
