@@ -14,7 +14,11 @@
 ブレの印 (除かずに併記):
   回ごと = その配合で分離 12 回の台数が 1 種類にそろわないサービス (s または t)
   窓内   = 同居 Pod の台数が計測窓の中で変わった回
-その他の印: 取りこぼし (窓) が目標周回数 × 240 s の 1% 超、Pending、Ready 落ち (同居 Pod)、結果なし (k6 集計の回収失敗)。
+その他の印: 取りこぼし (窓) が目標周回数 × 240 s の 1% 超、Pending (同居 Pod / 他)、Ready 落ち (同居 Pod、台数が動いていない
+  サンプルで ready < current)、結果なし (k6 集計の回収失敗)。印付きを除いた集計を §4 に併記。
+2026-10-16 修正 (アヌビス点検、pairsP1b の cyc1 b100v200 の 2 観測を見た後。主判定の規則は変えていない):
+  Ready 落ちの定義を台数変更中以外に限定、Pending(他) を追加、§4 に印付きを除いた集計と事後の参考 (分離 12 回の最大値超え) を追加、
+  コンテナの利用率や Pod の台数が取れない回で止まらないようにした。
 
 使い方: python3 analyze_pdist_k3.py [PAIR] [SEP] [枠表] > analysis-pdistk3.txt
 """
@@ -112,9 +116,17 @@ def marks(res, tl, key, deps):
     rows = tl[key]
     if any(int(x['pending_pods'] or 0) > 0 for x in rows if x['deploy'] in deps):
         m.append('Pending')
-    if any(x['current_replicas'] and int(x['ready_replicas'] or 0) < int(x['current_replicas'])
-           for x in rows if x['deploy'] in deps and x['container'] != '-'):
-        m.append('Ready落ち')
+    elif any(int(x['pending_pods'] or 0) > 0 for x in rows):
+        m.append('Pending(他)')
+    # 2026-10-16 修正 (アヌビス指摘、pairsP1b の 2 観測を見た後): ready は Deployment、current は HPA の status なので
+    # 台数変更の途中は ready < current になる (分離で ready<current の 107 サンプル中 106 が current≠desired)。
+    # 台数が動いていないサンプル (current = desired かつ直前のサンプルと同じ current) に限る。
+    for d in deps:
+        ser = sorted((float(x['t_rel']), int(x['current_replicas']), x['desired_replicas'], int(x['ready_replicas'] or 0))
+                     for x in rows if x['deploy'] == d and x['container'] != '-' and x['current_replicas'])
+        ser = list({x[0]: x for x in ser}.values())   # 同居 Pod の 2 コンテナ行を 1 サンプルに
+        if any(cur == prev[1] and str(cur) == des and rdy < cur for prev, (_, cur, des, rdy) in zip(ser, ser[1:])):
+            m.append('Ready落ち'); break
     return m
 
 
@@ -139,22 +151,26 @@ for (cyc, arm, pt), rows in sorted(ptl.items()):
         continue
     for pair, dep, cmap, (s, t) in ARMS[arm]:
         nst = nrep(rows, dep)
+        if nst is None:
+            print(f'!! 台数なし: c{cyc} {arm} {pt} {pair}', file=sys.stderr); continue
         per = {}
         for cname, short in cmap.items():
             ser = series(rows, dep, cname)
-            per[short] = dict(want=mode([want(n, u) for _, n, u in ser]), u=sum(u for *_, u in ser) / len(ser))
+            per[short] = (dict(want=mode([want(n, u) for _, n, u in ser]), u=sum(u for *_, u in ser) / len(ser)) if ser
+                          else dict(want=nst, u=float('nan')))
         nx = {x: sep_mode[(pt, x)] for x in (s, t)}
         dragged = [x for x in (s, t) if nx[x] < nst]
         dn = max([nst - nx[x] for x in (s, t)] + [0])
         loss = nst * (R[DEP[s]] + R[DEP[t]]) - (nx[s] * R[DEP[s]] + nx[t] * R[DEP[t]])
-        nc = {x: sep_n[(pt, x)].get(cyc) for x in (s, t)}          # 同じサイクル番号の分離
+        nc = {x: sep_n[(pt, x)].get(cyc) for x in (s, t)}          # 同じサイクル番号の分離 (点の順番が同じ。測定日時は別)
         dragged_c = [x for x in (s, t) if nc[x] is not None and nc[x] < nst]
+        over_max = [x for x in (s, t) if max(sep_n[(pt, x)].values()) < nst]   # 事後の参考: 分離 12 回の最大値を超えた側
         aux = [x for x in (s, t) if per[x]['want'] < nst]
         bure = [x for x in (s, t) if sep_bure[(pt, x)]]
         chg = changes(rows, dep)
         mk = marks(pres, ptl, (cyc, arm, pt), {dep})
         obs.append(dict(cyc=cyc, arm=arm, pt=pt, pair=pair, s=s, t=t, nst=nst, nx=nx, dragged=dragged, dn=dn, loss=loss,
-                        nc=nc, dragged_c=dragged_c, aux=aux, us=per[s]['u'], ut=per[t]['u'], bure=bure, chg=chg, marks=mk))
+                        nc=nc, dragged_c=dragged_c, over_max=over_max, aux=aux, us=per[s]['u'], ut=per[t]['u'], bure=bure, chg=chg, marks=mk))
 
 drho = lambda p: abs(RHO[p.split('+')[0]] - RHO[p.split('+')[1]])
 ORDER = sorted(TRAFFIC, key=lambda p: (drho(p), -TRAFFIC[p]))
@@ -183,7 +199,7 @@ for p in ORDER:
           f'{sum(o["loss"] for o in os_) / len(os_):8.0f} | {kc:2}/{len(os_)} | {ka:2}/{len(os_)} | {kb:2} {kw:2} | {per}')
 
 print('\n§3 ペア × 配合ごと: 分離の最頻値 n_x(s)/n_x(t) と、各サイクルの同居 Pod の台数 n_st [引きずられた側 Δn] 損')
-print('   B = 回ごとのブレのある側、W = 窓内の変化、u = 窓平均の利用率 s/t、(c n/n) = 同じサイクルの分離')
+print('   B = 回ごとのブレのある側、W = 窓内の変化、u = 窓平均の利用率 s/t、(c n/n) = 点の順番が同じサイクル番号の分離 (測定日時は別)')
 for p in ORDER:
     for pt in POINTS:
         os_ = [o for o in obs if o['pair'] == p and o['pt'] == pt]
@@ -201,7 +217,14 @@ for p in ORDER:
 print('§4 印')
 nmark = [o for o in obs if o['marks']]
 print(f'  その他の印付き {len(nmark)}/{len(obs)}  内訳 {dict(collections.Counter(m for o in nmark for m in o["marks"]))}')
+print('  ペアごと: 主判定の回数を (a) 全回 (b) その他の印 (取りこぼし・Pending・Ready落ち・結果なし) のない回 (c) ブレの印のない回 で。')
+print('  (d) は事後の参考 (2026-10-16、pairsP1b の 2 観測を見た後に追加): 分離 12 回の最大値を超えた回数')
 for p in ORDER:
-    cl = [o for o in obs if o['pair'] == p and not o['bure'] and not o['chg']]
-    if cl:
-        print(f'  {p:18} ブレの印なし {len(cl):2} 回中 主 {sum(1 for o in cl if o["dragged"])}')
+    os_ = [o for o in obs if o['pair'] == p]
+    if not os_:
+        continue
+    a = [o for o in os_ if not o['marks']]
+    c = [o for o in os_ if not o['bure'] and not o['chg']]
+    k = lambda xs: sum(1 for o in xs if o['dragged'])
+    print(f'  {p:18} (a) {k(os_)}/{len(os_)}  (b) {k(a)}/{len(a)}  (c) {k(c)}/{len(c)}  '
+          f'(d) {sum(1 for o in os_ if o["over_max"])}/{len(os_)}')
