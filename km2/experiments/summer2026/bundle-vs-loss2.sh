@@ -23,7 +23,7 @@
 #                          point,start_replicas 列 (results には start_ok,frames_ok も) が増える。
 #   POINTS / STARTS / SHUFFLE_POINTS / SHUFFLE_SEED / ROTATE_ARMS / POINT_SETTLE / POINT_READY_TIMEOUT
 #   RS_STRICT / CHECK_FRAMES / LIMIT_OVERRIDE ... 枠の置換の取り違え防止と、コンテナ単位の limits 上書き
-#   アーム pairsX / pairsY / pairsY2 / pairsP1 / pairsP2 / pairsP3 / pairsQ1 / pairsQ2 / pairsQ3 ... manifests/pairs*.yaml (pairsX/Y/Y2/P1 は 3 Pod、P2/P3/Q1 は 2 Pod、Q2/Q3 は 1 Pod 同居)
+#   アーム pairsX / pairsY / pairsY2 / pairsP1 / pairsP2 / pairsP3 / pairsP1b / pairsQ1 / pairsQ2 / pairsQ3 ... manifests/pairs*.yaml (pairsX/Y/Y2/P1 は 3 Pod、P1b/P2/P3/Q1 は 2 Pod、Q2/Q3 は 1 Pod 同居)
 #   各変数の意味は下の変数定義のコメントを見ること。
 #
 # 出力:
@@ -279,6 +279,9 @@ apply_arm(){ local arm=$1
              kubectl apply -f $DIR/manifests/pairsP2.yaml -n $NS >/dev/null ;;
     pairsP3) apply_normal_except frontend productcatalogservice checkoutservice currencyservice
              kubectl apply -f $DIR/manifests/pairsP3.yaml -n $NS >/dev/null ;;
+    # --- 2026-10-15 追加: pairsP1 から front+ad を外したもの (枠 k=3 の再測定。ad はペアに入れない) ---
+    pairsP1b) apply_normal_except checkoutservice shippingservice productcatalogservice recommendationservice
+             kubectl apply -f $DIR/manifests/pairsP1b.yaml -n $NS >/dev/null ;;
     # --- 2026-10-15 追加: 通信量の太い線から選んだ 4 組 (ρ の差 0.01〜0.37)。中身は manifests/pairsQ*.yaml の冒頭コメント ---
     #   pairsQ1: cartservice を外すと redis-cart も消える → redis-cart.yaml を別途 apply (pairsP2 と同じ)
     pairsQ1) apply_normal_except frontend currencyservice checkoutservice cartservice

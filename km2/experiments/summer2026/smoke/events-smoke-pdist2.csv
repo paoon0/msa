@@ -1,0 +1,12 @@
+cycle,arm,target_rate,limit_x,browse_rate,time,object,message,point,start_replicas
+1,pairsQ1,50,2026-10-15T04:32:15Z,adservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,pairsQ1,50,2026-10-15T04:32:47Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,pairsQ2,50,2026-10-15T04:36:41Z,adservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,pairsQ2,50,2026-10-15T04:36:57Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,pairsQ2,50,2026-10-15T04:36:58Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,pairsQ2,50,2026-10-15T04:36:58Z,paymentservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,pairsQ3,50,2026-10-15T04:40:56Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,pairsQ3,50,2026-10-15T04:41:11Z,adservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,pairsQ3,50,2026-10-15T04:41:12Z,paymentservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,pairsQ3,50,2026-10-15T04:41:13Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,pairsQ3,50,2026-10-15T04:41:57Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
