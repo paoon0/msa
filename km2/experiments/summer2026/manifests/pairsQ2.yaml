@@ -1,0 +1,130 @@
+# pairsQ2: ペア距離実験 (P の近さ) の第5配置 (2026-10-15 作成)。1 Pod を同居させる。
+#   frontend + recommendationservice (frontend → reco は localhost:8081 = 実辺あり)
+# 束ねていない cartservice(+redis-cart) / currencyservice / productcatalogservice / checkoutservice / paymentservice / shippingservice /
+# emailservice / adservice は km2/normal のまま。
+# ★ reco の既定ポート 8080 は frontend (8080) と同じ Pod 内で衝突するため、reco の PORT env を 8081 に変更 (pairsP1 〜 P3 にはない判断)。
+#   reco の containerPort / readiness・liveness probe も 8081。frontend の RECOMMENDATION_SERVICE_ADDR=localhost:8081。
+#   Service recommendationservice は port 8080 (他サービスから見た名前:ポートは不変) → targetPort 8081。
+#   reco 自身の PRODUCT_CATALOG_SERVICE_ADDR は productcatalogservice:3550 (Service 経由) のまま。
+# Deployment 名とコンテナ名 (枠の置換 apply_rightsize.py / sample_hpa.py と整合):
+#   Deployment frontend : コンテナ server(frontend:8080) / recommendation(reco:8081)
+# 吸収される側の Service (recommendationservice) は frontend Pod のラベルを向ける。
+# frontend-external (LoadBalancer) は作らない (k6 は frontend:80 を叩く)。
+# Pod 内ポート衝突なし: frontend 8080 / reco 8081。
+# localhost にしたのは frontend→reco の 1 本。他の宛先は従来の Service 名のまま。
+# ドライバでの apply: apply_normal_except frontend recommendationservice → kubectl apply -f manifests/pairsQ2.yaml (-n exp)
+#   (cartservice は normal のままなので redis-cart.yaml の別途 apply は不要)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: frontend
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: server
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend:v0.10.3
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          initialDelaySeconds: 10
+          httpGet:
+            path: "/_healthz"
+            port: 8080
+            httpHeaders:
+            - { name: "Cookie", value: "shop_session-id=x-readiness-probe" }
+        livenessProbe:
+          initialDelaySeconds: 10
+          httpGet:
+            path: "/_healthz"
+            port: 8080
+            httpHeaders:
+            - { name: "Cookie", value: "shop_session-id=x-liveness-probe" }
+        env:
+        - { name: PORT, value: "8080" }
+        - { name: PRODUCT_CATALOG_SERVICE_ADDR, value: "productcatalogservice:3550" }
+        - { name: CURRENCY_SERVICE_ADDR, value: "currencyservice:7000" }
+        - { name: CART_SERVICE_ADDR, value: "cartservice:7070" }
+        - { name: RECOMMENDATION_SERVICE_ADDR, value: "localhost:8081" }   # ← 同居先へ loopback
+        - { name: SHIPPING_SERVICE_ADDR, value: "shippingservice:50051" }
+        - { name: CHECKOUT_SERVICE_ADDR, value: "checkoutservice:5050" }
+        - { name: AD_SERVICE_ADDR, value: "adservice:9555" }
+        - { name: SHOPPING_ASSISTANT_SERVICE_ADDR, value: "shoppingassistantservice:80" }
+        - { name: ENABLE_PROFILER, value: "0" }
+        resources:
+          requests: { cpu: 1000m, memory: 128Mi }
+          limits:   { cpu: 1600m, memory: 256Mi }
+
+      - name: recommendation
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/recommendationservice:v0.10.3
+        ports:
+        - containerPort: 8081   # 既定 8080 は frontend と衝突するので PORT=8081 に変更
+        readinessProbe:
+          periodSeconds: 5
+          grpc: { port: 8081 }
+        livenessProbe:
+          periodSeconds: 30
+          grpc: { port: 8081 }
+        env:
+        - { name: PORT, value: "8081" }   # ← 既定 8080 から変更 (frontend 8080 と同居のため)
+        - { name: PRODUCT_CATALOG_SERVICE_ADDR, value: "productcatalogservice:3550" }
+        - { name: DISABLE_PROFILER, value: "1" }
+        resources:
+          requests: { cpu: 1200m, memory: 220Mi }
+          limits:   { cpu: 1600m, memory: 450Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels: { app: frontend }
+spec:
+  type: ClusterIP
+  selector: { app: frontend }
+  ports:
+  - { name: http, port: 80, targetPort: 8080 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: recommendationservice
+  labels: { app: recommendationservice }
+spec:
+  type: ClusterIP
+  selector: { app: frontend }
+  ports:
+  - { name: grpc, port: 8080, targetPort: 8081 }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: frontend }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: recommendationservice }
