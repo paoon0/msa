@@ -1,0 +1,121 @@
+================ BUNDLE-VS-LOSS2 START 2026-10-15T13:43:45+09:00 arms=[normal pairsP1b pairsP2 pairsP3 pairsQ1 pairsQ2 pairsQ3] rates=[200 260] cycles=1 HPA=70%/1-12台 warm=60s meas=60s browse=0周/s sample=15s 様子見=増30s/減60s 開始2台 rightsize=1 limit_x=0 grpc_lb=1 ================
+  点ごとリセット: points=[b50v300] starts=[4] shuffle=0(seed 1) rotate_arms=0 settle=35s ready_timeout=300s rs_strict=1 check_frames=1 limit_override=[frontend=3000m productcatalogservice=3000m adservice=1000m] rs_services=[frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice] cool=70℃
+################ CYCLE 1 / 1 2026-10-15T13:43:45+09:00 ################
+---- deploy normal (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: ../rightsizing/rightsize-pdist-k3.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+error: failed to patch resources update to pod template Deployment.apps "adservice" is invalid: spec.template.spec.containers[0].resources.requests: Invalid value: "600m": must be less than or equal to cpu limit of 500m
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  枠(req/上限lim): adservice=server:300m/1, cartservice=server:127m/960m, checkoutservice=checkout:78m/1200m, currencyservice=server:220m/1600m, emailservice=email:31m/300m, frontend=server:477m/3, paymentservice=payment:24m/300m, productcatalogservice=server:276m/3, recommendationservice=server:314m/1600m, redis-cart=redis:300m/500m, shippingservice=server:32m/560m, 
+  !! 枠不一致 (rc=1): 表=../rightsizing/rightsize-pdist-k3.csv
+     deploy=adservice container=server requests 期待 600m 実際 300m
+!! アーム中止 [normal]: 枠不一致
+!! アーム中止 [cyc1][normal]: デプロイ失敗 (上の「!!」行を見ること)。次のアームへ
+---- deploy pairsP1b (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: ../rightsizing/rightsize-pdist-k3.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+error: failed to patch resources update to pod template Deployment.apps "adservice" is invalid: spec.template.spec.containers[0].resources.requests: Invalid value: "600m": must be less than or equal to cpu limit of 500m
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: productcatalogservice (recommendation+img)
+  枠(req/上限lim): adservice=server:300m/1, cartservice=server:127m/960m, checkoutservice=checkout:78m/1200m,shipping:32m/560m, currencyservice=server:220m/1600m, emailservice=email:31m/300m, frontend=server:477m/3, paymentservice=payment:24m/300m, productcatalogservice=server:276m/3,recommendation:314m/1600m, redis-cart=redis:300m/500m, 
+  !! 枠不一致 (rc=1): 表=../rightsizing/rightsize-pdist-k3.csv
+     deploy=adservice container=server requests 期待 600m 実際 300m
+!! アーム中止 [pairsP1b]: 枠不一致
+!! アーム中止 [cyc1][pairsP1b]: デプロイ失敗 (上の「!!」行を見ること)。次のアームへ
+---- deploy pairsP2 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: ../rightsizing/rightsize-pdist-k3.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+error: failed to patch resources update to pod template Deployment.apps "adservice" is invalid: spec.template.spec.containers[0].resources.requests: Invalid value: "600m": must be less than or equal to cpu limit of 500m
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: productcatalogservice (checkout+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  枠(req/上限lim): adservice=server:300m/1, currencyservice=server:220m/1600m, emailservice=email:31m/300m, frontend=server:477m/3,cartservice:127m/960m, paymentservice=payment:24m/300m, productcatalogservice=server:276m/3,checkout:78m/1200m, recommendationservice=server:314m/1600m, redis-cart=redis:300m/500m, shippingservice=server:32m/560m, 
+  !! 枠不一致 (rc=1): 表=../rightsizing/rightsize-pdist-k3.csv
+     deploy=adservice container=server requests 期待 600m 実際 300m
+!! アーム中止 [pairsP2]: 枠不一致
+!! アーム中止 [cyc1][pairsP2]: デプロイ失敗 (上の「!!」行を見ること)。次のアームへ
+---- deploy pairsP3 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: ../rightsizing/rightsize-pdist-k3.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+error: failed to patch resources update to pod template Deployment.apps "adservice" is invalid: spec.template.spec.containers[0].resources.requests: Invalid value: "600m": must be less than or equal to cpu limit of 500m
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  枠(req/上限lim): adservice=server:300m/1, cartservice=server:127m/960m, checkoutservice=checkout:78m/1200m,currency:220m/1600m, emailservice=email:31m/300m, frontend=server:477m/3,productcatalog:276m/3, paymentservice=payment:24m/300m, recommendationservice=server:314m/1600m, redis-cart=redis:300m/500m, shippingservice=server:32m/560m, 
+  !! 枠不一致 (rc=1): 表=../rightsizing/rightsize-pdist-k3.csv
+     deploy=adservice container=server requests 期待 600m 実際 300m
+!! アーム中止 [pairsP3]: 枠不一致
+!! アーム中止 [cyc1][pairsP3]: デプロイ失敗 (上の「!!」行を見ること)。次のアームへ
+---- deploy pairsQ1 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: ../rightsizing/rightsize-pdist-k3.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+error: failed to patch resources update to pod template Deployment.apps "adservice" is invalid: spec.template.spec.containers[0].resources.requests: Invalid value: "600m": must be less than or equal to cpu limit of 500m
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  枠(req/上限lim): adservice=server:300m/1, checkoutservice=checkout:78m/1200m,cartservice:127m/960m, emailservice=email:31m/300m, frontend=server:477m/3,currency:220m/1600m, paymentservice=payment:24m/300m, productcatalogservice=server:276m/3, recommendationservice=server:314m/1600m, redis-cart=redis:300m/500m, shippingservice=server:32m/560m, 
+  !! 枠不一致 (rc=1): 表=../rightsizing/rightsize-pdist-k3.csv
+     deploy=adservice container=server requests 期待 600m 実際 300m
+!! アーム中止 [pairsQ1]: 枠不一致
+!! アーム中止 [cyc1][pairsQ1]: デプロイ失敗 (上の「!!」行を見ること)。次のアームへ
+---- deploy pairsQ2 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: ../rightsizing/rightsize-pdist-k3.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+error: failed to patch resources update to pod template Deployment.apps "adservice" is invalid: spec.template.spec.containers[0].resources.requests: Invalid value: "600m": must be less than or equal to cpu limit of 500m
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img, recommendation+img)
+  枠(req/上限lim): adservice=server:300m/1, cartservice=server:127m/960m, checkoutservice=checkout:78m/1200m, currencyservice=server:220m/1600m, emailservice=email:31m/300m, frontend=server:477m/3,recommendation:314m/1600m, paymentservice=payment:24m/300m, productcatalogservice=server:276m/3, redis-cart=redis:300m/500m, shippingservice=server:32m/560m, 
+  !! 枠不一致 (rc=1): 表=../rightsizing/rightsize-pdist-k3.csv
+     deploy=adservice container=server requests 期待 600m 実際 300m
+!! アーム中止 [pairsQ2]: 枠不一致
+!! アーム中止 [cyc1][pairsQ2]: デプロイ失敗 (上の「!!」行を見ること)。次のアームへ
+---- deploy pairsQ3 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: ../rightsizing/rightsize-pdist-k3.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+error: failed to patch resources update to pod template Deployment.apps "adservice" is invalid: spec.template.spec.containers[0].resources.requests: Invalid value: "600m": must be less than or equal to cpu limit of 500m
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: frontend (server+img, checkout+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  枠(req/上限lim): adservice=server:300m/1, cartservice=server:127m/960m, currencyservice=server:220m/1600m, emailservice=email:31m/300m, frontend=server:477m/3,checkout:78m/1200m, paymentservice=payment:24m/300m, productcatalogservice=server:276m/3, recommendationservice=server:314m/1600m, redis-cart=redis:300m/500m, shippingservice=server:32m/560m, 
+  !! 枠不一致 (rc=1): 表=../rightsizing/rightsize-pdist-k3.csv
+     deploy=adservice container=server requests 期待 600m 実際 300m
+!! アーム中止 [pairsQ3]: 枠不一致
+!! アーム中止 [cyc1][pairsQ3]: デプロイ失敗 (上の「!!」行を見ること)。次のアームへ
+================ BUNDLE-VS-LOSS2 DONE 2026-10-15T13:52:48+09:00 ================
+================ BUNDLE-VS-LOSS2 START 2026-10-15T14:00:46+09:00 arms=[normal] rates=[200 260] cycles=1 HPA=70%/1-12台 warm=60s meas=60s browse=0周/s sample=15s 様子見=増30s/減60s 開始2台 rightsize=1 limit_x=0 grpc_lb=1 ================
+  点ごとリセット: points=[b50v300] starts=[4] shuffle=0(seed 1) rotate_arms=0 settle=35s ready_timeout=300s rs_strict=1 check_frames=1 limit_override=[frontend=3000m productcatalogservice=3000m adservice=1000m] rs_services=[frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice] cool=70℃
+################ CYCLE 1 / 1 2026-10-15T14:00:46+09:00 ################
+---- deploy normal (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: ../rightsizing/rightsize-pdist-k3.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:127m/960m, checkoutservice=checkout:78m/1200m, currencyservice=server:220m/1600m, emailservice=email:31m/300m, frontend=server:477m/3, paymentservice=payment:24m/300m, productcatalogservice=server:276m/3, recommendationservice=server:314m/1600m, redis-cart=redis:300m/500m, shippingservice=server:32m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc1][normal] 点×開始台数の順番: b50v300:4
+  冷却待ち 0s → 48℃
+---- 点のリセット [normal][b50v300] 開始4台 2026-10-15T14:02:12+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=4/4 cartservice=4/4 checkoutservice=4/4 currencyservice=4/4 emailservice=4/4 frontend=4/4 paymentservice=4/4 productcatalogservice=4/4 recommendationservice=4/4 redis-cart=1/1 shippingservice=4/4 
+==== [cyc1][normal] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始4台 2026-10-15T14:03:23+09:00 ====
+  HPA作成: k6 Job の apply 直後から 4 秒で完了
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=8 p99=499 | 動作中の枠=8.18コア(Pending分 0.00) Pod=41(Pending 0) | CPU時間=390秒(うちsoftirq 26秒 / k6 14秒)
+     種類別p50: 商品6 / カート7 / 購入10 ms
+     確保したCPU: 548.5 コア秒(窓平均 9.142 コア, 4 サンプル) / 使ったCPU: 390 コア秒
+     台数: adservice:1 cartservice:7 checkoutservice:3 currencyservice:5 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:5 recommendationservice:4 redis-cart:1 shippingservice:3
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:4 cartservice:4 checkoutservice:4 currencyservice:5 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=6 p99=485 ms
+================ BUNDLE-VS-LOSS2 DONE 2026-10-15T14:05:57+09:00 ================

@@ -220,7 +220,8 @@ apply_normal_except(){
 
 apply_arm(){ local arm=$1
   case "$arm" in
-    normal)       for f in frontend checkoutservice cartservice productcatalogservice currencyservice \
+    # normal2 = normal と同じ構成 (2026-10-15: 分離だけ 1 サイクルに 2 回測るため。アーム名を分けて回の取り違えを防ぐ)
+    normal|normal2) for f in frontend checkoutservice cartservice productcatalogservice currencyservice \
                             paymentservice shippingservice emailservice recommendationservice adservice; do
                     kubectl apply -f $REPO/km2/normal/$f.yaml -n $NS >/dev/null; done ;;
     frontcatalog) for y in $REPO/km2/variants/frontcatalog/*.yaml;do case "$y" in *kustomization*|*loadgenerator*)continue;;esac

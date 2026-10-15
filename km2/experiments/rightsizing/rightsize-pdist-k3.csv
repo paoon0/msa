@@ -8,5 +8,5 @@ paymentservice,payment,24
 shippingservice,server,32
 emailservice,email,31
 recommendationservice,server,314
-adservice,server,600
+adservice,server,800
 redis-cart,redis,300

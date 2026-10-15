@@ -150,6 +150,10 @@ for it in d.get('items', []):
             cur_lim = _cpu_m(((c.get('resources') or {}).get('limits') or {}).get('cpu'))
             if cur_lim > 0:
                 flags += " --limits=cpu=%dm" % round(cur_lim * limit_scale)
+        elif key[0] in limit_override:
+            # 2026-10-15: requests と limits の上書きを同じコマンドで出す。別々だと、新しい requests がマニフェストの
+            # limits を超えるとき (ad 600m > 500m) に requests の置換が API に拒否される。後段の lim_cmds は同じ値なので無害。
+            flags += " --limits=cpu=%dm" % round(limit_override[key[0]])
         cmds.append("kubectl set resources deploy/%s -n %s --containers=%s %s >/dev/null"
                     % (dep, ns, cn, flags))
 for m in missing:
