@@ -1,0 +1,32 @@
+NAME                                         READY   STATUS                   RESTARTS       AGE   IP           NODE                NOMINATED NODE   READINESS GATES
+pod/adservice-75994b8bc-7pbh2                1/1     Running                  2              22h   10.1.98.59   mizuki-nuc12wshi7   <none>           <none>
+pod/currencyservice-86c46696dc-p6b9n         1/1     Running                  5 (5h8m ago)   22h   10.1.98.15   mizuki-nuc12wshi7   <none>           <none>
+pod/emailservice-5f478b494-6xlqv             1/1     Running                  2              22h   10.1.98.2    mizuki-nuc12wshi7   <none>           <none>
+pod/frontend-6c8fd887c8-7nrsn                2/2     Running                  4              22h   10.1.98.23   mizuki-nuc12wshi7   <none>           <none>
+pod/paymentservice-778456f75d-v4w5t          1/1     Running                  5 (5h2m ago)   22h   10.1.98.49   mizuki-nuc12wshi7   <none>           <none>
+pod/productcatalogservice-6f96b4565c-bknrf   2/2     Running                  4              22h   10.1.98.25   mizuki-nuc12wshi7   <none>           <none>
+pod/promq                                    0/1     ContainerStatusUnknown   1              32h   <none>       mizuki-nuc12wshi7   <none>           <none>
+pod/recommendationservice-85cb696498-4lx2p   1/1     Running                  2              22h   10.1.98.32   mizuki-nuc12wshi7   <none>           <none>
+pod/redis-cart-757565597c-txpbw              1/1     Running                  2              22h   10.1.98.27   mizuki-nuc12wshi7   <none>           <none>
+pod/shippingservice-7999cbcd5-cwf2x          1/1     Running                  2              22h   10.1.98.60   mizuki-nuc12wshi7   <none>           <none>
+
+NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS           IMAGES                                                                                                                   SELECTOR
+deployment.apps/adservice               1/1     1            1           22h   server               us-central1-docker.pkg.dev/google-samples/microservices-demo/adservice:v0.10.3                                           app=adservice
+deployment.apps/currencyservice         1/1     1            1           22h   server               us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice:v0.10.3                                     app=currencyservice
+deployment.apps/emailservice            1/1     1            1           22h   email                us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice:v0.10.3                                        app=emailservice
+deployment.apps/frontend                1/1     1            1           22h   server,cartservice   mizuki0118/mygo:frontend-lb,us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice:v0.10.3             app=frontend
+deployment.apps/paymentservice          1/1     1            1           22h   payment              us-central1-docker.pkg.dev/google-samples/microservices-demo/paymentservice:v0.10.3                                      app=paymentservice
+deployment.apps/productcatalogservice   1/1     1            1           22h   server,checkout      us-central1-docker.pkg.dev/google-samples/microservices-demo/productcatalogservice:v0.10.3,mizuki0118/mygo:checkout-lb   app=productcatalogservice
+deployment.apps/recommendationservice   1/1     1            1           22h   server               mizuki0118/mygo:reco-lb                                                                                                  app=recommendationservice
+deployment.apps/redis-cart              1/1     1            1           22h   redis                redis:alpine                                                                                                             app=redis-cart
+deployment.apps/shippingservice         1/1     1            1           22h   server               us-central1-docker.pkg.dev/google-samples/microservices-demo/shippingservice:v0.10.3                                     app=shippingservice
+
+NAME                                                        REFERENCE                          TARGETS                    MINPODS   MAXPODS   REPLICAS   AGE
+horizontalpodautoscaler.autoscaling/adservice               Deployment/adservice               cpu: 0%/70%                1         12        1          21h
+horizontalpodautoscaler.autoscaling/currencyservice         Deployment/currencyservice         cpu: 0%/70%                1         12        1          21h
+horizontalpodautoscaler.autoscaling/emailservice            Deployment/emailservice            cpu: 9%/70%                1         12        1          21h
+horizontalpodautoscaler.autoscaling/frontend                Deployment/frontend                cpu: 0%/70%, cpu: 0%/70%   1         12        1          21h
+horizontalpodautoscaler.autoscaling/paymentservice          Deployment/paymentservice          cpu: 4%/70%                1         12        1          21h
+horizontalpodautoscaler.autoscaling/productcatalogservice   Deployment/productcatalogservice   cpu: 0%/70%, cpu: 3%/70%   1         12        1          21h
+horizontalpodautoscaler.autoscaling/recommendationservice   Deployment/recommendationservice   cpu: 0%/70%                1         12        1          21h
+horizontalpodautoscaler.autoscaling/shippingservice         Deployment/shippingservice         cpu: 3%/70%                1         12        1          21h

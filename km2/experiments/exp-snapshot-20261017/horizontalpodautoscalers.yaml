@@ -1,0 +1,616 @@
+apiVersion: v1
+items:
+- apiVersion: autoscaling/v2
+  kind: HorizontalPodAutoscaler
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"autoscaling/v2","kind":"HorizontalPodAutoscaler","metadata":{"annotations":{},"name":"adservice","namespace":"exp"},"spec":{"behavior":{"scaleDown":{"stabilizationWindowSeconds":60},"scaleUp":{"stabilizationWindowSeconds":30}},"maxReplicas":12,"metrics":[{"containerResource":{"container":"server","name":"cpu","target":{"averageUtilization":70,"type":"Utilization"}},"type":"ContainerResource"}],"minReplicas":1,"scaleTargetRef":{"apiVersion":"apps/v1","kind":"Deployment","name":"adservice"}}}
+    creationTimestamp: "2026-10-16T01:40:27Z"
+    name: adservice
+    namespace: exp
+    resourceVersion: "19763523"
+    uid: d0476f68-1472-4693-8cbd-6de2bdee6a0b
+  spec:
+    behavior:
+      scaleDown:
+        policies:
+        - periodSeconds: 15
+          type: Percent
+          value: 100
+        selectPolicy: Max
+        stabilizationWindowSeconds: 60
+      scaleUp:
+        policies:
+        - periodSeconds: 15
+          type: Pods
+          value: 4
+        - periodSeconds: 15
+          type: Percent
+          value: 100
+        selectPolicy: Max
+        stabilizationWindowSeconds: 30
+    maxReplicas: 12
+    metrics:
+    - containerResource:
+        container: server
+        name: cpu
+        target:
+          averageUtilization: 70
+          type: Utilization
+      type: ContainerResource
+    minReplicas: 1
+    scaleTargetRef:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: adservice
+  status:
+    conditions:
+    - lastTransitionTime: "2026-10-16T01:40:42Z"
+      message: recommended size matches current size
+      reason: ReadyForNewScale
+      status: "True"
+      type: AbleToScale
+    - lastTransitionTime: "2026-10-16T01:40:42Z"
+      message: the HPA was able to successfully calculate a replica count from cpu
+        container resource utilization (percentage of request)
+      reason: ValidMetricFound
+      status: "True"
+      type: ScalingActive
+    - lastTransitionTime: "2026-10-16T21:13:25Z"
+      message: the desired replica count is less than the minimum replica count
+      reason: TooFewReplicas
+      status: "True"
+      type: ScalingLimited
+    currentMetrics:
+    - containerResource:
+        container: server
+        current:
+          averageUtilization: 0
+          averageValue: 2m
+        name: cpu
+      type: ContainerResource
+    currentReplicas: 1
+    desiredReplicas: 1
+- apiVersion: autoscaling/v2
+  kind: HorizontalPodAutoscaler
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"autoscaling/v2","kind":"HorizontalPodAutoscaler","metadata":{"annotations":{},"name":"currencyservice","namespace":"exp"},"spec":{"behavior":{"scaleDown":{"stabilizationWindowSeconds":60},"scaleUp":{"stabilizationWindowSeconds":30}},"maxReplicas":12,"metrics":[{"containerResource":{"container":"server","name":"cpu","target":{"averageUtilization":70,"type":"Utilization"}},"type":"ContainerResource"}],"minReplicas":1,"scaleTargetRef":{"apiVersion":"apps/v1","kind":"Deployment","name":"currencyservice"}}}
+    creationTimestamp: "2026-10-16T01:40:27Z"
+    name: currencyservice
+    namespace: exp
+    resourceVersion: "19763474"
+    uid: 9e3f5115-73e5-4cb9-a8fa-fff16dbe2f17
+  spec:
+    behavior:
+      scaleDown:
+        policies:
+        - periodSeconds: 15
+          type: Percent
+          value: 100
+        selectPolicy: Max
+        stabilizationWindowSeconds: 60
+      scaleUp:
+        policies:
+        - periodSeconds: 15
+          type: Pods
+          value: 4
+        - periodSeconds: 15
+          type: Percent
+          value: 100
+        selectPolicy: Max
+        stabilizationWindowSeconds: 30
+    maxReplicas: 12
+    metrics:
+    - containerResource:
+        container: server
+        name: cpu
+        target:
+          averageUtilization: 70
+          type: Utilization
+      type: ContainerResource
+    minReplicas: 1
+    scaleTargetRef:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: currencyservice
+  status:
+    conditions:
+    - lastTransitionTime: "2026-10-16T01:40:42Z"
+      message: recommended size matches current size
+      reason: ReadyForNewScale
+      status: "True"
+      type: AbleToScale
+    - lastTransitionTime: "2026-10-16T18:18:58Z"
+      message: the HPA was able to successfully calculate a replica count from cpu
+        container resource utilization (percentage of request)
+      reason: ValidMetricFound
+      status: "True"
+      type: ScalingActive
+    - lastTransitionTime: "2026-10-16T23:25:20Z"
+      message: the desired replica count is less than the minimum replica count
+      reason: TooFewReplicas
+      status: "True"
+      type: ScalingLimited
+    currentMetrics:
+    - containerResource:
+        container: server
+        current:
+          averageUtilization: 0
+          averageValue: 1m
+        name: cpu
+      type: ContainerResource
+    currentReplicas: 1
+    desiredReplicas: 1
+    lastScaleTime: "2026-10-16T01:48:42Z"
+- apiVersion: autoscaling/v2
+  kind: HorizontalPodAutoscaler
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"autoscaling/v2","kind":"HorizontalPodAutoscaler","metadata":{"annotations":{},"name":"emailservice","namespace":"exp"},"spec":{"behavior":{"scaleDown":{"stabilizationWindowSeconds":60},"scaleUp":{"stabilizationWindowSeconds":30}},"maxReplicas":12,"metrics":[{"containerResource":{"container":"email","name":"cpu","target":{"averageUtilization":70,"type":"Utilization"}},"type":"ContainerResource"}],"minReplicas":1,"scaleTargetRef":{"apiVersion":"apps/v1","kind":"Deployment","name":"emailservice"}}}
+    creationTimestamp: "2026-10-16T01:40:27Z"
+    name: emailservice
+    namespace: exp
+    resourceVersion: "19763377"
+    uid: 592df9b3-82f5-4462-80a1-445ea1e3e8b0
+  spec:
+    behavior:
+      scaleDown:
+        policies:
+        - periodSeconds: 15
+          type: Percent
+          value: 100
+        selectPolicy: Max
+        stabilizationWindowSeconds: 60
+      scaleUp:
+        policies:
+        - periodSeconds: 15
+          type: Pods
+          value: 4
+        - periodSeconds: 15
+          type: Percent
+          value: 100
+        selectPolicy: Max
+        stabilizationWindowSeconds: 30
+    maxReplicas: 12
+    metrics:
+    - containerResource:
+        container: email
+        name: cpu
+        target:
+          averageUtilization: 70
+          type: Utilization
+      type: ContainerResource
+    minReplicas: 1
+    scaleTargetRef:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: emailservice
+  status:
+    conditions:
+    - lastTransitionTime: "2026-10-16T01:40:42Z"
+      message: recommended size matches current size
+      reason: ReadyForNewScale
+      status: "True"
+      type: AbleToScale
+    - lastTransitionTime: "2026-10-16T01:40:42Z"
+      message: the HPA was able to successfully calculate a replica count from cpu
+        container resource utilization (percentage of request)
+      reason: ValidMetricFound
+      status: "True"
+      type: ScalingActive
+    - lastTransitionTime: "2026-10-16T01:40:42Z"
+      message: the desired count is within the acceptable range
+      reason: DesiredWithinRange
+      status: "False"
+      type: ScalingLimited
+    currentMetrics:
+    - containerResource:
+        container: email
+        current:
+          averageUtilization: 9
+          averageValue: 3m
+        name: cpu
+      type: ContainerResource
+    currentReplicas: 1
+    desiredReplicas: 1
+    lastScaleTime: "2026-10-16T01:48:43Z"
+- apiVersion: autoscaling/v2
+  kind: HorizontalPodAutoscaler
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"autoscaling/v2","kind":"HorizontalPodAutoscaler","metadata":{"annotations":{},"name":"frontend","namespace":"exp"},"spec":{"behavior":{"scaleDown":{"stabilizationWindowSeconds":60},"scaleUp":{"stabilizationWindowSeconds":30}},"maxReplicas":12,"metrics":[{"containerResource":{"container":"server","name":"cpu","target":{"averageUtilization":70,"type":"Utilization"}},"type":"ContainerResource"},{"containerResource":{"container":"cartservice","name":"cpu","target":{"averageUtilization":70,"type":"Utilization"}},"type":"ContainerResource"}],"minReplicas":1,"scaleTargetRef":{"apiVersion":"apps/v1","kind":"Deployment","name":"frontend"}}}
+    creationTimestamp: "2026-10-16T01:40:28Z"
+    name: frontend
+    namespace: exp
+    resourceVersion: "19763187"
+    uid: e8057538-37b3-433f-9cd5-d128632a1c97
+  spec:
+    behavior:
+      scaleDown:
+        policies:
+        - periodSeconds: 15
+          type: Percent
+          value: 100
+        selectPolicy: Max
+        stabilizationWindowSeconds: 60
+      scaleUp:
+        policies:
+        - periodSeconds: 15
+          type: Pods
+          value: 4
+        - periodSeconds: 15
+          type: Percent
+          value: 100
+        selectPolicy: Max
+        stabilizationWindowSeconds: 30
+    maxReplicas: 12
+    metrics:
+    - containerResource:
+        container: server
+        name: cpu
+        target:
+          averageUtilization: 70
+          type: Utilization
+      type: ContainerResource
+    - containerResource:
+        container: cartservice
+        name: cpu
+        target:
+          averageUtilization: 70
+          type: Utilization
+      type: ContainerResource
+    minReplicas: 1
+    scaleTargetRef:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: frontend
+  status:
+    conditions:
+    - lastTransitionTime: "2026-10-16T01:40:43Z"
+      message: recommended size matches current size
+      reason: ReadyForNewScale
+      status: "True"
+      type: AbleToScale
+    - lastTransitionTime: "2026-10-16T01:40:43Z"
+      message: the HPA was able to successfully calculate a replica count from cpu
+        container resource utilization (percentage of request)
+      reason: ValidMetricFound
+      status: "True"
+      type: ScalingActive
+    - lastTransitionTime: "2026-10-16T23:25:35Z"
+      message: the desired replica count is less than the minimum replica count
+      reason: TooFewReplicas
+      status: "True"
+      type: ScalingLimited
+    currentMetrics:
+    - containerResource:
+        container: server
+        current:
+          averageUtilization: 0
+          averageValue: 1m
+        name: cpu
+      type: ContainerResource
+    - containerResource:
+        container: cartservice
+        current:
+          averageUtilization: 0
+          averageValue: 1m
+        name: cpu
+      type: ContainerResource
+    currentReplicas: 1
+    desiredReplicas: 1
+    lastScaleTime: "2026-10-16T01:48:43Z"
+- apiVersion: autoscaling/v2
+  kind: HorizontalPodAutoscaler
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"autoscaling/v2","kind":"HorizontalPodAutoscaler","metadata":{"annotations":{},"name":"paymentservice","namespace":"exp"},"spec":{"behavior":{"scaleDown":{"stabilizationWindowSeconds":60},"scaleUp":{"stabilizationWindowSeconds":30}},"maxReplicas":12,"metrics":[{"containerResource":{"container":"payment","name":"cpu","target":{"averageUtilization":70,"type":"Utilization"}},"type":"ContainerResource"}],"minReplicas":1,"scaleTargetRef":{"apiVersion":"apps/v1","kind":"Deployment","name":"paymentservice"}}}
+    creationTimestamp: "2026-10-16T01:40:28Z"
+    name: paymentservice
+    namespace: exp
+    resourceVersion: "19763241"
+    uid: 5792180f-b755-4b09-a7c0-c47b6990beb0
+  spec:
+    behavior:
+      scaleDown:
+        policies:
+        - periodSeconds: 15
+          type: Percent
+          value: 100
+        selectPolicy: Max
+        stabilizationWindowSeconds: 60
+      scaleUp:
+        policies:
+        - periodSeconds: 15
+          type: Pods
+          value: 4
+        - periodSeconds: 15
+          type: Percent
+          value: 100
+        selectPolicy: Max
+        stabilizationWindowSeconds: 30
+    maxReplicas: 12
+    metrics:
+    - containerResource:
+        container: payment
+        name: cpu
+        target:
+          averageUtilization: 70
+          type: Utilization
+      type: ContainerResource
+    minReplicas: 1
+    scaleTargetRef:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: paymentservice
+  status:
+    conditions:
+    - lastTransitionTime: "2026-10-16T01:40:43Z"
+      message: recommended size matches current size
+      reason: ReadyForNewScale
+      status: "True"
+      type: AbleToScale
+    - lastTransitionTime: "2026-10-16T11:51:54Z"
+      message: the HPA was able to successfully calculate a replica count from cpu
+        container resource utilization (percentage of request)
+      reason: ValidMetricFound
+      status: "True"
+      type: ScalingActive
+    - lastTransitionTime: "2026-10-16T01:40:43Z"
+      message: the desired count is within the acceptable range
+      reason: DesiredWithinRange
+      status: "False"
+      type: ScalingLimited
+    currentMetrics:
+    - containerResource:
+        container: payment
+        current:
+          averageUtilization: 4
+          averageValue: 1m
+        name: cpu
+      type: ContainerResource
+    currentReplicas: 1
+    desiredReplicas: 1
+    lastScaleTime: "2026-10-16T11:53:09Z"
+- apiVersion: autoscaling/v2
+  kind: HorizontalPodAutoscaler
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"autoscaling/v2","kind":"HorizontalPodAutoscaler","metadata":{"annotations":{},"name":"productcatalogservice","namespace":"exp"},"spec":{"behavior":{"scaleDown":{"stabilizationWindowSeconds":60},"scaleUp":{"stabilizationWindowSeconds":30}},"maxReplicas":12,"metrics":[{"containerResource":{"container":"server","name":"cpu","target":{"averageUtilization":70,"type":"Utilization"}},"type":"ContainerResource"},{"containerResource":{"container":"checkout","name":"cpu","target":{"averageUtilization":70,"type":"Utilization"}},"type":"ContainerResource"}],"minReplicas":1,"scaleTargetRef":{"apiVersion":"apps/v1","kind":"Deployment","name":"productcatalogservice"}}}
+    creationTimestamp: "2026-10-16T01:40:28Z"
+    name: productcatalogservice
+    namespace: exp
+    resourceVersion: "19763476"
+    uid: 19b89bb9-8427-42ca-9fee-230f6f1230ab
+  spec:
+    behavior:
+      scaleDown:
+        policies:
+        - periodSeconds: 15
+          type: Percent
+          value: 100
+        selectPolicy: Max
+        stabilizationWindowSeconds: 60
+      scaleUp:
+        policies:
+        - periodSeconds: 15
+          type: Pods
+          value: 4
+        - periodSeconds: 15
+          type: Percent
+          value: 100
+        selectPolicy: Max
+        stabilizationWindowSeconds: 30
+    maxReplicas: 12
+    metrics:
+    - containerResource:
+        container: server
+        name: cpu
+        target:
+          averageUtilization: 70
+          type: Utilization
+      type: ContainerResource
+    - containerResource:
+        container: checkout
+        name: cpu
+        target:
+          averageUtilization: 70
+          type: Utilization
+      type: ContainerResource
+    minReplicas: 1
+    scaleTargetRef:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: productcatalogservice
+  status:
+    conditions:
+    - lastTransitionTime: "2026-10-16T01:40:43Z"
+      message: recommended size matches current size
+      reason: ReadyForNewScale
+      status: "True"
+      type: AbleToScale
+    - lastTransitionTime: "2026-10-16T01:40:43Z"
+      message: the HPA was able to successfully calculate a replica count from cpu
+        container resource utilization (percentage of request)
+      reason: ValidMetricFound
+      status: "True"
+      type: ScalingActive
+    - lastTransitionTime: "2026-10-16T01:40:43Z"
+      message: the desired count is within the acceptable range
+      reason: DesiredWithinRange
+      status: "False"
+      type: ScalingLimited
+    currentMetrics:
+    - containerResource:
+        container: server
+        current:
+          averageUtilization: 0
+          averageValue: 1m
+        name: cpu
+      type: ContainerResource
+    - containerResource:
+        container: checkout
+        current:
+          averageUtilization: 3
+          averageValue: 3m
+        name: cpu
+      type: ContainerResource
+    currentReplicas: 1
+    desiredReplicas: 1
+    lastScaleTime: "2026-10-16T01:48:44Z"
+- apiVersion: autoscaling/v2
+  kind: HorizontalPodAutoscaler
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"autoscaling/v2","kind":"HorizontalPodAutoscaler","metadata":{"annotations":{},"name":"recommendationservice","namespace":"exp"},"spec":{"behavior":{"scaleDown":{"stabilizationWindowSeconds":60},"scaleUp":{"stabilizationWindowSeconds":30}},"maxReplicas":12,"metrics":[{"containerResource":{"container":"server","name":"cpu","target":{"averageUtilization":70,"type":"Utilization"}},"type":"ContainerResource"}],"minReplicas":1,"scaleTargetRef":{"apiVersion":"apps/v1","kind":"Deployment","name":"recommendationservice"}}}
+    creationTimestamp: "2026-10-16T01:40:29Z"
+    name: recommendationservice
+    namespace: exp
+    resourceVersion: "19756437"
+    uid: e528eb6f-bc6b-4559-8825-bda9d85bb3f0
+  spec:
+    behavior:
+      scaleDown:
+        policies:
+        - periodSeconds: 15
+          type: Percent
+          value: 100
+        selectPolicy: Max
+        stabilizationWindowSeconds: 60
+      scaleUp:
+        policies:
+        - periodSeconds: 15
+          type: Pods
+          value: 4
+        - periodSeconds: 15
+          type: Percent
+          value: 100
+        selectPolicy: Max
+        stabilizationWindowSeconds: 30
+    maxReplicas: 12
+    metrics:
+    - containerResource:
+        container: server
+        name: cpu
+        target:
+          averageUtilization: 70
+          type: Utilization
+      type: ContainerResource
+    minReplicas: 1
+    scaleTargetRef:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: recommendationservice
+  status:
+    conditions:
+    - lastTransitionTime: "2026-10-16T01:40:44Z"
+      message: recommended size matches current size
+      reason: ReadyForNewScale
+      status: "True"
+      type: AbleToScale
+    - lastTransitionTime: "2026-10-16T01:40:44Z"
+      message: the HPA was able to successfully calculate a replica count from cpu
+        container resource utilization (percentage of request)
+      reason: ValidMetricFound
+      status: "True"
+      type: ScalingActive
+    - lastTransitionTime: "2026-10-16T22:45:47Z"
+      message: the desired replica count is less than the minimum replica count
+      reason: TooFewReplicas
+      status: "True"
+      type: ScalingLimited
+    currentMetrics:
+    - containerResource:
+        container: server
+        current:
+          averageUtilization: 0
+          averageValue: 3m
+        name: cpu
+      type: ContainerResource
+    currentReplicas: 1
+    desiredReplicas: 1
+    lastScaleTime: "2026-10-16T01:48:44Z"
+- apiVersion: autoscaling/v2
+  kind: HorizontalPodAutoscaler
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"autoscaling/v2","kind":"HorizontalPodAutoscaler","metadata":{"annotations":{},"name":"shippingservice","namespace":"exp"},"spec":{"behavior":{"scaleDown":{"stabilizationWindowSeconds":60},"scaleUp":{"stabilizationWindowSeconds":30}},"maxReplicas":12,"metrics":[{"containerResource":{"container":"server","name":"cpu","target":{"averageUtilization":70,"type":"Utilization"}},"type":"ContainerResource"}],"minReplicas":1,"scaleTargetRef":{"apiVersion":"apps/v1","kind":"Deployment","name":"shippingservice"}}}
+    creationTimestamp: "2026-10-16T01:40:29Z"
+    name: shippingservice
+    namespace: exp
+    resourceVersion: "19763525"
+    uid: 76748301-06d4-49d4-856e-e867f7d287da
+  spec:
+    behavior:
+      scaleDown:
+        policies:
+        - periodSeconds: 15
+          type: Percent
+          value: 100
+        selectPolicy: Max
+        stabilizationWindowSeconds: 60
+      scaleUp:
+        policies:
+        - periodSeconds: 15
+          type: Pods
+          value: 4
+        - periodSeconds: 15
+          type: Percent
+          value: 100
+        selectPolicy: Max
+        stabilizationWindowSeconds: 30
+    maxReplicas: 12
+    metrics:
+    - containerResource:
+        container: server
+        name: cpu
+        target:
+          averageUtilization: 70
+          type: Utilization
+      type: ContainerResource
+    minReplicas: 1
+    scaleTargetRef:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: shippingservice
+  status:
+    conditions:
+    - lastTransitionTime: "2026-10-16T01:40:44Z"
+      message: recommended size matches current size
+      reason: ReadyForNewScale
+      status: "True"
+      type: AbleToScale
+    - lastTransitionTime: "2026-10-16T01:40:44Z"
+      message: the HPA was able to successfully calculate a replica count from cpu
+        container resource utilization (percentage of request)
+      reason: ValidMetricFound
+      status: "True"
+      type: ScalingActive
+    - lastTransitionTime: "2026-10-16T01:40:44Z"
+      message: the desired count is within the acceptable range
+      reason: DesiredWithinRange
+      status: "False"
+      type: ScalingLimited
+    currentMetrics:
+    - containerResource:
+        container: server
+        current:
+          averageUtilization: 3
+          averageValue: 1m
+        name: cpu
+      type: ContainerResource
+    currentReplicas: 1
+    desiredReplicas: 1
+    lastScaleTime: "2026-10-16T01:48:59Z"
+kind: List
+metadata:
+  resourceVersion: ""

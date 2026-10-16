@@ -1,0 +1,125 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    cni.projectcalico.org/containerID: 299f3a3ab678a991a1bd89a429417ce60a089f786f7ed4325a96c5304786dfc1
+    cni.projectcalico.org/podIP: 10.1.98.20/32
+    cni.projectcalico.org/podIPs: 10.1.98.20/32
+  creationTimestamp: "2026-10-15T15:10:09Z"
+  labels:
+    run: promq
+  name: promq
+  namespace: exp
+  resourceVersion: "19639428"
+  uid: 5350b7cc-b1aa-45d7-b20f-6e223fbb37c4
+spec:
+  containers:
+  - command:
+    - sleep
+    - "86400"
+    image: curlimages/curl:latest
+    imagePullPolicy: Always
+    name: promq
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-8mx9b
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: mizuki-nuc12wshi7
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: kube-api-access-8mx9b
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2026-10-16T12:48:05Z"
+    status: "False"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2026-10-15T15:10:09Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2026-10-16T12:48:05Z"
+    reason: PodFailed
+    status: "False"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2026-10-16T12:48:05Z"
+    reason: PodFailed
+    status: "False"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2026-10-15T15:10:09Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - image: curlimages/curl:latest
+    imageID: ""
+    lastState:
+      terminated:
+        exitCode: 137
+        finishedAt: null
+        message: The container could not be located when the pod was deleted.  The
+          container used to be Running
+        reason: ContainerStatusUnknown
+        startedAt: null
+    name: promq
+    ready: false
+    restartCount: 1
+    started: false
+    state:
+      terminated:
+        exitCode: 137
+        finishedAt: null
+        message: The container could not be located when the pod was terminated
+        reason: ContainerStatusUnknown
+        startedAt: null
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-8mx9b
+      readOnly: true
+      recursiveReadOnly: Disabled
+  hostIP: 192.168.3.29
+  hostIPs:
+  - ip: 192.168.3.29
+  phase: Failed
+  qosClass: BestEffort
+  startTime: "2026-10-15T15:10:09Z"
