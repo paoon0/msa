@@ -1,0 +1,77 @@
+# 2026-10-17 上流 (upstream/manifests) から生成。namespace を外し (apply -n exp)、mongo を 3.4 に固定、
+# nodeSelector を kubernetes.io/os に、Istio 注入なし、枠は測定用の仮 (アプリ 200m / DB 等 100m、上限 2000m、メモリは上流のまま)。
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  labels:
+    name: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: rabbitmq
+  template:
+    metadata:
+      labels:
+        name: rabbitmq
+      annotations:
+        prometheus.io/scrape: 'false'
+        sidecar.istio.io/inject: 'false'
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3.6.8-management
+        ports:
+        - containerPort: 15672
+          name: management
+        - containerPort: 5672
+          name: rabbitmq
+        securityContext:
+          capabilities:
+            drop:
+            - all
+            add:
+            - CHOWN
+            - SETGID
+            - SETUID
+            - DAC_OVERRIDE
+          readOnlyRootFilesystem: true
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            cpu: 2000m
+      - name: rabbitmq-exporter
+        image: kbudde/rabbitmq-exporter
+        ports:
+        - containerPort: 9090
+          name: exporter
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            cpu: 2000m
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '9090'
+  labels:
+    name: rabbitmq
+spec:
+  ports:
+  - port: 5672
+    name: rabbitmq
+    targetPort: 5672
+  - port: 9090
+    name: exporter
+    targetPort: exporter
+    protocol: TCP
+  selector:
+    name: rabbitmq

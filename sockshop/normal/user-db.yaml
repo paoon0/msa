@@ -1,0 +1,62 @@
+# 2026-10-17 上流 (upstream/manifests) から生成。namespace を外し (apply -n exp)、mongo を 3.4 に固定、
+# nodeSelector を kubernetes.io/os に、Istio 注入なし、枠は測定用の仮 (アプリ 200m / DB 等 100m、上限 2000m、メモリは上流のまま)。
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-db
+  labels:
+    name: user-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: user-db
+  template:
+    metadata:
+      labels:
+        name: user-db
+      annotations:
+        sidecar.istio.io/inject: 'false'
+    spec:
+      containers:
+      - name: user-db
+        image: weaveworksdemos/user-db:0.3.0
+        ports:
+        - name: mongo
+          containerPort: 27017
+        securityContext:
+          capabilities:
+            drop:
+            - all
+            add:
+            - CHOWN
+            - SETGID
+            - SETUID
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            cpu: 2000m
+      volumes:
+      - name: tmp-volume
+        emptyDir:
+          medium: Memory
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-db
+  labels:
+    name: user-db
+spec:
+  ports:
+  - port: 27017
+    targetPort: 27017
+  selector:
+    name: user-db

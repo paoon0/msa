@@ -1,0 +1,46 @@
+# Sock Shop 用 k6 開ループ負荷 Job (km2/experiments/k6/k6-job.yaml の複製、スクリプトは ConfigMap k6-script の sockshop.js)。
+# __RATE__ / __DUR__ / __PRE__ / __MAX__ は run-k6.sh が sed で埋める。
+# k6終了後 handleSummary が @@@K6_BEGIN@@@..@@@K6_END@@@ を stdout へ。sleep でPod生存させ後追いscrape。
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: k6load
+  labels: { app: k6load }
+spec:
+  # 0 だと ConfigMap のマウントが一瞬失敗しただけで即あきらめ、7.7分の測定が丸ごと無駄になる。
+  # 実際 2026-09-01 の本走で 15回中2回 FailedMount("object exp/k6-script not registered")→
+  # BackoffLimitExceeded で欠測した。マウント失敗は数秒で分かるので、作り直せば十分間に合う。
+  backoffLimit: 3
+  template:
+    metadata:
+      labels: { app: k6load }
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      restartPolicy: Never
+      terminationGracePeriodSeconds: 5
+      containers:
+      - name: k6
+        image: grafana/k6:latest
+        command: ["sh","-c","mkdir -p /shared; k6 run /scripts/sockshop.js; echo '@@@K6_DONE@@@'; touch /shared/done; sleep 300"]
+        env:
+        - { name: BASE,     value: "http://front-end:80" }
+        - { name: RATE,     value: "__RATE__" }
+        - { name: BROWSE_RATE, value: "__BROWSE__" }
+        - { name: WARMUP,   value: "__WARM__" }
+        - { name: MEASURE,  value: "__MEAS__" }
+        - { name: PRE_VUS,  value: "__PRE__" }
+        - { name: MAX_VUS,  value: "__MAX__" }
+        - { name: NUSERS,   value: "__NUSERS__" }
+        volumeMounts:
+        - { name: script, mountPath: /scripts }
+        - { name: shared, mountPath: /shared }
+        resources:
+          # 過負荷域(400/500)でVU滞留によるOOMを避けるため増量(旧512Mi/1024Mi→OOMKilled実証済)
+          requests: { cpu: 800m, memory: 2048Mi }
+          limits:   { cpu: 2000m, memory: 4096Mi }
+      volumes:
+      - name: script
+        configMap: { name: k6-script }
+      - name: shared
+        emptyDir: {}

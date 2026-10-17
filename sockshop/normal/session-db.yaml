@@ -1,0 +1,64 @@
+# 2026-10-17 上流 (upstream/manifests) から生成。namespace を外し (apply -n exp)、mongo を 3.4 に固定、
+# nodeSelector を kubernetes.io/os に、Istio 注入なし、枠は測定用の仮 (アプリ 200m / DB 等 100m、上限 2000m、メモリは上流のまま)。
+# 2026-10-17: 上流は readOnlyRootFilesystem で /data に書けず、RDB 保存失敗 → MISCONF で書き込み停止 → ログイン失敗 → front-end が落ちた。/data に emptyDir を足した。
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: session-db
+  labels:
+    name: session-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: session-db
+  template:
+    metadata:
+      labels:
+        name: session-db
+      annotations:
+        prometheus.io.scrape: 'false'
+        sidecar.istio.io/inject: 'false'
+    spec:
+      containers:
+      - name: session-db
+        image: redis:alpine
+        ports:
+        - name: redis
+          containerPort: 6379
+        securityContext:
+          capabilities:
+            drop:
+            - all
+            add:
+            - CHOWN
+            - SETGID
+            - SETUID
+          readOnlyRootFilesystem: true
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            cpu: 2000m
+        volumeMounts:
+        - mountPath: /data
+          name: data
+      nodeSelector:
+        kubernetes.io/os: linux
+      volumes:
+      - name: data
+        emptyDir:
+          medium: Memory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: session-db
+  labels:
+    name: session-db
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    name: session-db
