@@ -78,7 +78,9 @@ export function setup() {
     }
     console.log(`setup: ${ok}/${NUSERS} users registered (prefix ${PREFIX})`);
   }
-  return { start: Date.now(), ok: ok, prefix: PREFIX };
+  const start = Date.now();
+  console.log(`@@@K6_START@@@ ${start}`);   // 負荷の開始時刻 [ms]。測定スクリプトが計測窓 = start + WARMUP 〜 + MEASURE を出す
+  return { start: start, ok: ok, prefix: PREFIX };
 }
 
 export function buyFlow(data) {
