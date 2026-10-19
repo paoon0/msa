@@ -1,5 +1,7 @@
 # 2026-10-17 上流 (upstream/manifests) から生成。namespace を外し (apply -n exp)、mongo を 3.4 に固定、
 # nodeSelector を kubernetes.io/os に、Istio 注入なし、枠は測定用の仮 (アプリ 200m / DB 等 100m、上限 2000m、メモリは上流のまま)。
+# 2026-10-19: readinessProbe を 8 つのアプリで統一 (initialDelaySeconds 10、他は既定 = period 10 s / timeout 1 s / failure 3。OB の km2/normal と同じ)。
+#   上流は catalogue/payment/user 180 s、front-end 30 s (period 3 s)、Java 4 つは無し。livenessProbe は上流のまま。
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -53,8 +55,7 @@ spec:
           httpGet:
             path: /health
             port: 80
-          initialDelaySeconds: 180
-          periodSeconds: 3
+          initialDelaySeconds: 10
       nodeSelector:
         kubernetes.io/os: linux
 ---

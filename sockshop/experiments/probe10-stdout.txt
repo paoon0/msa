@@ -1,0 +1,49 @@
+==== START 2026-10-19T14:45:30+09:00 tag=probe10 buy=24 view=120 load=1200s scale_at=720s ====
+---- 立て直し ----
+  全 Ready まで 45 s (apply から)
+  Pod 起動時刻 起動→Ready[s] 再起動
+  carts-5bf947c778-hnzn6 2026-10-19T05:46:05Z 33 0
+  carts-db-6cfc7758bd-6v5rh 2026-10-19T05:46:05Z 1 0
+  catalogue-7dd8669c7d-k954r 2026-10-19T05:46:05Z 12 0
+  catalogue-db-6d64bfb786-pphts 2026-10-19T05:46:05Z 1 0
+  front-end-667d765847-jjpmf 2026-10-19T05:46:05Z 12 0
+  orders-db-584697f84-56c42 2026-10-19T05:46:05Z 1 0
+  orders-f94b56b86-4klpq 2026-10-19T05:46:05Z 42 0
+  payment-749b688bd7-fxtd4 2026-10-19T05:46:05Z 13 0
+  queue-master-654c5d855b-8wm2h 2026-10-19T05:46:05Z 23 0
+  rabbitmq-68fcfc79b5-wl4xn 2026-10-19T05:46:06Z 3 0
+  session-db-7b79866754-x82ks 2026-10-19T05:46:06Z 1 0
+  shipping-698b844fbd-ng977 2026-10-19T05:46:06Z 33 0
+  user-587d9db8d5-6878t 2026-10-19T05:46:07Z 12 0
+  user-db-64496f96bc-zn7cs 2026-10-19T05:46:07Z 1 0
+---- 負荷 b24v120 を 1200s ----
+  負荷開始 2026-10-19T14:47:31+09:00
+  t=724s アプリ 8 つを 2 台に
+---- 2 台目の 起動→Ready ----
+  carts-5bf947c778-4t6bg 2026-10-19T05:59:37Z 42 0
+  carts-5bf947c778-hnzn6 2026-10-19T05:46:05Z 33 0
+  carts-db-6cfc7758bd-6v5rh 2026-10-19T05:46:05Z 1 0
+  catalogue-7dd8669c7d-bctjs 2026-10-19T05:59:36Z 13 0
+  catalogue-7dd8669c7d-k954r 2026-10-19T05:46:05Z 12 0
+  catalogue-db-6d64bfb786-pphts 2026-10-19T05:46:05Z 1 0
+  front-end-667d765847-jjpmf 2026-10-19T05:46:05Z 12 0
+  front-end-667d765847-wx2pk 2026-10-19T05:59:36Z 11 0
+  orders-db-584697f84-56c42 2026-10-19T05:46:05Z 1 0
+  orders-f94b56b86-4klpq 2026-10-19T05:46:05Z 42 0
+  orders-f94b56b86-frqtk 2026-10-19T05:59:37Z 42 0
+  payment-749b688bd7-fxtd4 2026-10-19T05:46:05Z 13 0
+  payment-749b688bd7-rgjj5 2026-10-19T05:59:37Z 11 0
+  queue-master-654c5d855b-2xj6f 2026-10-19T05:59:38Z 21 0
+  queue-master-654c5d855b-8wm2h 2026-10-19T05:46:05Z 23 0
+  rabbitmq-68fcfc79b5-wl4xn 2026-10-19T05:46:06Z 3 0
+  session-db-7b79866754-x82ks 2026-10-19T05:46:06Z 1 0
+  shipping-698b844fbd-ng977 2026-10-19T05:46:06Z 33 0
+  shipping-698b844fbd-r448n 2026-10-19T05:59:37Z 32 0
+  user-587d9db8d5-6878t 2026-10-19T05:46:07Z 12 0
+  user-587d9db8d5-nk2w2 2026-10-19T05:59:38Z 11 0
+  user-db-64496f96bc-zn7cs 2026-10-19T05:46:07Z 1 0
+  k6: {"target_rate":24,"measure_s":1200,"iters":28790,"iter_rate":23.991666666666667,"reqs":115160,"rps":95.96666666666667,"dropped":24,"dropped_win":10,"started":28790,"failed_rate":0,"order_failed":0,"p50":7.320915,"p99":63.573786700000014,"login_p50":7.064024,"cart_p50":7.3357475,"order_p50":54.608829,"order_p99":80.56318773000002,"browse_rate_target":120,"browse_started":143987,"browse_rate":119.98916666666666,"browse_dropped_win":13,"browse_p50":41.474325,"browse_p99":48.49935112000007,"browse_failed":0}
+---- Prometheus: Pod ごとの CPU (rate 30s、10 秒刻み) ----
+  行数 2123
+  プローブ失敗イベント: 0 件
+==== DONE 2026-10-19T15:07:37+09:00 ====
