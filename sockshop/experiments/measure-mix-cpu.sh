@@ -30,11 +30,11 @@ STATEFUL=(carts-db catalogue-db orders-db session-db user-db rabbitmq)
 # 最も重い b24v120 でも 1 コアを下回るように選んだ (スモーク b10v50 で front-end 460m。予備測定からの足し算より高く出た)
 POINTS=${POINTS:-"b8 b16 b24 v40 v80 v120 b8v40 b8v80 b8v120 b16v40 b16v80 b16v120 b24v40 b24v80 b24v120"}
 REPLICAS=${REPLICAS:-1}
-CYCLES=${CYCLES:-4}
+CYCLES=${CYCLES:-6}               # 2026-10-19 測り直し (mix-cpu2b) で OB の mix-cpu2 と同じ 6 に (初回は 4)
 WARM=${WARM:-60}
 MEAS=${MEAS:-180}
 SETTLE=${SETTLE:-30}
-PREWARM=${PREWARM:-180}
+PREWARM=${PREWARM:-300}           # 2026-10-19 180→300 s (probe10 試験で Java が落ち着くまで約 3 分)
 PREWARM_POINT=${PREWARM_POINT:-b20v100}
 PRE_VUS=${PRE_VUS:-50}
 MAX_VUS=${MAX_VUS:-400}
