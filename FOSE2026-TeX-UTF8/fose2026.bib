@@ -20,3 +20,251 @@ pages = {33--45}
 	howpublished = {https://github.com/GoogleCloudPlatform/\linebreak microservices-demo/releases/tag/v0.10.3},
 	year = {2025}
 }
+
+%% ---- 2026-10-19 追加 (Sock Shop 負荷調査。未引用。書誌確認の度合いはコメントに記す) ----
+
+@mastersthesis{buzato2025,
+author = {Buzato, Fernando Henrique Laureano},
+yomi = {buzato},
+title = {The Impacts of Microservice Grouping into Containers: An Experimental Analysis of the Benefits and Limits of this Approach},
+school = {Institute of Mathematics and Statistics, University of S{\~a}o Paulo},
+year = {2025},
+url = {https://teses.usp.br/teses/disponiveis/45/45134/tde-26062025-090557/publico/Dissertacao_FernandoHenriqueLaureanoBuzato_corrigida.pdf},
+note = {PDF 本文確認 2026-10-19}
+}
+
+@article{avritzer2020,
+author = {Avritzer, Alberto and Ferme, Vincenzo and Janes, Andrea and Russo, Barbara and van Hoorn, Andr{\'e} and Schulz, Henning and Menasch{\'e}, Daniel and Rufino, Vilc},
+yomi = {avritzer},
+title = {Scalability Assessment of Microservice Architecture Deployment Configurations: A Domain-based Approach Leveraging Operational Profiles and Load Tests},
+journal = {Journal of Systems and Software},
+volume = {165},
+pages = {110564},
+year = {2020},
+doi = {10.1016/j.jss.2020.110564},
+note = {著者プレプリントPDFで本文確認 2026-10-19 (ページ・巻は preprint の記載による)}
+}
+
+@article{camilli2022,
+author = {Camilli, Matteo and Russo, Barbara},
+yomi = {camilli},
+title = {Modeling Performance of Microservices Systems with Growth Theory},
+journal = {Empirical Software Engineering},
+year = {2022},
+doi = {10.1007/s10664-021-10088-0},
+note = {EuropePMC 本文で確認 2026-10-19 (巻・号は未確認)}
+}
+
+@inproceedings{rahman2019,
+author = {Rahman, Joy and Lama, Palden},
+yomi = {rahman},
+title = {Predicting the End-to-End Tail Latency of Containerized Microservices in the Cloud},
+booktitle = {2019 IEEE International Conference on Cloud Engineering (IC2E)},
+year = {2019},
+note = {著者PDFで本文確認 2026-10-19 (DOI・ページは未確認)},
+url = {https://www.cs.utsa.edu/~plama/papers/IC2E19_2.pdf}
+}
+
+@inproceedings{hossen2022,
+author = {Hossen, Md Rajib and Islam, Mohammad A. and Ahmed, Kishwar},
+yomi = {hossen},
+title = {Practical Efficient Microservice Autoscaling with {QoS} Assurance},
+booktitle = {Proceedings of the 31st International Symposium on High-Performance Parallel and Distributed Computing (HPDC '22)},
+year = {2022},
+doi = {10.1145/3502181.3531460},
+note = {arXiv:2202.00057 の本文で確認 2026-10-19}
+}
+
+@inproceedings{nunes2024,
+author = {Nunes, Jo{\~a}o Paulo Karol Santos and Nejati, Shiva and Sabetzadeh, Mehrdad and Nakagawa, Elisa Yumi},
+yomi = {nunes},
+title = {Self-adaptive, Requirements-driven Autoscaling of Microservices},
+booktitle = {19th International Conference on Software Engineering for Adaptive and Self-Managing Systems (SEAMS 2024)},
+year = {2024},
+note = {arXiv:2403.08798 の本文で確認 2026-10-19 (DOI・ページは未確認)}
+}
+
+@misc{dashtbani2025,
+author = {Dashtbani, Majid and Tahvildari, Ladan},
+yomi = {dashtbani},
+title = {Key Considerations for Auto-Scaling: Lessons from Benchmark Microservices},
+howpublished = {arXiv:2510.02585},
+year = {2025},
+note = {arXiv 本文で確認 2026-10-19 (査読済み版の有無は未確認)}
+}
+
+% ---- 以下 2026-10-19 追記: CPU 周波数 (DVFS/ターボ/ガバナ) の扱いに関する文献。すべて未引用 ----
+% 詳細は km2/approach/related_work.md 8 節。note に原典確認の度合いを記す。
+
+@inproceedings{gan2019dsb,
+author = {Gan, Yu and others},
+yomi = {gan},
+title = {An Open-Source Benchmark Suite for Microservices and Their Hardware-Software Implications for Cloud \& Edge Systems},
+booktitle = {Proceedings of ASPLOS '19},
+year = {2019},
+doi = {10.1145/3297858.3304013},
+note = {未引用。原典PDFで確認 2026-10-19: 4節 Methodology に power management and turbo boosting are turned off (著者は一部のみ記載)}
+}
+
+@inproceedings{chen2019parties,
+author = {Chen, Shuang and Delimitrou, Christina and Mart{\'i}nez, Jos{\'e} F.},
+yomi = {chen},
+title = {{PARTIES}: {QoS}-Aware Resource Partitioning for Multiple Interactive Services},
+booktitle = {Proceedings of ASPLOS '19},
+year = {2019},
+doi = {10.1145/3297858.3304005},
+note = {未引用。原典PDFで確認 2026-10-19: ターボとHT有効、performanceガバナ (Table 1)}
+}
+
+@inproceedings{lo2015heracles,
+author = {Lo, David and Cheng, Liqun and Govindaraju, Rama and Ranganathan, Parthasarathy and Kozyrakis, Christos},
+yomi = {lo},
+title = {Heracles: Improving Resource Efficiency at Scale},
+booktitle = {Proceedings of ISCA '15},
+year = {2015},
+doi = {10.1145/2749469.2749475},
+note = {未引用。原典PDFで確認 2026-10-19: 周波数を干渉資源として動的に保証 (固定ではない)}
+}
+
+@inproceedings{maricq2018taming,
+author = {Maricq, Aleksander and Duplyakin, Dmitry and Jimenez, Ivo and Maltzahn, Carlos and Stutsman, Ryan and Ricci, Robert},
+yomi = {maricq},
+title = {Taming Performance Variability},
+booktitle = {13th USENIX Symposium on Operating Systems Design and Implementation (OSDI '18)},
+year = {2018},
+url = {https://www.usenix.org/conference/osdi18/presentation/maricq},
+note = {未引用。原典PDFで確認 2026-10-19 (grepベース、全文精読はしていない): ターボ無効+performanceと標準設定の両方で測定}
+}
+
+@inproceedings{fried2020caladan,
+author = {Fried, Joshua and Ruan, Zhenyuan and Ousterhout, Amy and Belay, Adam},
+yomi = {fried},
+title = {Caladan: Mitigating Interference at Microsecond Timescales},
+booktitle = {14th USENIX Symposium on Operating Systems Design and Implementation (OSDI '20)},
+year = {2020},
+url = {https://www.usenix.org/conference/osdi20/presentation/fried},
+note = {未引用。原典PDFで確認 2026-10-19: 7節冒頭で TurboBoost, CPU idle states, CPU frequency scaling を無効化}
+}
+
+@inproceedings{ousterhout2019shenango,
+author = {Ousterhout, Amy and Fried, Joshua and Behrens, Jonathan and Belay, Adam and Balakrishnan, Hari},
+yomi = {ousterhout},
+title = {Shenango: Achieving High {CPU} Efficiency for Latency-sensitive Datacenter Workloads},
+booktitle = {16th USENIX Symposium on Networked Systems Design and Implementation (NSDI '19)},
+year = {2019},
+url = {https://www.usenix.org/conference/nsdi19/presentation/ousterhout},
+note = {未引用。原典PDFで確認 2026-10-19: To reduce jitter, TurboBoost, C-states, CPU frequency scaling を無効化}
+}
+
+@misc{zhu2022meshinsight,
+author = {Zhu, Xiangfeng and She, Guozhen and Xue, Bowen and Zhang, Yu and Zhang, Yongsu and Zou, Xuan Kelvin and Duan, Xiongchun and He, Peng and Krishnamurthy, Arvind and Lentz, Matthew and Zhuo, Danyang and Mahajan, Ratul},
+yomi = {zhu},
+title = {Dissecting Service Mesh Overheads},
+howpublished = {arXiv:2207.00592},
+year = {2022},
+note = {未引用。arXiv本文で確認 2026-10-19: 5節冒頭で TurboBoost, C-states, dynamic frequency scaling を無効化 (測定分散低減)。正式掲載先は未確認}
+}
+
+@inproceedings{savasci2024slopower,
+author = {Savasci, Mehmet and Souza, Abel and Wu, Li and Irwin, David and Ali-Eldin, Ahmed and Shenoy, Prashant J.},
+yomi = {savasci},
+title = {{SLO-Power}: {SLO} and Power-aware Elastic Scaling for Web Services},
+booktitle = {24th IEEE International Symposium on Cluster, Cloud and Internet Computing (CCGrid 2024)},
+year = {2024},
+doi = {10.1109/CCGrid59990.2024.00025},
+note = {未引用。著者PDFで一部確認 2026-10-19 (II節の課題記述: 周波数変動で必要コア数の見積もりが狂う)。全文精読はしていない}
+}
+
+@inproceedings{savasci2024pads,
+author = {Savasci, Mehmet and Souza, Abel and Irwin, David and Ali-Eldin, Ahmed and Shenoy, Prashant},
+yomi = {savasci},
+title = {{PADS}: Power Budgeting with Diagonal Scaling for Performance-Aware Cloud Workloads},
+booktitle = {2024 IEEE 15th International Green and Sustainable Computing Conference (IGSC)},
+year = {2024},
+doi = {10.1109/IGSC64514.2024.00012},
+note = {未引用。著者PDFで確認 2026-10-19: V-A節で hyperthreading と turbo boost を無効化、performance ガバナ}
+}
+
+@inproceedings{saez2022thread,
+author = {Saez, Juan Carlos and Prieto-Matias, Manuel},
+yomi = {saez},
+title = {Evaluation of the Intel Thread Director technology on an Alder Lake processor},
+booktitle = {13th ACM SIGOPS Asia-Pacific Workshop on Systems (APSys '22)},
+year = {2022},
+doi = {10.1145/3546591.3547532},
+note = {未引用。著者PDFで確認 2026-10-19: Alder Lake で Linux CFS の完了時間が実行ごとに最大2.3倍ばらつく (Fig.1a)}
+}
+
+@inproceedings{schone2024alderlake,
+author = {Sch{\"o}ne, Robert and Velten, Markus and Hackenberg, Daniel and Ilsche, Thomas},
+yomi = {schone},
+title = {Energy Efficiency Features of the Intel Alder Lake Architecture},
+booktitle = {Proceedings of the 15th ACM/SPEC International Conference on Performance Engineering (ICPE '24)},
+year = {2024},
+doi = {10.1145/3629526.3645040},
+note = {未引用。公式PDFで一部確認 2026-10-19 (3節 周波数遷移遅延、P/Eコア差)。全文精読はしていない}
+}
+
+@inproceedings{gouicem2020hertz,
+author = {Gouicem, Redha and Carver, Damien and Lozi, Jean-Pierre and Sopena, Julien and Lepers, Baptiste and Zwaenepoel, Willy and Palix, Nicolas and Lawall, Julia and Muller, Gilles},
+yomi = {gouicem},
+title = {Fewer Cores, More Hertz: Leveraging High-Frequency Cores in the {OS} Scheduler for Improved Application Performance},
+booktitle = {2020 USENIX Annual Technical Conference (USENIX ATC '20)},
+year = {2020},
+url = {https://www.usenix.org/conference/atc20/presentation/gouicern},
+note = {未引用。原典PDFで一部確認 2026-10-19: 周波数遷移遅延 29ms (1.25->3.0GHz)、powersave既定の説明}
+}
+
+@article{papadopoulos2021principles,
+author = {Papadopoulos, Alessandro V. and Versluis, Laurens and Bauer, Andr{\'e} and Herbst, Nikolas and von Kistowski, J{\'o}akim and Ali-Eldin, Ahmed and Abad, Cristina L. and Amaral, Jos{\'e} Nelson and T{\r{u}}ma, Petr and Iosup, Alexandru},
+yomi = {papadopoulos},
+title = {Methodological Principles for Reproducible Performance Evaluation in Cloud Computing},
+journal = {IEEE Transactions on Software Engineering},
+year = {2021},
+volume = {47},
+number = {8},
+doi = {10.1109/TSE.2019.2927908},
+note = {未引用。著者PDFで一部確認 2026-10-19 (P3 環境記述の原則、DFSを既定のままにした実験記述)。巻号・年は検索結果による}
+}
+
+@inproceedings{hoefler2015benchmarking,
+author = {Hoefler, Torsten and Belli, Roberto},
+yomi = {hoefler},
+title = {Scientific Benchmarking of Parallel Computing Systems: Twelve Ways to Tell the Masses when Reporting Performance Results},
+booktitle = {Proceedings of SC '15},
+year = {2015},
+doi = {10.1145/2807591.2807644},
+note = {未引用。著者PDFで一部確認 2026-10-19 (4.1.1 固定できなければ乱択、Rule 9 文書化)}
+}
+
+@inproceedings{tirmazi2020borg,
+author = {Tirmazi, Muhammad and Barker, Adam and Deng, Nan and Haque, Md E. and Qin, Zhijing Gene and Hand, Steven and Harchol-Balter, Mor and Wilkes, John},
+yomi = {tirmazi},
+title = {Borg: the Next Generation},
+booktitle = {Proceedings of EuroSys '20},
+year = {2020},
+doi = {10.1145/3342195.3387517},
+note = {未引用。原典PDFで確認 2026-10-19: Google Compute Unit (GCU) によるCPU正規化の記述}
+}
+
+@article{zhang2012dvfs,
+author = {Zhang, Zhen and Li, Shan-ping},
+yomi = {zhang},
+title = {{DVFS}-aware {CPU} service time estimation method},
+journal = {Journal of Zhejiang University (Engineering Science)},
+year = {2012},
+volume = {46},
+number = {4},
+pages = {725--733},
+url = {https://www.zjujournals.com/eng/EN/10.3785/j.issn.1008-973X.2012.04.022},
+note = {未引用。abstract/ページ要約のみ (本文未読)。平均周波数x利用率で回帰する補正}
+}
+
+@misc{linuxcgroupv2,
+author = {{Linux kernel documentation}},
+yomi = {linux},
+title = {Control Group v2 (CPU controller overview)},
+howpublished = {https://docs.kernel.org/admin-guide/cgroup-v2.html},
+year = {2026},
+note = {未引用。公式docをcurlで原文確認 2026-10-19: cycles distribution is defined only on a temporal base and it does not account for the frequency}
+}

@@ -36,3 +36,4 @@
 - [Pair prediction validation](pair-prediction-validation.md) — 【2026-10-08完了・合格】同居ペアの台数・損の予測(θ0.50/基準b50v100)を事前登録で前向き検証→確定セル30/30的中・R1 64%/R2 97%(R2との差は1セル)、損ありは5セルのみ
 - [ρ でペアを選ぶ (焦点)](rho-pair-selection-focus.md) — ユーザの関心は ρ の近さでペアを選ぶとどうなるか。予測的中は不要、P は保留 (2026-10-15)
 - [背景起動は絶対パスで](background-launch-absolute-paths.md) — run_in_background だと cd が効かず exit 127 になることがある。スクリプト・CSV を絶対パスで渡し、起動確認してから報告
+- [周波数は固定しない](cpu-frequency-not-pinned.md) — 2026-10-19 決定。目的は相性の傾向で性能測定でない。DVFS 偏りは記録して限界に書く

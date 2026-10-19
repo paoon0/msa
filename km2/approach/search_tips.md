@@ -123,3 +123,54 @@
 - 見つけた論文は **DOI か arXiv 番号**で記録する(URL は切れる)。
 - PDF とメモは**必ず git にコミット**する(未追跡のまま放置しない ← 今回の教訓)。
 - アクセスできない有料論文は、著者サイト・arXiv 版・所属機関のプロキシを当たる。
+
+---
+
+## 7. 追記 (2026-10-09) ρ（リクエスト型配合）まわりの探し方
+
+- **古典の語彙が違う**: 「request mix」は新しい語。2005–2008 年は **"transaction mix" / "workload mix" / "capacity planning of multi-tier applications"**、
+  VM 統合は **"correlation-aware" / "peak clustering" / "VM multiplexing"**、需要推定は **"resource demand estimation" / "service demand estimation"**。
+  マイクロサービス語彙（pod, HPA, co-location）で引くと古典が出ない。語彙を時代ごとに変えて引く。
+- **取得の実務**: ACM DL / Springer / ScienceDirect は WebFetch で 403 または認証リダイレクトになる。
+  USENIX（legacy URL の full_papers/*.pdf）と arXiv は取れる。PDF は WebFetch が自動保存するので `pdftotext -layout` で抽出して grep するのが確実
+  （WebFetch の要約は PDF バイナリを読めず失敗することがある）。
+- **「ノード配置」と「Pod 内同居」を混同しない**: "co-location" "microservice" "Kubernetes" で出る大半は Pod を**どのノードに置くか**
+  (scheduler) の研究で、本研究の Pod 内同居とは別軸。通信考慮配置 (NetMARKS, TraDE 等) もこちら。
+- **ブログ・特許が混ざる**: WebSearch には特許（image-ppubs.uspto.gov）やブログが多く混ざる。書誌を採るのは arXiv/USENIX/DOI の実体に当たれたものだけ。
+- 相関統合は **向きに注意**: VM 統合は「ずれた相手ほど得」、Pod 単位 HPA は「揃った相手ほど損なし」。逆向きなので類似語で混同しない。
+
+---
+
+## 8. 追記 (2026-10-19) 「特定のベンチマークアプリ (Sock Shop 等) の負荷シナリオ」を調べるとき
+
+- **本文の「実験設定」節にしか書かれない**: abstract や検索スニペットに負荷の中身は出ない。arXiv の PDF を `curl -L https://arxiv.org/pdf/<番号>` で取り、
+  `pdftotext` (レイアウト無し。2 段組は `-layout` だと文が崩れる) → `grep -n -i -E "locust|jmeter|k6|wrk|workload|users|requests per|trace|sock"` で実験節を引く。
+  arXiv のメタデータ (`http://export.arxiv.org/api/query?id_list=<番号>`) の `journal_ref` / `comment` / `doi` で掲載先を確認できる (本文に載っていない場合が多い)。
+- **ACM/Springer が 403 のとき**: 著者サイト PDF (例: dbermbach.github.io, cs.utsa.edu/~plama, continuity-project.github.io) か、EuropePMC の全文 XML
+  (`https://www.ebi.ac.uk/europepmc/webservices/rest/<PMCID>/fullTextXML`、`-A "Mozilla/5.0"`) が取れる。WebFetch の要約は数字を取り違えうるので、必ず本文 XML/PDF で裏取りする。
+- **修士論文・学位論文も当たる**: `"<ベンチマーク名>" merge microservices same container granularity` で USP の修士論文 (Buzato 2025) が出た。通常の論文検索では出ない。
+  学位論文は `teses.usp.br` 等のリポジトリ PDF が直接取れる。
+- **負荷の語彙**: 「ワークロード配合」は Sock Shop 周辺では **behavior mix / usage profile / operational profile / workload specification**
+  (PPTAM, BenchFlow, Faban, WESSBAS の系譜、Avritzer・Camilli・van Hoorn)。"request mix" "browse buy ratio" では出ない。
+  オートスケール系は **workload trace (WorldCup98 / Wikipedia / Alibaba)** で語り、リクエストの中身は書かない。
+- **Sock Shop の別名に注意**: "Sock-Shop", "SockShop", "sock-shop", "Sock shop" の表記ゆれ。RCA 系 (Pham らの RCAEval 系) は「Sock Shop は 11〜15 サービス」と数が論文ごとに違う (13/14/15 の揺れ)。
+- 「開ループ」の確認は `open-loop|closed-loop|Poisson|constant-arrival|arrival rate|think time` で grep。Sock Shop 周辺で明示するものは見つからなかった (2026-10-19 時点)。
+
+---
+
+## 9. 追記 (2026-10-19) 「測定環境 (CPU 周波数・ターボ・ガバナ) の扱い」を調べるとき
+
+- **本文の「実験環境 / Methodology / Setup」の 1 文にしか出ない**。abstract や検索スニペットには出ないので、原典 PDF を取って `pdftotext` → `grep -n -i -E "turbo|dvfs|frequency scaling|governor|c-state|hyper-?thread|\bSMT\b|pstate|cpufreq|GHz"` が最も速い。
+  2 段組でも `-layout` なしの素の抽出で十分拾える。ページ番号は `split('\f')` で数える (`pdftotext` は改ページを `\f` にする)。
+- **直接 PDF が curl で取れた場所**: USENIX (`www.usenix.org/system/files/<conf><yy>-<author>.pdf`)、arXiv (`arxiv.org/pdf/<番号>`)、Cornell Delimitrou 研
+  (`www.csl.cornell.edu/~delimitrou/papers/2019.asplos.parties.pdf` など `<年>.<会議>.<名>.pdf`)、Google 公開 (`static.googleusercontent.com/media/research.google.com/en//pubs/archive/43792.pdf` = Heracles)、
+  SPEC ICPE 公式 (`research.spec.org/icpe_proceedings/2024/proceedings/p95.pdf`)、UMass LASS (`lass.cs.umass.edu/papers/pdf/…`)、MDU (`www.es.mdu.se/pdf_publications/<番号>.pdf`)、著者サイト (htor.inf.ethz.ch, pmctrack-linux.github.io)。
+  ACM DL / ScienceDirect / TechRxiv は WebFetch・curl とも 403。
+- **語彙**: 英語の「ターボを切る」は *disable TurboBoost / Turbo Boost off*、固定は *fixed frequency / userspace governor / performance governor*、省電力は *C-states / idle states / power management*。
+  「周波数で利用率が歪む」は *frequency-invariant utilization* (Linux スケジューラ側の語)、*DVFS-aware service demand estimation* (性能モデリング側の語)、*APERF/MPERF*、*unhalted cycles* で引く。
+  マイクロサービス語 (microservice, HPA, Kubernetes) と DVFS を掛けると査読論文は出ず、ブログ・特許・公式 doc が混ざる (特許 image-ppubs.uspto.gov は書誌に採らない)。
+- **公式ドキュメントも一次資料になる**: Linux の `docs.kernel.org` (cgroup-v2 / schedutil / intel_pstate) は curl で HTML を取って、タグを除去して `grep` すると原文を確認できる。
+  WebFetch の要約は "does not account for the frequency" のような核心の一文を言い換えるので、必ず curl で原文を確認する。
+- **「周波数を固定する／しない」は論文の分野で作法が分かれる**: 遅延・ジッタ・オーバーヘッドを精密に測る系 (OSDI/NSDI の OS・ネットワーク系) は無効化を明記、
+  ML ベースの資源管理・オートスケール系は何も書かない。母集団を選ぶときは分野を分けて数える。
+- 方法論の文献 (再現性・報告) は **Hoefler & Belli (SC'15)**、**Papadopoulos ほか (TSE)**、**Maricq ほか (OSDI'18)** から芋づる式に辿る。
