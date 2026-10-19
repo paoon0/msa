@@ -46,6 +46,8 @@ const mbFail  = new Counter('mb_failed');
 
 export const options = {
   discardResponseBodies: true,
+  // 1 周ごとに接続を張り直す (2026-10-19)。使い回すと front-end を増やしても新しい Pod に負荷が来ない (probe10 試験で新 Pod 1m)
+  noVUConnectionReuse: true,
   setupTimeout: '600s',
   summaryTrendStats: ['avg', 'med', 'p(90)', 'p(95)', 'p(99)', 'max'],
   scenarios: scenarios(),

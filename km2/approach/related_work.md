@@ -633,3 +633,19 @@ HPA は実運用でも周波数で変わる CPU 時間を見て台数を決め�
 - [ ] 引用前に原典を読むもの: `zhang2012dvfs` 本文、`savasci2024slopower` の §II–III と評価、`maricq2018taming` の結果節、WESSBAS、Aderaldo ECASE 2017、Buzato の先行 2 本。
 - [ ] 「空白」の主張 (HPA × 周波数、Sock Shop × 開ループ、Sock Shop × 配合を振る) は WebSearch の範囲のみ。書くなら「我々の調べた範囲では」と限定する。
 - [ ] bib のコンパイル確認 (§8 で追加した key は bibtex を通していない。`\r{u}` 等の特殊文字、DeathStarBench の著者省略 "and others")。
+
+### 9.7 Sock Shop の readiness probe と、台数を増やしたときの負荷の偏り (2026-10-19 追加)
+
+- [ ] **方法節**: readinessProbe を 8 つのアプリで統一した (initialDelaySeconds 10、他は既定 = period 10 s / timeout 1 s / failure 3。OB の `km2/normal` と同じ)。上流は catalogue/payment/user 180 s、front-end 30 s (period 3 s)、Java 4 つ (carts/orders/shipping/queue-master) は無し。livenessProbe は上流のまま。
+  理由 = HPA は Ready 前の Pod の CPU を数えないので、待ち時間の差がそのまま台数の差になり、同居 Pod の Ready は全コンテナの AND なので相手にも波及する (アヌビス点検 2026-10-19)。
+  確認試験: `sockshop/experiments/probe10.log`, `probe10-ready.csv` (b24v120 を 20 分、12 分目に 2 台へ) で Ready 落ち 0・再起動 0・プローブ失敗イベント 0。起動→Ready は Go/Node 11〜13 s、Java 21〜42 s。
+- [ ] **方法節 / 限界**: Java の慣らし。立て直し直後、負荷開始から 60 秒の CPU が定常の 2〜3 倍 (carts 389 vs 141m、orders 326 vs 119m)、約 2〜3 分で落ち着く。HPA が足した新しい Java Pod は起動直後の約 60 秒、上限 2000m 近くまで使う (carts 10 秒最大 1998m、shipping 1997m)。数値の出所 = `sockshop/experiments/analysis-probe10.txt` (`analyze_probe10.py`)。
+  OB で起きた「起動直後の跳ね上がりで余分に台数が増える」(km2/approach/rightsizing-procedure.md) が Sock Shop では Java 4 サービスで起こりうる。HPA の cpu-initialization-period (既定 5 分) との関係を書く (K8s 公式 doc を引用。bib 未登録)。
+- [ ] **要対処 (未解決 2026-10-19)**: 2 台にしても **front-end と payment の新しい Pod にほぼ負荷が来ない** (t 900〜1200 s で front-end 旧 647m / 新 1m、payment 旧 7m / 新 0m)。HTTP keep-alive で接続が古い Pod に張り付いたまま (k6 → front-end、orders → payment と推測)。catalogue・carts・orders・user などは分かれた。
+  OB の gRPC 接続の固定 ([[grpc-pinning-imbalance]]、GRPC_LB=1 で対処) と同じ形の問題。HPA 実験の前に直すこと (k6 側は接続の再利用を止める設定で直せる見込み、orders → payment は未定)。直した方法は方法節に書く。
+  **→ 2026-10-19 に対処 (ユーザ決定 B′)**: k6 に `noVUConnectionReuse: true` (1 周ごとに接続を張り直す)、orders の JAVA_OPTS に `-Dhttp.keepAlive=false` (Java 標準 HttpURLConnection の接続の使い回しを止める)。
+  再試験 `probe10b.log` / `analysis-probe10b.txt`: 2 台目の分担 front-end 旧 406 / 新 394m、payment 5 / 5m、user 52 / 50m で均等に。Ready 落ち 0・再起動 0。
+  **方法節に書くこと**: OB は gRPC のクライアント側 round_robin (接続は張りっぱなし、リクエストごとに振り分け) で、Sock Shop は「接続を毎回作り直して kube-proxy に振り分けさせる」方式。仕組みが違う。
+  **限界に書くこと**: 接続を作り直す分 CPU が増える。1 台・b24v120 の定常 (t 400〜700 s) で front-end 659→719m (+9%)、orders 119→132m (+11%)、user 87→100m (+15%)、payment 7→9m。carts・catalogue は不変。1 回ずつの比較なので回ごとのばらつきは未評価。softirq (通信 CPU) も増えるはずで、分離と同居の両方に乗る。
+  ρ (`analysis-rho.txt`) は対処前の設定で測ったもの。対処後に測り直すかは未決 (2026-10-19)。
+- [ ] **限界**: 新しく足した Java の Pod は、起動から 3〜8 分たっても古い Pod より CPU が多い (t 900〜1200 s で carts 新/旧 1.3〜1.4、shipping・queue-master 2.2 倍。両試験で同じ傾向)。慣らし (JIT) が長引くと推測。HPA で増えた Java Pod は数分間 1 リクエストあたりのコストが高い。

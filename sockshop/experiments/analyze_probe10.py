@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # probe-warmup-test.sh の出力 (probe10-cpu.csv) から、立て直し直後の慣らし時間と、2 台目を足したときの CPU の立ち上がり・分担を出す。sockshop/experiments で実行。
 import csv,collections,re
-R=list(csv.DictReader(open('probe10-cpu.csv')))
+R=list(csv.DictReader(open(__import__('sys').argv[1] if len(__import__('sys').argv)>1 else 'probe10-cpu.csv')))
 dep=lambda p: re.sub(r'-[a-f0-9]{6,}-\w+$','',p)
 S=collections.defaultdict(dict)
 for r in R: S[r['pod']][int(r['t'])]=float(r['cpu_m'])

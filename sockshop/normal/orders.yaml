@@ -2,6 +2,8 @@
 # nodeSelector を kubernetes.io/os に、Istio 注入なし、枠は測定用の仮 (アプリ 200m / DB 等 100m、上限 2000m、メモリは上流のまま)。
 # 2026-10-19: readinessProbe を 8 つのアプリで統一 (initialDelaySeconds 10、他は既定 = period 10 s / timeout 1 s / failure 3。OB の km2/normal と同じ)。
 #   上流は catalogue/payment/user 180 s、front-end 30 s (period 3 s)、Java 4 つは無し。livenessProbe は上流のまま。
+# 2026-10-19: JAVA_OPTS に -Dhttp.keepAlive=false (Java 標準 HttpURLConnection の接続の使い回しを止める)。使い回すと payment 等が
+#   台数を増やしても古い Pod に張り付く (probe10 試験で payment 新 Pod 0m)。毎回接続を作り、kube-proxy に振り分けさせる (ユーザ決定 B′)。
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,7 +27,7 @@ spec:
         image: weaveworksdemos/orders:0.4.7
         env:
         - name: JAVA_OPTS
-          value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
+          value: -Xms64m -Xmx128m -XX:+UseG1GC -Dhttp.keepAlive=false -Djava.security.egd=file:/dev/urandom
             -Dspring.zipkin.enabled=false
         resources:
           requests:
