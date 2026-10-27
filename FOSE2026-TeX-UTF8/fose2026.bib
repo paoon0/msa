@@ -113,7 +113,7 @@ title = {{PARTIES}: {QoS}-Aware Resource Partitioning for Multiple Interactive S
 booktitle = {Proceedings of ASPLOS '19},
 year = {2019},
 doi = {10.1145/3297858.3304005},
-note = {未引用。原典PDFで確認 2026-10-19: ターボとHT有効、performanceガバナ (Table 1)}
+note = {未引用。原典PDFで確認 2026-10-19: ターボとHT有効、performanceガバナ (Table 1)。同日追記: max load = p99 が急増する knee の RPS (最大 RPS の60--80%)、別アプリの同居は各自の max load の10--100%で全組合せ (配合の決め方 related_work.md 10節)}
 }
 
 @inproceedings{lo2015heracles,
@@ -267,4 +267,390 @@ title = {Control Group v2 (CPU controller overview)},
 howpublished = {https://docs.kernel.org/admin-guide/cgroup-v2.html},
 year = {2026},
 note = {未引用。公式docをcurlで原文確認 2026-10-19: cycles distribution is defined only on a temporal base and it does not account for the frequency}
+}
+
+% ---- 以下 2026-10-19 追記: 測定点の配合 (workload mix) と負荷強度の決め方に関する文献。すべて未引用 ----
+% 詳細は km2/approach/related_work.md 10 節。note に原典確認の度合いを記す。
+
+@article{spinner2015demand,
+author = {Spinner, Simon and Casale, Giuliano and Brosig, Fabian and Kounev, Samuel},
+yomi = {spinner},
+title = {Evaluating approaches to resource demand estimation},
+journal = {Performance Evaluation},
+year = {2015},
+volume = {92},
+pages = {51--71},
+doi = {10.1016/j.peva.2015.07.005},
+note = {未引用。abstract/検索要約のみ (本文は ScienceDirect/CORE/ResearchGate が403で未読)。7手法を監視窓・負荷クラス数・負荷水準・共線性で比較}
+}
+
+@article{kalbasi2012dec,
+author = {Kalbasi, Amir and Krishnamurthy, Diwakar and Rolia, Jerry and Dawson, Steve},
+yomi = {kalbasi},
+title = {{DEC}: Service Demand Estimation with Confidence},
+journal = {IEEE Transactions on Software Engineering},
+year = {2012},
+volume = {38},
+number = {3},
+pages = {561--578},
+doi = {10.1109/TSE.2011.23},
+note = {未引用。論文本体は未読。同内容の修士論文 kalbasi2010thesis の 2.1--2.2 節と5章冒頭は原典PDFで確認 2026-10-19}
+}
+
+@mastersthesis{kalbasi2010thesis,
+author = {Kalbasi, Amir},
+yomi = {kalbasi},
+title = {{DEC}: A Technique for Estimating Resource Demands of Software Services},
+school = {University of Calgary},
+year = {2010},
+url = {https://www.collectionscanada.gc.ca/obj/thesescanada/vol2/002/MR69450.PDF?is_thesis=1&oclc_number=806535411},
+note = {未引用。原典PDFで確認 2026-10-19 (2.1--2.2節: 回帰の共線性の定義、Stewart らの『自然な配合の多様性なら共線性は起きにくい』、Pacifici らの反例)}
+}
+
+@article{pacifici2008cpu,
+author = {Pacifici, Giovanni and Segmuller, Wolfgang and Spreitzer, Mike and Tantawi, Asser},
+yomi = {pacifici},
+title = {{CPU} demand for web serving: Measurement analysis and dynamic estimation},
+journal = {Performance Evaluation},
+year = {2008},
+volume = {65},
+pages = {531--553},
+doi = {10.1016/j.peva.2007.12.001},
+note = {未引用。abstract/検索要約のみ (本文未読)。実トラフィックで要求種別の到着率が相関することを示し、種別ごとの CPU 需要を回帰で動的に推定}
+}
+
+@article{zhang2008regression,
+author = {Zhang, Qi and Cherkasova, Ludmila and Mi, Ningfang and Smirni, Evgenia},
+yomi = {zhang},
+title = {A regression-based analytic model for capacity planning of multi-tier applications},
+journal = {Cluster Computing},
+year = {2008},
+volume = {11},
+pages = {197--211},
+doi = {10.1007/s10586-008-0052-0},
+note = {未引用。検索要約のみ (Springer は認証リダイレクトで本文未読)。TPC-W で配合が変わる負荷でも回帰が頑健と報告 (Wang--Casale--Sutton TOMACS の関連研究欄の記述より)。初出 ICAC 2007 doi 10.1109/ICAC.2007.1}
+}
+
+@inproceedings{singh2010mixaware,
+author = {Singh, Rahul and Sharma, Upendra and Cecchet, Emmanuel and Shenoy, Prashant},
+yomi = {singh},
+title = {Autonomic mix-aware provisioning for non-stationary data center workloads},
+booktitle = {Proceedings of the 7th International Conference on Autonomic Computing (ICAC '10)},
+year = {2010},
+pages = {21--30},
+doi = {10.1145/1809049.1809053},
+note = {未引用。UMass 技術報告版 UM-CS-2010-004 を原典PDFで確認 2026-10-19 (同じ要求率でも配合で CPU 需要が変わる例、TPC-W の browsing/shopping/ordering)。ICAC 版そのものは未読}
+}
+
+@inproceedings{stewart2005nsdi,
+author = {Stewart, Christopher and Shen, Kai},
+yomi = {stewart},
+title = {Performance Modeling and System Management for Multi-component Online Services},
+booktitle = {Proceedings of NSDI '05},
+year = {2005},
+pages = {71--84},
+url = {https://www.usenix.org/legacy/event/nsdi05/tech/full_papers/stewart/stewart.pdf},
+note = {未引用。原典PDFで確認 2026-10-09 (6節で再確認 2026-10-19: 負荷は飽和スループットの50--90% で測る、配合は read-only/10%/20% read-write の3水準)}
+}
+
+@inproceedings{stewart2007nonstat,
+author = {Stewart, Christopher and Kelly, Terence and Zhang, Alex},
+yomi = {stewart},
+title = {Exploiting nonstationarity for performance prediction},
+booktitle = {Proceedings of EuroSys '07},
+year = {2007},
+pages = {31--44},
+doi = {10.1145/1272996.1273002},
+note = {未引用。書誌のみ確認 (Crossref)、本文未読。『実運用の配合の自然な変動を回帰に使う』主張は kalbasi2010thesis の孫引き}
+}
+
+@inproceedings{gias2019atom,
+author = {Gias, Alim Ul and Casale, Giuliano and Woodside, Murray},
+yomi = {gias},
+title = {{ATOM}: Model-Driven Autoscaling for Microservices},
+booktitle = {Proceedings of IEEE ICDCS 2019},
+year = {2019},
+pages = {1994--2004},
+doi = {10.1109/ICDCS.2019.00197},
+note = {未引用。原典PDF (Imperial Spiral) で確認 2026-10-19: Sock Shop で TPC-W 風の browsing/shopping/ordering 配合 (Home/Catalog/Carts = 63/32/5, 54/26/20, 33/17/50)、利用者 1000/2000/3000、思考時間 7 s}
+}
+
+@inproceedings{eismann2020perftester,
+author = {Eismann, Simon and Bezemer, Cor-Paul and Shang, Weiyi and Okanovi{\'c}, Du{\v{s}}an and van Hoorn, Andr{\'e}},
+yomi = {eismann},
+title = {Microservices: A Performance Tester's Dream or Nightmare?},
+booktitle = {Proceedings of ICPE '20},
+year = {2020},
+pages = {138--149},
+doi = {10.1145/3358960.3379124},
+note = {未引用。原典PDFで確認 2026-10-19: TeaStore の browse プロファイルのみ、絶対値 700/800/900 req/s の3水準、慣らし20分+計測5分}
+}
+
+@inproceedings{kistowski2018teastore,
+author = {von Kistowski, J{\'o}akim and Eismann, Simon and Schmitt, Norbert and Bauer, Andr{\'e} and Grohmann, Johannes and Kounev, Samuel},
+yomi = {kistowski},
+title = {{TeaStore}: A Micro-Service Reference Application for Benchmarking, Modeling and Resource Management Research},
+booktitle = {Proceedings of IEEE MASCOTS 2018},
+year = {2018},
+pages = {223--236},
+doi = {10.1109/MASCOTS.2018.00030},
+note = {未引用。本文は有料 (Unpaywall で closed) で未読。browse/buy プロファイルがある点は GitHub と検索要約から。引用前に原典を読むこと}
+}
+
+@inproceedings{kraft2009valuetools,
+author = {Kraft, Stephan and Pacheco-Sanchez, Sergio and Casale, Giuliano and Dawson, Stephen},
+yomi = {kraft},
+title = {Estimating Service Resource Consumption From Response Time Measurements},
+booktitle = {Proceedings of VALUETOOLS 2009},
+year = {2009},
+doi = {10.4108/ICST.VALUETOOLS2009.7526},
+note = {未引用。書誌のみ (Crossref)。本文は ACM DL が取得できず未読。著者は Kraft, Pacheco-Sanchez, Casale, Dawson (Rolia ではない)}
+}
+
+@inproceedings{jindal2019msc,
+author = {Jindal, Anshul and Podolskiy, Vladimir and Gerndt, Michael},
+yomi = {jindal},
+title = {Performance Modeling for Cloud Microservice Applications},
+booktitle = {Proceedings of ICPE '19},
+year = {2019},
+pages = {25--32},
+doi = {10.1145/3297663.3310309},
+note = {未引用。abstract/検索要約のみ。Microservice Capacity (SLO を破らずに捌ける最大要求率) をサービスごとに求める}
+}
+
+@inproceedings{bauer2017proactive,
+author = {Bauer, Andr{\'e} and Herbst, Nikolas and Kounev, Samuel},
+yomi = {bauer},
+title = {Design and Evaluation of a Proactive, Application-Aware Auto-Scaler (Tutorial Paper)},
+booktitle = {Proceedings of ICPE '17},
+year = {2017},
+doi = {10.1145/3030207.3053678},
+note = {未引用。原典PDFで確認 2026-10-19 (BUNGEE の system analysis: 負荷強度と資源需要の対応を SLO 内の最大負荷の二分探索で作ってから負荷プロファイルを当てる)}
+}
+
+@inproceedings{zhang2021sinan,
+author = {Zhang, Yanqi and Hua, Weizhe and Zhou, Zhuangzhuang and Suh, G. Edward and Delimitrou, Christina},
+yomi = {zhang},
+title = {Sinan: {ML}-based and {QoS}-aware resource management for cloud microservices},
+booktitle = {Proceedings of ASPLOS '21},
+year = {2021},
+pages = {167--181},
+doi = {10.1145/3445814.3446693},
+note = {未引用。arXiv 2105.13424 (6頁の版) を確認 2026-10-19: Social Network の配合 Compose:ReadHome:ReadUser = 5:80:15 で学習、10:80:10 / 1:90:9 / 5:70:25 で汎化を試験}
+}
+
+@inproceedings{kistowski2015build,
+author = {von Kistowski, J{\'o}akim and Arnold, Jeremy A. and Huppler, Karl and Lange, Klaus-Dieter and Henning, John L. and Cao, Paul},
+yomi = {kistowski},
+title = {How to Build a Benchmark},
+booktitle = {Proceedings of ICPE '15},
+year = {2015},
+pages = {333--336},
+doi = {10.1145/2668930.2688819},
+note = {未引用。原典PDFで確認 2026-10-19 (4頁): 負荷の配合や強度の決め方の具体的指針は無い。relevance/repeatability/fairness/verifiability/usability の基準のみ。配合の議論には使えない}
+}
+
+@misc{specpower2008design,
+author = {{SPEC}},
+yomi = {spec},
+title = {{SPECpower\_ssj2008} Design Overview},
+howpublished = {https://www.spec.org/power/docs/SPECpower_ssj2008-Design_Overview.pdf},
+year = {2008},
+note = {未引用。原典PDFで確認 2026-10-19: まず較正で最大スループットを求め、その 100,90,...,10,0% を目標負荷にする}
+}
+
+@misc{dsbsocialnet,
+author = {{DeathStarBench}},
+yomi = {deathstarbench},
+title = {{DeathStarBench} socialNetwork wrk2 mixed-workload.lua},
+howpublished = {https://github.com/delimitrou/DeathStarBench/blob/master/socialNetwork/wrk2/scripts/social-network/mixed-workload.lua},
+year = {2026},
+note = {未引用。ソースを curl で確認 2026-10-19: read-home 0.60, read-user 0.30, compose 0.10 の固定比。比の根拠は README に無し}
+}
+
+@misc{nisthandbook,
+author = {{NIST/SEMATECH}},
+yomi = {nist},
+title = {e-Handbook of Statistical Methods, 5.5.2.1 D-Optimal designs},
+howpublished = {https://www.itl.nist.gov/div898/handbook/pri/section5/pri521.htm},
+year = {2026},
+note = {未引用。原文確認 2026-10-19: D 最適は『モデル依存』、『因子設定に実行不能な領域があるとき (制約付き設計空間)』が使いどころ}
+}
+
+@book{jain1991art,
+author = {Jain, Raj},
+yomi = {jain},
+title = {The Art of Computer Systems Performance Analysis: Techniques for Experimental Design, Measurement, Simulation, and Modeling},
+publisher = {Wiley},
+year = {1991},
+note = {未引用。第2章 (よくある誤り) の本文を複製サイト経由で部分確認、第17章 (2^k 要因計画) は著者公開のチュートリアル資料 (ied_tut.pdf) のみ。第5章 (負荷の選び方) は目次のみで本文未読。引用前に実書籍で頁を確認すること}
+}
+
+@book{lazowska1984qsp,
+author = {Lazowska, Edward D. and Zahorjan, John and Graham, G. Scott and Sevcik, Kenneth C.},
+yomi = {lazowska},
+title = {Quantitative System Performance: Computer System Analysis Using Queueing Network Models},
+publisher = {Prentice-Hall},
+year = {1984},
+note = {未引用。著者公開の PDF (https://homes.cs.washington.edu/~lazowska/qsp/) の第3章 (利用率の法則・クラスごとに足す例・D=ΣDk)、第5章 (漸近限界は単一クラスのみ。多クラスは『存在するが広くは使われない』)、第7章 (単一平均クラスへの潰しが誤る例) を 2026-10-20 に確認}
+}
+
+@article{denning1978operational,
+author = {Denning, Peter J. and Buzen, Jeffrey P.},
+yomi = {denning},
+title = {The Operational Analysis of Queueing Network Models},
+journal = {ACM Computing Surveys},
+volume = {10},
+number = {3},
+pages = {225--261},
+year = {1978},
+doi = {10.1145/356733.356735},
+note = {未引用。書誌は Crossref で確認 2026-10-20。本文は未読 (ACM 403)。利用率の法則 U=XS の原典。Lazowska 1984 の第3章がこれを基にしていると明記}
+}
+
+@article{zahorjan1982bjb,
+author = {Zahorjan, John and Sevcik, Kenneth C. and Eager, Derek L. and Galler, Bruce},
+yomi = {zahorjan},
+title = {Balanced Job Bound Analysis of Queueing Networks},
+journal = {Communications of the ACM},
+volume = {25},
+number = {2},
+pages = {134--141},
+year = {1982},
+doi = {10.1145/358396.358447},
+note = {未引用。書誌は Crossref で確認 2026-10-20。本文未読 (ACM 403)。閉じたモデル (利用者数 N と思考時間) の限界なので、開ループ k6 の本研究には当てはまりにくい}
+}
+
+@article{balbo1996common,
+author = {Balbo, Gianfranco and Serazzi, Giuseppe},
+yomi = {balbo},
+title = {Asymptotic Analysis of Multiclass Closed Queueing Networks: Common Bottleneck},
+journal = {Performance Evaluation},
+volume = {26},
+number = {1},
+pages = {51--72},
+year = {1996},
+doi = {10.1016/0166-5316(95)00021-6},
+note = {未引用。書誌は Crossref で確認 2026-10-20。abstract (検索要約) のみ。配合 (population mix) ごとに律速が変わる、飽和セクタ (saturation sector) の概念の原典。閉じたモデル}
+}
+
+@article{balbo1997multiple,
+author = {Balbo, Gianfranco and Serazzi, Giuseppe},
+yomi = {balbo},
+title = {Asymptotic Analysis of Multiclass Closed Queueing Networks: Multiple Bottlenecks},
+journal = {Performance Evaluation},
+volume = {30},
+number = {3},
+pages = {115--152},
+year = {1997},
+doi = {10.1016/S0166-5316(97)00005-9},
+note = {未引用。題・著者・年・DOI は Crossref で確認 2026-10-20。巻・号・頁 (30(3):115--152) は WebSearch の要約のみで Crossref 未照合。abstract のみ。『配合の空間が、複数の駅が一緒に飽和する領域 (saturation sector) に分割される』}
+}
+
+@article{anselmi2010bottleneck,
+author = {Anselmi, J. and Cremonesi, P.},
+yomi = {anselmi},
+title = {A Unified Framework for the Bottleneck Analysis of Multiclass Queueing Networks},
+journal = {Performance Evaluation},
+volume = {67},
+number = {4},
+pages = {218--234},
+year = {2010},
+doi = {10.1016/j.peva.2009.09.002},
+note = {未引用。書誌は Crossref で確認。プレプリント (polaris.imag.fr) の abstract・序論・2章を 2026-10-20 に確認: 『律速は配合 (population mix) で変わる』『負荷の特性多面体 (loadings = サービス需要ベクトルの凸包) の境界が律速に対応』『線形計画で列挙』。閉じたモデル (利用者数 N→∞)}
+}
+
+@misc{tpcc510,
+author = {{Transaction Processing Performance Council}},
+yomi = {tpc},
+title = {TPC Benchmark C Standard Specification, Revision 5.10},
+howpublished = {https://hstore.cs.brown.edu/wordpress/wp-content/uploads/2011/07/tpcc_current.pdf},
+year = {2008},
+note = {未引用。2026-10-20 に 5.2.3 (配合の最小割合: Payment 43, Order-Status 4, Delivery 4, Stock-Level 4。New-Order は下限なし=測定対象)、5.4 (tpmC = 完了した New-Order の毎分数。『business throughput』で配合は固定) を確認。コピーは Brown 大のホスト}
+}
+
+@misc{tpcw2000smith,
+author = {Smith, Wayne D.},
+yomi = {smith},
+title = {TPC-W: Benchmarking An Ecommerce Solution, Revision 1.2},
+howpublished = {https://www.tpc.org/tpcw/tpc-w_wh.pdf},
+year = {2000},
+note = {未引用。年は未確認 (文書に年の記載を確認できず)。6頁を 2026-10-20 に通読: WIPS (標準配合 80/20)、WIPSb (閲覧 95%、フロントが律速)、WIPSo (購入 50%、DB が律速。WIPSo は WIPS の 1/3~1/2) の 3 指標を別々に報告}
+}
+
+@article{menasce2002tpcw,
+author = {Menasc{\'e}, Daniel A.},
+yomi = {menasce},
+title = {TPC-W: A Benchmark for E-Commerce},
+journal = {IEEE Internet Computing},
+year = {2002},
+doi = {10.1109/MIC.2002.1003136},
+note = {未引用。書誌は Crossref で確認 2026-10-20 (巻・号・頁は未確認)。本文未読}
+}
+
+@misc{specweb2005faq,
+author = {{SPEC}},
+yomi = {spec},
+title = {SPECweb2005 FAQ},
+howpublished = {http://www.spec.org/web2005/docs/faq.html},
+year = {2005},
+note = {未引用。2026-10-20 に原文確認: 総合スコアは 3 つの副指標 (Banking/Ecommerce/Support) の幾何平均を参照機のスコアで正規化。ハードウェア比較用のスコアで、負荷の物差しではない。年は未確認}
+}
+
+@inproceedings{sachidananda2024erlang,
+author = {Sachidananda, Vighnesh and Sivaraman, Anirudh},
+yomi = {sachidananda},
+title = {Erlang: Application-Aware Autoscaling for Cloud Microservices},
+booktitle = {Proceedings of the Nineteenth European Conference on Computer Systems (EuroSys '24)},
+year = {2024},
+doi = {10.1145/3627703.3650084},
+note = {未引用。原典 PDF (著者サイト) の 3.1 節と Workload Selection を 2026-10-20 に確認: 負荷 = 『全体の毎秒リクエスト数 + エンドポイントごとの確率分布』のベクトル。配合は未知の分布へ距離で補間。CPU コストで重み付けしない}
+}
+
+@misc{sachidananda2022cola,
+author = {Sachidananda, Vighnesh and Sivaraman, Anirudh},
+yomi = {sachidananda},
+title = {COLA: Collective Autoscaling for Cloud Microservices},
+howpublished = {arXiv:2112.14845v3},
+year = {2022},
+note = {未引用。原典 PDF 確認 (2026-10-19 に負荷の記述、2026-10-20 に『負荷=全体 RPS+エンドポイント分布』の定義)。Erlang の前身}
+}
+
+@inproceedings{qiu2020firm,
+author = {Qiu, Haoran and Banerjee, Subho S. and Jha, Saurabh and Kalbarczyk, Zbigniew T. and Iyer, Ravishankar K.},
+yomi = {qiu},
+title = {FIRM: An Intelligent Fine-grained Resource Management Framework for SLO-Oriented Microservices},
+booktitle = {14th USENIX Symposium on Operating Systems Design and Implementation (OSDI '20)},
+year = {2020},
+note = {未引用。原典 PDF を 2026-10-20 に grep で確認 (全文精読ではない): RL の状態に『到着率』と『リクエスト型の構成比 (各型の割合)』を別々に入れる。負荷は『全リクエスト型を一様に』生成}
+}
+
+@inproceedings{chow2022deeprest,
+author = {Chow, Ka-Ho and Deshpande, Umesh and Seshadri, Sangeetha and Liu, Ling},
+yomi = {chow},
+title = {DeepRest: Deep Resource Estimation for Interactive Microservices},
+booktitle = {Proceedings of the Seventeenth European Conference on Computer Systems (EuroSys '22)},
+pages = {181--198},
+year = {2022},
+doi = {10.1145/3492321.3519564},
+note = {未引用。書誌は Crossref で確認 2026-10-20。abstract (検索要約) のみ。本文は有料 (Unpaywall: OA なし)。『API トラフィック (エンドポイントごとの呼び数) から各コンポーネントの資源を学習で推定』。本研究の c+β·buy+ν·view の ML 版に相当。引用前に読むこと}
+}
+
+@misc{cosmosdbru,
+author = {{Microsoft}},
+yomi = {microsoft},
+title = {Request Units as a throughput and performance currency - Azure Cosmos DB},
+howpublished = {https://learn.microsoft.com/en-us/azure/cosmos-db/request-units},
+year = {2026},
+note = {未引用。ドキュメント (査読論文ではない)。2026-10-20 に原文確認: 『RU は CPU・IOPS・メモリを抽象化した性能の通貨。1 KB の点読みが 1 RU』。異種の操作を 1 つの単位にまとめる実務上の前例}
+}
+
+@article{calzarossa2016workload,
+author = {Calzarossa, Maria Carla and Massari, Luisa and Tessera, Daniele},
+yomi = {calzarossa},
+title = {Workload Characterization: A Survey Revisited},
+journal = {ACM Computing Surveys},
+year = {2016},
+doi = {10.1145/2856127},
+note = {未引用。書誌は Crossref で確認 2026-10-20 (Crossref の題は subtitle 無しで 『Workload Characterization』、副題は検索結果の表示による)。本文未読。負荷の特徴付けの総説}
 }

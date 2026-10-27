@@ -174,3 +174,33 @@
 - **「周波数を固定する／しない」は論文の分野で作法が分かれる**: 遅延・ジッタ・オーバーヘッドを精密に測る系 (OSDI/NSDI の OS・ネットワーク系) は無効化を明記、
   ML ベースの資源管理・オートスケール系は何も書かない。母集団を選ぶときは分野を分けて数える。
 - 方法論の文献 (再現性・報告) は **Hoefler & Belli (SC'15)**、**Papadopoulos ほか (TSE)**、**Maricq ほか (OSDI'18)** から芋づる式に辿る。
+
+---
+
+## 10. 追記 (2026-10-19) 「負荷の配合・強度の決め方 (workload mix / load level)」を調べるとき
+
+- **語彙**: 英語の「配合」は *workload mix / request mix / transaction mix / operational profile*。「回帰で 1 リクエストあたりの CPU を出す」は *resource demand estimation / service demand estimation / utilization law regression*。
+  「飽和点に対する割合」は *percentage of max load / saturation throughput / knee / calibration phase*。「共線性」は *multicollinearity / collinear workload classes*。
+  `"request mix" "browse buy ratio"` ではほぼ出ない。*TPC-W browsing shopping ordering mix* と *demand estimation collinearity* が当たる。
+- **著者名で引き違えやすい**: 『Kraft/Rolia の regression』は、Crossref では Kraft, Pacheco-Sanchez, Casale, Dawson (VALUETOOLS 2009)。Rolia は Rolia & Vetland (1995) と Kalbasi ほか (DEC)。**書誌は検索結果の記憶ではなく Crossref API で確かめる**:
+  `curl -s "https://api.crossref.org/works?query.bibliographic=<題と著者>&rows=2&select=DOI,title,author,issued,container-title"`。DOI が分かっていれば `https://api.crossref.org/works/<DOI>`。有料かどうかは `https://api.unpaywall.org/v2/<DOI>?email=<メール>` の `is_oa`。
+- **修士論文は共線性の議論が詳しい**: DEC の本体 (TSE 2012) は IEEE で取れないが、Kalbasi の修士論文 (Calgary, 2010) はカナダ国立図書館の PDF
+  (`collectionscanada.gc.ca/obj/thesescanada/vol2/002/MR69450.PDF?is_thesis=1&oclc_number=806535411`) が curl で取れ、2.1–2.2 節に共線性の定義と対処法の比較がある。
+- **Imperial の論文は Spiral の API で取る**: 検索結果の `spiral.imperial.ac.uk/entities/publication/<uuid>` を curl し、`bitstreams/<uuid>/download` を拾う。実体は `.../server/api/core/bitstreams/<uuid>/content`。bitstream が複数あり、片方は著者の顔写真 (JPEG) だったので `file` で PDF か確かめる。
+- **ベンチマークの『配合』は README でなくコードにある**: DeathStarBench の比は `socialNetwork/wrk2/scripts/social-network/mixed-workload.lua` の `*_ratio` 変数 (raw.githubusercontent.com を curl)。
+- **本の中身**: Jain の教科書は複製サイト (vdoc.pub) に第 1–3 章ほどだけある。第 17 章 (2^k 要因計画) は著者公開のチュートリアル資料 `https://www.cse.wustl.edu/~jain/tutorials/ftp/ied_tut.pdf` が取れる (証明書の都合で `curl -k` が要る)。引用の頁は実書籍で確認すること。
+- **WebFetch は 403 になりやすい**: ResearchGate、ScienceDirect、CORE (Cloudflare)、Springer (認証リダイレクト)、ACM DL。arXiv・USENIX・SPEC (`research.spec.org`)・著者サイトは curl で取れる。取れないものは bib の note に『本文未読』と書く。
+- **『検索要約の数字』は出典が混ざる**: Spinner らの『C={1,2,3}、U={20,50,80%}』は検索結果の要約に出たが、どの論文の記述か特定できなかった。要約の数字は**孫引き扱い**にして、本文で裏取りできるまで本文に書かない。
+
+---
+
+## 11. 追記 (2026-10-20) 「異なる型のリクエストを 1 つの負荷にまとめる／アプリ間で強度を揃える」を調べるとき
+
+- **語彙**: 待ち行列の古典語で引く。*utilization law / operational laws / service demand / offered load / multiclass / bottleneck / saturation sector / population mix*。
+  「CPU 重みの負荷」を直接言う語は無い (*weighted request rate* *CPU-weighted load* ではマイクロサービス論文は出ず、ブログが混ざる)。*request unit* は Cosmos DB のドキュメントが当たる。
+  マイクロサービス側は *workload = request rate + request distribution over endpoints* の形で書かれる (COLA/Erlang)。
+- **教科書は著者公開の章別 PDF が取れる**: Lazowska ほか *Quantitative System Performance* は `https://homes.cs.washington.edu/~lazowska/qsp/Images/Chap_NN.pdf` (NN=01〜19)。`pdftotext` (レイアウト無し) で grep できる。第 3 章=利用率の法則、第 5 章=限界、第 7 章=多クラス。
+- **標準ベンチマーク仕様は本文を取る**: TPC-C 仕様 5.10 は Brown 大のコピー (`hstore.cs.brown.edu/.../tpcc_current.pdf`) が取れる。TPC-W は白書 (`tpc.org/tpcw/tpc-w_wh.pdf`、6 頁)。SPECweb2005 は `spec.org/web2005/docs/faq.html`。
+- **古典の原典 (Denning & Buzen 1978、Zahorjan 1982) は ACM DL が HTML を返し取れない**。Unpaywall が OA と言っても実体は同じページ。教科書 (Lazowska) が基にしているので、教科書で内容を確認して原典は『書誌のみ』と記録する。
+- **閉ループ前提の理論に注意**: 飽和セクタ (Balbo & Serazzi)・Anselmi & Cremonesi・balanced job bounds は**閉ループ (利用者数 N)**。k6 の開ループには半平面の共通部分で読み替える必要がある。
+- WebSearch の要約は『〜と書いてある』と言い切るので、**必ず原典 PDF の該当節を grep して確認**する (今回、TPC-C の最小割合の数字と SPECweb の幾何平均は原文で一致を確認)。
