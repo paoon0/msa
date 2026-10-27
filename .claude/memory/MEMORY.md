@@ -37,4 +37,4 @@
 - [ρ でペアを選ぶ (焦点)](rho-pair-selection-focus.md) — ユーザの関心は ρ の近さでペアを選ぶとどうなるか。予測的中は不要、P は保留 (2026-10-15)。★10/19 ρ は測る範囲で動く (front 0.35↔0.53)。★10/26 SS の ρ 確定 (front-end 0.287/0.288、cyc2×2台は取り直し)、次=SS HPA 実験の設計
 - [背景起動は絶対パスで](background-launch-absolute-paths.md) — run_in_background だと cd が効かず exit 127 になることがある。スクリプト・CSV を絶対パスで渡し、起動確認してから報告
 - [周波数は固定しない](cpu-frequency-not-pinned.md) — 2026-10-19 決定。目的は相性の傾向で性能測定でない。DVFS 偏りは記録して限界に書く
-- [MicroK8s 毎晩の再起動](microk8s-nightly-restart.md) — 10/05 以降毎晩 2 回クラスタが自分で再起動 (IPv6 アドレス変化→証明書)。洗い出し済み restart-audit.md。★2026-10-27 13:07 no-cert-reissue 設置=止まったか 10/28 に journalctl で要確認
+- [MicroK8s 毎晩の再起動](microk8s-nightly-restart.md) — 10/05 以降毎晩 2 回クラスタが自分で再起動 (IPv6 アドレス変化→証明書)。洗い出し済み restart-audit.md。★2026-10-27 13:07 no-cert-reissue 設置→同夜 IPv6 は変わったが再起動なし=停止を確認。最後の再起動 10/26 20:28
