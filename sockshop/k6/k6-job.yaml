@@ -32,6 +32,8 @@ spec:
         - { name: PRE_VUS,  value: "__PRE__" }
         - { name: MAX_VUS,  value: "__MAX__" }
         - { name: NUSERS,   value: "__NUSERS__" }
+        - { name: USER_PREFIX, value: "__PREFIX__" }     # 空なら setup() が実行ごとに作る
+        - { name: REGISTER, value: "__REGISTER__" }      # 0 = 登録を省き USER_PREFIX の登録済み利用者を使う
         volumeMounts:
         - { name: script, mountPath: /scripts }
         - { name: shared, mountPath: /shared }

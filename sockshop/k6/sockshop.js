@@ -6,7 +6,8 @@
 //                   注文してもカートは空にならないので DELETE /cart で空にする (しないとカートが育ち、金額 100 超で payment が拒否する)。
 //   閲覧型(browse): 1周 = GET /catalogue?size=6&page=n → GET /catalogue/{id}  (2 req/周)。買わない。front-end → catalogue → catalogue-db
 // 【ユーザ】全 VU が同じユーザだとカートを取り合うので、setup() で NUSERS 人を登録 (住所・カード付き) し、VU ごとに割り当てる。
-//   ユーザ名は実行ごとに接頭辞を変える (user-db に溜まるが測定には影響しない)。NUSERS は購入型の maxVUs 以上にする。
+//   ユーザ名は実行ごとに接頭辞を変える。NUSERS は購入型の maxVUs 以上にする。
+//   USER_PREFIX と REGISTER=0 を渡すと登録を省き、登録済みの利用者を使い回す (カートは 1 周ごとに空にするので育たない)。
 // 【計測窓】最初の WARMUP 秒を捨て、MEASURE 秒だけをカスタム指標に記録。dropped_win = RATE×MEASURE − 窓内で開始できた周。
 import http from 'k6/http';
 import encoding from 'k6/encoding';
@@ -21,7 +22,11 @@ const PRE_VUS  = parseInt(__ENV.PRE_VUS  || '100');
 const MAX_VUS  = parseInt(__ENV.MAX_VUS  || '1000');
 const NUSERS   = parseInt(__ENV.NUSERS   || String(MAX_VUS));
 // 接頭辞は setup() で 1 回だけ決めて data で各 VU に渡す (init は VU ごとに走るので、ここで時刻から作ると VU ごとにずれる)
-const PREFIX_ENV = __ENV.USER_PREFIX || '';
+const env = (k, d) => (__ENV[k] && !__ENV[k].startsWith('__')) ? __ENV[k] : d;   // Job の埋め残し (__PREFIX__ 等) は未指定扱い
+const PREFIX_ENV = env('USER_PREFIX', '');
+// REGISTER=0 なら登録を省き、USER_PREFIX の利用者 (先に登録済み) を使う (2026-10-19)。
+// 測定スクリプトはサイクルの慣らしで 1 回だけ登録し、各点では省く (点ごとの登録は計測直前に user・user-db へ余計な仕事を足し、user-db を点ごとに大きくする)
+const REGISTER = env('REGISTER', '1') !== '0';
 
 // 安い商品だけ (1 個 18 ドル以下。payment は 100 超を拒否する)
 const items = ['3395a43e-2d88-40de-b95f-e00e1502085b', '510a0d7e-8e83-4193-b483-e27e09ddc34d',
@@ -68,7 +73,10 @@ function scenarios() {
 export function setup() {
   const PREFIX = PREFIX_ENV || `k6${Date.now() % 100000000}`;
   let ok = 0;
-  if (RATE > 0) {
+  if (!REGISTER && !PREFIX_ENV) throw new Error('REGISTER=0 には USER_PREFIX (登録済みの接頭辞) が要る');
+  if (RATE > 0 && !REGISTER) {
+    console.log(`setup: 登録を省略 (prefix ${PREFIX}、登録済みの ${NUSERS} 人を使う)`);
+  } else if (RATE > 0) {
     for (let i = 0; i < NUSERS; i++) {
       const jar = http.cookieJar();
       jar.clear(BASE);
