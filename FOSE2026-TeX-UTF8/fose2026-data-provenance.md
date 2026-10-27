@@ -83,7 +83,7 @@ HPA は `autoscaling/v2`、コンテナごとに `ContainerResource` (cpu, Utili
 | 項目 | 値 |
 |---|---|
 | 定義 | n(s) = 分離配置 (arm=normal) で HPA が到達した台数 (`results-*.csv` の `replicas` 列)。同じ (cycle, view) で n(左) < n(右) なら「左が引きずられる」= `n<`、逆は `n>`。4 view × 5 cycle = 20 点 |
-| 分母 | 同居アームの測定も存在する点だけ (frontcart の cycle1 view300 が欠測 → 19) |
+| 分母 | 同居アームの測定も存在する点だけ (frontcart の cycle1 view300 が欠測 → 19。欠測の原因 = 2026-09-02 17:35:44 の MicroK8s 自動再起動 (`summer2026/mix.log` 108–109 行の summary回収失敗、`km2/experiments/restart-audit.md`。2026-10-22 判明)) |
 | 計算 | `km2/experiments/summer2026/table1_mismatch.py` |
 | 再現 | **全 6 行一致** (3/20, 7/20, 6/20, 9/20, 10/19, 11/20 とセル内容) |
 | 6 組の選び方 | mix (frontcatalog / frontreco / frontcart) と mix2 (frontemail / frontcheckout / checkoutemail / catalogcheckout) にある 2 サービス同居 7 組のうち、**catalog+checkout を除いた 6 組** (ユーザ判断 09-13)。3〜4 サービス同居 (frontrecocatalog, frontrecocartcatalog) は対象外。除いた catalog+checkout は 4/20 で反転あり (v0: catalog 1<、v100: checkout 2>、v300: 1>) — スクリプトに参考行として出力。査読「6 組を選んだ理由」への答えはこの列挙になる |
