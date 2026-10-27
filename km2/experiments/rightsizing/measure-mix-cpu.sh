@@ -68,6 +68,13 @@ REST_POINT=${REST_POINT:-0}
 REST_BLOCK=${REST_BLOCK:-0}
 REST_CYCLE=${REST_CYCLE:-0}
 COOL_TEMP=${COOL_TEMP:-""}
+# 限界測定用 (2026-10-19 追加。既定は従来どおり = シャッフル・止めない・サイクルは 1 から)。measure-limit.sh が使う
+#   ORDER=asc       点を書いた順に流す (シャッフルしない)
+#   STOP_DROP_PCT=1 点の取りこぼし (窓) が 目標×MEAS のこの % を超えたら、そのブロックの残りの点を流さない
+#   CYCLE_START=n   サイクル番号を n から数える (1 サイクルずつ呼び出すとき CSV の cycle 列を通し番号にする)
+ORDER=${ORDER:-shuffle}
+STOP_DROP_PCT=${STOP_DROP_PCT:-""}
+CYCLE_START=${CYCLE_START:-1}
 COOL_MAX_WAIT=${COOL_MAX_WAIT:-600}
 CSV=${CSV:-$DIR/results-mix-cpu.csv}
 SERIES=${SERIES:-${CSV%.csv}-series.csv}
@@ -189,15 +196,31 @@ run_point(){ local cyc=$1 pt=$2 reps=$3 bv b v
 }
 
 ensure_promq
-for c in $(seq 1 $CYCLES); do
+for c in $(seq $CYCLE_START $(( CYCLE_START + CYCLES - 1 ))); do
   echo "################ CYCLE $c / $CYCLES $(date -Is) ################"
   if [ $(( c % 2 )) = 1 ]; then order=$REPLICAS; else order=$(echo $REPLICAS | tr ' ' '\n' | tac | tr '\n' ' '); fi
   for n in $order; do
     deploy "$n"
-    for p in $(echo $POINTS | tr ' ' '\n' | shuf); do cool_down; run_point "$c" "$p" "$n"; rest $REST_POINT 点の後; done
+    if [ "$ORDER" = asc ]; then plist=$POINTS; else plist=$(echo $POINTS | tr ' ' '\n' | shuf); fi
+    for p in $plist; do cool_down; run_point "$c" "$p" "$n"; rest $REST_POINT 点の後
+      if [ -n "$STOP_DROP_PCT" ]; then
+        dp=$(python3 -c '
+import csv,sys
+c,p,n,meas=sys.argv[2:6]; best=None
+for r in csv.DictReader(open(sys.argv[1])):
+    if r["cycle"]==c and r["point"]==p and r["replicas"]==n:
+        b,v=float(r["buy_target"]),float(r["view_target"])
+        d=[float(r["buy_dropped_win"] or 0)/(b*float(meas)) if b else 0, float(r["view_dropped_win"] or 0)/(v*float(meas)) if v else 0]
+        best=100*max(d)
+print("NA" if best is None else "%.3f"%best)' "$CSV" "$c" "$p" "$n" "$MEAS")
+        echo "  取りこぼし (窓) ${dp}%"
+        if [ "$dp" = NA ] || python3 -c "import sys;sys.exit(0 if float('$dp')>float('$STOP_DROP_PCT') else 1)"; then
+          echo "  >> ${STOP_DROP_PCT}% 超 (または回収失敗) なので、このブロックの残りの点は流さない"; break; fi
+      fi
+    done
     rest $REST_BLOCK 台数ブロックの後
   done
-  [ "$c" -lt "$CYCLES" ] && rest $REST_CYCLE サイクルの後
+  [ "$c" -lt $(( CYCLE_START + CYCLES - 1 )) ] && rest $REST_CYCLE サイクルの後
 done
 kubectl delete job k6load -n $NS --ignore-not-found >/dev/null 2>&1
 echo "================ MEASURE-MIX-CPU DONE $(date -Is) ================"

@@ -1,0 +1,33 @@
+================ BUNDLE-VS-LOSS2 START 2026-10-15T14:07:01+09:00 arms=[normal] rates=[200 260] cycles=12 HPA=70%/1-12台 warm=180s meas=240s browse=0周/s sample=15s 様子見=増30s/減60s 開始2台 rightsize=1 limit_x=0 grpc_lb=1 ================
+  点ごとリセット: points=[b100v0 b50v150 b50v300] starts=[3 4] shuffle=1(seed 1) rotate_arms=0 settle=35s ready_timeout=300s rs_strict=1 check_frames=1 limit_override=[frontend=3000m productcatalogservice=3000m adservice=1000m] rs_services=[frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice] cool=70℃
+################ CYCLE 1 / 12 2026-10-15T14:07:01+09:00 ################
+---- deploy normal (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: ../rightsizing/rightsize-pdist-k3.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:127m/960m, checkoutservice=checkout:78m/1200m, currencyservice=server:220m/1600m, emailservice=email:31m/300m, frontend=server:477m/3, paymentservice=payment:24m/300m, productcatalogservice=server:276m/3, recommendationservice=server:314m/1600m, redis-cart=redis:300m/500m, shippingservice=server:32m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc1][normal] 点×開始台数の順番: b50v300:3 b50v150:3 b100v0:3 b50v150:4 b50v300:4 b100v0:4
+  冷却待ち 0s → 43℃
+---- 点のリセット [normal][b50v300] 開始3台 2026-10-15T14:08:28+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=3/3 cartservice=3/3 checkoutservice=3/3 currencyservice=3/3 emailservice=3/3 frontend=3/3 paymentservice=3/3 productcatalogservice=3/3 recommendationservice=3/3 redis-cart=1/1 shippingservice=3/3 
+==== [cyc1][normal] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始3台 2026-10-15T14:09:38+09:00 ====
+  HPA作成: k6 Job の apply 直後から 4 秒で完了
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=7 p99=71 | 動作中の枠=7.60コア(Pending分 0.00) Pod=36(Pending 0) | CPU時間=1249秒(うちsoftirq 97秒 / k6 52秒)
+     種類別p50: 商品6 / カート6 / 購入9 ms
+     確保したCPU: 1835.1 コア秒(窓平均 7.646 コア, 16 サンプル) / 使ったCPU: 1249 コア秒
+     台数: adservice:1 cartservice:5 checkoutservice:3 currencyservice:5 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:6 checkoutservice:3 currencyservice:5 emailservice:3 frontend:4 paymentservice:5 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=6 p99=47 ms
+  冷却待ち 0s → 55℃
+---- 点のリセット [normal][b50v150] 開始3台 2026-10-15T14:17:13+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=3/3 cartservice=3/3 checkoutservice=3/3 currencyservice=3/3 emailservice=3/3 frontend=3/3 paymentservice=3/3 productcatalogservice=3/3 recommendationservice=3/3 redis-cart=1/1 shippingservice=3/3 
+==== [cyc1][normal] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始3台 2026-10-15T14:18:23+09:00 ====
+  HPA作成: k6 Job の apply 直後から 4 秒で完了
