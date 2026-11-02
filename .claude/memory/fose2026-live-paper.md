@@ -14,7 +14,7 @@ metadata:
 - スナップショット `FOSE2026-TeX-UTF8/submitted-20260914/{tex,bib,pdf}` (MD5 は provenance §1)。以降の編集はカメラレディ向けで、差分はこれと比較する
 - 2ページ、太字なし、題「Kubernetes HPA 環境下におけるコンテナ同居の効果と選択条件」/ "Effects and Selection Conditions of Container Colocation under Kubernetes HPA"、著者 田尾瑞紀 + 満田成紀 (和歌山大学戦略情報室 / IR Office)
 - 構成: 抄録 → §1 はじめに → §2 同居とオートスケーラの干渉 (予約枠・必要台数・N=max を「定義」として置き、括弧で本稿のHPAはコンテナ別利用率なので実際にも一致と注記) → §3 実験環境 (localhost 実装、softirq を使う根拠 = 単一ノードでは affinity が +2–4% で変わらない) → §3.1 予備実験 (台数4固定) → §4 本実験 (HPA設定、適正化、表1) → §5 考察 (2段落、主張文で始める) → 今後の課題
-- ビルド: `FOSE2026-TeX-UTF8/` で `platex; pbibtex; platex; platex; dvipdfmx` (latexmk 無し)
+- ビルド: `FOSE2026-TeX-UTF8/` で `platex; pbibtex; platex; platex; dvipdfmx` (latexmk 無し) 。platex は `-kanji=utf-8 -interaction=nonstopmode` で、`-synctex=1` は付けない (ユーザ指示 2026-10-22)
 
 ## 数値の出所 (すべて `FOSE2026-TeX-UTF8/fose2026-data-provenance.md` に記録)
 - 再計算で**一致**: 表1 (`summer2026/table1_mismatch.py`)、§3.1 softirq −17〜23%/−43〜51%・buy(450) 359.6±22.9 vs 約440 (`fixed4_summary.py`)、§3 affinity +2.0/+4.2% (`icter_affinity_summary.py`)、§5 affinity 割合 38.8/4.8/4.1/2.5/1.7% (`edge_pair_shares.py`)

@@ -85,7 +85,9 @@ function scenarios() {
   };
 }
 
-export function setup() { return { start: Date.now() }; }
+// 開始時刻をログにも出す (2026-11-02 追加)。handleSummary に setup_data が渡らない k6 でも、
+// 呼び出し側が kubectl logs から計測窓の時刻を読めるようにする
+export function setup() { const start = Date.now(); console.log('@@@K6_START@@@ ' + start); return { start: start }; }
 
 export function checkoutFlow(data) {
   const measuring = (Date.now() - data.start) / 1000 >= WARMUP;
@@ -161,6 +163,11 @@ export function handleSummary(data) {
     browse_dropped_win: bDropped,
     browse_p50: g('mb_duration', 'med'), browse_p99: g('mb_duration', 'p(99)'),
     browse_failed: g('mb_failed', 'count') || 0,
+    // 時刻 (2026-11-02 追加、unix ミリ秒)。k6 の計測窓 = k6_start_ms + WARMUP 秒 から MEASURE 秒。
+    // 呼び出し側が Prometheus に問い合わせた区間と突き合わせるために出す
+    k6_start_ms: (data.setup_data && data.setup_data.start) || null,
+    k6_warmup_s: WARMUP,
+    k6_summary_ms: Date.now(),
   };
   return { stdout: '\n@@@K6_BEGIN@@@\n' + JSON.stringify(out) + '\n@@@K6_END@@@\n' };
 }

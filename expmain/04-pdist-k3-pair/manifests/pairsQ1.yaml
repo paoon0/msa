@@ -1,0 +1,227 @@
+# pairsQ1: ペア距離実験 (P の近さ) の第4配置 (2026-10-15 作成)。2 Pod を同時に同居させる。
+#   frontend        + currencyservice (frontend → currency は localhost:7000 = 実辺あり)
+#   checkoutservice + cartservice     (checkout → cart は localhost:7070 = 実辺あり。cart の REDIS_ADDR=redis-cart:6379 のまま)
+# 束ねていない productcatalogservice / recommendationservice / paymentservice / shippingservice / emailservice / adservice は km2/normal のまま。
+# ★ redis-cart は別 Pod。km2/normal/cartservice.yaml は cartservice と redis-cart を 1 ファイルに持つので、cartservice を normal から外すと
+#   redis-cart も消える。ドライバ (apply_arm の pairsQ1) が manifests/redis-cart.yaml を別途 apply する (pairsP2 / frontcart と同じ)。
+# Deployment 名とコンテナ名 (枠の置換 apply_rightsize.py / sample_hpa.py と整合):
+#   Deployment frontend        : コンテナ server(frontend:8080) / currency(7000)
+#   Deployment checkoutservice : コンテナ checkout(5050,metrics 9464) / cartservice(7070。REDIS_ADDR=redis-cart:6379)
+# 吸収される側の Service (currencyservice / cartservice) は同居 Pod のラベルを向ける。
+#   checkout (checkout Pod) → currency は currencyservice:7000 の Service 経由で frontend Pod の currency に着く。
+#   frontend (frontend Pod) → cart は cartservice:7070 の Service 経由で checkout Pod の cartservice に着く。
+# frontend-external (LoadBalancer) は作らない (k6 は frontend:80 を叩く)。
+# Pod 内ポート衝突なし: frontend 8080 / currency 7000 | checkout 5050,9464 / cart 7070。
+# localhost にしたのは frontend→currency と checkout→cart の 2 本。他の宛先は従来の Service 名のまま。
+# ドライバでの apply: apply_normal_except frontend currencyservice checkoutservice cartservice
+#   → kubectl apply -f manifests/redis-cart.yaml → kubectl apply -f manifests/pairsQ1.yaml (-n exp)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: frontend
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: server
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend:v0.10.3
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          initialDelaySeconds: 10
+          httpGet:
+            path: "/_healthz"
+            port: 8080
+            httpHeaders:
+            - { name: "Cookie", value: "shop_session-id=x-readiness-probe" }
+        livenessProbe:
+          initialDelaySeconds: 10
+          httpGet:
+            path: "/_healthz"
+            port: 8080
+            httpHeaders:
+            - { name: "Cookie", value: "shop_session-id=x-liveness-probe" }
+        env:
+        - { name: PORT, value: "8080" }
+        - { name: PRODUCT_CATALOG_SERVICE_ADDR, value: "productcatalogservice:3550" }
+        - { name: CURRENCY_SERVICE_ADDR, value: "localhost:7000" }   # ← 同居先へ loopback
+        - { name: CART_SERVICE_ADDR, value: "cartservice:7070" }
+        - { name: RECOMMENDATION_SERVICE_ADDR, value: "recommendationservice:8080" }
+        - { name: SHIPPING_SERVICE_ADDR, value: "shippingservice:50051" }
+        - { name: CHECKOUT_SERVICE_ADDR, value: "checkoutservice:5050" }
+        - { name: AD_SERVICE_ADDR, value: "adservice:9555" }
+        - { name: SHOPPING_ASSISTANT_SERVICE_ADDR, value: "shoppingassistantservice:80" }
+        - { name: ENABLE_PROFILER, value: "0" }
+        resources:
+          requests: { cpu: 1000m, memory: 128Mi }
+          limits:   { cpu: 1600m, memory: 256Mi }
+
+      - name: currency
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/currencyservice:v0.10.3
+        ports:
+        - containerPort: 7000
+        readinessProbe: { grpc: { port: 7000 } }
+        livenessProbe:  { grpc: { port: 7000 } }
+        env:
+        - { name: PORT, value: "7000" }
+        - { name: DISABLE_PROFILER, value: "1" }
+        resources:
+          requests: { cpu: 800m, memory: 64Mi }
+          limits:   { cpu: 1600m, memory: 128Mi }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkoutservice
+  labels:
+    app: checkoutservice
+spec:
+  selector:
+    matchLabels:
+      app: checkoutservice
+  template:
+    metadata:
+      labels:
+        app: checkoutservice
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: checkoutservice
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: checkout
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: mizuki0118/mygo:bunpupaymail
+        ports:
+        - { name: grpc,    containerPort: 5050 }
+        - { name: metrics, containerPort: 9464 }
+        readinessProbe: { grpc: { port: 5050 } }
+        livenessProbe:  { grpc: { port: 5050 } }
+        env:
+        - { name: PORT, value: "5050" }
+        - { name: PRODUCT_CATALOG_SERVICE_ADDR, value: "productcatalogservice:3550" }
+        - { name: SHIPPING_SERVICE_ADDR, value: "shippingservice:50051" }
+        - { name: PAYMENT_SERVICE_ADDR, value: "paymentservice:50051" }
+        - { name: EMAIL_SERVICE_ADDR, value: "emailservice:5000" }
+        - { name: CURRENCY_SERVICE_ADDR, value: "currencyservice:7000" }
+        - { name: CART_SERVICE_ADDR, value: "localhost:7070" }   # ← 同居先へ loopback
+        resources:
+          requests: { cpu: 800m, memory: 64Mi }
+          limits:   { cpu: 1200m, memory: 128Mi }
+
+      - name: cartservice
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/cartservice:v0.10.3
+        ports:
+        - containerPort: 7070
+        readinessProbe:
+          initialDelaySeconds: 15
+          grpc: { port: 7070 }
+        livenessProbe:
+          initialDelaySeconds: 50
+          periodSeconds: 30
+          grpc: { port: 7070 }
+        env:
+        - { name: REDIS_ADDR, value: "redis-cart:6379" }   # redis-cart は別 Pod (normal と同じ)
+        resources:
+          requests: { cpu: 560m, memory: 64Mi }
+          limits:   { cpu: 960m, memory: 128Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels: { app: frontend }
+spec:
+  type: ClusterIP
+  selector: { app: frontend }
+  ports:
+  - { name: http, port: 80, targetPort: 8080 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: currencyservice
+  labels: { app: currencyservice }
+spec:
+  type: ClusterIP
+  selector: { app: frontend }
+  ports:
+  - { name: grpc, port: 7000, targetPort: 7000 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: checkoutservice
+  labels: { app: checkoutservice }
+spec:
+  type: ClusterIP
+  selector: { app: checkoutservice }
+  ports:
+  - { name: grpc, port: 5050, targetPort: 5050 }
+  - { name: metrics, port: 9464, targetPort: 9464 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cartservice
+  labels: { app: cartservice }
+spec:
+  type: ClusterIP
+  selector: { app: checkoutservice }
+  ports:
+  - { name: grpc, port: 7070, targetPort: 7070 }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: frontend }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: currencyservice }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: checkoutservice }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: cartservice }

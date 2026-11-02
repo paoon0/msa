@@ -101,3 +101,7 @@ bash bundle-vs-loss2.sh
 | `requests_shift_search.py` | §5 予約枠のずらし探索 5--9% / 28--48% (awk 原本の Python 移植、一致) | `timeline-mix*.csv`, `results-mix*.csv` |
 | `../edge-traffic/icter_affinity_summary.py` | §3 バイト量 +2--4% | `../edge-traffic/results-icter-affinity.csv` |
 | `../edge-traffic/edge_pair_shares.py` | §5 affinity 割合 | `../edge-traffic/results-edge-pairs.csv` |
+
+
+
+ 

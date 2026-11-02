@@ -1,0 +1,92 @@
+pdist-k3 の解析 (同居 pdistk3pair、分離 pdistk3sep、枠 rightsize-pdist-k3.csv)。窓 = t_rel 180–420 s
+観測: 120 (= 同居アームの回 × ペア)
+
+§1 分離の台数 (配合ごとの 12 回の分布。* = 回ごとのブレ)
+                      b100v0          b50v150          b50v300         b100v200
+  front                 3×12             3×12             4×12             4×12
+  catalog               3×12             3×12        *4×11,5×1             5×12
+  reco                  3×12             3×12             4×12        *4×2,5×10
+  currency              4×12             3×12             5×12             6×12
+  cart                  4×12        *3×11,4×1             5×12        *6×11,7×1
+  checkout              5×12             3×12             3×12         *5×7,6×5
+  shipping              5×12             3×12             3×12             6×12
+
+§2 ρ の差の順に 10 組 (各 12 回 = 4 配合 × 3 サイクル)。主 = 分離 12 回の最頻値と比較
+pair                  Δρ    通信% | 主:回数 Δn平均 損平均[m] | 回ごと比較 | 補助(Pod内) | ブレ印付き 窓内変化 | 配合ごとの主の回数 b100v0/b50v150/b50v300/b100v200
+checkout+shipping   0.00    3.7 |  1/12  0.08        1 |  0/12 |  0/12 |  3  0 | 0/0/0/1
+front+catalog       0.01   38.8 |  0/12  0.00     -194 |  0/12 |  2/12 |  3  0 | 0/0/0/0
+front+reco          0.01    4.8 |  1/12  0.08      -13 |  1/12 |  0/12 |  3  1 | 0/0/0/1
+catalog+reco        0.02   18.4 |  0/12  0.00        0 |  0/12 |  0/12 |  6  0 | 0/0/0/0
+front+currency      0.09    8.5 |  3/12  0.25      -46 |  3/12 |  0/12 |  0  0 | 0/0/0/3
+front+cart          0.17    4.1 |  6/12  0.67      276 |  6/12 |  6/12 |  6  2 | 3/0/0/3
+checkout+cart       0.20    2.7 | 10/12  1.00       90 |  8/12 |  7/12 |  6  5 | 3/1/3/3
+currency+checkout   0.28    2.6 |  8/12  0.92       89 |  6/12 |  6/12 |  3  2 | 3/0/3/2
+catalog+checkout    0.36    2.3 |  6/12  0.75      158 |  6/12 |  6/12 |  6  0 | 3/0/3/0
+checkout+front      0.37    2.5 |  9/12  1.00      377 |  9/12 |  6/12 |  3  0 | 3/0/3/3
+
+§3 ペア × 配合ごと: 分離の最頻値 n_x(s)/n_x(t) と、各サイクルの同居 Pod の台数 n_st [引きずられた側 Δn] 損
+   B = 回ごとのブレのある側、W = 窓内の変化、u = 窓平均の利用率 s/t、(c n/n) = 点の順番が同じサイクル番号の分離 (測定日時は別)
+checkout+shipping  b100v0   分離 5/5  c1: 5 [- 0] +0m u65/65 (c 5/5)  c2: 5 [- 0] +0m u63/64 (c 5/5)  c3: 5 [- 0] +0m u64/64 (c 5/5)
+checkout+shipping  b50v150  分離 3/3  c1: 3 [- 0] +0m u52/53 (c 3/3)  c2: 3 [- 0] +0m u52/53 (c 3/3)  c3: 3 [- 0] +0m u52/53 (c 3/3)
+checkout+shipping  b50v300  分離 3/3  c1: 3 [- 0] +0m u57/57 (c 3/3)  c2: 3 [- 0] +0m u57/57 (c 3/3)  c3: 3 [- 0] +0m u57/57 (c 3/3)
+checkout+shipping  b100v200 分離 5/6 B:checkout  c1: 5 [- 0] -32m u74/73 (c 5/6)  c2: 5 [- 0] -32m u74/74 (c 6/6)  c3: 6 [checkout 1] +78m u62/62 (c 6/6)
+
+front+catalog      b100v0   分離 3/3  c1: 3 [- 0] +0m u52/51 (c 3/3)  c2: 3 [- 0] +0m u52/50 (c 3/3)  c3: 3 [- 0] +0m u52/51 (c 3/3)
+front+catalog      b50v150  分離 3/3  c1: 2 [- 0] -753m u74/69 (c 3/3)  c2: 3 [- 0] +0m u49/46 (c 3/3)  c3: 3 [- 0] +0m u49/46 (c 3/3)
+front+catalog      b50v300  分離 4/4 B:catalog  c1: 3 [- 0] -753m u75/72 (c 4/4)  c2: 4 [- 0] +0m u56/54 (c 4/4)  c3: 4 [- 0] +0m u57/55 (c 4/4)
+front+catalog      b100v200 分離 4/5  c1: 4 [- 0] -276m u63/60 (c 4/5)  c2: 4 [- 0] -276m u66/64 (c 4/5)  c3: 4 [- 0] -276m u64/60 (c 4/5)
+
+front+reco         b100v0   分離 3/3  c1: 3 [- 0] +0m u56/53 (c 3/3)  c2: 3 [- 0] +0m u56/54 (c 3/3)  c3: 3 [- 0] +0m u56/53 (c 3/3)
+front+reco         b50v150  分離 3/3  c1: 3 [- 0] +0m u53/51 (c 3/3)  c2: 3 [- 0] +0m u53/51 (c 3/3)  c3: 3 [- 0] +0m u53/52 (c 3/3)
+front+reco         b50v300  分離 4/4  c1: 4 [- 0] +0m u62/63 (c 4/4)  c2: 4 [- 0] +0m u63/63 (c 4/4)  c3: 4 [- 0] +0m u62/63 (c 4/4)
+front+reco         b100v200 分離 4/5 B:reco  c1: 5 [front 1] +477m u68/69 (c 4/5) W:306s:4→5  c2: 4 [- 0] -314m u74/74 (c 4/5)  c3: 4 [- 0] -314m u74/74 (c 4/5)
+
+catalog+reco       b100v0   分離 3/3  c1: 3 [- 0] +0m u62/55 (c 3/3)  c2: 3 [- 0] +0m u62/53 (c 3/3)  c3: 3 [- 0] +0m u62/54 (c 3/3)
+catalog+reco       b50v150  分離 3/3  c1: 3 [- 0] +0m u58/51 (c 3/3)  c2: 3 [- 0] +0m u58/52 (c 3/3)  c3: 3 [- 0] +0m u58/51 (c 3/3)
+catalog+reco       b50v300  分離 4/4 B:catalog  c1: 4 [- 0] +0m u72/64 (c 4/4)  c2: 4 [- 0] +0m u72/64 (c 4/4)  c3: 4 [- 0] +0m u71/64 (c 4/4)
+catalog+reco       b100v200 分離 5/5 B:reco  c1: 5 [- 0] +0m u68/59 (c 5/5)  c2: 5 [- 0] +0m u68/59 (c 5/5)  c3: 5 [- 0] +0m u70/60 (c 5/5)
+
+front+currency     b100v0   分離 3/4  c1: 3 [- 0] -220m u54/63 (c 3/4)  c2: 3 [- 0] -220m u54/63 (c 3/4)  c3: 3 [- 0] -220m u54/62 (c 3/4)
+front+currency     b50v150  分離 3/3  c1: 3 [- 0] +0m u52/53 (c 3/3)  c2: 3 [- 0] +0m u51/53 (c 3/3)  c3: 3 [- 0] +0m u52/53 (c 3/3)
+front+currency     b50v300  分離 4/5  c1: 4 [- 0] -220m u60/59 (c 4/5)  c2: 4 [- 0] -220m u60/59 (c 4/5)  c3: 4 [- 0] -220m u60/59 (c 4/5)
+front+currency     b100v200 分離 4/6  c1: 5 [front 1] +257m u57/59 (c 4/6)  c2: 5 [front 1] +257m u57/60 (c 4/6)  c3: 5 [front 1] +257m u57/60 (c 4/6)
+
+front+cart         b100v0   分離 3/4  c1: 4 [front 1] +477m u44/66 (c 3/4)  c2: 4 [front 1] +477m u42/62 (c 3/4)  c3: 4 [front 1] +477m u42/62 (c 3/4)
+front+cart         b50v150  分離 3/3 B:cart  c1: 3 [- 0] +0m u53/57 (c 3/3)  c2: 3 [- 0] +0m u53/54 (c 3/3)  c3: 3 [- 0] +0m u53/58 (c 3/3)
+front+cart         b50v300  分離 4/5  c1: 4 [- 0] -127m u61/62 (c 4/5)  c2: 4 [- 0] -127m u61/62 (c 4/5)  c3: 4 [- 0] -127m u61/62 (c 4/5)
+front+cart         b100v200 分離 4/6 B:cart  c1: 5 [front 1] +350m u56/66 (c 4/6)  c2: 5 [front 1] +350m u53/64 (c 4/6) W:291s:6→5  c3: 7 [front/cart 3] +1558m u47/58 (c 4/6) W:291s:7→6,398s:6→5
+
+checkout+cart      b100v0   分離 5/4  c1: 5 [cart 1] +127m u63/48 (c 5/4)  c2: 5 [cart 1] +127m u63/49 (c 5/4)  c3: 5 [cart 1] +127m u64/51 (c 5/4)
+checkout+cart      b50v150  分離 3/3 B:cart  c1: 3 [- 0] +0m u47/59 (c 3/3) W:274s:4→3  c2: 3 [- 0] +0m u53/64 (c 3/3)  c3: 4 [checkout/cart 1] +205m u48/59 (c 3/3) W:305s:4→3
+checkout+cart      b50v300  分離 3/5  c1: 5 [checkout 2] +156m u35/59 (c 3/5)  c2: 5 [checkout 2] +156m u36/59 (c 3/5)  c3: 4 [checkout 1] -49m u43/70 (c 3/5)
+checkout+cart      b100v200 分離 5/6 B:checkout/cart  c1: 6 [checkout 1] +78m u58/63 (c 5/6) W:290s:8→7,306s:7→6  c2: 6 [checkout 1] +78m u61/65 (c 6/6) W:275s:7→6  c3: 6 [checkout 1] +78m u60/65 (c 6/6) W:275s:7→6
+
+currency+checkout  b100v0   分離 4/5  c1: 5 [currency 1] +220m u46/64 (c 4/5)  c2: 5 [currency 1] +220m u46/63 (c 4/5)  c3: 5 [currency 1] +220m u46/63 (c 4/5)
+currency+checkout  b50v150  分離 3/3  c1: 3 [- 0] +0m u65/53 (c 3/3)  c2: 3 [- 0] +0m u59/50 (c 3/3) W:259s:4→3  c3: 3 [- 0] +0m u65/53 (c 3/3)
+currency+checkout  b50v300  分離 5/3  c1: 5 [checkout 2] +156m u61/35 (c 5/3)  c2: 5 [checkout 2] +156m u61/34 (c 5/3)  c3: 5 [checkout 2] +156m u60/34 (c 5/3)
+currency+checkout  b100v200 分離 6/5 B:checkout  c1: 5 [- 0] -220m u75/73 (c 6/5)  c2: 6 [checkout 1] +78m u60/59 (c 6/6) W:275s:7→6  c3: 6 [checkout 1] +78m u63/61 (c 6/6)
+
+catalog+checkout   b100v0   分離 3/5  c1: 5 [catalog 2] +552m u39/64 (c 3/5)  c2: 5 [catalog 2] +552m u39/64 (c 3/5)  c3: 5 [catalog 2] +552m u39/64 (c 3/5)
+catalog+checkout   b50v150  分離 3/3  c1: 3 [- 0] +0m u59/53 (c 3/3)  c2: 3 [- 0] +0m u59/53 (c 3/3)  c3: 3 [- 0] +0m u59/52 (c 3/3)
+catalog+checkout   b50v300  分離 4/3 B:catalog  c1: 4 [checkout 1] +78m u71/43 (c 4/3)  c2: 4 [checkout 1] +78m u71/43 (c 4/3)  c3: 4 [checkout 1] +78m u71/44 (c 4/3)
+catalog+checkout   b100v200 分離 5/5 B:checkout  c1: 5 [- 0] +0m u67/74 (c 5/5)  c2: 5 [- 0] +0m u67/74 (c 5/6)  c3: 5 [- 0] +0m u67/74 (c 5/6)
+
+checkout+front     b100v0   分離 5/3  c1: 5 [front 2] +954m u62/33 (c 5/3)  c2: 5 [front 2] +954m u62/33 (c 5/3)  c3: 5 [front 2] +954m u62/33 (c 5/3)
+checkout+front     b50v150  分離 3/3  c1: 3 [- 0] +0m u52/53 (c 3/3)  c2: 3 [- 0] +0m u52/52 (c 3/3)  c3: 3 [- 0] +0m u52/53 (c 3/3)
+checkout+front     b50v300  分離 3/4  c1: 4 [checkout 1] +78m u43/62 (c 3/4)  c2: 4 [checkout 1] +78m u43/62 (c 3/4)  c3: 4 [checkout 1] +78m u43/62 (c 3/4)
+checkout+front     b100v200 分離 5/4 B:checkout  c1: 5 [front 1] +477m u72/56 (c 5/4)  c2: 5 [front 1] +477m u72/56 (c 6/4)  c3: 5 [front 1] +477m u73/57 (c 6/4)
+
+§4 印
+  その他の印付き 0/120  内訳 {}
+  ペアごと: 主判定の回数を (a) 全回 (b) その他の印 (取りこぼし・Pending・Ready落ち・結果なし) のない回 (c) ブレの印のない回 で。
+  (d) は事後の参考 (2026-10-16、pairsP1b の 2 観測を見た後に追加): 分離 12 回の最大値を超えた回数
+  checkout+shipping  (a) 1/12  (b) 1/12  (c) 0/9  (d) 0/12
+  front+catalog      (a) 0/12  (b) 0/12  (c) 0/9  (d) 0/12
+  front+reco         (a) 1/12  (b) 1/12  (c) 0/9  (d) 1/12
+  catalog+reco       (a) 0/12  (b) 0/12  (c) 0/6  (d) 0/12
+  front+currency     (a) 3/12  (b) 3/12  (c) 3/12  (d) 3/12
+  front+cart         (a) 6/12  (b) 6/12  (c) 3/6  (d) 6/12
+  checkout+cart      (a) 10/12  (b) 10/12  (c) 6/6  (d) 7/12
+  currency+checkout  (a) 8/12  (b) 8/12  (c) 6/8  (d) 6/12
+  catalog+checkout   (a) 6/12  (b) 6/12  (c) 3/6  (d) 6/12
+  checkout+front     (a) 9/12  (b) 9/12  (c) 6/9  (d) 9/12

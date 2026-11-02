@@ -1,0 +1,129 @@
+# pairsQ3: ペア距離実験 (P の近さ) の第6配置 (2026-10-15 作成)。1 Pod を同居させる。
+#   frontend + checkoutservice (frontend → checkout は localhost:5050 = 実辺あり。checkout の image は pairsP2 と同じ mizuki0118/mygo:bunpupaymail)
+# 束ねていない cartservice(+redis-cart) / currencyservice / productcatalogservice / recommendationservice / paymentservice / shippingservice /
+# emailservice / adservice は km2/normal のまま。
+# Deployment 名とコンテナ名 (枠の置換 apply_rightsize.py / sample_hpa.py と整合):
+#   Deployment frontend : コンテナ server(frontend:8080) / checkout(5050,metrics 9464)
+# 吸収される側の Service (checkoutservice) は frontend Pod のラベルを向ける (port 5050 と 9464 の両方)。
+#   checkout の下流 (catalog / shipping / payment / email / currency / cart) は従来の Service 名のまま。
+# frontend-external (LoadBalancer) は作らない (k6 は frontend:80 を叩く)。
+# Pod 内ポート衝突なし: frontend 8080 | checkout 5050,9464。
+# localhost にしたのは frontend→checkout の 1 本。他の宛先は従来の Service 名のまま。
+# ドライバでの apply: apply_normal_except frontend checkoutservice → kubectl apply -f manifests/pairsQ3.yaml (-n exp)
+#   (cartservice は normal のままなので redis-cart.yaml の別途 apply は不要)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: frontend
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: server
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: us-central1-docker.pkg.dev/google-samples/microservices-demo/frontend:v0.10.3
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          initialDelaySeconds: 10
+          httpGet:
+            path: "/_healthz"
+            port: 8080
+            httpHeaders:
+            - { name: "Cookie", value: "shop_session-id=x-readiness-probe" }
+        livenessProbe:
+          initialDelaySeconds: 10
+          httpGet:
+            path: "/_healthz"
+            port: 8080
+            httpHeaders:
+            - { name: "Cookie", value: "shop_session-id=x-liveness-probe" }
+        env:
+        - { name: PORT, value: "8080" }
+        - { name: PRODUCT_CATALOG_SERVICE_ADDR, value: "productcatalogservice:3550" }
+        - { name: CURRENCY_SERVICE_ADDR, value: "currencyservice:7000" }
+        - { name: CART_SERVICE_ADDR, value: "cartservice:7070" }
+        - { name: RECOMMENDATION_SERVICE_ADDR, value: "recommendationservice:8080" }
+        - { name: SHIPPING_SERVICE_ADDR, value: "shippingservice:50051" }
+        - { name: CHECKOUT_SERVICE_ADDR, value: "localhost:5050" }   # ← 同居先へ loopback
+        - { name: AD_SERVICE_ADDR, value: "adservice:9555" }
+        - { name: SHOPPING_ASSISTANT_SERVICE_ADDR, value: "shoppingassistantservice:80" }
+        - { name: ENABLE_PROFILER, value: "0" }
+        resources:
+          requests: { cpu: 1000m, memory: 128Mi }
+          limits:   { cpu: 1600m, memory: 256Mi }
+
+      - name: checkout
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: { drop: [ALL] }
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: mizuki0118/mygo:bunpupaymail
+        ports:
+        - { name: grpc,    containerPort: 5050 }
+        - { name: metrics, containerPort: 9464 }
+        readinessProbe: { grpc: { port: 5050 } }
+        livenessProbe:  { grpc: { port: 5050 } }
+        env:
+        - { name: PORT, value: "5050" }
+        - { name: PRODUCT_CATALOG_SERVICE_ADDR, value: "productcatalogservice:3550" }
+        - { name: SHIPPING_SERVICE_ADDR, value: "shippingservice:50051" }
+        - { name: PAYMENT_SERVICE_ADDR, value: "paymentservice:50051" }
+        - { name: EMAIL_SERVICE_ADDR, value: "emailservice:5000" }
+        - { name: CURRENCY_SERVICE_ADDR, value: "currencyservice:7000" }
+        - { name: CART_SERVICE_ADDR, value: "cartservice:7070" }
+        resources:
+          requests: { cpu: 800m, memory: 64Mi }
+          limits:   { cpu: 1200m, memory: 128Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels: { app: frontend }
+spec:
+  type: ClusterIP
+  selector: { app: frontend }
+  ports:
+  - { name: http, port: 80, targetPort: 8080 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: checkoutservice
+  labels: { app: checkoutservice }
+spec:
+  type: ClusterIP
+  selector: { app: frontend }
+  ports:
+  - { name: grpc, port: 5050, targetPort: 5050 }
+  - { name: metrics, port: 9464, targetPort: 9464 }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: frontend }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: checkoutservice }

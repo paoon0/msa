@@ -175,6 +175,8 @@ run_point(){ local cyc=$1 pt=$2 reps=$3 bv b v
   local t_beg=$(( t_end - MEAS ))
   local win=$(( MEAS - 20 ))                       # 両端 10 秒ずつ内側
   local t_q=$(( t_end - 10 ))
+  # 問い合わせる区間をログに残す (2026-11-02 追加)。k6 側の時刻と並べた表は ${CSV%.csv}-times.csv
+  echo "  時刻: t_run=$t_run t_beg=$t_beg t_end=$t_end  Prometheus の区間 $(( t_q - win ))〜$t_q (${win}s)"
   while [ "$(date +%s)" -lt $(( t_end + 15 )) ]; do sleep 5; done
   local SEL="namespace=\"$NS\",container!=\"\",container!=\"POD\",pod!~\"promq.*\""
   local USAGE REQ LIM THR THRT NODE FREQ TEMP SER
@@ -187,10 +189,14 @@ run_point(){ local cyc=$1 pt=$2 reps=$3 bv b v
   FREQ=$(promq  "avg(avg_over_time(node_cpu_scaling_frequency_hertz[${win}s]))" $t_q)
   TEMP=$(promq  "max(max_over_time(node_hwmon_temp_celsius[${win}s]))" $t_q)
   SER=$(promr   "sum by(pod,container)(rate(container_cpu_usage_seconds_total{$SEL}[30s]))" $(( t_beg + 10 )) $t_q)
-  local summary; summary=$(kubectl logs "$pod" -n $NS 2>/dev/null | sed -n '/@@@K6_BEGIN@@@/,/@@@K6_END@@@/p' | grep '{')
+  local k6log summary k6start
+  k6log=$(kubectl logs "$pod" -n $NS 2>/dev/null)
+  summary=$(printf '%s\n' "$k6log" | sed -n '/@@@K6_BEGIN@@@/,/@@@K6_END@@@/p' | grep '{')
+  k6start=$(printf '%s\n' "$k6log" | grep -o '@@@K6_START@@@ [0-9]*' | head -1 | awk '{print $2}')   # k6 の開始時刻 [unix ms]
   echo "$summary" | grep -q '{' || { echo "  !! summary回収失敗(pod=$pod)"; kubectl delete job k6load -n $NS --ignore-not-found >/dev/null 2>&1; return; }
   SUMMARY="$summary" USAGE="$USAGE" REQJSON="$REQ" LIMJSON="$LIM" THRJSON="$THR" THRTJSON="$THRT" \
     NODEJSON="$NODE" FREQJSON="$FREQ" TEMPJSON="$TEMP" SERJSON="$SER" \
+    T_RUN="$t_run" T_END="$t_end" T_Q="$t_q" WIN="$win" K6_START_MS="$k6start" \
     python3 "$DIR/_write_mixpoint.py" "$CSV" "$SERIES" "$cyc" "$pt" "$reps" "$b" "$v" "$t_beg"
   kubectl delete job k6load -n $NS --ignore-not-found >/dev/null 2>&1
 }
