@@ -26,12 +26,20 @@ metadata:
 - 配合の検証: k6 達成率のずれ最大 0.44%、購入側 4 サービスは閲覧のみの点で CPU≈0 → ラベルどおり。ただし checkout は b50 (136m) が b50v75/b50v150 (117m) より約 16% 高く、周波数では説明できない (未解明、ρ の加法モデルの前提に関わる)。
 - requests/limits は測定でなく設定値 (kube-state-metrics)。pods 列は全行で台数と一致。
 
-**入れた変更 (2026-11-02、ユーザが「C にしたい」と決定。未コミット・実機未検証)**
+**入れた変更 (2026-11-02、ユーザが「C にしたい」と決定。2ee602a でコミット済み・実機未検証)**
 - 時刻の記録: `km2/experiments/k6/checkout.js` (setup() が `@@@K6_START@@@ <ms>` をログに出す + 集計に k6_start_ms/k6_warmup_s/k6_summary_ms)、`rightsizing/measure-mix-cpu.sh` (区間をログに出し、k6 ログから開始時刻を読む)、`rightsizing/_write_mixpoint.py` (`<CSV名>-times.csv` に prom 区間・k6 窓・k6_late_s・margin・取得経路を書く)。作り物の入力で 4 ケース確認済み。
-- 次の本番前にスモークで k6_start_src が summary/log になるか要確認 (実行はユーザ)。OB の measure-mix-cpu.sh だけ。bundle-vs-loss2.sh と SS には未導入。
+- ★2026-11-02 スモーク済み (smoke-times-20261102、ユーザ了承で Claude が起動): 4 点とも k6_start_src=summary、区間は k6 窓の内側 (余裕 始め約11 s/終わり約8.5 s)、usage_mc 48 行を Prometheus 再問い合わせで全一致。exp の Sock Shop はこのとき削除。OB の measure-mix-cpu.sh だけ。bundle-vs-loss2.sh と SS には未導入。
+
+**設計確認ダッシュボード (2026-11-02)**: Grafana に「設計の確認 (exp)」(uid design-check) を API で登録。定義と説明は km2/experiments/grafana/ (make_design_check.py, design-check.json, README.md)。スクリプトとは別経路 (Prometheus) で台数・HPA・枠・k6 時刻・区間平均 CPU を人が確かめる用。負荷量は確かめられない。Grafana は emptyDir なので Pod 再作成で消える→README の手順で登録し直す。
+
+**アヌビス点検 (2026-11-03、smoke-times)**: 主張1・2・4 は要修正、3・5 は掲載可。核心=区間・k6 時刻は AI のコードの自己申告で循環、CSV と再問い合わせの一致は再現性であって妥当性ではない。独立経路 (kubelet のコンテナ開始 ≤ k6_start ≤ t_run 4/4、cAdvisor の CPU の立ち上がり・終わりが ±1 s) で補強可。Claude の誤報告 2 件 (「絞り 0」→実際は最大 1.2%、「cAdvisor 10 秒ごと」→実効約 15 秒) を訂正済み。series は Pod 抜けの合計が混入 (mix-cpu2 の 2 台で 20%) → 使用禁止。mix-cpu2 本体は検証不能 (Prometheus のデータ消失)。追加の優先順: ①設計↔証拠の対応表 ②点ごとに k6 の全ログと Job の yaml を保存 ③k6 を通らない負荷量の確認 (frontend のアクセスログ) ④負荷区間の自動照合 ⑤本番設定でのスモーク ⑥series と慣らし待ちの修正。related_work §9.13 に記録。
+
+**series を案 2 に変更 (2026-11-03、ユーザ決定・未コミット・実機未検証)**: measure-mix-cpu.sh の SER を rate[30s] の query_range → 主データと同じ区間の生の記録 (range vector) に。_write_mixpoint.py が <CSV>-raw.csv (記録そのまま) と -series.csv (Pod ごとに隣り合う記録の差、列が変わった。古い形式のファイルには書かない) を出す。スモーク 4 点の実データで確認: 推移は滑らか (frontend 766/782/763/764)。★副産物の発見: 主データ usage_mc (rate) は端の空きが平均間隔×1.1 以上だと過小 (スモーク 48 行中 4 行で 8〜15% 低い、payment 60.9↔69.8 を手計算で機構確認)。mix-cpu2 本番への影響は未測定。対処はしない＝研究の限界として明記する (ユーザ決定 2026-11-03、§9.13)。生の記録は -raw.csv に残るので後から再計算は可能。k6 を通らない負荷量の確認 (frontend のログ行数) はユーザが「いらない」と判断 (2026-11-03)。
+
+**本番設定スモーク smoke-prod-20261103 (2026-11-03 00:46〜01:31、Claude 起動)**: 6 点回収、時刻の余裕 全点プラス (始め約11 s/終わり約8.5 s)、新 -raw/-series 正常。重い点の取りこぼし buy 11〜31 は mix-cpu2 本番の同じ点と同程度。rate の過小評価を実測: 160 s 区間で 72 行中 11 行が 1% 超低く最大 7.5% (限界として §9.13 に記載)。
 
 **未了**
-- Prometheus の保持期間・保存先の確認 (既定 10 日、emptyDir なら Pod 再作成で全消失)。確認コマンドを渡済み、ユーザの結果待ち → 延長の具体コマンドを書く。
+- Prometheus の保持期間: 2026-11-02 に Claude が確認済み = retention 10d・容量上限なし・保存先 emptyDir (PVC なし)・最古 10/23 21:00・約 2 GB。◎4 実験の Prometheus 生データは既に消失 (CSV とログのみ残る)。related_work §9.12 に記録。★2026-11-02 22:28 ユーザ指示で変更済み: retention 180d + PVC (microk8s-hostpath 100Gi) に切替 (kubectl patch prometheus、旧データは消去、ユーザは全実験やり直す方針)。helm upgrade で戻る恐れあり。
 - 推奨したが未決: Prometheus の区間を k6 の時刻で問い合わせる作りに直す / frontend のアクセスログでリクエスト数を数える独立検証 / 既知の信号 (stress-ng) での校正。
 - expmain/ とルート EXPERIMENTS.md のコミット、summer2026/EXPERIMENTS.md に fixed4/fixed4b/probe5 の行を足すか、CHECKLIST.md の改名、bundle-vs-loss2.sh の解説 (fixed4-lb・pdist-k3 用)。
 

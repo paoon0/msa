@@ -13,13 +13,15 @@
 #   * buy と view それぞれの達成率・取りこぼし・p50/p99 を記録 (片方だけ取りこぼしても見逃さない)
 #   * CPU 周波数の平均・最高温度・k6 の CPU・絞られた時間の割合も記録 (ノード負荷の影響を後で確かめるため)
 #   * Prometheus は k6 の計測窓の終わりの時刻を指定して問い合わせる (窓を一意にする)
-#   * 計測窓の 10 秒刻みの系列も別 CSV に残す (HPA は短い窓で判断するので、ばらつきが要る)
+#   * 計測窓の中の CPU の推移も別 CSV に残す (HPA は短い窓で判断するので、ばらつきが要る)。
+#     2026-11-03 から: 生の記録を ${CSV%.csv}-raw.csv、隣り合う記録の差 (約 15 秒ごとの平均) を $SERIES に書く
 #   * 1台ブロックと2台ブロックの順番はサイクルごとに入れ替える (奇数=1台が先、偶数=2台が先)
 #   アヌビス査読 (2026-10-07) の必須修正のうち、記録の追加・c0・limits の対処をここに入れた。
 #
 # 出力:
 #   $CSV    1行 = 1点 × 1コンテナ (同じ Deployment の Pod は合計)
-#   $SERIES 1行 = 1点 × 1コンテナ × 10秒 (計測窓の中だけ)
+#   $SERIES 1行 = 1点 × 1 Pod × 隣り合う 2 つの記録の間 (Prometheus に問い合わせる区間の中だけ。2026-11-03 から)
+#   ${CSV%.csv}-raw.csv  1行 = 1点 × 1 Pod × 1 記録 (CPU 時間の累計、そのまま)
 #
 # 使い方 (リポジトリ直下から):
 #   bash km2/experiments/rightsizing/measure-mix-cpu.sh                                     # 本走 (既定)
@@ -188,7 +190,10 @@ run_point(){ local cyc=$1 pt=$2 reps=$3 bv b v
   NODE=$(promq  "sum(rate(node_cpu_seconds_total{mode!=\"idle\"}[${win}s]))" $t_q)
   FREQ=$(promq  "avg(avg_over_time(node_cpu_scaling_frequency_hertz[${win}s]))" $t_q)
   TEMP=$(promq  "max(max_over_time(node_hwmon_temp_celsius[${win}s]))" $t_q)
-  SER=$(promr   "sum by(pod,container)(rate(container_cpu_usage_seconds_total{$SEL}[30s]))" $(( t_beg + 10 )) $t_q)
+  # 区間の CPU カウンタの記録そのもの (2026-11-03 変更)。以前は rate[30s] を 10 秒刻みで取っていたが、
+  #   記録が約 15 秒おきなので 30 秒の窓に 1 つしか入らない Pod が出て、その Pod を抜いた合計が黙って書かれていた
+  #   (アヌビス 2026-11-03)。いまは主データと同じ区間の生の記録を取り、隣り合う記録の差を Python で計算する
+  SER=$(promq   "container_cpu_usage_seconds_total{$SEL}[${win}s]" $t_q)
   local k6log summary k6start
   k6log=$(kubectl logs "$pod" -n $NS 2>/dev/null)
   summary=$(printf '%s\n' "$k6log" | sed -n '/@@@K6_BEGIN@@@/,/@@@K6_END@@@/p' | grep '{')

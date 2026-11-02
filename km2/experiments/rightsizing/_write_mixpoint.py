@@ -2,7 +2,7 @@
 """measure-mix-cpu.sh から呼ばれ、1点ぶんの行を CSV に追記する (直接は使わない)。
 
 環境変数: SUMMARY (k6 集計 JSON) / USAGE, REQJSON, LIMJSON, THRJSON, THRTJSON, NODEJSON, FREQJSON, TEMPJSON (instant query)
-          SERJSON (query_range, 10秒刻み)
+          SERJSON (区間の CPU カウンタの生の記録 = range vector。2026-11-03 まではquery_range の rate[30s] 10秒刻み)
           T_RUN, T_END, T_Q, WIN (問い合わせた区間。無ければ時刻の表は書かない)
 引数: CSV SERIES cycle point replicas buy view t_beg
 時刻の表 (2026-11-02 追加): <CSV 名>-times.csv に 1 点 1 行。スクリプトが Prometheus に問い合わせた区間と、
@@ -92,22 +92,62 @@ with open(out, 'a', newline='') as f:
         w.writerow(cols)
     w.writerows(rows)
 
-# 10秒刻みの系列 (Deployment ごとに Pod を合計)
-ser = defaultdict(float)
+# 区間の中の推移 (2026-11-03 変更)。SERJSON は CPU 時間の累計の生の記録 (Pod ごと、約 15 秒おき)。
+#   raw    : 記録をそのまま 1 行ずつ
+#   series : 同じ Pod の隣り合う 2 つの記録の差 ÷ 時間差 = その間の平均 CPU [m]。Pod ごとに書き、合計はしない
+#            (Pod ごとに記録の時刻がずれているので、時刻をそろえて足すと抜けや重なりが出る。合計は解析側で)
+# 以前の版 (rate[30s] を 10 秒刻み) の series とは列が違うので、古い形式のファイルには追記しない
+raw_out = re.sub(r'\.csv$', '', out) + '-raw.csv'
+RAW_COLS = ['cycle', 'point', 'replicas', 'deploy', 'container', 'pod', 't_unix', 't_off', 'cpu_seconds_total']
+SER_COLS = ['cycle', 'point', 'replicas', 'deploy', 'container', 'pod', 't_from_off', 't_to_off', 'dt_s', 'usage_mc']
+
+
+def open_checked(path, hdr):
+    if os.path.exists(path) and os.path.getsize(path) > 0:
+        with open(path) as f:
+            head = f.readline().strip().split(',')
+        if head != hdr:
+            print("     !! %s は古い形式なので書かない (CSV の名前を変えて回すこと)" % os.path.basename(path))
+            return None, False
+        return open(path, 'a', newline=''), False
+    return open(path, 'a', newline=''), True
+
+
+raw_rows, ser_rows, n_pods, n_short, n_reset = [], [], 0, 0, 0
 for x in result('SERJSON'):
-    key = (dep_of(x['metric'].get('pod', '?')), x['metric'].get('container', '?'))
+    pod, cont = x['metric'].get('pod', '?'), x['metric'].get('container', '?')
+    dp = dep_of(pod)
+    pts = []
     for t, v in x.get('values', []):
         try:
-            ser[(key, float(t))] += float(v) * 1000
+            pts.append((float(t), float(v)))
         except ValueError:
             pass
-new = not os.path.exists(ser_out) or os.path.getsize(ser_out) == 0
-with open(ser_out, 'a', newline='') as f:
-    w = csv.writer(f)
-    if new:
-        w.writerow(['cycle', 'point', 'replicas', 't_off', 'deploy', 'container', 'usage_mc'])
-    for ((dep, cont), t), v in sorted(ser.items()):
-        w.writerow([cyc, pt, reps, int(t - t_beg), dep, cont, round(v, 1)])
+    pts.sort()
+    n_pods += 1
+    if len(pts) < 2:
+        n_short += 1                                  # 差が取れない Pod (黙って捨てず、数えて表示する)
+    for t, v in pts:
+        raw_rows.append([cyc, pt, reps, dp, cont, pod, round(t, 3), round(t - t_beg, 3), v])
+    for (t0, v0), (t1, v1) in zip(pts, pts[1:]):
+        if v1 < v0:                                   # カウンタが巻き戻った (コンテナ再起動) 間は捨てる
+            n_reset += 1
+            continue
+        ser_rows.append([cyc, pt, reps, dp, cont, pod, round(t0 - t_beg, 3), round(t1 - t_beg, 3), round(t1 - t0, 3),
+                         round((v1 - v0) / (t1 - t0) * 1000, 1)])
+for path, hdr, rows_ in ((raw_out, RAW_COLS, raw_rows), (ser_out, SER_COLS, ser_rows)):
+    f, new = open_checked(path, hdr)
+    if f is None:
+        continue
+    with f:
+        w = csv.writer(f)
+        if new:
+            w.writerow(hdr)
+        w.writerows(rows_)
+if n_pods == 0:
+    print("     !! 推移: 生の記録が 1 つも取れなかった")
+elif n_short or n_reset:
+    print("     !! 推移: 記録が 2 つ未満の Pod %d 個 / 巻き戻り %d 回 (全 %d 系列)" % (n_short, n_reset, n_pods))
 
 print("  -> buy %.1f/%d view %.1f/%d 周/秒  取りこぼし(窓) buy=%s view=%s  p50 buy=%.0f view=%.0f ms  "
       "ノード=%s コア  周波数=%s GHz  最高温度=%s℃"
