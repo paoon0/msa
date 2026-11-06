@@ -36,6 +36,7 @@
 | `results-<name>.csv` | 1測定=1行(アーム, レート, サイクル, rps, dropped_win, p50/p99, softirq, CPU時間, 予約枠 …) | **消さない** |
 | `timeline-<name>.csv` | HPA 判断周期(15秒)ごとの利用率・台数の時系列 | **消さない** |
 | `events-<name>.csv` | Pod の Pending/Ready 落ち/HPA 上限などのイベント | **消さない** |
+| `results-<name>-times.csv` / `-raw.csv` | (2026-11-04 から) 1 点ごとの時刻の表 (Prometheus に問い合わせた区間・k6 の計測窓・余裕・周波数・最高温度) と CPU カウンタの生の記録。`summer2026/_write_extras.py` が書く | **消さない** |
 | `<name>.log` | 実行ログ。**論文の数値出所から参照されているものがある**(`mix.log`, `fixed4.log` 等) | 原則消さない |
 
 古い実験(`softirq/`, `hpa/`)は `results-*.csv` と `last-logs-*.txt`(直近の kubectl logs、再生成される)だけ。`last-logs-*` は消してよい。
@@ -65,9 +66,9 @@
 - **softirq/req(周)**: ノードの `mode="softirq"` CPU 秒 ÷ 周回数。通信コストの主指標(user モードはアプリのノイズが乗るので使わない)。cgroup の外にあるので **HPA には見えない**。
 - **cgroup CPU** = `hpa_util × 枠 × 台数`。ノード CPU より分解能が一桁高い(2026-09-07 以降の主指標)。
 - **dropped_win**: 計測窓の中だけの取りこぼし(k6 の `dropped_iterations` は全体累積なので窓に切り直したもの)。崩壊判定はこれを使う。
-- **予約枠(reserved)** = Σ requests × 台数。HPA のつまみに依存するので主指標にしない(条件付き主張)。
+- **予約枠(reserved)** = Σ requests × 台数。HPA のつまみに依存するので主指標にしない(条件付き主張)。bundle-vs-loss2.sh の `reserved_core_sec` は **2026-11-06 から CPU 秒と同じ内側 `MEAS−20` 秒** (区間の平均 × 長さ)。それ以前は窓全体の `MEAS` 秒ぶんで、CPU 秒 (2026-11-04〜) と割ると約 9% ずれる (平均の `reserved_avg_cores` × 区間長で揃え直せる)。
 - **1周** = k6 の checkout シナリオ 1 回(locust では 3 HTTP リクエスト)。負荷は「周/s」で表す。
-- **計測窓**: ウォームアップ(既定 180s)を捨て、その後 `MEAS` 秒だけを集計。Prometheus の累積カウンタを窓の両端 2 点で引き算する(memory `exact-window-measurement`)。
+- **計測窓**: ウォームアップ(既定 180s)を捨て、その後 `MEAS` 秒だけを集計。**2026-11-04 から bundle-vs-loss2.sh の `node_cpu_sec` / `softirq_cpu_sec` / `k6_cpu_sec` は窓の両端 10 秒を削った `MEAS−20` 秒の CPU 秒** (区間は `-times.csv` の `prom_from`〜`prom_to`)。それ以前の CSV は `MEAS` 秒ぶん (終わりが k6 の窓から数秒はみ出す) なので混ぜない。Prometheus の累積カウンタを窓の両端 2 点で引き算する(memory `exact-window-measurement`)。
 
 ## 数値を報告するときの決まり
 

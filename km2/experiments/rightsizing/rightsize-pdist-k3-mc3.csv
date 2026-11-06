@@ -1,0 +1,12 @@
+deploy,container,request_m
+frontend,server,482
+checkoutservice,checkout,76
+cartservice,server,133
+productcatalogservice,server,272
+currencyservice,server,220
+paymentservice,payment,24
+shippingservice,server,33
+emailservice,email,31
+recommendationservice,server,311
+adservice,server,800
+redis-cart,redis,300

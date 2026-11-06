@@ -230,3 +230,30 @@ cd /home/mizuki/ダウンロード/msa && POINTS="b100 b100v150" REPLICAS="1 2" 
 ```sh
 cd /home/mizuki/ダウンロード/msa && POINTS="b100 b100v150 b50v300" REPLICAS="1 2" CYCLES=1 WARM=60 MEAS=180 PREWARM=180 REST_POINT=60 COOL_TEMP=70 CSV=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/smoke/smoke-prod-20261103.csv bash /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/measure-mix-cpu.sh > /dev/null 2>&1; echo "exit=$?"
 ```
+
+## mix-cpu3 (mix-cpu2 と同じ設定の取り直し、本番)
+
+- 起動 2026-11-03 03:59 / START 03:59:41。Claude が起動 (ユーザ指示「流して」)。設定は mix-cpu2 本番の再現コマンドと同じで、違いは出力先 (`results-mix-cpu3.csv`) だけ。スクリプトはコミット e785dc3 の版 (時刻の表 `-times.csv`・生の記録 `-raw.csv`・記録間の差 `-series.csv` を書く)。VU は既定 300・3000。見込み約 20 時間。結果: 実行 (DONE 2026-11-03 23:34:43、exit 0、204 点すべて回収)
+
+```sh
+cd /home/mizuki/ダウンロード/msa && POINTS="v75 v150 v300 b25 b25v75 b25v150 b25v300 b50 b50v75 b50v150 b50v300 b75 b75v75 b75v150 b100 b100v75 b100v150" REPLICAS="1 2" CYCLES=6 WARM=60 MEAS=180 PREWARM=180 REST_POINT=60 COOL_TEMP=70 COOL_MAX_WAIT=600 CSV=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/results-mix-cpu3.csv bash /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/measure-mix-cpu.sh > /dev/null 2>&1; echo "exit=$?"
+```
+
+## smoke-k3times (pdist-k3 用ドライバの時刻・内側区間の確認スモーク、試し)
+
+- 2026-11-06。Claude が起動しようとした (ユーザ指示「スモークを回してほしい」) が、**ユーザが起動を拒否** (実行されていない。出力ファイルなし)。直後にユーザから質問 (ノード CPU・softirq の聞き直し) があったため。
+
+```sh
+S=/home/mizuki/ダウンロード/msa/km2/experiments/summer2026; R=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing; O=$S/smoke; ARMS="normal" CYCLES=1 RESET_EACH_POINT=1 POINTS="b50v150" STARTS="1" SHUFFLE_POINTS=1 SHUFFLE_SEED=1 RIGHTSIZE=1 RSTABLE=$R/rightsize-pdist-k3-mc3.csv RS_STRICT=1 CHECK_FRAMES=1 RS_SERVICES="frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice" LIMIT_OVERRIDE="frontend=3000m productcatalogservice=3000m adservice=1000m" WARM=180 MEAS=240 HPA_MIN=1 HPA_MAX=12 HPA_TARGET=70 SU_WIN=30 SD_WIN=60 COOL_TEMP=70 CSV=$O/smoke-k3times-20261106.csv TL=$O/timeline-smoke-k3times-20261106.csv EV=$O/events-smoke-k3times-20261106.csv LOG=$O/smoke-k3times-20261106.log bash $S/bundle-vs-loss2.sh > $O/stdout-smoke-k3times-20261106.txt 2>&1; echo "exit=$?"
+```
+
+- 2026-11-06 04:01 に同じコマンドで起動し直した (ユーザ指示「スモークを」)。START 04:01:56。見るもの: `-times.csv` の余裕が両方正 (内側 220 s が k6 の窓に収まる)、`-raw.csv` が書けるか、周波数・温度、新しい枠 (`rightsize-pdist-k3-mc3.csv`) の枠検査。結果: 実行 (DONE 04:11:42、exit 0)。ログ `smoke/smoke-k3times-20261106.log`
+
+## smoke-k3pair (pdist-k3 同居アームを新しい枠・新しい区間で 1 回ずつ、試し)
+
+- 2026-11-06 08:18 起動 (START 08:18:15)。結果: 実行 (DONE 09:17:50、exit 0)。ユーザ指示「同居のスモークもしておいて」。6 アーム × b100v200 (いちばん重い配合) × 開始 1 台 × 1 回。窓は本走と同じ WARM 180 / MEAS 240。見るもの: 新しい枠 (`rightsize-pdist-k3-mc3.csv`) で同居 Pod が立つか (枠検査・start_ok)、`-times.csv` の余裕、`-raw.csv`、取りこぼし。
+
+```sh
+S=/home/mizuki/ダウンロード/msa/km2/experiments/summer2026; R=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing; O=$S/smoke; ARMS="pairsP1b pairsP2 pairsP3 pairsQ1 pairsQ2 pairsQ3" ROTATE_ARMS=1 CYCLES=1 RESET_EACH_POINT=1 POINTS="b100v200" STARTS="1" SHUFFLE_POINTS=1 SHUFFLE_SEED=1 RIGHTSIZE=1 RSTABLE=$R/rightsize-pdist-k3-mc3.csv RS_STRICT=1 CHECK_FRAMES=1 RS_SERVICES="frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice" LIMIT_OVERRIDE="frontend=3000m productcatalogservice=3000m adservice=1000m" WARM=180 MEAS=240 HPA_MIN=1 HPA_MAX=12 HPA_TARGET=70 SU_WIN=30 SD_WIN=60 COOL_TEMP=70 CSV=$O/smoke-k3pair-20261106.csv TL=$O/timeline-smoke-k3pair-20261106.csv EV=$O/events-smoke-k3pair-20261106.csv LOG=$O/smoke-k3pair-20261106.log bash $S/bundle-vs-loss2.sh > $O/stdout-smoke-k3pair-20261106.txt 2>&1; echo "exit=$?"
+```
+

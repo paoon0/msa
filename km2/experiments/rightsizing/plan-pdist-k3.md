@@ -12,6 +12,7 @@ pdist (2026-10-14) では、ほとんどの回で台数が 1 台か 2 台にし�
 
 - **基準の配合 b50v150 で 3 台になる枠**にする。r = D1(b50v150) / 1.5 (= pdist の枠の 1/3)。D1 は `results-mix-cpu2.csv` の、基準の配合・1 台のときの平均。
   - 1 台なら利用率 150% になり、HPA の判定で 3 台に増え、3 台のときに約 50% になる。
+  - **2026-11-06 のやり直し (pdistk3sep2 / pdistk3pair2) は D1 を `results-mix-cpu3.csv` から取った表 `rightsize-pdist-k3-mc3.csv` を使う** (式は同じ、`make_rightsize_k3.py` で生成。mix-cpu2 は Prometheus の元データが消えて検証できないため取り直した)。旧表 `rightsize-pdist-k3.csv` (mix-cpu2 由来) は 2026-10-16 の pdistk3sep / pdistk3pair が使ったもので、消さずに残す。差は各サービス ±6m 以内。
 - **ad はペアに入れない。枠は大きめの 800m にする** (2026-10-15 ユーザ確定。当初案 600m は跳ね上がり約 580m で 96% になり 77% を超えるので変更)。基準の配合では利用率約 8%、起動直後の JIT の跳ね上がり (pdist で最大約 580m) でも約 72% で、77% を超えない。limits は 1000m に上書きするので requests ≤ limits。
 - redis-cart は RS_SERVICES の対象外。normal のマニフェストの 300m のまま、HPA なしで常に 1 台 (表の値は実際と合わせて 300 と書く)。
 - 表: `rightsize-pdist-k3.csv`。

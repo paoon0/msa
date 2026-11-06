@@ -1,0 +1,2 @@
+cycle,arm,point,start_replicas,target_rate,browse_rate,t_run,t_beg,t_end,prom_from,prom_to,k6_start,k6_meas_from,k6_meas_to,k6_summary_at,k6_late_s,margin_start_s,margin_end_s,k6_start_src,freq_ghz,temp_max_c
+1,normal,b50v150,1,50,150,1793905452,1793905632,1793905872,1793905642,1793905862,1793905451.032,1793905631.032,1793905871.032,1793905871.125,-0.968,10.968,9.032,summary,3.211,77.0

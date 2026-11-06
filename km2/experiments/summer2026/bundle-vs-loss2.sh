@@ -202,8 +202,9 @@ ensure_promq(){ [ "$(kubectl get pod promq -n $NS -o jsonpath='{.status.phase}' 
   kubectl delete pod promq -n $NS --ignore-not-found >/dev/null 2>&1
   kubectl run promq -n $NS --image=curlimages/curl:latest --restart=Never --command -- sleep 86400 >/dev/null 2>&1
   for i in $(seq 1 30);do [ "$(kubectl get pod promq -n $NS -o jsonpath='{.status.phase}' 2>/dev/null)" = Running ]&&break;sleep 2;done; }
-promq(){ local q="$1" i out; for i in 1 2 3 4 5;do ensure_promq
-  out=$(kubectl exec promq -n $NS -- curl -s --max-time 25 "$PROM/api/v1/query" --data-urlencode "query=$q" 2>/dev/null)
+# 第2引数 (unix 秒) を渡すと、その時刻の値を聞く (2026-11-04 追加)。渡さなければ従来どおり「いま」
+promq(){ local q="$1" t="${2:-}" i out; for i in 1 2 3 4 5;do ensure_promq
+  out=$(kubectl exec promq -n $NS -- curl -s --max-time 25 "$PROM/api/v1/query" --data-urlencode "query=$q" ${t:+--data-urlencode "time=$t"} 2>/dev/null)
   [ -n "$out" ]&&{ echo "$out"; return; }; sleep 4; done; echo ""; }
 scalar(){ python3 -c "import sys,json;r=json.load(sys.stdin).get('data',{}).get('result',[]);print(round(float(r[0]['value'][1]),4) if r else 'NA')" 2>/dev/null; }
 
@@ -494,7 +495,6 @@ run_rate(){ local arm=$1 rate=$2 cyc=${3:-1} brw=${4:-0} pt=${5:-} n0=${6:-}
   local FLAG=/tmp/tl-$$-$cyc-$arm-$rate-$brw.flag; touch "$FLAG"
   ( while [ -f "$FLAG" ]; do sample_once "$cyc" "$arm" "$rate" "$t_run" "$brw"; sleep $SAMPLE; done ) &
   local SPID=$!
-  local win=$(( MEAS*5/6 )); [ $win -lt 60 ] && win=60
   # --- 計測窓に入る瞬間の台数を記録。窓の終わりの台数と比べれば「窓の中で増減したか」が分かる ---
   #     (Podが減るのを見たい場合、ウォームアップで行き過ぎた分が戻り切っているかの確認になる)
   sleep $WARM
@@ -510,21 +510,39 @@ run_rate(){ local arm=$1 rate=$2 cyc=${3:-1} brw=${4:-0} pt=${5:-} n0=${6:-}
   RUNC=$(echo "$RES4" | awk '{print $1}'); PENDC=$(echo "$RES4" | awk '{print $2}')
   PODS=$(echo "$RES4" | awk '{print $3}');  PEND=$(echo "$RES4" | awk '{print $4}')
   [ -z "$RUNC" ] && { RUNC=0; PENDC=0; PODS=0; PEND=0; }
-  # 計測窓ぴったりのCPU秒。rate×窓長 だと平均区間(win)と窓長(MEAS)がずれ、最初の40秒を外挿することになる。
-  # increase なら「この240秒で消費したCPU秒」そのものが出る(実機で rate[240s]*240 と完全一致を確認)。
-  NODE=$(promq "sum(increase(node_cpu_seconds_total{mode!=\"idle\"}[${MEAS}s]))" | scalar)
-  SOFT=$(promq "sum(increase(node_cpu_seconds_total{mode=\"softirq\"}[${MEAS}s]))" | scalar)
+  REPL=$(kubectl get deploy -n $NS --no-headers 2>/dev/null | awk '{printf "%s:%s ",$1,$4}')
+  # --- Prometheus の区間 (2026-11-04 変更、rightsizing/measure-mix-cpu.sh と同じ取り方) ---
+  #   以前: 窓の終わりに眠りから覚めた「いま」から MEAS 秒さかのぼって increase[MEAS] を取っていた。k6 は t_run より
+  #   1〜2 秒早く始まり、さらに「いま」は作業の分だけ遅れるので、区間の終わりが k6 の窓の外 (負荷が止まった後) に数秒はみ出していた。
+  #   いま: 区間を時刻で固定し、窓の両端を 10 秒ずつ削った内側 (MEAS−20 秒) だけを取る。
+  #   node_cpu_sec / softirq_cpu_sec / k6_cpu_sec は「この内側の区間で使った CPU 秒」(increase[MEAS−20])。
+  #   240 秒ぶんではないので、1 周あたり等にするときは区間の長さ (-times.csv の prom_to − prom_from) で割ること。
+  #   区間の終わりの 15 秒後まで待ってから聞く (Prometheus に記録が入りきるのを待つ)
+  local t_end=$(( t_run + WARM + MEAS ))
+  local win=$(( MEAS - 20 ))
+  local t_q=$(( t_end - 10 ))
+  echo "  時刻: t_run=$t_run 窓 $(( t_end - MEAS ))〜$t_end  Prometheus の区間 $(( t_q - win ))〜$t_q (${win}s)"
+  while [ "$(date +%s)" -lt $(( t_end + 15 )) ]; do sleep 5; done
+  NODE=$(promq "sum(increase(node_cpu_seconds_total{mode!=\"idle\"}[${win}s]))" $t_q | scalar)
+  SOFT=$(promq "sum(increase(node_cpu_seconds_total{mode=\"softirq\"}[${win}s]))" $t_q | scalar)
   # THROT(スロットリング率)と RETR(TCP再送)は削除。
   #   スロットリング原因説は実験B(2026-08-29, n=3)で否定され、TCP再送は全測定で0だった。
   #   どちらも kubectl exec + curl の往復が要るので、生きた仮説がない以上は取らない。
-  K6CPU=$(promq "sum(increase(container_cpu_usage_seconds_total{namespace=\"$NS\",pod=~\"k6load.*\",container!=\"\"}[${MEAS}s]))" | scalar)
-  REPL=$(kubectl get deploy -n $NS --no-headers 2>/dev/null | awk '{printf "%s:%s ",$1,$4}')
+  K6CPU=$(promq "sum(increase(container_cpu_usage_seconds_total{namespace=\"$NS\",pod=~\"k6load.*\",container!=\"\"}[${win}s]))" $t_q | scalar)
+  # 周波数・温度・CPU カウンタの生の記録 (2026-11-04 追加、rightsizing/measure-mix-cpu.sh と同じ問い合わせ)。
+  #   書き出しは _write_extras.py (-times.csv / -raw.csv)。results の列は変えない
+  local FREQJ TEMPJ SERJ
+  FREQJ=$(promq "avg(avg_over_time(node_cpu_scaling_frequency_hertz[${win}s]))" $t_q)
+  TEMPJ=$(promq "max(max_over_time(node_hwmon_temp_celsius[${win}s]))" $t_q)
+  SERJ=$(promq "container_cpu_usage_seconds_total{namespace=\"$NS\",container!=\"\",container!=\"POD\",pod!~\"promq.*\"}[${win}s]" $t_q)
   local done_at=$(( t_run + WARM + MEAS + 25 ))
   while [ "$(date +%s)" -lt "$done_at" ]; do sleep 5; done
   rm -f "$FLAG"; wait $SPID 2>/dev/null
   # --- 計測窓のあいだに確保していたCPU量(時間積分)。瞬間値だと窓内の増減が落ちる ---
   local WRES RESSEC PENDSEC RESAVG NSAMP
-  WRES=$(python3 "$DIR/window_reserved.py" "$TL" "$WARM" "$MEAS" "$cyc" "$arm" "$rate" "$LIMIT_X" "$brw" $pt $n0 2>/dev/null)
+  #   2026-11-06 から CPU 秒と同じ内側の区間 (窓の 10 秒後から win 秒) で数える。それまでは窓全体の MEAS 秒で、
+  #   CPU 秒 (内側 220 秒) と割ると約 9% ずれていた。reserved_core_sec = 区間の平均 × win
+  WRES=$(python3 "$DIR/window_reserved.py" "$TL" "$(( WARM + 10 ))" "$win" "$cyc" "$arm" "$rate" "$LIMIT_X" "$brw" $pt $n0 2>/dev/null)
   RESSEC=$(echo "$WRES" | awk '{print $1}'); PENDSEC=$(echo "$WRES" | awk '{print $2}')
   RESAVG=$(echo "$WRES" | awk '{print $3}'); NSAMP=$(echo "$WRES" | awk '{print $4}')
   [ -z "$RESSEC" ] && { RESSEC=0; PENDSEC=0; RESAVG=0; NSAMP=0; }
@@ -546,6 +564,10 @@ run_rate(){ local arm=$1 rate=$2 cyc=${3:-1} brw=${4:-0} pt=${5:-} n0=${6:-}
   [ -n "$pod_now" ] && pod="$pod_now"
   local logs summary; logs=$(kubectl logs "$pod" -n $NS 2>/dev/null)
   summary=$(printf '%s\n' "$logs" | sed -n '/@@@K6_BEGIN@@@/,/@@@K6_END@@@/p' | grep '{')
+  # 時刻の表・周波数・温度・生の記録 (2026-11-04 追加)。k6 の集計が取れなかった点でも書く (k6 の列は NA)
+  SUMMARY="$summary" K6_START_MS="$(printf '%s\n' "$logs" | sed -n 's/.*@@@K6_START@@@ \([0-9]*\).*/\1/p' | head -1)" \
+    FREQJSON="$FREQJ" TEMPJSON="$TEMPJ" SERJSON="$SERJ" T_RUN="$t_run" T_Q="$t_q" WARM="$WARM" MEAS="$MEAS" WIN="$win" \
+    python3 "$DIR/_write_extras.py" "$CSV" "$cyc" "$arm" "$rate" "$brw" "$pt" "$n0"
   echo "$summary" | grep -q '{' || { echo "  !! summary回収失敗(pod=$pod)"
        kubectl get events -n $NS --field-selector involvedObject.name=k6load -o jsonpath='{range .items[*]}     理由: {.reason} {.message}{"\n"}{end}' 2>/dev/null | tail -3
        kubectl delete job k6load -n $NS --ignore-not-found >/dev/null 2>&1; return; }

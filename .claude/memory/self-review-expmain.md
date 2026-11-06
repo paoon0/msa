@@ -45,3 +45,5 @@ metadata:
 
 **Why:** ユーザは「AI にやってもらっていたこと」を自分の言葉で説明できる状態にしたい (審査・査読で答えるため)。
 **How to apply:** 計算や判断はユーザに任せ、Claude は説明と食い違いの切り分けに回る。説明は 1 つずつ (下の feedback)。所見は事実/推測を分けて書く。関連 [[explain-one-step-at-a-time]] [[verify-numbers-python]] [[fose2026-live-paper]] [[cpu-frequency-not-pinned]]
+
+- 2026-11-03 mix-cpu3 本走 (mix-cpu2 と同設定の取り直し、コミット e785dc3 のスクリプト) 完了 03:59〜23:34。204/204 点、取りこぼし超過 0、絞り>5% は cyc3 2台 v75 payment 5.9% の 1 件、余裕最小 6.9 s。解析は未実施 (索引 summer2026/EXPERIMENTS.md)

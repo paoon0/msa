@@ -1,0 +1,2 @@
+cycle,arm,target_rate,limit_x,browse_rate,time,object,message,point,start_replicas
+1,normal,50,2026-11-05T19:08:41Z,paymentservice,New size: 3; reason: All metrics below target,b50v150,1
