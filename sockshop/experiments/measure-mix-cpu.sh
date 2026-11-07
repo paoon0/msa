@@ -15,7 +15,10 @@
 #
 # 出力 (CSV の列は OB の results-mix-cpu2.csv と同じ。_write_mixpoint.py を共用):
 #   $CSV    1 行 = 1 点 × 1 コンテナ
-#   $SERIES 1 行 = 1 点 × 1 コンテナ × 10 秒 (計測窓の中だけ)
+#   $SERIES 1 行 = 1 点 × 1 Pod × 隣り合う 2 つの記録の間 (計測窓の中だけ。2026-11-07 から OB と同じ形式。それまでは rate[30s] の 10 秒刻み)
+#   ${CSV%.csv}-times.csv  1 行 = 1 点。Prometheus に聞いた区間・k6 の計測窓・余裕 (2026-11-07 追加、OB の mix-cpu3 と同じ)
+#   ${CSV%.csv}-raw.csv    1 行 = 1 点 × 1 Pod × 1 記録 (CPU 時間の累計をそのまま。2026-11-07 追加)
+#   times の t_run は SS では k6 の開始時刻 (秒、切り捨て)。OB は k6 の Pod が Running になった時刻
 #
 # 使い方:
 #   bash /home/mizuki/ダウンロード/msa/sockshop/experiments/measure-mix-cpu.sh                       # 本走 (既定)
@@ -57,7 +60,7 @@ COOL_MAX_WAIT=${COOL_MAX_WAIT:-600}
 ORDER=${ORDER:-shuffle}
 STOP_DROP_PCT=${STOP_DROP_PCT:-""}
 CYCLE_START=${CYCLE_START:-1}
-CSV=${CSV:-$DIR/experiments/results-mix-cpu2b.csv}   # 2026-10-20 測り直し。初回 (B′ 前) は results-mix-cpu.csv
+CSV=${CSV:-$DIR/experiments/results-mix-cpu3b.csv}   # 2026-11-07 取り直し (時刻の表・生の記録つき)。旧 mix-cpu2b (10/20) は results-mix-cpu2b.csv、初回 (B′ 前) は results-mix-cpu.csv
 SERIES=${SERIES:-${CSV%.csv}-series.csv}
 LOG=${LOG:-${CSV%.csv}.log}
 PROM="http://prometheus-grafana-kube-pr-prometheus.monitoring.svc:9090"
@@ -65,6 +68,8 @@ ROLLOUT=300s
 
 exec > >(tee -a "$LOG") 2>&1
 echo "================ SOCKSHOP MIX-CPU START $(date -Is) points=[$POINTS] replicas=[$REPLICAS] cycles=$CYCLES warm=${WARM}s meas=${MEAS}s prewarm=${PREWARM}s@$PREWARM_POINT nusers=$NUSERS rest=${REST_POINT}s cool=${COOL_TEMP:-なし}℃ (HPA無し、登録はサイクルに 1 回) ================"
+# どの版のスクリプトで測ったかを残す (2026-11-07 追加)。dirty = 測定に使うファイルに未コミットの変更がある数 (0 なら commit の版そのもの)
+echo "  版: commit=$(git -C $REPO rev-parse --short HEAD 2>/dev/null) dirty=$(git -C $REPO status --porcelain -- sockshop/experiments/measure-mix-cpu.sh sockshop/k6 sockshop/normal km2/experiments/rightsizing/_write_mixpoint.py 2>/dev/null | wc -l)  VU=${PRE_VUS}/${MAX_VUS}  CSV=$CSV"
 
 parse_point(){ local p=$1 b=0 v=0
   [[ $p =~ ^b([0-9]+) ]] && b=${BASH_REMATCH[1]}
@@ -150,10 +155,16 @@ run_point(){ local cyc=$1 pt=$2 reps=$3 bv b v pod
   local summary; summary=$(echo "$logs" | sed -n '/@@@K6_BEGIN@@@/,/@@@K6_END@@@/p' | grep '{')
   if [ -z "$start_ms" ] || ! echo "$summary" | grep -q '{'; then
     echo "  !! 開始時刻か summary の回収に失敗 (pod=$pod)"; kubectl delete job k6load -n $NS --ignore-not-found >/dev/null 2>&1; return; fi
-  local t_beg=$(( start_ms / 1000 + WARM ))
+  local t_run=$(( start_ms / 1000 ))
+  local t_beg=$(( t_run + WARM ))
   local t_end=$(( t_beg + MEAS ))
   local win=$(( MEAS - 20 ))                       # 両端 10 秒ずつ内側
   local t_q=$(( t_end - 10 ))
+  # 問い合わせる区間をログに残す (2026-11-07 追加)。k6 側の時刻と並べた表は ${CSV%.csv}-times.csv
+  echo "  時刻: k6 開始=$t_run t_beg=$t_beg t_end=$t_end  Prometheus の区間 $(( t_q - win ))〜$t_q (${win}s)"
+  # 区間の最後の記録が Prometheus に届くまで待つ (2026-11-07 追加、OB の measure-mix-cpu.sh と同じ t_end + 15 s)。
+  #   以前は k6 が終わってすぐ (t_end の数秒後) に聞いていた
+  while [ "$(date +%s)" -lt $(( t_end + 15 )) ]; do sleep 5; done
   local SEL="namespace=\"$NS\",container!=\"\",container!=\"POD\",pod!~\"promq.*\""
   local USAGE REQ LIM THR THRT NODE FREQ TEMP SER
   USAGE=$(promq "sum by(pod,container)(rate(container_cpu_usage_seconds_total{$SEL}[${win}s]))" $t_q)
@@ -164,9 +175,12 @@ run_point(){ local cyc=$1 pt=$2 reps=$3 bv b v pod
   NODE=$(promq  "sum(rate(node_cpu_seconds_total{mode!=\"idle\"}[${win}s]))" $t_q)
   FREQ=$(promq  "avg(avg_over_time(node_cpu_scaling_frequency_hertz[${win}s]))" $t_q)
   TEMP=$(promq  "max(max_over_time(node_hwmon_temp_celsius[${win}s]))" $t_q)
-  SER=$(promr   "sum by(pod,container)(rate(container_cpu_usage_seconds_total{$SEL}[30s]))" $(( t_beg + 10 )) $t_q)
+  # 区間の CPU カウンタの記録そのもの (2026-11-07 変更、OB の measure-mix-cpu.sh の 2026-11-03 の変更と同じ)。
+  #   以前の rate[30s] 10 秒刻みは、記録が約 15 秒おきなので 30 秒の窓に 1 つしか入らない Pod を黙って抜いていた
+  SER=$(promq   "container_cpu_usage_seconds_total{$SEL}[${win}s]" $t_q)
   SUMMARY="$summary" USAGE="$USAGE" REQJSON="$REQ" LIMJSON="$LIM" THRJSON="$THR" THRTJSON="$THRT" \
     NODEJSON="$NODE" FREQJSON="$FREQ" TEMPJSON="$TEMP" SERJSON="$SER" \
+    T_RUN="$t_run" T_END="$t_end" T_Q="$t_q" WIN="$win" K6_START_MS="$start_ms" \
     python3 "$WRITER" "$CSV" "$SERIES" "$cyc" "$pt" "$reps" "$b" "$v" "$t_beg"
   echo "  order_failed=$(echo "$summary" | python3 -c 'import json,sys;print(json.load(sys.stdin).get("order_failed"))')"
   kubectl get pods -n $NS --no-headers | awk '$4>0{print "  !! 再起動:",$1,$4}'

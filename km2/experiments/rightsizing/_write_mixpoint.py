@@ -63,7 +63,9 @@ k6 = dict(
     buy_p50=round(d.get('p50') or 0, 1), buy_p99=round(d.get('p99') or 0, 1),
     view_p50=round(d.get('browse_p50') or 0, 1), view_p99=round(d.get('browse_p99') or 0, 1),
     buy_failed_rate=round(d.get('failed_rate') or 0, 4),
-    view_failed_rate=round((d.get('browse_failed') or 0) / max(v_started, 1), 4),
+    # 分母は閲覧のリクエスト数 (2026-11-07)。集計に browse_reqs が無い OB (閲覧 1 周 = 1 リクエスト) は従来どおり周の数で、値は変わらない。
+    #   SS は閲覧 1 周 = 2 リクエストなので、周の数で割ると最大 2.0 の割合でない値になっていた (アヌビス 2026-11-07)
+    view_failed_rate=round((d.get('browse_failed') or 0) / max(float(d.get('browse_reqs') or v_started), 1), 4),
 )
 node = dict(node_cores=scalar('NODEJSON', 2), freq_ghz=(lambda f: round(f / 1e9, 3) if f != 'NA' else 'NA')(scalar('FREQJSON', 0)),
             temp_max_c=scalar('TEMPJSON', 1))

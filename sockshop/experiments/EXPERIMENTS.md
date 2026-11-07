@@ -3,6 +3,7 @@
 Sock Shop の実験の日付付き索引 (OB の `../../km2/experiments/summer2026/EXPERIMENTS.md` と同じ形)。2026-10-27 作成。
 **パスはすべてこのファイル (`sockshop/experiments/`) から見た相対パス**。`../k6/` は `sockshop/k6/`、`../../km2/` はリポジトリ直下の `km2/`。
 論文に書くこと (方法・限界・査読への備え) は `../../km2/approach/related_work.md` §9.5〜9.10 にある。
+**実際に打った起動コマンドの原文**は `LAUNCH-COMMANDS.md` にある (止めた起動・やり直しも含む)。
 
 共通: namespace `exp`、マニフェスト `../normal/`、負荷は k6 (`../k6/sockshop.js`, `../k6/k6-job.yaml`)、HPA 無し。
 **2026-10-19 に接続設定 B′** (k6 `noVUConnectionReuse`、orders `-Dhttp.keepAlive=false`) を入れた。それより前の測定 (probe-cpu, probe10, results-mix-cpu) は B′ 無し。
@@ -20,6 +21,7 @@ Sock Shop の実験の日付付き索引 (OB の `../../km2/experiments/summer20
 | **同 隣の点 (smoke-mix2b-corner)** | 2026-10-20 17:13〜17:31 | 試し | b48v160, b32v240 × 1 台 × 1 回。頭打ちは無し | `smoke-mix2b-corner.csv` | `smoke-mix2b-corner-series.csv` | `smoke-mix2b-corner.log`, `stdout-smoke-mix2b-corner.txt` | なし (同上) |
 | **ρ 本測定 (mix-cpu2b)** | 2026-10-20 17:38〜10-21 10:42 | **本番** (cyc2 × 2 台を除く) | B′ あり・15 点 (b16〜b48 × v80〜v240) × 1 台/2 台 × 6 サイクル。慣らし b20v100 300 s、利用者登録はサイクルに 1 回、冷却待ち 70℃、点の後 60 s 休み。**cyc2 × 2 台の 15 点は MicroK8s の自動再起動 (10-20 21:08 / 21:28) で壊れたので使わない** | `results-mix-cpu2b.csv` | `results-mix-cpu2b-series.csv` | `results-mix-cpu2b.log`, `stdout-mix-cpu2b.txt` | `analyze_rho_ss.py` → `analysis-rho-ss.txt` (下の取り直しと合わせて) |
 | **同 cyc2 × 2 台の取り直し (mix-cpu2b-redo2)** | 2026-10-26 15:22〜16:47 | **本番** (上の cyc2 × 2 台と差し替え) | 2 台 × 15 点 × 1 サイクル、設定は mix-cpu2b と同じ。cycle 列は 2 として記録。取りこぼし 0・失敗 0・再起動 0。最初の点 b48 で購入側 (orders, shipping, queue-master) が他サイクルより高い (要確認) | `results-mix-cpu2b-redo2.csv` | `results-mix-cpu2b-redo2-series.csv` | `results-mix-cpu2b-redo2.log`, `stdout-mix-cpu2b-redo2.txt` | 同上。結果 front-end ρ 1 台 0.287 / 2 台 0.288 |
+| 時刻の表・生の記録のスモーク 1 回目 (smoke-ss-times) | 2026-11-07 16:04〜16:16 | 試し (**中止**) | 取り直し (mix-cpu3b) に向けた `measure-mix-cpu.sh` の変更 (時刻の表 `-times.csv`・生の記録 `-raw.csv`・区間の推移を OB と同じ形式に) の確認。b16 / v240 / b48v240 × 1 台・2 台 × 1 サイクル、WARM 60 / MEAS 180 / 慣らし 300 s の予定だったが、1 台の 1 点目 (b16) の後にユーザ指示「まだ確認が足りていない」で停止。その 1 点: 区間の余裕 始め 9.5 s / 終わり 10.5 s、series の平均と usage_mc が全コンテナ一致 (アヌビス確認)。この後アヌビス点検で、閲覧の失敗率の分母・問い合わせ時刻・版の記録を直した (スモーク 2 回目へ)。コマンド原文は `LAUNCH-COMMANDS.md` | `smoke/smoke-ss-times-20261107.csv` (+ `smoke/smoke-ss-times-20261107-times.csv`, `smoke/smoke-ss-times-20261107-raw.csv`) | `smoke/smoke-ss-times-20261107-series.csv` | `smoke/smoke-ss-times-20261107.log` (+ `smoke/stdout-smoke-ss-times-20261107.txt`) | なし |
 
 ## 再現コマンド (`sockshop/experiments/` で実行)
 

@@ -48,6 +48,7 @@ const mOrdFail = new Counter('m_order_failed');
 const mbStart = new Counter('mb_started');
 const mbDur   = new Trend('mb_duration', true);
 const mbFail  = new Counter('mb_failed');
+const mbReqs  = new Counter('mb_reqs');   // 2026-11-07 追加: 閲覧 1 周 = 2 リクエストなので、失敗率の分母にリクエスト数を出す
 
 export const options = {
   discardResponseBodies: true,
@@ -126,6 +127,7 @@ export function browseFlow(data) {
   if (measuring) {
     for (const r of rs) {
       mbDur.add(r.timings.duration);
+      mbReqs.add(1);
       if (r.status >= 400 || r.status === 0) mbFail.add(1);
     }
   }
@@ -146,6 +148,11 @@ export function handleSummary(data) {
     browse_rate_target: BROWSE, browse_started: bStarted, browse_rate: BROWSE > 0 ? bStarted / MEASURE : 0,
     browse_dropped_win: BROWSE > 0 ? Math.max(0, Math.round(BROWSE * MEASURE - bStarted)) : 0,
     browse_p50: g('mb_duration', 'med'), browse_p99: g('mb_duration', 'p(99)'), browse_failed: g('mb_failed', 'count') || 0,
+    browse_reqs: g('mb_reqs', 'count') || 0,   // 閲覧の計測窓内のリクエスト数 (1 周 = 2 リクエスト。browse_p50/p99 も 2 種類のリクエストを混ぜた値)
+    // 時刻 (2026-11-07 追加、unix ミリ秒。OB の checkout.js と同じ)。k6 の計測窓 = k6_start_ms + WARMUP 秒 から MEASURE 秒
+    k6_start_ms: (data.setup_data && data.setup_data.start) || null,
+    k6_warmup_s: WARMUP,
+    k6_summary_ms: Date.now(),
   };
   return { stdout: '\n@@@K6_BEGIN@@@\n' + JSON.stringify(out) + '\n@@@K6_END@@@\n' };
 }
