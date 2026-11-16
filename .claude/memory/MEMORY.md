@@ -40,3 +40,5 @@
 - [MicroK8s 毎晩の再起動](microk8s-nightly-restart.md) — 10/05 以降毎晩 2 回クラスタが自分で再起動 (IPv6 アドレス変化→証明書)。洗い出し済み restart-audit.md。★2026-10-27 13:07 no-cert-reissue 設置→同夜 IPv6 は変わったが再起動なし=停止を確認。最後の再起動 10/26 20:28
 - [自分で精査 (expmain)](self-review-expmain.md) — 2026-10-27〜 ユーザが実験を自分で精査中。mix-cpu2 を読んで見つけた問題 (欠測の報告・VU 未指定・checkout +16% 等)、11/02 に時刻記録 (-times.csv) を入れた (未コミット・実機未検証)、未了一覧
 - [説明は 1 つずつ](explain-one-step-at-a-time.md) — ユーザはコードをほぼ読めない。一度に全部説明せず、1 問 1 答・行番号と小さな例で
+- [研究の売り = スケールの親和性](pitch-scale-affinity.md) — 【2026-11-05 ユーザ確定】オートスケール考慮が新しさ。affinityだけでなく必要台数の伸び方が揃う相手でまとめないとHPAで無駄。「同居で安くなる」とは言わない
+- [OneDrive を走査しない](no-search-onedrive.md) — ファイル探しはC:\msa・Downloads・Desktop/読みたい論文に絞る。ホーム全体を走査するとOneDrive(和歌山大学)のファイルを開きダウンロードさせる(2026-11-08に発生)
