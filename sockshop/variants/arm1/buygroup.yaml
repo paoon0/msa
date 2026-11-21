@@ -1,0 +1,332 @@
+# make_group.py で生成 (buygroup)。手で直さない。元 = sockshop/normal/ の carts orders payment shipping user queue-master
+# 呼び出しは Service 名のまま (localhost にしない)。各 Service の targetPort を新しいポートに向けてある
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: buygroup
+  labels:
+    name: buygroup
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: buygroup
+  template:
+    metadata:
+      labels:
+        name: buygroup
+      annotations:
+        sidecar.istio.io/inject: 'false'
+    spec:
+      containers:
+      - name: carts
+        image: weaveworksdemos/carts:0.4.8
+        env:
+        - name: JAVA_OPTS
+          value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
+            -Dspring.zipkin.enabled=false
+        resources:
+          requests:
+            cpu: 200m
+            memory: 200Mi
+          limits:
+            cpu: 2000m
+            memory: 500Mi
+        ports:
+        - containerPort: 8081
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+            - all
+            add:
+            - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume-carts
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8081
+          initialDelaySeconds: 10
+        command:
+        - /usr/local/bin/java.sh
+        - -jar
+        - ./app.jar
+        - --port=8081
+      - name: orders
+        image: weaveworksdemos/orders:0.4.7
+        env:
+        - name: JAVA_OPTS
+          value: -Xms64m -Xmx128m -XX:+UseG1GC -Dhttp.keepAlive=false -Djava.security.egd=file:/dev/urandom
+            -Dspring.zipkin.enabled=false
+        resources:
+          requests:
+            cpu: 200m
+            memory: 300Mi
+          limits:
+            cpu: 2000m
+            memory: 500Mi
+        ports:
+        - containerPort: 8082
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+            - all
+            add:
+            - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume-orders
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8082
+          initialDelaySeconds: 10
+        command:
+        - /usr/local/bin/java.sh
+        - -jar
+        - ./app.jar
+        - --port=8082
+      - name: payment
+        image: weaveworksdemos/payment:0.4.3
+        resources:
+          requests:
+            cpu: 200m
+            memory: 100Mi
+          limits:
+            cpu: 2000m
+            memory: 200Mi
+        ports:
+        - containerPort: 8083
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+            - all
+            add:
+            - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8083
+          initialDelaySeconds: 300
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8083
+          initialDelaySeconds: 10
+        command:
+        - /app
+        - -port=8083
+      - name: shipping
+        image: weaveworksdemos/shipping:0.4.8
+        env:
+        - name: ZIPKIN
+          value: zipkin.jaeger.svc.cluster.local
+        - name: JAVA_OPTS
+          value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
+            -Dspring.zipkin.enabled=false
+        resources:
+          requests:
+            cpu: 200m
+            memory: 300Mi
+          limits:
+            cpu: 2000m
+            memory: 500Mi
+        ports:
+        - containerPort: 8084
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+            - all
+            add:
+            - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume-shipping
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8084
+          initialDelaySeconds: 10
+        command:
+        - /usr/local/bin/java.sh
+        - -jar
+        - ./app.jar
+        - --port=8084
+      - name: user
+        image: weaveworksdemos/user:0.4.7
+        resources:
+          requests:
+            cpu: 200m
+            memory: 100Mi
+          limits:
+            cpu: 2000m
+            memory: 200Mi
+        ports:
+        - containerPort: 8085
+        env:
+        - name: mongo
+          value: user-db:27017
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+            - all
+            add:
+            - NET_BIND_SERVICE
+          readOnlyRootFilesystem: true
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8085
+          initialDelaySeconds: 300
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8085
+          initialDelaySeconds: 10
+        command:
+        - /user
+        - -port=8085
+      - name: queue-master
+        image: weaveworksdemos/queue-master:0.3.1
+        env:
+        - name: JAVA_OPTS
+          value: -Xms64m -Xmx128m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
+            -Dspring.zipkin.enabled=false
+        resources:
+          requests:
+            cpu: 200m
+            memory: 300Mi
+          limits:
+            cpu: 2000m
+            memory: 500Mi
+        ports:
+        - containerPort: 8086
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8086
+          initialDelaySeconds: 10
+        command:
+        - /usr/local/bin/java.sh
+        - -jar
+        - ./app.jar
+        - --port=8086
+      volumes:
+      - name: tmp-volume-carts
+        emptyDir:
+          medium: Memory
+      - name: tmp-volume-orders
+        emptyDir:
+          medium: Memory
+      - name: tmp-volume-shipping
+        emptyDir:
+          medium: Memory
+      nodeSelector:
+        kubernetes.io/os: linux
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: carts
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    name: carts
+spec:
+  ports:
+  - port: 80
+    targetPort: 8081
+  selector:
+    name: buygroup
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    name: orders
+spec:
+  ports:
+  - port: 80
+    targetPort: 8082
+  selector:
+    name: buygroup
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    name: payment
+spec:
+  ports:
+  - port: 80
+    targetPort: 8083
+  selector:
+    name: buygroup
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shipping
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    name: shipping
+spec:
+  ports:
+  - port: 80
+    targetPort: 8084
+  selector:
+    name: buygroup
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    name: user
+spec:
+  ports:
+  - port: 80
+    targetPort: 8085
+  selector:
+    name: buygroup
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: queue-master
+  annotations:
+    prometheus.io/scrape: 'true'
+  labels:
+    name: queue-master
+spec:
+  ports:
+  - port: 80
+    targetPort: 8086
+  selector:
+    name: buygroup

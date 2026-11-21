@@ -257,3 +257,163 @@ S=/home/mizuki/ダウンロード/msa/km2/experiments/summer2026; R=/home/mizuki
 S=/home/mizuki/ダウンロード/msa/km2/experiments/summer2026; R=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing; O=$S/smoke; ARMS="pairsP1b pairsP2 pairsP3 pairsQ1 pairsQ2 pairsQ3" ROTATE_ARMS=1 CYCLES=1 RESET_EACH_POINT=1 POINTS="b100v200" STARTS="1" SHUFFLE_POINTS=1 SHUFFLE_SEED=1 RIGHTSIZE=1 RSTABLE=$R/rightsize-pdist-k3-mc3.csv RS_STRICT=1 CHECK_FRAMES=1 RS_SERVICES="frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice" LIMIT_OVERRIDE="frontend=3000m productcatalogservice=3000m adservice=1000m" WARM=180 MEAS=240 HPA_MIN=1 HPA_MAX=12 HPA_TARGET=70 SU_WIN=30 SD_WIN=60 COOL_TEMP=70 CSV=$O/smoke-k3pair-20261106.csv TL=$O/timeline-smoke-k3pair-20261106.csv EV=$O/events-smoke-k3pair-20261106.csv LOG=$O/smoke-k3pair-20261106.log bash $S/bundle-vs-loss2.sh > $O/stdout-smoke-k3pair-20261106.txt 2>&1; echo "exit=$?"
 ```
 
+
+## pdistk3sep2 → pdistk3pair2 (pdist-k3 のやり直し、本番)
+
+- 2026-11-06 09:19 起動 (分離の START 09:19:26)。結果: 分離は実行 (DONE 16:12:44、48/48)、同居も実行 (16:12:44〜11/07 02:48:34、72/72、exit 0)。ユーザ指示「それらが終わったら本走まで流しておいて構わない」(smoke-k3times / smoke-k3pair の確認後)。**スクリプトはコミット 68ef35c の版** (内側 220 秒の区間、予約枠も同じ区間、`-times.csv` / `-raw.csv`)。枠の表は `../rightsizing/rightsize-pdist-k3-mc3.csv` (mix-cpu3 由来)。旧 pdistk3sep / pdistk3pair (旧枠・240 秒) とは別ファイルで、混ぜない。
+- 分離 48 回 (4 配合 × 12 サイクル) を流し、続けて同居 72 回 (6 組 × 4 配合 × 3 サイクル)。1 回約 9.8 分 (スモークの実測) から、**終わる予定: 分離 11/06 17:10 ごろ、同居 11/07 05:00 ごろ**。
+
+```sh
+S=/home/mizuki/ダウンロード/msa/km2/experiments/summer2026; R=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing
+ARMS="normal" CYCLES=12 RESET_EACH_POINT=1 POINTS="b100v0 b50v150 b50v300 b100v200" STARTS="1" SHUFFLE_POINTS=1 SHUFFLE_SEED=1 RIGHTSIZE=1 RSTABLE=$R/rightsize-pdist-k3-mc3.csv RS_STRICT=1 CHECK_FRAMES=1 RS_SERVICES="frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice" LIMIT_OVERRIDE="frontend=3000m productcatalogservice=3000m adservice=1000m" WARM=180 MEAS=240 HPA_MIN=1 HPA_MAX=12 HPA_TARGET=70 SU_WIN=30 SD_WIN=60 COOL_TEMP=70 CSV=$S/results-pdistk3sep2.csv TL=$S/timeline-pdistk3sep2.csv EV=$S/events-pdistk3sep2.csv LOG=$S/pdistk3sep2.log bash $S/bundle-vs-loss2.sh > $S/stdout-pdistk3sep2.txt 2>&1; echo "sep exit=$?"; ARMS="pairsP1b pairsP2 pairsP3 pairsQ1 pairsQ2 pairsQ3" ROTATE_ARMS=1 CYCLES=3 RESET_EACH_POINT=1 POINTS="b100v0 b50v150 b50v300 b100v200" STARTS="1" SHUFFLE_POINTS=1 SHUFFLE_SEED=1 RIGHTSIZE=1 RSTABLE=$R/rightsize-pdist-k3-mc3.csv RS_STRICT=1 CHECK_FRAMES=1 RS_SERVICES="frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice" LIMIT_OVERRIDE="frontend=3000m productcatalogservice=3000m adservice=1000m" WARM=180 MEAS=240 HPA_MIN=1 HPA_MAX=12 HPA_TARGET=70 SU_WIN=30 SD_WIN=60 COOL_TEMP=70 CSV=$S/results-pdistk3pair2.csv TL=$S/timeline-pdistk3pair2.csv EV=$S/events-pdistk3pair2.csv LOG=$S/pdistk3pair2.log bash $S/bundle-vs-loss2.sh > $S/stdout-pdistk3pair2.txt 2>&1; echo "pair exit=$?"
+```
+
+
+## smoke-k3win (HPA の窓・慣らし・計測時間を変えたスモーク、試し)
+
+- 2026-11-17 起動 (ユーザ指示「増設窓は90s、減少窓は30s、慣らしを300s、計測時間を300sとしてスモークを一旦してみてほしい」)。動機: pdistk3sep2 で計測窓の中に台数が変わった点が 48 点中 41 点 (payment が立ち上がりで増やしすぎ → 60 秒に 1 台ずつ減る途中を測っていた)。直前に namespace sn-test を削除 (ユーザ選択、予約 1.05 コアに戻した)。pdistk3sep2 のコマンドから変えたのは SU_WIN 30→90・SD_WIN 60→30・WARM 180→300・MEAS 240→300、POINTS を増やしすぎの大きい 2 配合に、CYCLES=1、出力先だけ。ドライバはコミット 68ef35c の版 (未変更)。
+
+```sh
+S=/home/mizuki/ダウンロード/msa/km2/experiments/summer2026; R=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing; O=$S/smoke; ARMS="normal" CYCLES=1 RESET_EACH_POINT=1 POINTS="b100v0 b100v200" STARTS="1" SHUFFLE_POINTS=1 SHUFFLE_SEED=1 RIGHTSIZE=1 RSTABLE=$R/rightsize-pdist-k3-mc3.csv RS_STRICT=1 CHECK_FRAMES=1 RS_SERVICES="frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice" LIMIT_OVERRIDE="frontend=3000m productcatalogservice=3000m adservice=1000m" WARM=300 MEAS=300 HPA_MIN=1 HPA_MAX=12 HPA_TARGET=70 SU_WIN=90 SD_WIN=30 COOL_TEMP=70 CSV=$O/smoke-k3win-20261117.csv TL=$O/timeline-smoke-k3win-20261117.csv EV=$O/events-smoke-k3win-20261117.csv LOG=$O/smoke-k3win-20261117.log bash $S/bundle-vs-loss2.sh > $O/stdout-smoke-k3win-20261117.txt 2>&1; echo "exit=$?"
+```
+- 2026-11-17 15:09 起動、ログの START 15:09:53 (warm=300s meas=300s 様子見=増90s/減30s を確認。「開始2台」の表示は STARTS="1" で上書きされる既知の表示、pdistk3sep2 と同じ)。結果: 実行 (DONE 15:33:59、exit 0、2/2)
+
+## smoke-k3su30 (増設窓だけ 30 秒に戻したスモーク、試し)
+
+- 2026-11-17 起動 (ユーザ指示「次のスモークでは、増設窓30秒にしてほしい」→ 起動の確認に「今すぐ起動する」)。smoke-k3win から SU_WIN 90→30 だけ変更 (SD_WIN 30・WARM 300・MEAS 300 は同じ)。目的: 増設窓 90 秒で増やしすぎが減った代わりに境目のサービス (b100v200 の checkout) が 1 台少なく落ち着いた疑い → 増設窓の効果を切り分ける。
+
+```sh
+S=/home/mizuki/ダウンロード/msa/km2/experiments/summer2026; R=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing; O=$S/smoke; ARMS="normal" CYCLES=1 RESET_EACH_POINT=1 POINTS="b100v0 b100v200" STARTS="1" SHUFFLE_POINTS=1 SHUFFLE_SEED=1 RIGHTSIZE=1 RSTABLE=$R/rightsize-pdist-k3-mc3.csv RS_STRICT=1 CHECK_FRAMES=1 RS_SERVICES="frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice" LIMIT_OVERRIDE="frontend=3000m productcatalogservice=3000m adservice=1000m" WARM=300 MEAS=300 HPA_MIN=1 HPA_MAX=12 HPA_TARGET=70 SU_WIN=30 SD_WIN=30 COOL_TEMP=70 CSV=$O/smoke-k3su30-20261117.csv TL=$O/timeline-smoke-k3su30-20261117.csv EV=$O/events-smoke-k3su30-20261117.csv LOG=$O/smoke-k3su30-20261117.log bash $S/bundle-vs-loss2.sh > $O/stdout-smoke-k3su30-20261117.txt 2>&1; echo "exit=$?"
+```
+- 2026-11-17 起動、ログの START 15:49:55 (warm=300s meas=300s 様子見=増30s/減30s を確認)。結果: 実行 (DONE 16:13:55、exit 0、2/2)
+
+## smoke-pinfreq (周波数固定後の ρ 測定のスモーク、試し)
+
+- 2026-11-17 起動 (ユーザ指示「ρは計測し直す形でいく。前回計測方法を改めた計測方法で計測したい」→ 進め方の確認に「先にスモーク (推奨)」)。CPU 周波数は 16:56:21 から固定 (ターボ無し、P 2.1 / E 1.5 GHz、`km2/experiments/shared/cpufreq.sh pin`、起動前に status で no_turbo=1 を確認)。mix-cpu3 本番のコマンドから POINTS を負荷の高い 4 点に、CYCLES=6→1、出力先だけ変更。スクリプトはコミット e785dc3 の版 (未変更)。見るもの: 1 台・2 台固定で取りこぼし (buy/view_dropped_win) と絞り (throttle_pct) が出ないか。
+
+```sh
+cd /home/mizuki/ダウンロード/msa && POINTS="b100v150 b75v150 b25v300 v300" REPLICAS="1 2" CYCLES=1 WARM=60 MEAS=180 PREWARM=180 REST_POINT=60 COOL_TEMP=70 COOL_MAX_WAIT=600 CSV=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/smoke/smoke-pinfreq-20261117.csv bash /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/measure-mix-cpu.sh > /dev/null 2>&1; echo "exit=$?"
+```
+- 2026-11-17 16:58 起動、ログ `../rightsizing/smoke/smoke-pinfreq-20261117.log` の START 16:59:01。結果: **中止** (17:0x、ユーザ指示「先にそれを調べてほしい」= b25 の確認を先に。最初の慣らし負荷 (b100、180 s) の途中で止めた。残った Job k6load を削除。測定点は 0 点)
+
+## smoke-pinfreq-b25 (周波数固定で「閲覧を足すと無関係なサービスの CPU が下がる」が消えるかのスモーク、試し)
+
+- 2026-11-17 仕掛け → smoke-pinfreq の中止とともに**待ち合わせを止め、すぐ起動に変更** (下の 2 行目)。仕掛けの理由 (ユーザ指示「周波数が低いと逆転が起こりうるポイントもお願いしたい」「SSでの低負荷帯では…Dが変わらない、もしくは下がった現象…周波数を固定するのはそれが目的では？」)。related_work.md §8 の記録: OB は購入 25 で閲覧 0→300 にすると checkout/payment/shipping/email が −26〜−32% (mix-cpu2、周波数 2.30→3.08 GHz)。b25 / b25v150 / b25v300 を 1 台固定 × 1 サイクル。smoke-pinfreq の DONE をログで待ってから自動で起動する (同じ測定スクリプトを同時に 2 本走らせないため)。設定は mix-cpu3 本番と同じ。
+
+```sh
+until grep -q 'MEASURE-MIX-CPU DONE' /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/smoke/smoke-pinfreq-20261117.log 2>/dev/null; do sleep 30; done; cd /home/mizuki/ダウンロード/msa && POINTS="b25 b25v150 b25v300" REPLICAS="1" CYCLES=1 WARM=60 MEAS=180 PREWARM=180 REST_POINT=60 COOL_TEMP=70 COOL_MAX_WAIT=600 CSV=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/smoke/smoke-pinfreq-b25-20261117.csv bash /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/measure-mix-cpu.sh > /dev/null 2>&1; echo "exit=$?"
+```
+- 2026-11-17 すぐ起動に変更して起動 (コマンドは上の until 行を除いた部分と同じ)。ログ `../rightsizing/smoke/smoke-pinfreq-b25-20261117.log` の START 17:05:57。結果: 実行 (DONE 17:28:32、exit 0、3/3)
+
+## smoke-pinfreq-hi + smoke-pinfreq-b25x3 (周波数固定後の残りのスモーク 2 本を続けて実行、試し)
+
+- 2026-11-17 起動 (ユーザ指示「残りのスモークはやってくれてるんだっけ」→「やっておいて」)。周波数は固定のまま (起動前に status で no_turbo=1、cpu0 2100/2100、cpu8 1500/1500 を確認。Job なし)。1 本目 = 中止した smoke-pinfreq と同じ点 (高負荷 4 点 × 1・2 台、1 サイクル)、出力名だけ変更。2 本目 = smoke-pinfreq-b25 の確かめ直し (CYCLES=1→3、点の順番はスクリプト既定の ORDER=shuffle でサイクルごとにばらばら)。1 本目が終わってから 2 本目が始まる (同じ測定スクリプトを同時に走らせない)。スクリプトはコミット e785dc3 の版 (未変更)。
+
+```sh
+cd /home/mizuki/ダウンロード/msa && POINTS="b100v150 b75v150 b25v300 v300" REPLICAS="1 2" CYCLES=1 WARM=60 MEAS=180 PREWARM=180 REST_POINT=60 COOL_TEMP=70 COOL_MAX_WAIT=600 CSV=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/smoke/smoke-pinfreq-hi-20261117.csv bash /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/measure-mix-cpu.sh > /dev/null 2>&1; echo "exit1=$?"; cd /home/mizuki/ダウンロード/msa && POINTS="b25 b25v150 b25v300" REPLICAS="1" CYCLES=3 WARM=60 MEAS=180 PREWARM=180 REST_POINT=60 COOL_TEMP=70 COOL_MAX_WAIT=600 CSV=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/smoke/smoke-pinfreq-b25x3-20261117.csv bash /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/measure-mix-cpu.sh > /dev/null 2>&1; echo "exit2=$?"
+```
+- 2026-11-17 21:38 起動、ログ `../rightsizing/smoke/smoke-pinfreq-hi-20261117.log` の START 21:38:40。結果: 実行 (1 本目 DONE 22:35:17、exit1=0、8/8。2 本目はログ `../rightsizing/smoke/smoke-pinfreq-b25x3-20261117.log` の START 22:35:17、DONE 23:43:01、exit2=0、9/9)
+
+## mix-cpu4 (周波数固定での ρ の測り直し、本番)
+
+- 2026-11-18 起動 (ユーザ指示「ρは計測し直す形でいく。前回計測方法を改めた計測方法で計測したい」→ スモーク 3 本 (smoke-pinfreq-b25 / -hi / -b25x3) の確認後「ρはそのまま計測し、一点を除外するとどうなるかは後で確かめる」「起動していい」)。CPU 周波数は 2026-11-17 16:56:21 から固定 (ターボ無し、P 2.1 / E 1.5 GHz、`km2/experiments/shared/cpufreq.sh pin`、起動直前に status で no_turbo=1・cpu0 2100/2100・cpu8 1500/1500 を確認、Job なし)。コマンドは mix-cpu3 本番と同じで、違いは出力先 (`results-mix-cpu4.csv`) だけ。スクリプトはコミット e785dc3 の版 (未変更)、`km2/normal/` と `km2/experiments/k6/` も mix-cpu3 から未変更。注意: smoke-pinfreq-hi で 1 台の b100v150 は購入の取りこぼし 248 (1.4%) で、`analyze_rho2.py` の除外の決まり (1% 超え) に掛かりうる → 除外の決まりはそのまま、b100v150 (1 台) あり/なしの ρ の比較は測り終えてから行う (ユーザ決定)。見込み約 20 時間。
+
+```sh
+cd /home/mizuki/ダウンロード/msa && POINTS="v75 v150 v300 b25 b25v75 b25v150 b25v300 b50 b50v75 b50v150 b50v300 b75 b75v75 b75v150 b100 b100v75 b100v150" REPLICAS="1 2" CYCLES=6 WARM=60 MEAS=180 PREWARM=180 REST_POINT=60 COOL_TEMP=70 COOL_MAX_WAIT=600 CSV=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/results-mix-cpu4.csv bash /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/measure-mix-cpu.sh > /dev/null 2>&1; echo "exit=$?"
+```
+- 2026-11-18 00:29 起動、ログ `../rightsizing/results-mix-cpu4.log` の START 00:29:19。結果: 実行 (DONE 2026-11-18 20:16:35、exit 0、204/204)
+
+## smoke-k3cap (新しい枠 mc4 で容量が足りるかのスモーク)
+
+- 2026-11-19 起動 (ユーザ指示「スモークは流して」)。目的: 周波数固定で作り直した枠 `../rightsizing/rightsize-pdist-k3-mc4.csv` で、重い配合 b75v200 / b50v300 の Pending 0・予約合計 ≤ 16 コア、b50v150 で checkout/shipping が 3 台に届くか、計測窓内の email の絞り、ad の起動時 CPU を見る。アームは分離と、前回本番で高負荷時の予約が最大だった pairsQ3。
+
+```sh
+S=/home/mizuki/ダウンロード/msa/km2/experiments/summer2026; R=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing; O=$S/smoke; bash /home/mizuki/ダウンロード/msa/km2/experiments/shared/cpufreq.sh status > $O/cpufreq-smoke-k3cap-20261119.txt; ARMS="normal pairsQ3" CYCLES=1 RESET_EACH_POINT=1 POINTS="b75v200 b50v300 b50v150" STARTS="1" SHUFFLE_POINTS=1 SHUFFLE_SEED=1 RIGHTSIZE=1 RSTABLE=$R/rightsize-pdist-k3-mc4.csv RS_STRICT=1 CHECK_FRAMES=1 RS_SERVICES="frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice" LIMIT_OVERRIDE="frontend=3000m productcatalogservice=3000m adservice=1000m" WARM=300 MEAS=300 HPA_MIN=1 HPA_MAX=12 HPA_TARGET=70 SU_WIN=30 SD_WIN=30 COOL_TEMP=70 CSV=$O/smoke-k3cap-20261119.csv TL=$O/timeline-smoke-k3cap-20261119.csv EV=$O/events-smoke-k3cap-20261119.csv LOG=$O/smoke-k3cap-20261119.log bash $S/bundle-vs-loss2.sh > $O/stdout-smoke-k3cap-20261119.txt 2>&1; echo "exit=$?"
+```
+- 2026-11-19 13:12:04 起動、ログ `smoke/smoke-k3cap-20261119.log` の START 13:12:04。起動前の周波数 `smoke/cpufreq-smoke-k3cap-20261119.txt` (no_turbo=1、P 2100 固定)。結果: 実行 (DONE 2026-11-19 14:23:26、exit 0、6/6)
+
+## smoke-k3sd45 (減少窓 45 秒で reco の往復が止まるか)
+
+- 2026-11-19 起動 (ユーザ指示「減少窓を45秒にしてみて」)。smoke-k3cap の normal b50v300 で reco が慣らし中に 1↔4 を往復したため、減少窓 (SD_WIN) だけ 30→45 s にして同じ点を 3 サイクル。他は smoke-k3cap と同じ。
+
+```sh
+S=/home/mizuki/ダウンロード/msa/km2/experiments/summer2026; R=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing; O=$S/smoke; bash /home/mizuki/ダウンロード/msa/km2/experiments/shared/cpufreq.sh status > $O/cpufreq-smoke-k3sd45-20261119.txt; ARMS="normal" CYCLES=3 RESET_EACH_POINT=1 POINTS="b50v300" STARTS="1" SHUFFLE_POINTS=1 SHUFFLE_SEED=1 RIGHTSIZE=1 RSTABLE=$R/rightsize-pdist-k3-mc4.csv RS_STRICT=1 CHECK_FRAMES=1 RS_SERVICES="frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice" LIMIT_OVERRIDE="frontend=3000m productcatalogservice=3000m adservice=1000m" WARM=300 MEAS=300 HPA_MIN=1 HPA_MAX=12 HPA_TARGET=70 SU_WIN=30 SD_WIN=45 COOL_TEMP=70 CSV=$O/smoke-k3sd45-20261119.csv TL=$O/timeline-smoke-k3sd45-20261119.csv EV=$O/events-smoke-k3sd45-20261119.csv LOG=$O/smoke-k3sd45-20261119.log bash $S/bundle-vs-loss2.sh > $O/stdout-smoke-k3sd45-20261119.txt 2>&1; echo "exit=$?"
+```
+- 2026-11-19 14:35 起動、ログ `smoke/smoke-k3sd45-20261119.log` の START 14:35:02 (「減45s」を確認)。結果: 実行 (DONE 2026-11-19 15:13:56、exit 0、3/3)
+
+## smoke-k3probe5 (reco のヘルスチェック待ち時間 1→5 秒で往復が止まるか)
+
+- 2026-11-19 起動 (ユーザ指示「ヘルスチェックを伸ばそう / また、減少窓は30sに戻して」)。smoke-k3sd45 (減少窓 45 s) で reco の往復が 3/3 で止まらなかったため、減少窓を 30 s に戻し、`PROBE_TIMEOUT=5` (reco のコンテナだけ readiness/liveness の timeoutSeconds を 5 に) で同じ点を 3 サイクル。他は smoke-k3cap と同じ。
+
+```sh
+S=/home/mizuki/ダウンロード/msa/km2/experiments/summer2026; R=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing; O=$S/smoke; bash /home/mizuki/ダウンロード/msa/km2/experiments/shared/cpufreq.sh status > $O/cpufreq-smoke-k3probe5-20261119.txt; ARMS="normal" CYCLES=3 RESET_EACH_POINT=1 POINTS="b50v300" STARTS="1" SHUFFLE_POINTS=1 SHUFFLE_SEED=1 RIGHTSIZE=1 RSTABLE=$R/rightsize-pdist-k3-mc4.csv RS_STRICT=1 CHECK_FRAMES=1 RS_SERVICES="frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice" LIMIT_OVERRIDE="frontend=3000m productcatalogservice=3000m adservice=1000m" PROBE_TIMEOUT=5 WARM=300 MEAS=300 HPA_MIN=1 HPA_MAX=12 HPA_TARGET=70 SU_WIN=30 SD_WIN=30 COOL_TEMP=70 CSV=$O/smoke-k3probe5-20261119.csv TL=$O/timeline-smoke-k3probe5-20261119.csv EV=$O/events-smoke-k3probe5-20261119.csv LOG=$O/smoke-k3probe5-20261119.log bash $S/bundle-vs-loss2.sh > $O/stdout-smoke-k3probe5-20261119.txt 2>&1; echo "exit=$?"
+```
+- 2026-11-19 16:00 起動、ログ `smoke/smoke-k3probe5-20261119.log` の START 16:00:41 (「減30s」「プローブ緩和: recommendationservice/server timeoutSeconds=5」を確認、Deployment の readinessProbe.timeoutSeconds=5 も確認)。結果: 実行 (DONE 2026-11-19 16:39:38、exit 0、3/3)
+
+## smoke-k3f3 (3 つ同居 front3 = frontrecocatalog を新しい枠・本番設定で通す)
+
+- 2026-11-20 起動 (ユーザ指示「スモークをしていいよ」)。2026-11-19 に本番へ足すと決めた frontend+catalog+reco 同居アーム (`frontrecocatalog`) を、本番と同じ設定 (枠 mc4、LIMIT_OVERRIDE、PROBE_TIMEOUT=5、SU/SD 30 s、WARM/MEAS 300 s、開始 1 台) で、本番の 5 配合 × 1 サイクル。目的: Pending 0・予約 ≤ 容量・窓内の取りこぼし・台数の往復・枠検査の通過。
+
+```sh
+S=/home/mizuki/ダウンロード/msa/km2/experiments/summer2026; R=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing; O=$S/smoke; bash /home/mizuki/ダウンロード/msa/km2/experiments/shared/cpufreq.sh status > $O/cpufreq-smoke-k3f3-20261120.txt; ARMS="frontrecocatalog" CYCLES=1 RESET_EACH_POINT=1 POINTS="b100v0 b50v150 b50v300 b75v200 b0v300" STARTS="1" SHUFFLE_POINTS=1 SHUFFLE_SEED=1 RIGHTSIZE=1 RSTABLE=$R/rightsize-pdist-k3-mc4.csv RS_STRICT=1 CHECK_FRAMES=1 RS_SERVICES="frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice" LIMIT_OVERRIDE="frontend=3000m productcatalogservice=3000m adservice=1000m" PROBE_TIMEOUT=5 WARM=300 MEAS=300 HPA_MIN=1 HPA_MAX=12 HPA_TARGET=70 SU_WIN=30 SD_WIN=30 COOL_TEMP=70 CSV=$O/smoke-k3f3-20261120.csv TL=$O/timeline-smoke-k3f3-20261120.csv EV=$O/events-smoke-k3f3-20261120.csv LOG=$O/smoke-k3f3-20261120.log bash $S/bundle-vs-loss2.sh > $O/stdout-smoke-k3f3-20261120.txt 2>&1; echo "exit=$?"
+```
+- 2026-11-20 01:14 起動、ログ `smoke/smoke-k3f3-20261120.log` の START 01:14:09 (「点ごとリセット: points=[b100v0 b50v150 b50v300 b75v200 b0v300] starts=[1]」「プローブ緩和: frontend/recommendation timeoutSeconds=5」を確認。Deployment frontend の requests は server 906m / recommendation 584m / productcatalog 533m、limits は 3000m / 1600m / 3000m)。起動前の周波数 `smoke/cpufreq-smoke-k3f3-20261120.txt` (no_turbo=1)。結果: 実行 (DONE 2026-11-20 02:14:36、exit 0、5/5)。ただし b50v300 で p50 1784 ms (k6 → frontend の接続が 1 Pod に張り付き、その Pod の reco が頭打ち)。ユーザの条件「現在のスモークで問題がなく…なければ本実験に」を満たさないので、修正確認のスモークと本番は起動していない。
+
+## noreuse-chk (k6 の接続を要求ごとに張り直すと frontend の CPU・ρ がどれだけ動くかの確認、試し)
+
+- 2026-11-20 起動 (ユーザ指示「はりなおしでいい」→ 確認の測定の提案に「いいよ」)。smoke-k3f3 で k6 → frontend の負荷が 1 Pod に張り付いたため、k6 に `NO_REUSE=1` (noConnectionReuse、SN と同じ) を追加 (`../k6/checkout.js`・`../k6/k6-job.yaml`・`../rightsizing/measure-mix-cpu.sh`・`bundle-vs-loss2.sh`、既定 0 = 従来どおり)。mix-cpu4 本番と同じ測り方で、1 台固定 × 3 点 (b100 / v300 / b50v150) × 2 サイクルだけ張り直しで測り、mix-cpu4 の同じ点と比べる。判定の目安 (起動前に決定): frontend の D が基準の配合で 3% 以内かつ ρ の差 0.02 以内なら今の ρ と枠の表のまま。
+
+```sh
+bash /home/mizuki/ダウンロード/msa/km2/experiments/shared/cpufreq.sh status > /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/smoke/cpufreq-noreuse-chk-20261120.txt; cd /home/mizuki/ダウンロード/msa && NO_REUSE=1 POINTS="b100 v300 b50v150" REPLICAS="1" CYCLES=2 WARM=60 MEAS=180 PREWARM=180 REST_POINT=60 COOL_TEMP=70 COOL_MAX_WAIT=600 CSV=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/smoke/noreuse-chk-20261120.csv bash /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/measure-mix-cpu.sh > /dev/null 2>&1; echo "exit=$?"
+```
+- 2026-11-20 02:44 起動、ログ `../rightsizing/smoke/noreuse-chk-20261120.log` の START 02:44:21 (「no_reuse=1」を確認、k6 Job の環境変数 NO_REUSE=1 も確認)。起動前の周波数 `../rightsizing/smoke/cpufreq-noreuse-chk-20261120.txt` (no_turbo=1)。結果: 実行 (DONE 2026-11-20 03:29:31、exit 0、6/6)。判定の目安を満たさない (frontend の D が基準の配合で +11.8%) → 修正確認のスモークと本番は起動せず、ユーザに相談。
+
+## smoke-k3close20 → close20-chk (③ ときどき張り直す: 要求 20 回に 1 回 Connection: close、試し)
+
+- 2026-11-20 起動 (ユーザ指示「3も試してみたい」)。k6 に `CLOSE_EVERY=N` を追加 (`../k6/checkout.js` が VU ごとに要求 N 回に 1 回 `Connection: close` を付ける。`../k6/k6-job.yaml`・`bundle-vs-loss2.sh`・`../rightsizing/measure-mix-cpu.sh` から渡す。既定 0 = しない)。NO_REUSE は 0 (使わない)。
+  - smoke-k3close20: 分離・3 つ同居・catalog+reco (pairsP1b) × b50v300 / b0v300 × 1 サイクル、本番設定。見るもの: frontend の負荷が Pod に均等に分かれるか (Prometheus の Pod 別 CPU)、待ち時間、ドライバ修正 A (PROBE_TIMEOUT が pairsP1b の reco にも当たり読み返しが 5/5) と B (browse_failed の列)。
+  - 続けて close20-chk: noreuse-chk と同じ 1 台固定 × b100 / v300 / b50v150 × 2 サイクル、CLOSE_EVERY=20。mix-cpu4 と比べて frontend の CPU の増え方を見る (目安は noreuse-chk と同じ: 基準の配合で 3% 以内・ρ の差 0.02 以内)。
+
+```sh
+S=/home/mizuki/ダウンロード/msa/km2/experiments/summer2026; R=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing; O=$S/smoke; bash /home/mizuki/ダウンロード/msa/km2/experiments/shared/cpufreq.sh status > $O/cpufreq-smoke-k3close20-20261120.txt; CLOSE_EVERY=20 ARMS="normal frontrecocatalog pairsP1b" CYCLES=1 RESET_EACH_POINT=1 POINTS="b50v300 b0v300" STARTS="1" SHUFFLE_POINTS=1 SHUFFLE_SEED=1 RIGHTSIZE=1 RSTABLE=$R/rightsize-pdist-k3-mc4.csv RS_STRICT=1 CHECK_FRAMES=1 RS_SERVICES="frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice" LIMIT_OVERRIDE="frontend=3000m productcatalogservice=3000m adservice=1000m" PROBE_TIMEOUT=5 WARM=300 MEAS=300 HPA_MIN=1 HPA_MAX=12 HPA_TARGET=70 SU_WIN=30 SD_WIN=30 COOL_TEMP=70 CSV=$O/smoke-k3close20-20261120.csv TL=$O/timeline-smoke-k3close20-20261120.csv EV=$O/events-smoke-k3close20-20261120.csv LOG=$O/smoke-k3close20-20261120.log bash $S/bundle-vs-loss2.sh > $O/stdout-smoke-k3close20-20261120.txt 2>&1; echo "smoke exit=$?"; bash /home/mizuki/ダウンロード/msa/km2/experiments/shared/cpufreq.sh status > $R/smoke/cpufreq-close20-chk-20261120.txt; cd /home/mizuki/ダウンロード/msa && CLOSE_EVERY=20 POINTS="b100 v300 b50v150" REPLICAS="1" CYCLES=2 WARM=60 MEAS=180 PREWARM=180 REST_POINT=60 COOL_TEMP=70 COOL_MAX_WAIT=600 CSV=$R/smoke/close20-chk-20261120.csv bash $R/measure-mix-cpu.sh > /dev/null 2>&1; echo "chk exit=$?"
+```
+- 2026-11-20 12:27 起動、ログ `smoke/smoke-k3close20-20261120.log` の START 12:27:21 (「no_reuse=0 close_every=20 probe_timeout=5 vus=600/4000 commit=c52e224+未コミットの変更あり」を確認、「プローブ緩和: recommendationservice/server … 読み返し 5/5」、k6 が閲覧 300 周/s で動き始めたことを確認)。結果: 実行 (smoke DONE 13:41:25 exit 0、6/6 点。close20-chk は START 13:41:25「close_every=20」/ DONE 14:26:34 exit 0、6/6)。frontend の Pod 別 CPU が均等 (分離 b50v300 で 624/596/594/580m)、3 つ同居の b50v300 p50 12 ms、frontend の CPU は mix-cpu4 比 b50v150 +0.3%・粗い ρ 0.331→0.314 で目安内。本番は未起動 (ユーザ判断待ち)。
+
+## mix-cpu5 (ときどき張り直す CLOSE_EVERY=20 での ρ の測り直し、本番)
+
+- 2026-11-20 ユーザ指示「ρをもう一度計測したい」→「6回で。」(③ CLOSE_EVERY=20 の採用は同日決定)。mix-cpu4 と同じ設定で、違いは CLOSE_EVERY=20 と出力先だけ。起動前の確認: 周波数固定 (no_turbo=1、cpu0 2100/2100、`../rightsizing/cpufreq-mix-cpu5-start.txt`)、他の実験・Job なし。スクリプトはコミット c52e224 + 未コミットの変更 (CLOSE_EVERY 追加)。k6 の版は Job の中で確認: k6 v2.4.0 (commit dd9395906d)、イメージ docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e (k6-job.yaml は latest 指定のまま)。解析では CPU を生カウンタ (-raw.csv) の差分から出す予定 (rate() の端の過小対策)。見込み約 20 時間。
+
+```
+bash /home/mizuki/ダウンロード/msa/km2/experiments/shared/cpufreq.sh status > /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/cpufreq-mix-cpu5-start.txt; cd /home/mizuki/ダウンロード/msa && CLOSE_EVERY=20 POINTS="v75 v150 v300 b25 b25v75 b25v150 b25v300 b50 b50v75 b50v150 b50v300 b75 b75v75 b75v150 b100 b100v75 b100v150" REPLICAS="1 2" CYCLES=6 WARM=60 MEAS=180 PREWARM=180 REST_POINT=60 COOL_TEMP=70 COOL_MAX_WAIT=600 CSV=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/results-mix-cpu5.csv bash /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/measure-mix-cpu.sh > /dev/null 2>&1; echo "exit=$?"
+```
+
+- 2026-11-20 16:51:04 起動、ログ `../rightsizing/results-mix-cpu5.log` の START 16:51:04 (「no_reuse=0 close_every=20 … cycles=6」を確認、k6 Pod の環境変数 CLOSE_EVERY=20 を確認)。結果: **実行 (完了)**、ログの DONE 2026-11-21 12:38:28、exit 0、6 サイクル × 2 台 × 17 点 = 204 点すべて回収 (summary 未回収 0)。
+
+## smoke-k3mc5 (新しい枠 mc5 での容量スモーク、試し)
+
+- 2026-11-21 ユーザ指示「スモークしておいてくれる？」。目的: 本番 pdistk3sep3 / pdistk3pair3 の前に、新しい枠 (`../rightsizing/rightsize-pdist-k3-mc5.csv`) + CLOSE_EVERY=20 + k6 固定 (v2.4.0 digest) で、予約の大きい 2 配合が載るかを見る。分離・3 つ同居 × b75v200 / b50v300 × 1 サイクル (4 点、約 50 分)。見るもの: 載らない Pod (FailedScheduling) 0 件、枠不一致 0、email の絞り、b75v200 の予約、k6 imageID の一致、START 行の sha256 / no_turbo。ドライバは 11/21 の修正 (imageID・FailedScheduling・周波数の止め役・sha256) を含む初回の実機。
+
+```
+S=/home/mizuki/ダウンロード/msa/km2/experiments/summer2026; R=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing; O=$S/smoke; bash /home/mizuki/ダウンロード/msa/km2/experiments/shared/cpufreq.sh status > $O/cpufreq-smoke-k3mc5-20261121.txt; CLOSE_EVERY=20 RESET_EACH_POINT=1 POINTS="b75v200 b50v300" STARTS="1" SHUFFLE_POINTS=1 SHUFFLE_SEED=1 RIGHTSIZE=1 RSTABLE=$R/rightsize-pdist-k3-mc5.csv RS_STRICT=1 CHECK_FRAMES=1 RS_SERVICES="frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice" LIMIT_OVERRIDE="frontend=3000m productcatalogservice=3000m adservice=1000m" PROBE_TIMEOUT=5 WARM=300 MEAS=300 HPA_MIN=1 HPA_MAX=12 HPA_TARGET=70 SU_WIN=30 SD_WIN=30 COOL_TEMP=70 ARMS="normal frontrecocatalog" CYCLES=1 CSV=$O/smoke-k3mc5-20261121.csv TL=$O/timeline-smoke-k3mc5-20261121.csv EV=$O/events-smoke-k3mc5-20261121.csv LOG=$O/smoke-k3mc5-20261121.log bash $S/bundle-vs-loss2.sh > $O/stdout-smoke-k3mc5-20261121.txt 2>&1; echo "smoke exit=$?"
+```
+
+- 2026-11-21 16:37 起動、ログ `smoke/smoke-k3mc5-20261121.log` の START 16:37:41 (close_every=20、k6=sha256:3d8e5c7f…、probe_timeout=5、枠検査 OK、最初の点の k6 imageID が指定と一致を確認)。結果: **実行 (完了)**、DONE 17:27:18、exit 0、4/4 点。載らない Pod 0 件・取りこぼし 0・枠検査 OK・start_ok/frames_ok 全 1・k6 imageID 4/4 一致。
+
+## smoke-k3ev (イベント回収の修正の確認、試し)
+
+- 2026-11-21 ユーザ指示「スモークしておいて。問題なければ本番で」。目的: 計測窓の始まりにもイベントを取って uid で重ねる修正 (bundle-vs-loss2.sh / collect_events.py の EARLY) の初回の実機。ウォームアップ中の台数を増やすイベント (above target) が events に残るかを見る。分離・3 つ同居 × b75v200 × 1 サイクル (2 点、約 25 分)。他の設定は本番 / smoke-k3mc5 と同じ。
+
+```
+S=/home/mizuki/ダウンロード/msa/km2/experiments/summer2026; R=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing; O=$S/smoke; bash /home/mizuki/ダウンロード/msa/km2/experiments/shared/cpufreq.sh status > $O/cpufreq-smoke-k3ev-20261121.txt; CLOSE_EVERY=20 RESET_EACH_POINT=1 POINTS="b75v200" STARTS="1" SHUFFLE_POINTS=1 SHUFFLE_SEED=1 RIGHTSIZE=1 RSTABLE=$R/rightsize-pdist-k3-mc5.csv RS_STRICT=1 CHECK_FRAMES=1 RS_SERVICES="frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice" LIMIT_OVERRIDE="frontend=3000m productcatalogservice=3000m adservice=1000m" PROBE_TIMEOUT=5 WARM=300 MEAS=300 HPA_MIN=1 HPA_MAX=12 HPA_TARGET=70 SU_WIN=30 SD_WIN=30 COOL_TEMP=70 ARMS="normal frontrecocatalog" CYCLES=1 CSV=$O/smoke-k3ev-20261121.csv TL=$O/timeline-smoke-k3ev-20261121.csv EV=$O/events-smoke-k3ev-20261121.csv LOG=$O/smoke-k3ev-20261121.log bash $S/bundle-vs-loss2.sh > $O/stdout-smoke-k3ev-20261121.txt 2>&1; echo "smoke exit=$?"
+```
+- 2026-11-21 18:49 起動、ログ `smoke/smoke-k3ev-20261121.log` の START 18:49:14。結果: **実行 (完了)**、DONE 19:15:47、exit 0、2/2 点。events にウォームアップ中の台数を増やすイベントが残った (分離 20 件・同居 15 件、最初は t_run から数十秒)、重複行 0、timeline の台数の変化 18 系列すべてが events と一致 (events の方が多いのは負荷停止後の縮小)。載らない Pod 0 件、取りこぼし (窓) 0、k6 imageID 2/2 一致、枠検査 OK。→ ユーザ指示どおり本番へ。
+
+
+## pdistk3sep3 → pdistk3pair3 (本番 3 回目)
+
+- 2026-11-21 ユーザ指示「スモークしておいて。問題なければ本番で」。smoke-k3ev 合格を受けて起動。分離 normal × 5 配合 × 12 サイクル → ペア 6 種 + 3 つ同居 frontrecocatalog × 5 配合 × 3 サイクル (ROTATE_ARMS=1)、約 33 時間。枠 `../rightsizing/rightsize-pdist-k3-mc5.csv`、k6 v2.4.0 digest 固定、CLOSE_EVERY=20、イベントの早め回収あり。ドライバは未コミット (START 行に sha256)。
+
+```
+S=/home/mizuki/ダウンロード/msa/km2/experiments/summer2026; R=/home/mizuki/ダウンロード/msa/km2/experiments/rightsizing; bash /home/mizuki/ダウンロード/msa/km2/experiments/shared/cpufreq.sh status > $S/cpufreq-pdistk3sep3-start.txt; CLOSE_EVERY=20 RESET_EACH_POINT=1 POINTS="b100v0 b50v150 b50v300 b75v200 b0v300" STARTS="1" SHUFFLE_POINTS=1 SHUFFLE_SEED=1 RIGHTSIZE=1 RSTABLE=$R/rightsize-pdist-k3-mc5.csv RS_STRICT=1 CHECK_FRAMES=1 RS_SERVICES="frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice" LIMIT_OVERRIDE="frontend=3000m productcatalogservice=3000m adservice=1000m" PROBE_TIMEOUT=5 WARM=300 MEAS=300 HPA_MIN=1 HPA_MAX=12 HPA_TARGET=70 SU_WIN=30 SD_WIN=30 COOL_TEMP=70 ARMS="normal" CYCLES=12 CSV=$S/results-pdistk3sep3.csv TL=$S/timeline-pdistk3sep3.csv EV=$S/events-pdistk3sep3.csv LOG=$S/pdistk3sep3.log bash $S/bundle-vs-loss2.sh > $S/stdout-pdistk3sep3.txt 2>&1; echo "sep exit=$?"; CLOSE_EVERY=20 RESET_EACH_POINT=1 POINTS="b100v0 b50v150 b50v300 b75v200 b0v300" STARTS="1" SHUFFLE_POINTS=1 SHUFFLE_SEED=1 RIGHTSIZE=1 RSTABLE=$R/rightsize-pdist-k3-mc5.csv RS_STRICT=1 CHECK_FRAMES=1 RS_SERVICES="frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice" LIMIT_OVERRIDE="frontend=3000m productcatalogservice=3000m adservice=1000m" PROBE_TIMEOUT=5 WARM=300 MEAS=300 HPA_MIN=1 HPA_MAX=12 HPA_TARGET=70 SU_WIN=30 SD_WIN=30 COOL_TEMP=70 ARMS="pairsP1b pairsP2 pairsP3 pairsQ1 pairsQ2 pairsQ3 frontrecocatalog" ROTATE_ARMS=1 CYCLES=3 CSV=$S/results-pdistk3pair3.csv TL=$S/timeline-pdistk3pair3.csv EV=$S/events-pdistk3pair3.csv LOG=$S/pdistk3pair3.log bash $S/bundle-vs-loss2.sh > $S/stdout-pdistk3pair3.txt 2>&1; echo "pair exit=$?"
+```
+- 2026-11-21 19:16 起動、ログ `pdistk3sep3.log` の START 19:16:30 (close_every=20、k6 digest 一致、枠検査 OK を最初の点で確認)。結果: (実行中)

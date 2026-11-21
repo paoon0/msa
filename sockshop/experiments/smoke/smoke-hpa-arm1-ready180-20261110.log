@@ -1,0 +1,42 @@
+================ SOCKSHOP HPA-PAIR START 2026-11-10T18:55:36+09:00 arms=[normal arm1] points=[b16v160] cycles=1 warm=180s meas=240s HPA=70%/1-12台 増30s/減60s 開始1台 prewarm=300s@b20v100 cool=70℃ java_ready_delay=180 ================
+  版: commit=c52e224 dirty=4  枠=/home/mizuki/ダウンロード/msa/sockshop/experiments/rightsize-ss-k3.csv  VU=50/400  CSV=/home/mizuki/ダウンロード/msa/sockshop/experiments/smoke/smoke-hpa-arm1-ready180-20261110.csv
+  枠: front-end=548 catalogue=98 carts=117 orders=113 payment=8 shipping=18 user=84 queue-master=16 
+################ CYCLE 1 / 1 2026-11-10T18:55:36+09:00 ################
+---- deploy normal (アプリ: front-end catalogue carts orders payment shipping user queue-master) 2026-11-10T18:55:36+09:00 ----
+front-end: 0 コンテナ
+catalogue: 0 コンテナ
+carts: 1 コンテナ
+orders: 1 コンテナ
+payment: 0 コンテナ
+shipping: 1 コンテナ
+user: 0 コンテナ
+queue-master: 1 コンテナ
+  Java (carts orders shipping queue-master) の readinessProbe を 180 s 後からに
+  front-end /catalogue → 200
+  deploy: carts=1/1 carts-db=1/1 catalogue=1/1 catalogue-db=1/1 front-end=1/1 orders=1/1 orders-db=1/1 payment=1/1 queue-master=1/1 rabbitmq=1/1 session-db=1/1 shipping=1/1 user=1/1 user-db=1/1 
+  慣らし負荷 300s (b20v100、HPA 無し、捨てる)。利用者 200 人を登録 (接頭辞 ss1794304837)
+  setup: 200/200 users registered (prefix ss1794304837)
+  点の順番: b16v160
+==== [cyc1][normal] b16v160 (購入=16 閲覧=160 周/秒) 2026-11-10T19:06:14+09:00 ====
+  冷却待ち 0s → 49℃
+  k6 開始 1794305216。窓 1794305396〜1794305636、Prometheus の区間 1794305406〜1794305626
+     台数 (窓の最頻値[最小-最大]): carts=2[2-5]*  carts-db=1[1-1]  catalogue=3[3-4]*  catalogue-db=1[1-1]  front-end=3[3-4]*  orders=2[2-4]*  orders-db=1[1-1]  payment=2[2-2]  queue-master=2[1-2]*  rabbitmq=1[1-1]  session-db=1[1-1]  shipping=12[5-12]*  user=2[2-2]  user-db=1[1-1]
+     予約枠 4.029 コア、Pending 最大 1、達成 購入 16.004 / 閲覧 160.004、取りこぼし 0 / 0、失敗率 0 / 0.0、区間の余裕 9.411 / 10.589 s、2.78 GHz 92.0℃
+  休憩 60s
+---- deploy arm1 (アプリ: front-end catalogue buygroup) 2026-11-10T19:15:15+09:00 ----
+front-end: 0 コンテナ
+catalogue: 0 コンテナ
+buygroup: 4 コンテナ
+  Java (carts orders shipping queue-master) の readinessProbe を 180 s 後からに
+  front-end /catalogue → 200
+  deploy: buygroup=1/1 carts-db=1/1 catalogue=1/1 catalogue-db=1/1 front-end=1/1 orders-db=1/1 rabbitmq=1/1 session-db=1/1 user-db=1/1 
+  慣らし負荷 300s (b20v100、HPA 無し、捨てる)。利用者 200 人を登録 (接頭辞 ss1794306059)
+  setup: 200/200 users registered (prefix ss1794306059)
+  点の順番: b16v160
+==== [cyc1][arm1] b16v160 (購入=16 閲覧=160 周/秒) 2026-11-10T19:26:37+09:00 ====
+  冷却待ち 0s → 47℃
+  k6 開始 1794306437。窓 1794306617〜1794306857、Prometheus の区間 1794306627〜1794306847
+     台数 (窓の最頻値[最小-最大]): buygroup=5[5-12]*  carts-db=1[1-1]  catalogue=4[3-4]*  catalogue-db=1[1-1]  front-end=4[3-4]*  orders-db=1[1-1]  rabbitmq=1[1-1]  session-db=1[1-1]  user-db=1[1-1]
+     予約枠 5.881 コア、Pending 最大 3、達成 購入 16.004 / 閲覧 160.004、取りこぼし 0 / 0、失敗率 0 / 0.0、区間の余裕 9.881 / 10.119 s、2.994 GHz 96.0℃
+  休憩 60s
+================ SOCKSHOP HPA-PAIR DONE 2026-11-10T19:35:46+09:00 ================

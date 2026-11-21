@@ -1,0 +1,2 @@
+label,point,k6_start,cap_from,cap_to,k6_meas_from,k6_meas_to,margin_start_s,margin_end_s,buy_achieved,view_achieved,buy_dropped_win,view_dropped_win,failed_rate,view_failed
+b32v160-r1,b32v160,1794293042.332,1794293113,1794293153,1794293102.332,1794293162.332,10.668,9.332,32.02,160.02,0,0,0,0

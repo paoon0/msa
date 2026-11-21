@@ -1,0 +1,14 @@
+台数 2 以上の点: 837 件 (平均 30m 未満のサービスは除外)
+Pod 数が台数と合わない点: 0 件
+
+サービス別 最大/最小 (中央値 / 最大)、最小/平均 < 0.5 の件数
+  adservice                中央値  1.01  最大   1.15  負荷の乗らない Pod 0/67
+  cartservice              中央値  1.02  最大   1.11  負荷の乗らない Pod 0/102
+  checkoutservice          中央値  1.00  最大   1.01  負荷の乗らない Pod 0/84
+  currencyservice          中央値  1.00  最大   1.03  負荷の乗らない Pod 0/102
+  emailservice             中央値  1.00  最大   1.02  負荷の乗らない Pod 0/60
+  frontend                 中央値  1.03  最大   1.24  負荷の乗らない Pod 0/102
+  paymentservice           中央値  1.01  最大   1.16  負荷の乗らない Pod 0/56
+  productcatalogservice    中央値  1.00  最大   1.01  負荷の乗らない Pod 0/102
+  recommendationservice    中央値  1.00  最大   1.01  負荷の乗らない Pod 0/102
+  shippingservice          中央値  1.00  最大   1.02  負荷の乗らない Pod 0/60

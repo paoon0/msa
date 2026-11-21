@@ -21,7 +21,8 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: k6
-        image: grafana/k6:latest
+        # 2026-11-21 版を固定 (ユーザ指示)。mix-cpu5 で使った k6 v2.4.0 (commit dd9395906d) の中身の指紋。旧: grafana/k6:latest
+        image: grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
         command: ["sh","-c","mkdir -p /shared; k6 run /scripts/checkout.js; echo '@@@K6_DONE@@@'; touch /shared/done; sleep 300"]
         env:
         - { name: BASE,     value: "http://frontend:80" }
@@ -31,6 +32,10 @@ spec:
         - { name: MEASURE,  value: "__MEAS__" }
         - { name: PRE_VUS,  value: "__PRE__" }
         - { name: MAX_VUS,  value: "__MAX__" }
+        # 2026-11-20 追加: 1 = 要求ごとに接続を張り直す (checkout.js の NO_REUSE)。埋めないスクリプトでは文字列のまま = 使い回し
+        - { name: NO_REUSE, value: "__NOREUSE__" }
+        # 2026-11-20 追加: N = 要求 N 回に 1 回接続を閉じる (checkout.js の CLOSE_EVERY)。埋めないスクリプトでは 0 扱い
+        - { name: CLOSE_EVERY, value: "__CLOSEEVERY__" }
         volumeMounts:
         - { name: script, mountPath: /scripts }
         - { name: shared, mountPath: /shared }

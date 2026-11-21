@@ -1,0 +1,5 @@
+cycle,arm,target_rate,limit_x,browse_rate,time,object,message,point,start_replicas
+1,frontrecocatalog,50,2026-11-19T16:22:29Z,paymentservice,New size: 3; reason: All metrics below target,b50v300,1
+1,frontrecocatalog,100,2026-11-19T16:37:17Z,paymentservice,New size: 5; reason: All metrics below target,b100v0,1
+1,frontrecocatalog,75,2026-11-19T16:46:50Z,paymentservice,New size: 4; reason: All metrics below target,b75v200,1
+1,frontrecocatalog,50,2026-11-19T17:09:23Z,paymentservice,New size: 3; reason: All metrics below target,b50v150,1

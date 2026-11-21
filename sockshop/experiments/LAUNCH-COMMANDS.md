@@ -108,3 +108,45 @@ REPLICAS=2 CYCLES=1 CYCLE_START=2 CSV=/home/mizuki/ダウンロード/msa/socksh
 ```sh
 POINTS="b16 v240 b48v240" CYCLES=1 CSV=/home/mizuki/ダウンロード/msa/sockshop/experiments/smoke/smoke-ss-times-20261107.csv bash /home/mizuki/ダウンロード/msa/sockshop/experiments/measure-mix-cpu.sh > /home/mizuki/ダウンロード/msa/sockshop/experiments/smoke/stdout-smoke-ss-times-20261107.txt 2>&1; echo "exit=$?"
 ```
+
+## smoke-ss-times2 (スモーク 2 回目、試し)
+
+- 2026-11-07 16:40 起動 (START 16:40:33、版の行 commit=c52e224 dirty=0)。結果: 実行 (DONE 17:27:48、exit 0)。ユーザ「全てやって構わない」(アヌビス点検の 6 項目)。スクリプトはコミット c52e224 の版 (閲覧の失敗率の分母・t_end+15 s 待ち・版の記録を追加)。中身は 1 回目と同じ 3 点 × 1 台・2 台 × 1 サイクル、本番と同じ WARM 60 / MEAS 180 / 慣らし 300 s。見るもの: 6 点すべてで余裕が両端とも正、START に commit/dirty=0、browse_reqs と閲覧の失敗率が 0〜1 の割合、生の記録、取りこぼし。
+
+```sh
+POINTS="b16 v240 b48v240" CYCLES=1 CSV=/home/mizuki/ダウンロード/msa/sockshop/experiments/smoke/smoke-ss-times2-20261107.csv bash /home/mizuki/ダウンロード/msa/sockshop/experiments/measure-mix-cpu.sh > /home/mizuki/ダウンロード/msa/sockshop/experiments/smoke/stdout-smoke-ss-times2-20261107.txt 2>&1; echo "exit=$?"
+```
+
+## mix-cpu3b (ρ 本測定の取り直し、本番)
+
+- 2026-11-07 17:28 起動 (START 17:28:20、版の行 commit=c52e224 dirty=0)。結果: **実行 (DONE 2026-11-08 11:06:10、exit=0、180/180 点)**。ユーザ「スモークが機能していれば、実験を回しておいて」「始まったら、終了予定時刻も記載しておいて」(smoke-ss-times2 の確認後)。スクリプトはコミット c52e224 の版。設定は旧 mix-cpu2b と同じ既定値 (15 点 × 1 台・2 台 × 6 サイクル、WARM 60 / MEAS 180 / 慣らし 300 s、休憩 60 s、冷却 70℃)。旧 mix-cpu2b (+ redo2) とは別ファイルで、混ぜない。
+- **終了予定: 11/08 11:20 ごろ** (1 点約 5.5 分 × 180 点 + 慣らし約 7 分 × 12 ブロック ≈ 17.9 時間。スモーク 2 回目の実測から)。
+
+```sh
+CSV=/home/mizuki/ダウンロード/msa/sockshop/experiments/results-mix-cpu3b.csv bash /home/mizuki/ダウンロード/msa/sockshop/experiments/measure-mix-cpu.sh > /home/mizuki/ダウンロード/msa/sockshop/experiments/stdout-mix-cpu3b.txt 2>&1; echo "exit=$?"
+```
+
+## smoke-edge-ss (通信量の測定のスモーク)
+
+- 2026-11-10 15:40 起動 (START 15:40:35、版の行 commit=c52e224 dirty=2 = 新しい 2 ファイルが未コミット)。結果: **やり直し要 (スクリプトの不具合で停止)**。パケットの記録 (15:45:13〜15:45:53、40 s) と k6 (取りこぼし 0、失敗 0) は終わったが、引数なしの `wait` が `exec > >(tee)` のプロセス置換を待ち続けて止まった。16:30 に Claude が止め (k6 は終わっていて負荷は無し)、録れた pcap を手で集計した (`edge_pairs_ss.py` を同じ引数で実行、時刻の表の 1 行も手で書いた)。k6 の Pod の IP が対応表に無く front-end → k6 の応答 18.5 MB が other になっていた。直したもの: PID を名指しで wait、k6 の IP を対応表に足す。ユーザ「基準の負荷で通信の太さを調べて」。新しいスクリプト `edge-traffic-ss.sh` + `edge_pairs_ss.py` (未コミット) の動作確認。基準 b32v160 × 1 回、MEAS 60 s、慣らし 60 s。見るもの: 全 Pod でエフェメラルコンテナが起動するか、pcap が録れるか、録った区間が k6 の窓の内側か、取りこぼし。
+
+```sh
+REPEATS=1 MEAS=60 PREWARM=60 CSV=/home/mizuki/ダウンロード/msa/sockshop/experiments/smoke/smoke-edge-ss-20261110.csv PCAP_DIR=/tmp/claude-1000/-home-mizuki--------msa/79ed5039-ad0e-4c07-9dc8-15de8c3cc2cf/scratchpad/pcap-smoke-edge-ss bash /home/mizuki/ダウンロード/msa/sockshop/experiments/edge-traffic-ss.sh > /home/mizuki/ダウンロード/msa/sockshop/experiments/smoke/stdout-smoke-edge-ss-20261110.txt 2>&1; echo "exit=$?"
+```
+
+## smoke-hpa-arm1 (HPA 下の同居、アーム 1 と分離のスモーク)
+
+- 2026-11-10 18:12 起動 (START 18:12:51、版の行 commit=c52e224 dirty=4 = 新しいファイルが未コミット)。結果: **中止** (ユーザ「一回止めていいよ」、18:38 に Claude が停止。2 点目 cyc1 normal b32v160 の k6 の途中で、k6 の Job と HPA を消した)。測れたのは 1 点 (cyc1 normal b16v160) だけ: Java のサービスが暴走して増えた (shipping・queue-master が上限 12 台、carts 6、orders 5〜8、Go の payment・user は 2 台)。ユーザ「一旦アーム1と分離でのスモークを3さいくるほどしてほしい」。新しいスクリプト (未コミット): `hpa-pair-ss.sh` (OB の pdist-k3 と同じ手順の SS 版)、`_write_hpapoint_ss.py`、`make_rightsize_ss.py` → `rightsize-ss-k3.csv` (基準 b32v160 で 3 台 = mix-cpu3b の 1 台の CPU ÷ 1.5。基準と台数は提案のままで、ユーザの最終確認はまだ)、`../variants/make_group.py` → `../variants/arm1/buygroup.yaml` (購入型 6 つを 1 Pod、ポートを 8081〜8086 に変え、呼び出しは Service 名のまま = 方式 B)。
+- 設定: アーム normal / arm1 (サイクルごとに順番を回す)、点 b48 / b32v160 / b16v160 / b48v240 (サイクル × アームごとにシャッフル)、3 サイクル、WARM 180 / MEAS 240 s、開始 1 台、HPA 70% コンテナ別 1〜12 台 増 30 s / 減 60 s (pdist-k3 と同じ)、慣らし 300 s (b20v100、HPA 無し)、冷却 70℃、休憩 60 s。見込み約 5 時間。
+
+```sh
+CYCLES=3 CSV=/home/mizuki/ダウンロード/msa/sockshop/experiments/smoke/smoke-hpa-arm1-20261110.csv bash /home/mizuki/ダウンロード/msa/sockshop/experiments/hpa-pair-ss.sh > /home/mizuki/ダウンロード/msa/sockshop/experiments/smoke/stdout-smoke-hpa-arm1-20261110.txt 2>&1; echo "exit=$?"
+```
+
+## smoke-hpa-arm1-ready180 (案 3: Java を 180 秒 Ready にしない、1 点ずつ)
+
+- 2026-11-10 18:55 起動 (START 18:55:36、版の行 commit=c52e224 dirty=4、java_ready_delay=180 を確認)。結果: **実行 (DONE 19:35:46、exit 0、2/2 点)**。分離: carts 2 [2〜5]・orders 2 [2〜4]・queue-master 2 [1〜2] は暴走が収まったが shipping は 12 [5〜12]。アーム 1: buygroup 5 [5〜12]。shipping は (1) 最初の Pod が負荷開始 47 s で 327% → 1→5 台、(2) 新しい Pod が Ready になった直後 (t≈250 s) に再び 250〜360% → 5→8→12 台 (Ready の後の跳ね上がりは案 3 では除けない)。取りこぼし 0・失敗 0。Pending は Pod の作成中 (FailedScheduling のイベントは無し)。ユーザ「一回それでやってみたい」(案 3 = 新しく立った Java の Pod を温まるまで Ready にしない)。smoke-hpa-arm1 (中止) で Java の台数が暴走した対策の試し。`hpa-pair-ss.sh` に `JAVA_READY_DELAY` を足した (未コミット。Java 4 つ carts / orders / shipping / queue-master の readinessProbe の initialDelaySeconds を 10 → 180 s、マニフェストは変えず apply の後に書き換え)。点は暴走した b16v160 だけ、分離とアーム 1 を 1 サイクル。見るもの: 台数が暴走しないか、Ready の後にまた跳ねないか、取りこぼし・遅延。見込み約 40 分。
+
+```sh
+JAVA_READY_DELAY=180 POINTS="b16v160" CYCLES=1 CSV=/home/mizuki/ダウンロード/msa/sockshop/experiments/smoke/smoke-hpa-arm1-ready180-20261110.csv bash /home/mizuki/ダウンロード/msa/sockshop/experiments/hpa-pair-ss.sh > /home/mizuki/ダウンロード/msa/sockshop/experiments/smoke/stdout-smoke-hpa-arm1-ready180-20261110.txt 2>&1; echo "exit=$?"
+```

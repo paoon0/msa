@@ -1,0 +1,11 @@
+================ SOCKSHOP EDGE-TRAFFIC START 2026-11-10T15:40:35+09:00 point=b32v160 repeats=1 warm=60s meas=60s prewarm=60s@b20v100 snaplen=96 (分離・1 台・HPA無し) ================
+  版: commit=c52e224 dirty=2  VU=50/400  CSV=/home/mizuki/ダウンロード/msa/sockshop/experiments/smoke/smoke-edge-ss-20261110.csv
+---- deploy 分離 (全部 1 台、HPA無し) ----
+  deploy: carts=1/1 carts-db=1/1 catalogue=1/1 catalogue-db=1/1 front-end=1/1 orders=1/1 orders-db=1/1 payment=1/1 queue-master=1/1 rabbitmq=1/1 session-db=1/1 shipping=1/1 user=1/1 user-db=1/1 
+  慣らし負荷 60s (b20v100, 捨てる)。利用者 200 人をここで登録 (接頭辞 ss1794292936)
+  setup: 200/200 users registered (prefix ss1794292936)
+---- 各 Pod に観測用のエフェメラルコンテナを追加 (nicolaka/netshoot) ----
+  起動 14/14
+  IP 対応表 66 行
+==== b32v160-r1 (購入=32 閲覧=160 周/秒) 2026-11-10T15:44:00+09:00 ====
+  k6 開始 1794293042332 ms → 録る区間 1794293113 から 40s

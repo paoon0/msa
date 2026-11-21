@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>需要モデルの当たり具合 ({{SRC}})</title>
+<style>
+.viz-root {
+  color-scheme: light;
+  --surface-1: #fcfcfb; --surface-2: #f2f1ee;
+  --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #7a7974;
+  --grid: #e4e3df; --axis: #b9b8b2;
+  --series-1: #2a78d6; --model: #0b0b0b; --excluded: #8c8b86; --band: #eeedea;
+}
+@media (prefers-color-scheme: dark) {
+  .viz-root {
+    color-scheme: dark;
+    --surface-1: #1a1a19; --surface-2: #242423;
+    --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #96958d;
+    --grid: #33332f; --axis: #5a5953;
+    --series-1: #3987e5; --model: #f0efec; --excluded: #8a8981; --band: #2a2a28;
+  }
+}
+body { margin: 0; }
+.viz-root { background: var(--surface-1); color: var(--text-primary);
+  font-family: "Noto Sans CJK JP", "Noto Sans CJK TC", system-ui, sans-serif; padding: 20px 24px 40px; }
+h1 { font-size: 18px; margin: 0 0 4px; font-weight: 600; }
+.sub { color: var(--text-secondary); font-size: 13px; margin: 0 0 14px; line-height: 1.6; max-width: 1100px; }
+.controls { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; font-size: 13px; }
+.seg { display: inline-flex; border: 1px solid var(--axis); border-radius: 6px; overflow: hidden; }
+.seg button { background: transparent; color: var(--text-secondary); border: 0; padding: 5px 12px; font: inherit; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--surface-2); color: var(--text-primary); font-weight: 600; }
+.legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-secondary); align-items: center; }
+.legend svg { vertical-align: middle; margin-right: 4px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.card { background: var(--surface-1); border: 1px solid var(--grid); border-radius: 8px; padding: 10px 10px 4px; }
+.card h2 { font-size: 14px; margin: 0; font-weight: 600; }
+.card .stats { font-size: 11.5px; color: var(--text-secondary); margin: 2px 0 2px; font-variant-numeric: tabular-nums; }
+svg text { fill: var(--text-muted); font-size: 10.5px; }
+.tip { position: fixed; pointer-events: none; background: var(--surface-1); border: 1px solid var(--axis);
+  border-radius: 6px; padding: 7px 9px; font-size: 12px; line-height: 1.5; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  display: none; z-index: 9; font-variant-numeric: tabular-nums; }
+.tip strong { font-size: 13px; }
+.tip .muted { color: var(--text-secondary); }
+table { border-collapse: collapse; font-size: 12.5px; margin-top: 22px; font-variant-numeric: tabular-nums; }
+th, td { padding: 4px 10px; border-bottom: 1px solid var(--grid); text-align: right; }
+th { color: var(--text-secondary); font-weight: 600; }
+td:first-child, th:first-child { text-align: left; }
+.note { font-size: 12px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6; max-width: 1100px; }
+</style>
+</head>
+<body>
+<div class="viz-root">
+<h1>需要モデル D = c + β·buy + ν·view の当たり具合 (サービス別)</h1>
+<p class="sub">
+横軸は「購入に換算した負荷」x = buy + ρ·view (ρ = ν/β はそのサービス・台数で当てた値)。こうすると当てた平面が 1 本の直線 D = c + β·x になり、
+<b>点と直線の縦のずれがそのまま回帰の外れ</b>になります。点 1 つ = 1 配合 × 1 サイクル。データ: {{SRC}} (周波数固定、17 配合 × 6 サイクル)。
+</p>
+<div class="controls">
+  <span>台数 <span class="seg" id="segN"><button data-v="1" aria-pressed="true">1 台</button><button data-v="2" aria-pressed="false">2 台</button></span></span>
+  <span>表示 <span class="seg" id="segV"><button data-v="fit" aria-pressed="true">直線と点</button><button data-v="res" aria-pressed="false">ずれ (基準の D に対する %)</button></span></span>
+  <span class="legend">
+    <span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="var(--series-1)"/></svg>当てるのに使った点</span>
+    <span><svg width="12" height="12"><circle cx="6" cy="6" r="4" fill="none" stroke="var(--excluded)" stroke-width="1.5"/></svg>除外した点 (取りこぼし超過・絞り)</span>
+    <span id="lgLine"><svg width="18" height="12"><line x1="1" y1="6" x2="17" y2="6" stroke="var(--model)" stroke-width="2"/></svg>回帰直線</span>
+  </span>
+</div>
+<div class="grid" id="grid"></div>
+<table id="tbl"></table>
+<p class="note">
+R² = 直線で説明できたばらつきの割合 (1 に近いほど当たり)。RMSE = 外れの大きさの平均的な値 (二乗平均の平方根)。<b>% はすべて、枠を決めた基準の配合 b50v150 での直線の値 (= 枠の元になる D) に対する割合</b>。
+「配合平均の最大ずれ」= 6 サイクルを平均してサイクル間の揺れを消したあと、直線から最も外れた配合のずれ (%) — 直線の「形」が合っているかの目安。
+「ずれ (%)」表示の灰色の帯は ±10% (HPA の許容幅と同じ幅)。
+</p>
+</div>
+<div class="tip" id="tip"></div>
+<script>
+const DATA = /*DATA*/null;
+const ORDER = ['frontend','productcatalogservice','recommendationservice','adservice','currencyservice',
+               'cartservice','checkoutservice','paymentservice','shippingservice','emailservice'];
+let N = '1', VIEW = 'fit';
+// URL の末尾で初期表示を選べる (例: #2-res = 2 台・ずれ表示)
+{ const m = location.hash.match(/^#([12])-(fit|res)$/); if (m) { N = m[1]; VIEW = m[2]; } }
+const W = 300, H = 210, M = {l: 50, r: 10, t: 8, b: 30};
+const NS = 'http://www.w3.org/2000/svg';
+const el = (t, a = {}, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+function ticks(lo, hi, n = 5) {
+  const step0 = (hi - lo) / n, mag = 10 ** Math.floor(Math.log10(step0));
+  const step = [1, 2, 2.5, 5, 10].map(s => s * mag).find(s => s >= step0);
+  const out = []; for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) out.push(+v.toFixed(6));
+  return out;
+}
+const tip = document.getElementById('tip');
+function showTip(ev, p, f) {
+  tip.replaceChildren();
+  const add = (txt, cls, tag = 'div') => { const d = document.createElement(tag); d.textContent = txt; if (cls) d.className = cls; tip.appendChild(d); };
+  add(`${p.res >= 0 ? '+' : ''}${p.res.toFixed(1)} m (基準の ${(100 * p.res / f.dref).toFixed(1)}%)`, null, 'strong');
+  add(`実測 ${p.D.toFixed(0)} m / 直線 ${p.pred.toFixed(0)} m`);
+  add(`${f.name}  ${p.pt} (buy ${p.b} / view ${p.v})  サイクル ${p.cyc}`, 'muted');
+  add(`x = ${p.x.toFixed(1)}  絞り ${p.thr}%  p50 buy ${p.p50b || '-'} / view ${p.p50v || '-'} ms`, 'muted');
+  if (p.ex) add(`除外: ${p.ex}`, 'muted');
+  tip.style.display = 'block';
+  const r = tip.getBoundingClientRect();
+  let x = ev.clientX + 14, y = ev.clientY + 14;
+  if (x + r.width > innerWidth - 8) x = ev.clientX - r.width - 14;
+  if (y + r.height > innerHeight - 8) y = ev.clientY - r.height - 14;
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+}
+function panel(s) {
+  const f = DATA[N][s];
+  const card = document.createElement('div'); card.className = 'card';
+  const h = document.createElement('h2'); h.textContent = f.name; card.appendChild(h);
+  const st = document.createElement('div'); st.className = 'stats';
+  st.textContent = `ρ ${f.rho.toFixed(3)}  R² ${f.r2.toFixed(3)}  RMSE ${f.rmse.toFixed(1)} m (${f.rmse_pct.toFixed(1)}%)  配合平均の最大ずれ ${f.mix_worst_pct >= 0 ? '+' : ''}${f.mix_worst_pct.toFixed(1)}%`;
+  card.appendChild(st);
+  const svg = el('svg', {width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': `${f.name} の回帰`});
+  card.appendChild(svg);
+  const pts = f.pts;
+  const xs = pts.map(p => p.x), xmax = Math.max(...xs) * 1.04, xmin = 0;
+  let ys, ymin, ymax;
+  if (VIEW === 'fit') { ys = pts.map(p => p.D); ymin = 0; ymax = Math.max(...ys, f.c + f.beta * xmax) * 1.06; }
+  else { ys = pts.map(p => 100 * p.res / f.dref); const a = Math.max(15, ...ys.map(Math.abs)) * 1.08; ymin = -a; ymax = a; }
+  const X = v => M.l + (v - xmin) / (xmax - xmin) * (W - M.l - M.r);
+  const Y = v => H - M.b - (v - ymin) / (ymax - ymin) * (H - M.t - M.b);
+  if (VIEW === 'res') el('rect', {x: M.l, y: Y(10), width: W - M.l - M.r, height: Y(-10) - Y(10), fill: 'var(--band)'}, svg);
+  for (const t of ticks(ymin, ymax, 4)) {
+    el('line', {x1: M.l, x2: W - M.r, y1: Y(t), y2: Y(t), stroke: t === 0 && VIEW === 'res' ? 'var(--axis)' : 'var(--grid)', 'stroke-width': 1}, svg);
+    el('text', {x: M.l - 5, y: Y(t) + 3.5, 'text-anchor': 'end'}, svg).textContent = VIEW === 'res' ? `${t}%` : t;
+  }
+  for (const t of ticks(xmin, xmax, 5)) {
+    el('line', {x1: X(t), x2: X(t), y1: H - M.b, y2: H - M.b + 4, stroke: 'var(--axis)'}, svg);
+    el('text', {x: X(t), y: H - M.b + 15, 'text-anchor': 'middle'}, svg).textContent = t;
+  }
+  el('line', {x1: M.l, x2: W - M.r, y1: H - M.b, y2: H - M.b, stroke: 'var(--axis)'}, svg);
+  el('text', {x: (M.l + W - M.r) / 2, y: H - 2, 'text-anchor': 'middle'}, svg).textContent = 'x = buy + ρ·view [周/s]';
+  el('text', {x: 10, y: (M.t + H - M.b) / 2, 'text-anchor': 'middle', transform: `rotate(-90 10 ${(M.t + H - M.b) / 2})`}, svg)
+    .textContent = VIEW === 'res' ? 'ずれ / 基準の D' : 'D [mコア]';
+  // 除外点を先、使った点を後に描く
+  const sorted = [...pts].sort((a, b) => (b.ex ? 1 : 0) - (a.ex ? 1 : 0));
+  for (const p of sorted) {
+    const cx = X(p.x), cy = Y(VIEW === 'res' ? 100 * p.res / f.dref : p.D);
+    if (p.ex) el('circle', {cx, cy, r: 3.6, fill: 'none', stroke: 'var(--excluded)', 'stroke-width': 1.5}, svg);
+    else el('circle', {cx, cy, r: 4, fill: 'var(--series-1)', 'fill-opacity': .7, stroke: 'var(--surface-1)', 'stroke-width': 1}, svg);
+    const hit = el('circle', {cx, cy, r: 9, fill: 'transparent', tabindex: 0}, svg);
+    hit.addEventListener('pointermove', e => showTip(e, p, f));
+    hit.addEventListener('pointerleave', () => tip.style.display = 'none');
+    hit.addEventListener('focus', () => { const b = hit.getBoundingClientRect(); showTip({clientX: b.right, clientY: b.bottom}, p, f); });
+    hit.addEventListener('blur', () => tip.style.display = 'none');
+  }
+  if (VIEW === 'fit') el('line', {x1: X(0), y1: Y(f.c), x2: X(xmax), y2: Y(f.c + f.beta * xmax), stroke: 'var(--model)', 'stroke-width': 2, 'stroke-linecap': 'round'}, svg);
+  return card;
+}
+function table() {
+  const t = document.getElementById('tbl'); t.replaceChildren();
+  const hd = ['サービス', 'c [m]', 'β [m/(周/s)]', 'ν [m/(周/s)]', 'ρ = ν/β', 'R²', 'RMSE [m]', 'RMSE [%]', '配合平均の RMSE [m]', '配合平均の最大ずれ', '使った点', '除外'];
+  const tr = t.insertRow(); for (const x of hd) { const th = document.createElement('th'); th.textContent = x; tr.appendChild(th); }
+  for (const s of ORDER) {
+    const f = DATA[N][s], r = t.insertRow();
+    for (const v of [f.name, f.c.toFixed(1), f.beta.toFixed(2), f.nu.toFixed(2), f.rho.toFixed(3), f.r2.toFixed(3),
+      f.rmse.toFixed(1), f.rmse_pct.toFixed(1), f.mix_rmse.toFixed(1), (f.mix_worst_pct >= 0 ? '+' : '') + f.mix_worst_pct.toFixed(1) + '%', f.n_use, f.n_ex])
+      r.insertCell().textContent = v;
+  }
+}
+function render() {
+  const g = document.getElementById('grid'); g.replaceChildren(...ORDER.map(panel)); table();
+  document.getElementById('lgLine').style.display = VIEW === 'fit' ? '' : 'none';
+}
+for (const [id, set] of [['segN', v => N = v], ['segV', v => VIEW = v]]) {
+  const seg = document.getElementById(id);
+  seg.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
+    seg.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); set(b.dataset.v); render(); });
+}
+document.querySelectorAll('#segN button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === N));
+document.querySelectorAll('#segV button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === VIEW));
+render();
+</script>
+</body>
+</html>

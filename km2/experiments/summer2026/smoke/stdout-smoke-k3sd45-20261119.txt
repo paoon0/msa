@@ -1,0 +1,84 @@
+================ BUNDLE-VS-LOSS2 START 2026-11-19T14:35:02+09:00 arms=[normal] rates=[200 260] cycles=3 HPA=70%/1-12台 warm=300s meas=300s browse=0周/s sample=15s 様子見=増30s/減45s 開始2台 rightsize=1 limit_x=0 grpc_lb=1 ================
+  点ごとリセット: points=[b50v300] starts=[1] shuffle=1(seed 1) rotate_arms=0 settle=35s ready_timeout=300s rs_strict=1 check_frames=1 limit_override=[frontend=3000m productcatalogservice=3000m adservice=1000m] rs_services=[frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice] cool=70℃
+################ CYCLE 1 / 3 2026-11-19T14:35:02+09:00 ################
+---- deploy normal (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc4.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:234m/960m, checkoutservice=checkout:154m/1200m, currencyservice=server:369m/1600m, emailservice=email:52m/300m, frontend=server:906m/3, paymentservice=payment:36m/300m, productcatalogservice=server:533m/3, recommendationservice=server:584m/1600m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc1][normal] 点×開始台数の順番: b50v300:1
+  冷却待ち 0s → 40℃
+---- 点のリセット [normal][b50v300] 開始1台 2026-11-19T14:36:36+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][normal] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-19T14:37:21+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  時刻: t_run=1795066649 窓 1795066949〜1795067249  Prometheus の区間 1795066959〜1795067239 (280s)
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.7 s、Prometheus の区間の余裕 始め 14.7 s / 終わり 5.3 s
+     ノード: 周波数=1.798 GHz  最高温度=56.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体258) p50=11 p99=400 | 動作中の枠=12.88コア(Pending分 0.00) Pod=35(Pending 0) | CPU時間=2448秒(うちsoftirq 198秒 / k6 99秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 3607.0 コア秒(窓平均 12.882 コア, 19 サンプル) / 使ったCPU: 2448 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:3 currencyservice:5 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=400 ms
+################ CYCLE 2 / 3 2026-11-19T14:47:59+09:00 ################
+---- deploy normal (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc4.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:234m/960m, checkoutservice=checkout:154m/1200m, currencyservice=server:369m/1600m, emailservice=email:52m/300m, frontend=server:906m/3, paymentservice=payment:36m/300m, productcatalogservice=server:533m/3, recommendationservice=server:584m/1600m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc2][normal] 点×開始台数の順番: b50v300:1
+  冷却待ち 0s → 40℃
+---- 点のリセット [normal][b50v300] 開始1台 2026-11-19T14:49:34+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][normal] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-19T14:50:19+09:00 ====
+  HPA作成: k6 Job の apply 直後から 7 秒で完了
+  時刻: t_run=1795067428 窓 1795067728〜1795068028  Prometheus の区間 1795067738〜1795068018 (280s)
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.0 s、Prometheus の区間の余裕 始め 15.0 s / 終わり 5.0 s
+     ノード: 周波数=1.792 GHz  最高温度=56.0℃
+  -> 捌けた=49.9/50 取りこぼし(窓)=40 (全体580) p50=1389 p99=2828 | 動作中の枠=11.13コア(Pending分 0.00) Pod=32(Pending 0) | CPU時間=2444秒(うちsoftirq 195秒 / k6 98秒)
+     種類別p50: 商品1451 / カート1382 / 購入1329 ms
+     確保したCPU: 3262.7 コア秒(窓平均 11.653 コア, 19 サンプル) / 使ったCPU: 2444 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:3 currencyservice:5 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 recommendationservice:1 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=299.7/300 取りこぼし(窓)=87 p50=1454 p99=2859 ms
+################ CYCLE 3 / 3 2026-11-19T15:00:58+09:00 ################
+---- deploy normal (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc4.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:234m/960m, checkoutservice=checkout:154m/1200m, currencyservice=server:369m/1600m, emailservice=email:52m/300m, frontend=server:906m/3, paymentservice=payment:36m/300m, productcatalogservice=server:533m/3, recommendationservice=server:584m/1600m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc3][normal] 点×開始台数の順番: b50v300:1
+  冷却待ち 0s → 39℃
+---- 点のリセット [normal][b50v300] 開始1台 2026-11-19T15:02:33+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][normal] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-19T15:03:18+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  時刻: t_run=1795068206 窓 1795068506〜1795068806  Prometheus の区間 1795068516〜1795068796 (280s)
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.4 s、Prometheus の区間の余裕 始め 14.4 s / 終わり 5.6 s
+     ノード: 周波数=1.797 GHz  最高温度=56.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体459) p50=12 p99=691 | 動作中の枠=12.51コア(Pending分 0.00) Pod=34(Pending 0) | CPU時間=2494秒(うちsoftirq 198秒 / k6 99秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 3503.6 コア秒(窓平均 12.513 コア, 19 サンプル) / 使ったCPU: 2494 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:3 currencyservice:4 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=660 ms
+================ BUNDLE-VS-LOSS2 DONE 2026-11-19T15:13:56+09:00 ================

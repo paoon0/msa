@@ -1,0 +1,6 @@
+cycle,arm,target_rate,limit_x,browse_rate,time,object,message,point,start_replicas
+1,normal,100,2026-11-17T06:22:36Z,cartservice,New size: 4; reason: All metrics below target,b100v200,1
+1,normal,100,2026-11-17T06:22:36Z,checkoutservice,New size: 3; reason: All metrics below target,b100v200,1
+1,normal,100,2026-11-17T06:22:37Z,currencyservice,New size: 4; reason: All metrics below target,b100v200,1
+1,normal,100,2026-11-17T06:22:37Z,emailservice,New size: 4; reason: All metrics below target,b100v200,1
+1,normal,100,2026-11-17T06:30:14Z,paymentservice,New size: 5; reason: All metrics below target,b100v0,1

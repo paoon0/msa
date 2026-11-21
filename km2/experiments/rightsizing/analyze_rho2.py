@@ -167,6 +167,8 @@ for n in ['1', '2']:
                     vals.append(ps / pt_)
                 except KeyError:
                     pass
+            if not vals:   # 全サイクルで除外されたマス (mix-cpu4 の 1 台 b100v150 の email など) は「-」
+                cells.append(f'{"-":>8}'); continue
             m = sum(vals) / len(vals); worst = max(worst, abs(math.log(m)))
             cells.append(f'{m:8.2f}')
         print(f'  {SHORT[s]+"/"+SHORT[t]:18} {" ".join(cells)}   {worst:.2f}')

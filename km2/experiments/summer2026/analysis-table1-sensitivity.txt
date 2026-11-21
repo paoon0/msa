@@ -1,0 +1,131 @@
+=== 点検: 時系列 (ready_replicas) と results CSV の整合 (arm=normal, 全サービス, cycle1-5) ===
+[mix] 比較数=220 (時系列が無い点=0)  終わり: CSV≠最後のサンプル(ready) 1件 / current_replicas 基準なら 1件  始め: CSV≠t=180最近接サンプル 0件
+    終わりずれ cyc1 view300 productcatalogservice: CSV=2 時系列=3 (t=411)
+[mix2] 比較数=220 (時系列が無い点=0)  終わり: CSV≠最後のサンプル(ready) 2件 / current_replicas 基準なら 0件  始め: CSV≠t=180最近接サンプル 0件
+    終わりずれ cyc1 view300 recommendationservice: CSV=2 時系列=1 (t=412)
+    終わりずれ cyc2 view300 recommendationservice: CSV=2 時系列=1 (t=411)
+
+分離 normal で replicas_at_window_start != replicas の点: 11 / 40 (cycle1-5 の全サービス比較)
+
+=== 表 (n< = n(左)<n(右) の点数, n> = n(左)>n(右) の点数。各 view の内訳は 0/100/200/300) ===
+
+--- 定義 (a) 窓の終わり(replicas列) ---
+組                          v0     v100     v200     v300   n<  n>   計/分母  向き
+frontend+reco             ---      ---       1>       2>    0   3   3/20   一定(>のみ)
+frontend+catalog          ---      ---       2>       5>    0   7   7/20   一定(>のみ)
+checkout+email             4<       2<      ---      ---    6   0   6/20   一定(<のみ)
+frontend+checkout          1<       2>       2>       4>    1   8   9/20   両向き(反転)
+frontend+cart              5<      ---       2>       3>    5   5   10/19   両向き(反転)
+frontend+email             5<      ---       2>       4>    5   6   11/20   両向き(反転)
+(catalog+checkout)         1<       2>      ---       1>    1   3   4/20   両向き(反転)
+
+--- 定義 (b) 窓の始め(replicas_at_window_start列) ---
+組                          v0     v100     v200     v300   n<  n>   計/分母  向き
+frontend+reco             ---      ---       1>       2>    0   3   3/20   一定(>のみ)
+frontend+catalog          ---      ---       2>       3>    0   5   5/20   一定(>のみ)
+checkout+email             4<       3<      ---      ---    7   0   7/20   一定(<のみ)
+frontend+checkout          1<       3>      ---       4>    1   7   8/20   両向き(反転)
+frontend+cart              5<      ---       2>       2>    5   4   9/19   両向き(反転)
+frontend+email             5<      ---      ---       4>    5   4   9/20   両向き(反転)
+(catalog+checkout)         1<       3>      ---       1>    1   4   5/20   両向き(反転)
+
+--- 定義 (c) 最頻値(窓内で最長) ---
+組                          v0     v100     v200     v300   n<  n>   計/分母  向き
+frontend+reco             ---      ---       1>       2>    0   3   3/20   一定(>のみ)
+frontend+catalog          ---      ---       2>       4>    0   6   6/20   一定(>のみ)
+checkout+email             4<       2<      ---      ---    6   0   6/20   一定(<のみ)
+frontend+checkout          1<       2>      ---       4>    1   6   7/20   両向き(反転)
+frontend+cart              5<      ---       2>       3>    5   5   10/19   両向き(反転)
+frontend+email             5<      ---      ---       4>    5   4   9/20   両向き(反転)
+(catalog+checkout)         1<       2>      ---       1>    1   3   4/20   両向き(反転)
+
+--- 定義 (d) 窓の途中(t=300 に最近接) ---
+組                          v0     v100     v200     v300   n<  n>   計/分母  向き
+frontend+reco             ---      ---       1>       3>    0   4   4/20   一定(>のみ)
+frontend+catalog          ---      ---       2>       4>    0   6   6/20   一定(>のみ)
+checkout+email             4<       2<      ---      ---    6   0   6/20   一定(<のみ)
+frontend+checkout          1<       2>      ---       4>    1   6   7/20   両向き(反転)
+frontend+cart              5<      ---       2>       3>    5   5   10/19   両向き(反転)
+frontend+email             5<      ---      ---       4>    5   4   9/20   両向き(反転)
+(catalog+checkout)         1<       2>      ---       1>    1   3   4/20   両向き(反転)
+
+--- 定義 (e) 時間平均(小数) ---
+組                          v0     v100     v200     v300   n<  n>   計/分母  向き
+frontend+reco             ---      ---       1>       4>    0   5   5/20   一定(>のみ)
+frontend+catalog          ---      ---       2>       4>    0   6   6/20   一定(>のみ)
+checkout+email             4<       3<      ---      ---    7   0   7/20   一定(<のみ)
+frontend+checkout          1<       3>       3>       4>    1  10   11/20   両向き(反転)
+frontend+cart              5<      ---       2>       4>    5   6   11/19   両向き(反転)
+frontend+email             5<      ---       3>       4>    5   7   12/20   両向き(反転)
+(catalog+checkout)         1<       3>      ---       1>    1   4   5/20   両向き(反転)
+
+=== 向きの分類 (論文: 上段 3 組=反転せず / 下段 3 組=反転) ===
+  反転A = 行内に n< と n> の点が両方ある (cycle・view を通して)
+  反転B = view ごとの向き (そのview内で多い方。同数・無しは除く) が view 間で替わる
+(a) frontend+reco:A=一定,B=一定 / frontend+catalog:A=一定,B=一定 / checkout+email:A=一定,B=一定 / frontend+checkout:A=反転,B=反転 / frontend+cart:A=反転,B=反転 / frontend+email:A=反転,B=反転 / (catalog+checkout):A=反転,B=反転
+(b) frontend+reco:A=一定,B=一定 / frontend+catalog:A=一定,B=一定 / checkout+email:A=一定,B=一定 / frontend+checkout:A=反転,B=反転 / frontend+cart:A=反転,B=反転 / frontend+email:A=反転,B=反転 / (catalog+checkout):A=反転,B=反転
+(c) frontend+reco:A=一定,B=一定 / frontend+catalog:A=一定,B=一定 / checkout+email:A=一定,B=一定 / frontend+checkout:A=反転,B=反転 / frontend+cart:A=反転,B=反転 / frontend+email:A=反転,B=反転 / (catalog+checkout):A=反転,B=反転
+(d) frontend+reco:A=一定,B=一定 / frontend+catalog:A=一定,B=一定 / checkout+email:A=一定,B=一定 / frontend+checkout:A=反転,B=反転 / frontend+cart:A=反転,B=反転 / frontend+email:A=反転,B=反転 / (catalog+checkout):A=反転,B=反転
+(e) frontend+reco:A=一定,B=一定 / frontend+catalog:A=一定,B=一定 / checkout+email:A=一定,B=一定 / frontend+checkout:A=反転,B=反転 / frontend+cart:A=反転,B=反転 / frontend+email:A=反転,B=反転 / (catalog+checkout):A=反転,B=反転
+
+  参考: 論文の分類 一定=checkout+email, frontend+catalog, frontend+reco / 反転=frontend+cart, frontend+checkout, frontend+email
+
+=== 判定が (a) 窓の終わり と変わったセル (cycle, view, 組)。符号: <は n(左)<n(右), >は n(左)>n(右), =は等しい ===
+
+--- 定義 (b) 窓の始め(replicas_at_window_start列) ---
+  frontend+reco        cyc2 view300: (a)= -> (b)>
+  frontend+reco        cyc5 view300: (a)> -> (b)=
+  frontend+catalog     cyc1 view300: (a)> -> (b)=
+  frontend+catalog     cyc4 view300: (a)> -> (b)=
+  checkout+email       cyc1 view100: (a)= -> (b)<
+  frontend+checkout    cyc1 view100: (a)= -> (b)>
+  frontend+checkout    cyc3 view200: (a)> -> (b)=
+  frontend+checkout    cyc4 view200: (a)> -> (b)=
+  frontend+cart        cyc2 view300: (a)> -> (b)=
+  frontend+cart        cyc4 view300: (a)> -> (b)=
+  frontend+cart        cyc5 view300: (a)= -> (b)>
+  frontend+email       cyc3 view200: (a)> -> (b)=
+  frontend+email       cyc4 view200: (a)> -> (b)=
+  (catalog+checkout)   cyc1 view100: (a)= -> (b)>
+  変わったセル数: 14
+
+--- 定義 (c) 最頻値(窓内で最長) ---
+  frontend+catalog     cyc1 view300: (a)> -> (c)=
+  frontend+checkout    cyc3 view200: (a)> -> (c)=
+  frontend+checkout    cyc4 view200: (a)> -> (c)=
+  frontend+email       cyc3 view200: (a)> -> (c)=
+  frontend+email       cyc4 view200: (a)> -> (c)=
+  変わったセル数: 5
+
+--- 定義 (d) 窓の途中(t=300 に最近接) ---
+  frontend+reco        cyc3 view300: (a)= -> (d)>
+  frontend+catalog     cyc1 view300: (a)> -> (d)=
+  frontend+checkout    cyc3 view200: (a)> -> (d)=
+  frontend+checkout    cyc4 view200: (a)> -> (d)=
+  frontend+email       cyc3 view200: (a)> -> (d)=
+  frontend+email       cyc4 view200: (a)> -> (d)=
+  変わったセル数: 6
+
+--- 定義 (e) 時間平均(小数) ---
+  frontend+reco        cyc2 view300: (a)= -> (e)>
+  frontend+reco        cyc3 view300: (a)= -> (e)>
+  frontend+catalog     cyc1 view300: (a)> -> (e)=
+  checkout+email       cyc1 view100: (a)= -> (e)<
+  frontend+checkout    cyc1 view100: (a)= -> (e)>
+  frontend+checkout    cyc2 view200: (a)= -> (e)>
+  frontend+cart        cyc5 view300: (a)= -> (e)>
+  frontend+email       cyc2 view200: (a)= -> (e)>
+  (catalog+checkout)   cyc1 view100: (a)= -> (e)>
+  変わったセル数: 9
+
+=== 補足 (e): 小数判定で差が 0.25 台未満しかないのに食い違いと数えた点 (時間平均が整数にならない所為の可能性) ===
+  frontend+reco        cyc3 view300: n(A)=3.000 n(B)=2.938 (a)の判定==
+  checkout+email       cyc1 view100: n(A)=1.863 n(B)=2.000 (a)の判定==
+  frontend+checkout    cyc1 view100: n(A)=2.000 n(B)=1.863 (a)の判定==
+  frontend+checkout    cyc3 view200: n(A)=2.229 n(B)=2.000 (a)の判定=>
+  frontend+checkout    cyc4 view200: n(A)=2.225 n(B)=2.000 (a)の判定=>
+  frontend+cart        cyc5 view300: n(A)=3.000 n(B)=2.858 (a)の判定==
+  frontend+email       cyc3 view200: n(A)=2.229 n(B)=2.000 (a)の判定=>
+  frontend+email       cyc4 view200: n(A)=2.225 n(B)=2.000 (a)の判定=>
+  (catalog+checkout)   cyc1 view100: n(A)=2.000 n(B)=1.863 (a)の判定==
+  件数: 9

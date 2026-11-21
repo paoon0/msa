@@ -1,0 +1,25 @@
+cycle,arm,target_rate,limit_x,browse_rate,time,object,message,point,start_replicas
+1,normal,50,2026-11-19T04:19:46Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,2026-11-19T04:20:31Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,2026-11-19T04:25:00Z,frontend,New size: 3; reason: All metrics below target,b50v300,1
+1,normal,50,2026-11-19T04:36:21Z,cartservice,New size: 1; reason: All metrics below target,b50v150,1
+1,normal,50,2026-11-19T04:36:21Z,checkoutservice,New size: 2; reason: All metrics below target,b50v150,1
+1,normal,50,2026-11-19T04:36:22Z,currencyservice,New size: 2; reason: All metrics below target,b50v150,1
+1,normal,75,2026-11-19T04:47:15Z,paymentservice,New size: 4; reason: All metrics below target,b75v200,1
+1,normal,75,2026-11-19T04:47:41Z,cartservice,New size: 4; reason: All metrics below target,b75v200,1
+1,normal,75,2026-11-19T04:47:42Z,checkoutservice,New size: 3; reason: All metrics below target,b75v200,1
+1,normal,75,2026-11-19T04:47:45Z,paymentservice,New size: 3; reason: All metrics below target,b75v200,1
+1,normal,75,2026-11-19T04:47:46Z,productcatalogservice,New size: 3; reason: All metrics below target,b75v200,1
+1,pairsQ3,50,2026-11-19T05:00:38Z,cartservice,New size: 3; reason: All metrics below target,b50v300,1
+1,pairsQ3,50,2026-11-19T05:00:39Z,currencyservice,New size: 3; reason: All metrics below target,b50v300,1
+1,pairsQ3,50,2026-11-19T05:00:39Z,emailservice,New size: 2; reason: All metrics below target,b50v300,1
+1,pairsQ3,50,2026-11-19T05:00:40Z,frontend,New size: 2; reason: All metrics below target,b50v300,1
+1,pairsQ3,50,2026-11-19T05:00:41Z,paymentservice,New size: 2; reason: All metrics below target,b50v300,1
+1,pairsQ3,50,2026-11-19T05:06:48Z,paymentservice,New size: 3; reason: All metrics below target,b50v150,1
+1,pairsQ3,75,2026-11-19T05:22:21Z,cartservice,New size: 4; reason: All metrics below target,b75v200,1
+1,pairsQ3,75,2026-11-19T05:23:21Z,cartservice,New size: 3; reason: All metrics below target,b75v200,1
+1,pairsQ3,75,2026-11-19T05:23:22Z,currencyservice,New size: 3; reason: All metrics below target,b75v200,1
+1,pairsQ3,75,2026-11-19T05:23:23Z,emailservice,New size: 3; reason: All metrics below target,b75v200,1
+1,pairsQ3,75,2026-11-19T05:23:23Z,frontend,New size: 3; reason: All metrics below target,b75v200,1
+1,pairsQ3,75,2026-11-19T05:23:24Z,paymentservice,New size: 3; reason: All metrics below target,b75v200,1
+1,pairsQ3,75,2026-11-19T05:23:25Z,productcatalogservice,New size: 2; reason: All metrics below target,b75v200,1

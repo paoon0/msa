@@ -1,0 +1,71 @@
+================ MEASURE-MIX-CPU START 2026-11-17T17:05:57+09:00 points=[b25 b25v150 b25v300] replicas=[1] cycles=1 warm=60s meas=180s prewarm=180s@b100 limits=[frontend=3000m productcatalogservice=3000m adservice=1000m] requests=[マニフェスト] grpc_lb=1 rest=60/0/0s cool=70℃ (HPA無し) ================
+################ CYCLE 1 / 1 2026-11-17T17:05:57+09:00 ################
+---- deploy 分離 (固定1台, HPA無し) ----
+  limits 上書き: frontend cpu=3000m (requests はそのまま)
+  limits 上書き: productcatalogservice cpu=3000m (requests はそのまま)
+  limits 上書き: adservice cpu=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+  枠(req/上限lim): adservice=server:300m/1, cartservice=server:560m/960m, checkoutservice=checkout:800m/1200m, currencyservice=server:800m/1600m, emailservice=email:200m/300m, frontend=server:1/3, paymentservice=payment:200m/300m, productcatalogservice=server:600m/3, recommendationservice=server:1200m/1600m, redis-cart=redis:300m/500m, shippingservice=server:320m/560m, 
+  慣らし負荷 180s (b100, 結果は捨てる)
+  冷却待ち 0s → 38℃
+==== [cyc1][×1台] b25v300 (buy=25 view=300 周/秒) 2026-11-17T17:12:14+09:00 ====
+  時刻: t_run=1794903139 t_beg=1794903199 t_end=1794903379  Prometheus の区間 1794903209〜1794903369 (160s)
+  -> buy 24.9/25 view 300.0/300 周/秒  取りこぼし(窓) buy=26 view=2  p50 buy=15 view=11 ms  ノード=6.21 コア  周波数=1.794 GHz  最高温度=52.0℃
+     deploy                   container       Pod      使用m     上限m     絞り%
+     frontend                 server            1   1658.7    3000     0.0
+     recommendationservice    server            1   1070.1    1600     0.0
+     productcatalogservice    server            1    977.9    3000     0.0
+     currencyservice          server            1    646.5    1600     0.0
+     cartservice              server            1    387.5     960     0.2
+     k6load                   k6                1    272.7    2000     0.0
+     adservice                server            1    164.9    1000     0.1
+     checkoutservice          checkout          1    121.2    1200     0.0
+     shippingservice          server            1     47.2     560     0.0
+     emailservice             email             1     40.6     300     0.0
+     redis-cart               redis             1     40.2     500     0.0
+     paymentservice           payment           1     28.4     300     0.1
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -1.9 s、Prometheus の区間の余裕 始め 11.9 s / 終わり 8.1 s
+  休憩 60s (点の後)
+  冷却待ち 0s → 37℃
+==== [cyc1][×1台] b25v150 (buy=25 view=150 周/秒) 2026-11-17T17:17:40+09:00 ====
+  時刻: t_run=1794903465 t_beg=1794903525 t_end=1794903705  Prometheus の区間 1794903535〜1794903695 (160s)
+  -> buy 25.0/25 view 150.0/150 周/秒  取りこぼし(窓) buy=0 view=0  p50 buy=12 view=10 ms  ノード=4.21 コア  周波数=1.746 GHz  最高温度=49.0℃
+     deploy                   container       Pod      使用m     上限m     絞り%
+     frontend                 server            1   1041.3    3000     0.0
+     recommendationservice    server            1    667.5    1600     0.0
+     productcatalogservice    server            1    612.5    3000     0.0
+     currencyservice          server            1    420.9    1600     0.0
+     cartservice              server            1    244.8     960     0.0
+     k6load                   k6                1    161.2    2000     0.0
+     checkoutservice          checkout          1    114.8    1200     0.0
+     adservice                server            1     90.4    1000     0.0
+     shippingservice          server            1     46.0     560     0.0
+     emailservice             email             1     39.6     300     0.0
+     paymentservice           payment           1     30.0     300     0.1
+     redis-cart               redis             1     27.1     500     0.0
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -1.8 s、Prometheus の区間の余裕 始め 11.8 s / 終わり 8.2 s
+  休憩 60s (点の後)
+  冷却待ち 0s → 37℃
+==== [cyc1][×1台] b25 (buy=25 view=0 周/秒) 2026-11-17T17:23:06+09:00 ====
+  時刻: t_run=1794903791 t_beg=1794903851 t_end=1794904031  Prometheus の区間 1794903861〜1794904021 (160s)
+  -> buy 25.0/25 view 0.0/0 周/秒  取りこぼし(窓) buy=0 view=0  p50 buy=10 view=0 ms  ノード=2.04 コア  周波数=1.607 GHz  最高温度=52.0℃
+     deploy                   container       Pod      使用m     上限m     絞り%
+     frontend                 server            1    405.9    3000     0.0
+     productcatalogservice    server            1    237.4    3000     0.0
+     recommendationservice    server            1    236.2    1600     0.0
+     currencyservice          server            1    198.0    1600     0.0
+     cartservice              server            1    116.2     960     0.0
+     checkoutservice          checkout          1    108.4    1200     0.0
+     k6load                   k6                1     68.8    2000     0.0
+     shippingservice          server            1     44.8     560     0.0
+     emailservice             email             1     37.8     300     0.0
+     paymentservice           payment           1     30.2     300     0.0
+     redis-cart               redis             1     16.3     500     0.0
+     adservice                server            1     14.7    1000     0.0
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -1.8 s、Prometheus の区間の余裕 始め 11.8 s / 終わり 8.2 s
+  休憩 60s (点の後)
+================ MEASURE-MIX-CPU DONE 2026-11-17T17:28:32+09:00 ================

@@ -51,6 +51,10 @@ PREWARM=${PREWARM:-180}            # デプロイごとに流して捨てる慣�
 PREWARM_POINT=${PREWARM_POINT:-b100}
 PRE_VUS=${PRE_VUS:-300}
 MAX_VUS=${MAX_VUS:-3000}
+# 2026-11-20 追加: 1 = k6 が要求ごとに TCP 接続を張り直す (k6/checkout.js の NO_REUSE)。既定 0 = 従来どおり使い回す (mix-cpu1〜4 は 0)
+NO_REUSE=${NO_REUSE:-0}
+# 2026-11-20 追加: N = k6 が要求 N 回に 1 回だけ接続を閉じる (ときどき張り直す、k6/checkout.js の CLOSE_EVERY)。既定 0 = しない
+CLOSE_EVERY=${CLOSE_EVERY:-0}
 # 測定中だけ limits を上書き。requests は触らない
 LIMIT_OVERRIDE=${LIMIT_OVERRIDE-"frontend=3000m productcatalogservice=3000m adservice=1000m"}
 # ↑ 2026-10-07 ユーザ了承 (frontend)。スモークで catalog が 660m/上限1000m で絞り 17%、ad が 2台で 4.5% だったので同じ扱いに広げた。
@@ -85,7 +89,7 @@ PROM="http://prometheus-grafana-kube-pr-prometheus.monitoring.svc:9090"
 ROLLOUT=300s
 
 exec > >(tee -a "$LOG") 2>&1
-echo "================ MEASURE-MIX-CPU START $(date -Is) points=[$POINTS] replicas=[$REPLICAS] cycles=$CYCLES warm=${WARM}s meas=${MEAS}s prewarm=${PREWARM}s@$PREWARM_POINT limits=[${LIMIT_OVERRIDE:-マニフェスト}] requests=[${REQUEST_OVERRIDE:-マニフェスト}] grpc_lb=$GRPC_LB rest=${REST_POINT}/${REST_BLOCK}/${REST_CYCLE}s cool=${COOL_TEMP:-なし}℃ (HPA無し) ================"
+echo "================ MEASURE-MIX-CPU START $(date -Is) no_reuse=$NO_REUSE close_every=$CLOSE_EVERY points=[$POINTS] replicas=[$REPLICAS] cycles=$CYCLES warm=${WARM}s meas=${MEAS}s prewarm=${PREWARM}s@$PREWARM_POINT limits=[${LIMIT_OVERRIDE:-マニフェスト}] requests=[${REQUEST_OVERRIDE:-マニフェスト}] grpc_lb=$GRPC_LB rest=${REST_POINT}/${REST_BLOCK}/${REST_CYCLE}s cool=${COOL_TEMP:-なし}℃ (HPA無し) ================"
 
 # 点の名前 → "buy view"
 parse_point(){ local p=$1 b=0 v=0
@@ -113,7 +117,7 @@ start_k6(){ local b=$1 v=$2 warm=$3 meas=$4
   kubectl create configmap k6-script -n $NS --from-file=checkout.js=$K6DIR/checkout.js --dry-run=client -o yaml | kubectl apply -f - >/dev/null 2>&1
   kubectl delete job k6load -n $NS --ignore-not-found --wait=true >/dev/null 2>&1
   sed -e "s/__RATE__/$b/" -e "s/__BROWSE__/$v/" -e "s/__WARM__/$warm/" -e "s/__MEAS__/$meas/" \
-      -e "s/__PRE__/$PRE_VUS/" -e "s/__MAX__/$MAX_VUS/" "$K6DIR/k6-job.yaml" | kubectl apply -f - -n $NS >/dev/null; }
+      -e "s/__PRE__/$PRE_VUS/" -e "s/__MAX__/$MAX_VUS/" -e "s/__NOREUSE__/$NO_REUSE/" -e "s/__CLOSEEVERY__/$CLOSE_EVERY/" "$K6DIR/k6-job.yaml" | kubectl apply -f - -n $NS >/dev/null; }
 
 deploy(){ local reps=$1
   echo "---- deploy 分離 (固定${reps}台, HPA無し) ----"

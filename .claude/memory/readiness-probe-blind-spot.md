@@ -45,3 +45,6 @@ recommendationservice は **Python の gRPC** で、readiness は gRPC ヘルス
 「HPA は平均の利用率しか見ない」という一点から、この研究で見つけた現象がほぼ全部説明できる。
 
 関連: [[hpa-throttling-blindspot]] [[softirq-cpu-metric]] [[fose2026-live-paper]] [[demand-mismatch-experiment]]
+
+**2026-11-19 追記 (周波数固定・新しい枠 mc4)**: 開始 1 台・b50v300 の分離で reco が 1↔4 台を往復 (smoke-k3cap 1/1、smoke-k3sd45 3/3)。1 Pod は約 1.28 コアで頭打ち (Python、要求とヘルスチェックが同じ 10 スレッド) → Ready 落ち → HPA の利用率の読みが 0〜15%/空欄 → 1 台へ。減少窓 30→45 s では止まらない。ドライバの replicas_changed_in_window は窓の始めと終わりの比較だけで往復を見落とす。索引 km2/experiments/summer2026/EXPERIMENTS.md。
+同日 smoke-k3probe5: reco だけ PROBE_TIMEOUT=5 (減少窓 30 s) にすると往復 0/3・Ready 落ち 0 回・取りこぼし 0 → 対策として有効。本番で採るかはユーザ判断。

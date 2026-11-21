@@ -55,6 +55,13 @@ BROWSE_RATE=${BROWSE_RATE:-0}
 SAMPLE=${SAMPLE:-15}          # 時系列の採取間隔[秒]。HPAの判断周期と同じ15秒が既定
 PRE_VUS=${PRE_VUS:-600}
 MAX_VUS=${MAX_VUS:-4000}
+# 2026-11-20 追加: 1 = k6 が要求ごとに TCP 接続を張り直す (k6/checkout.js の NO_REUSE)。既定 0 = 従来どおり使い回す。
+#   使い回すと k6 → frontend の負荷が最初の 1 Pod に張り付く (smoke-k3f3 で実測)。ユーザ決定「はりなおしでいい」(SN と同じ)
+NO_REUSE=${NO_REUSE:-0}
+# 2026-11-20 追加: N = k6 が要求 N 回に 1 回だけ接続を閉じる (ときどき張り直す、k6/checkout.js の CLOSE_EVERY)。既定 0 = しない
+CLOSE_EVERY=${CLOSE_EVERY:-0}
+# 2026-11-21 追加: k6-job.yaml で固定した k6 イメージの digest (sha256:…)。START 行に出し、点ごとに Pod の imageID と照合する
+K6_DIGEST=$(grep -oE 'grafana/k6@sha256:[0-9a-f]{64}' "$K6DIR/k6-job.yaml" | head -1 | sed 's/.*@//')
 CYCLES=${CYCLES:-3}
 RIGHTSIZE=${RIGHTSIZE:-0}     # 1 = 枠(requests)を適正化テーブルで置き換える(規則: (アイドル+1周CPU×k)/0.7)
 RSTABLE=${RSTABLE:-$DIR/rightsize-requests.csv}
@@ -151,7 +158,18 @@ PROM="http://prometheus-grafana-kube-pr-prometheus.monitoring.svc:9090"
 ROLLOUT=300s
 
 exec > >(tee -a "$LOG") 2>&1
-echo "================ BUNDLE-VS-LOSS2 START $(date -Is) arms=[$ARMS] rates=[$RATES] cycles=$CYCLES HPA=${HPA_TARGET}%/${HPA_MIN}-${HPA_MAX}台 warm=${WARM}s meas=${MEAS}s browse=${BROWSE_RATE}周/s sample=${SAMPLE}s 様子見=増${SU_WIN}s/減${SD_WIN}s 開始${PRESCALE}台 rightsize=${RIGHTSIZE} limit_x=${LIMIT_X} grpc_lb=${GRPC_LB} ================"
+# 2026-11-21 追加 (アヌビス点検 中3): 周波数固定 (no_turbo=1) でなければ起動しない。REQUIRE_PINNED=0 で外せる。
+#   起動時の cpufreq.sh status をログと同じ場所に <ログ名>-cpufreq-start.txt で残す (同居側の起動直前の状態も残るように)
+REQUIRE_PINNED=${REQUIRE_PINNED:-1}
+NO_TURBO_F=/sys/devices/system/cpu/intel_pstate/no_turbo
+no_turbo(){ cat $NO_TURBO_F 2>/dev/null || echo NA; }
+bash $REPO/km2/experiments/shared/cpufreq.sh status > "${LOG%.log}-cpufreq-start.txt" 2>&1
+if [ "$REQUIRE_PINNED" = 1 ] && [ "$(no_turbo)" != 1 ]; then
+  echo "!! 周波数が固定されていない (no_turbo=$(no_turbo))。sudo bash km2/experiments/shared/cpufreq.sh pin の後に起動すること (REQUIRE_PINNED=0 で外せる)"; exit 1; fi
+# 2026-11-21 追加 (アヌビス点検 中2): 未コミットでも中身を辿れるよう、測り方を決めるファイルの sha256 (先頭 12 桁) を START 行に出す
+sha12(){ [ -f "$1" ] && sha256sum "$1" | cut -c1-12 || echo なし; }
+FILE_SHA="driver=$(sha12 "$0") checkout.js=$(sha12 $K6DIR/checkout.js) k6-job=$(sha12 $K6DIR/k6-job.yaml) apply_rightsize=$(sha12 $DIR/apply_rightsize.py) rstable=$(sha12 "$RSTABLE")"
+echo "================ BUNDLE-VS-LOSS2 START $(date -Is) arms=[$ARMS] rates=[$RATES] cycles=$CYCLES HPA=${HPA_TARGET}%/${HPA_MIN}-${HPA_MAX}台 warm=${WARM}s meas=${MEAS}s browse=${BROWSE_RATE}周/s sample=${SAMPLE}s 様子見=増${SU_WIN}s/減${SD_WIN}s 開始${PRESCALE}台 rightsize=${RIGHTSIZE} limit_x=${LIMIT_X} grpc_lb=${GRPC_LB} no_reuse=$NO_REUSE close_every=$CLOSE_EVERY k6=${K6_DIGEST:-latest} probe_timeout=$PROBE_TIMEOUT vus=$PRE_VUS/$MAX_VUS commit=$(git -C $DIR rev-parse --short HEAD 2>/dev/null)$(git -C $DIR diff --quiet -- . ../k6 2>/dev/null || echo +未コミットの変更あり) no_turbo=$(no_turbo) sha256[$FILE_SHA] ================"
 [ "$RESET_EACH_POINT" = 1 ] && echo "  点ごとリセット: points=[$POINTS] starts=[$STARTS] shuffle=$SHUFFLE_POINTS(seed $SHUFFLE_SEED) rotate_arms=$ROTATE_ARMS settle=${POINT_SETTLE}s ready_timeout=${POINT_READY_TIMEOUT}s rs_strict=$RS_STRICT check_frames=$CHECK_FRAMES limit_override=[${LIMIT_OVERRIDE}] rs_services=[${RS_SERVICES}] cool=${COOL_TEMP:-なし}℃"
 
 # 点の名前 → "購入型 閲覧型" (rightsizing/measure-mix-cpu.sh の parse_point と同じ規則)。b100 / v200 / b100v150。
@@ -179,7 +197,7 @@ if [ "$CHECK_FRAMES" = 1 ]; then
 fi
 
 # 出力ファイルのヘッダ。RESET_EACH_POINT=1 のときだけ列が増えるので、形式の違うファイルへの追記は止める。
-H_CSV="cycle,arm,target_rate,iter_rate,dropped,failed_rate,p50,p99,running_cores,pending_cores,eff_iter_per_running_core,pods,pending,node_cpu_sec,softirq_cpu_sec,k6_cpu_sec,prod_p50,cart_p50,chk_p50,prod_p99,cart_p99,chk_p99,replicas,limit_x,dropped_win,started,replicas_at_window_start,replicas_changed_in_window,browse_rate_target,browse_rate,browse_dropped_win,browse_p50,browse_p99,rs_scale,limit_scale,reserved_core_sec,pending_core_sec,reserved_avg_cores,n_samples"
+H_CSV="cycle,arm,target_rate,iter_rate,dropped,failed_rate,p50,p99,running_cores,pending_cores,eff_iter_per_running_core,pods,pending,node_cpu_sec,softirq_cpu_sec,k6_cpu_sec,prod_p50,cart_p50,chk_p50,prod_p99,cart_p99,chk_p99,replicas,limit_x,dropped_win,started,replicas_at_window_start,replicas_changed_in_window,browse_rate_target,browse_rate,browse_dropped_win,browse_p50,browse_p99,rs_scale,limit_scale,reserved_core_sec,pending_core_sec,reserved_avg_cores,n_samples,browse_failed,browse_failed_rate"
 H_TL="cycle,arm,target_rate,limit_x,browse_rate,t_rel,deploy,container,hpa_util_pct,current_replicas,desired_replicas,ready_replicas,pending_pods,ns_running_cores,ns_pending_cores"
 H_EV="cycle,arm,target_rate,limit_x,browse_rate,time,object,message"
 if [ "$RESET_EACH_POINT" = 1 ]; then
@@ -435,14 +453,32 @@ deploy(){ local arm=$1
     bash /tmp/lb-$$.sh; rm -f /tmp/lb-$$.sh
   fi
   if [ "$PROBE_TIMEOUT" != 0 ]; then
+    # reco のコンテナを、全 Deployment からイメージ名 (recommendationservice / 負荷分散版 $LB_IMG_RECO) で探して当てる。
     # コンテナは name で突き合わされる(strategic merge patch)ので reco のコンテナだけに当たる。
-    # アームごとに reco が居る Deployment とコンテナ名が違う。
-    for spec in "recommendationservice:server" "frontend:recommendation" "megapod:recommendationservice"; do
+    # 2026-11-20 (アヌビス指摘): 以前は "recommendationservice:server" "frontend:recommendation" "megapod:recommendationservice" の
+    #   決め打ち 3 通りで、pairsP1b (reco は Deployment productcatalogservice のコンテナ recommendation) に当たらず、
+    #   失敗も >/dev/null 2>&1 で黙っていた。→ 探して当て、当てた後に読み返し、1 つでも違えばアームを中止する。
+    local recos spec d pc got bad=""
+    recos=$(kubectl get deploy -n $NS -o json | LBR="$LB_IMG_RECO" python3 -c '
+import json, os, sys
+lbr = os.environ.get("LBR", "")
+for it in json.load(sys.stdin)["items"]:
+    for c in it["spec"]["template"]["spec"]["containers"]:
+        img = c.get("image", "")
+        if "recommendationservice" in img or (lbr and img == lbr):
+            print("%s:%s" % (it["metadata"]["name"], c["name"]))')
+    [ -z "$recos" ] && { echo "!! アーム中止 [$arm]: PROBE_TIMEOUT=$PROBE_TIMEOUT の当て先 (reco のコンテナ) が見つからない"; return 1; }
+    for spec in $recos; do
       d=${spec%%:*}; pc=${spec##*:}   # 変数名は c を避ける(外側のサイクル番号と衝突する)
-      kubectl get deploy/$d -n $NS >/dev/null 2>&1 || continue
-      kubectl patch deploy/$d -n $NS -p "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"$pc\",\"readinessProbe\":{\"timeoutSeconds\":$PROBE_TIMEOUT},\"livenessProbe\":{\"timeoutSeconds\":$PROBE_TIMEOUT}}]}}}}" >/dev/null 2>&1 \
-        && echo "  プローブ緩和: $d/$pc timeoutSeconds=$PROBE_TIMEOUT"
+      if ! kubectl patch deploy/$d -n $NS -p "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"$pc\",\"readinessProbe\":{\"timeoutSeconds\":$PROBE_TIMEOUT},\"livenessProbe\":{\"timeoutSeconds\":$PROBE_TIMEOUT}}]}}}}" >/dev/null 2>/tmp/probe-$$.err; then
+        echo "  !! プローブ緩和に失敗: $d/$pc $(head -c 300 /tmp/probe-$$.err | tr '\n' ' ')"; bad=1
+      fi
+      got=$(kubectl get deploy/$d -n $NS -o jsonpath="{.spec.template.spec.containers[?(@.name==\"$pc\")].readinessProbe.timeoutSeconds}/{.spec.template.spec.containers[?(@.name==\"$pc\")].livenessProbe.timeoutSeconds}")
+      if [ "$got" = "$PROBE_TIMEOUT/$PROBE_TIMEOUT" ]; then echo "  プローブ緩和: $d/$pc timeoutSeconds=$PROBE_TIMEOUT (読み返し readiness/liveness=$got)"
+      else echo "  !! プローブの読み返しが違う: $d/$pc readiness/liveness=$got (期待 $PROBE_TIMEOUT/$PROBE_TIMEOUT)"; bad=1; fi
     done
+    rm -f /tmp/probe-$$.err
+    [ -n "$bad" ] && { echo "!! アーム中止 [$arm]: プローブ緩和が全部の reco に当たらない"; return 1; }
   fi
   for d in $(kubectl get deploy -n $NS -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}'); do
     kubectl rollout status deploy/$d -n $NS --timeout=$ROLLOUT >/dev/null 2>&1||true; done
@@ -481,7 +517,7 @@ run_rate(){ local arm=$1 rate=$2 cyc=${3:-1} brw=${4:-0} pt=${5:-} n0=${6:-}
   kubectl create configmap k6-script -n $NS --from-file=checkout.js=$K6DIR/checkout.js --dry-run=client -o yaml | kubectl apply -f - >/dev/null 2>&1
   kubectl delete job k6load -n $NS --ignore-not-found --wait=true >/dev/null 2>&1
   local ev_since=$(date -u +%Y-%m-%dT%H:%M:%SZ)   # k8sのイベント時刻(UTC)と直接比較できる形
-  sed -e "s/__RATE__/$rate/" -e "s/__BROWSE__/$brw/" -e "s/__WARM__/$WARM/" -e "s/__MEAS__/$MEAS/" -e "s/__PRE__/$PRE_VUS/" -e "s/__MAX__/$MAX_VUS/" "$K6DIR/k6-job.yaml" | kubectl apply -f - -n $NS >/dev/null
+  sed -e "s/__RATE__/$rate/" -e "s/__BROWSE__/$brw/" -e "s/__WARM__/$WARM/" -e "s/__MEAS__/$MEAS/" -e "s/__PRE__/$PRE_VUS/" -e "s/__MAX__/$MAX_VUS/" -e "s/__NOREUSE__/$NO_REUSE/" -e "s/__CLOSEEVERY__/$CLOSE_EVERY/" "$K6DIR/k6-job.yaml" | kubectl apply -f - -n $NS >/dev/null
   if [ "$RESET_EACH_POINT" = 1 ]; then
     # k6 を始めた直後に HPA を作る (無負荷の時間を挟まない)。k6 の Pod 起動を待つ前に作り、作成にかかった秒数をログに残す。
     local _h0; _h0=$(date +%s); make_hpa
@@ -490,6 +526,11 @@ run_rate(){ local arm=$1 rate=$2 cyc=${3:-1} brw=${4:-0} pt=${5:-} n0=${6:-}
   local pod=""
   for i in $(seq 1 40);do pod=$(kubectl get pods -n $NS -l app=k6load --sort-by=.metadata.creationTimestamp -o jsonpath='{.items[-1].metadata.name}' 2>/dev/null)
     [ -n "$pod" ]&&[ "$(kubectl get pod $pod -n $NS -o jsonpath='{.status.phase}' 2>/dev/null)" = Running ]&&break; sleep 3;done
+  # 2026-11-21 追加 (ユーザ指示、アヌビス提案): 実際に動いた k6 のイメージ (Pod の imageID) を毎回ログに残す。
+  #   k6-job.yaml で指定した digest と違えば「!!」で警告する (止めはしない)
+  local k6img; k6img=$(kubectl get pod "$pod" -n $NS -o jsonpath='{.status.containerStatuses[0].imageID}' 2>/dev/null)
+  echo "  k6 イメージ: pod=$pod imageID=${k6img:-取得できず}"
+  case "$k6img" in *"${K6_DIGEST:-@@無し@@}"*) ;; *) echo "  !! k6 のイメージが k6-job.yaml の指定 (${K6_DIGEST:-digest 指定なし}) と一致しない" ;; esac
   local t_run=$(date +%s)
   # --- 時系列採取をバックグラウンドで開始(k6起動直後から。スケールはウォームアップ中に起きるため) ---
   local FLAG=/tmp/tl-$$-$cyc-$arm-$rate-$brw.flag; touch "$FLAG"
@@ -499,6 +540,13 @@ run_rate(){ local arm=$1 rate=$2 cyc=${3:-1} brw=${4:-0} pt=${5:-} n0=${6:-}
   #     (Podが減るのを見たい場合、ウォームアップで行き過ぎた分が戻り切っているかの確認になる)
   sleep $WARM
   local REPL_START; REPL_START=$(kubectl get deploy -n $NS --no-headers 2>/dev/null | awk '{printf "%s:%s ",$1,$4}')
+  # 2026-11-21 追加 (アヌビス点検、ユーザ指示「直しておいて」): イベントは API サーバの --event-ttl=5m で 5 分後に消える。
+  #   点の終わりの回収だけだと t_rel が約 326 秒より前 (ウォームアップと計測窓の頭 約 26 秒) が消えるので、
+  #   計測窓の始まりにも裏で取っておき、終わりの回収と uid で重ねる (collect_events.py の EARLY)。裏で取るので窓の時刻はずれない
+  local EVE=/tmp/ev-$$-$cyc-$arm-$rate-$brw
+  ( kubectl get events -n $NS --field-selector reason=SuccessfulRescale -o json > "$EVE-sr.json" 2>/dev/null
+    kubectl get events -n $NS --field-selector reason=FailedScheduling -o json > "$EVE-fs.json" 2>/dev/null ) &
+  local EPID=$!
   sleep $MEAS
   # --- 資源側の採取(動いているPodと、Pending込みを分けて出す) ---
   local RUNC PENDC PODS PEND NODE SOFT REPL RES4
@@ -554,9 +602,18 @@ run_rate(){ local arm=$1 rate=$2 cyc=${3:-1} brw=${4:-0} pt=${5:-} n0=${6:-}
     XCOLS="$pt,$n0,$SOK,$FRAMES_OK"
   fi
 
-  # --- 台数変更イベントの回収 ---
+  # --- 台数変更イベントの回収 (計測窓の始まりに取った分 EARLY と重ねる) ---
+  wait $EPID 2>/dev/null
   kubectl get events -n $NS --field-selector reason=SuccessfulRescale -o json 2>/dev/null | \
-    CYC="$cyc" ARM="$arm" RATE="$rate" LX="$LIMIT_X" BRW="$brw" SINCE="$ev_since" python3 "$DIR/collect_events.py" >> "$EV" 2>/dev/null
+    CYC="$cyc" ARM="$arm" RATE="$rate" LX="$LIMIT_X" BRW="$brw" SINCE="$ev_since" EARLY="$EVE-sr.json" python3 "$DIR/collect_events.py" >> "$EV" 2>/dev/null
+  # 2026-11-21 追加 (アヌビス点検 中1): ノードに載らない Pod (FailedScheduling) も回収する。timeline の pending_pods は
+  #   「コンテナ作成中」も数えるので容量不足の判定に使えない。message の頭に「FailedScheduling:」が付く (collect_events.py)
+  local fs; fs=$(kubectl get events -n $NS --field-selector reason=FailedScheduling -o json 2>/dev/null | \
+    CYC="$cyc" ARM="$arm" RATE="$rate" LX="$LIMIT_X" BRW="$brw" SINCE="$ev_since" EARLY="$EVE-fs.json" REASON=FailedScheduling python3 "$DIR/collect_events.py" 2>/dev/null)
+  rm -f "$EVE-sr.json" "$EVE-fs.json"
+  if [ -n "$fs" ]; then printf '%s\n' "$fs" >> "$EV"; echo "  !! 載らない Pod (FailedScheduling) $(printf '%s\n' "$fs" | wc -l) 件 (この点の開始から)"
+  else echo "  載らない Pod (FailedScheduling): 0 件"; fi
+  [ "$(no_turbo)" = 1 ] || echo "  !! この点の終わりで周波数が固定されていない (no_turbo=$(no_turbo))"
   # Pod名は「いま」取り直す。backoffLimit>0 だと最初のPodがマウント失敗で作り直されることがあり、
   # 起動待ちの時点で掴んだ名前が古くなる(2026-09-01 に欠測2件を出した)。
   local pod_now
@@ -592,7 +649,10 @@ row=[cyc,arm,d.get('target_rate'),round(it,1),d.get('dropped'),round(d.get('fail
      round(d.get('browse_p50') or 0,1),round(d.get('browse_p99') or 0,1),
      os.environ.get('RSSCALE','1'),os.environ.get('LIMSCALE','0'),
      os.environ.get('RESSEC','0'),os.environ.get('PENDSEC','0'),
-     os.environ.get('RESAVG','0'),os.environ.get('NSAMP','0')]
+     os.environ.get('RESAVG','0'),os.environ.get('NSAMP','0'),
+     # 2026-11-20 追加 (アヌビス指摘): 閲覧の失敗 (HTTP 400 以上か接続失敗) の数と、計測窓で始めた閲覧の周に対する割合。
+     # failed_rate / p50 / p99 は購入の要求からだけ出すので、閲覧だけの配合 (b0v300) では常に 0 になり失敗が見えなかった。
+     d.get('browse_failed'),round((d.get('browse_failed') or 0)/d['browse_started'],5) if d.get('browse_started') else 0]
 # RESET_EACH_POINT=1 のときだけ末尾に point,start_replicas,start_ok,frames_ok を足す (既定では列は従来どおり)
 if os.environ.get('EXTRA_COLS'): row += os.environ['EXTRA_COLS'].split(',')
 with open(out,'a',newline='') as fh: csv.writer(fh).writerow(row)
@@ -606,9 +666,9 @@ print("     台数: %s"%repl.strip())
 if changed=='yes':
     print("     !! 計測窓の中で台数が変わった(窓の始め: %s)"%repl0)
 if (d.get('browse_rate_target') or 0)>0:
-    print("     閲覧型: 捌けた=%.1f/%s 取りこぼし(窓)=%s p50=%.0f p99=%.0f ms"
+    print("     閲覧型: 捌けた=%.1f/%s 取りこぼし(窓)=%s p50=%.0f p99=%.0f ms 失敗=%s"
           %(d.get('browse_rate') or 0,d.get('browse_rate_target'),d.get('browse_dropped_win'),
-            d.get('browse_p50') or 0,d.get('browse_p99') or 0))
+            d.get('browse_p50') or 0,d.get('browse_p99') or 0,d.get('browse_failed')))
 PY
   kubectl delete job k6load -n $NS --ignore-not-found >/dev/null 2>&1
 }

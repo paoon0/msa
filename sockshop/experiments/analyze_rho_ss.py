@@ -17,15 +17,18 @@ b48v240: 1 台では front-end が約 1.04 コアで頭打ち (Node.js 1 プロ�
         ユーザ決定 (2026-10-20) で含めて測り、含めた場合と除いた場合の差を出す。
 
 使い方: python3 analyze_rho_ss.py > analysis-rho-ss.txt
+        python3 analyze_rho_ss.py results-mix-cpu3b.csv > analysis-rho-ss3b.txt   (2026-11-09 追加: 取り直し mix-cpu3b。
+        事故が無いので cyc2 × 2 台の除外・差し替えと「cyc2除く」は旧 mix-cpu2b のときだけ行う)
 """
-import csv, random, math, collections, os
+import csv, random, math, collections, os, sys
 
-PATH = 'results-mix-cpu2b.csv'
+PATH = sys.argv[1] if len(sys.argv) > 1 else 'results-mix-cpu2b.csv'
+OLD = os.path.basename(PATH) == 'results-mix-cpu2b.csv'   # 事故の扱いは旧 mix-cpu2b だけ
 REDO = 'results-mix-cpu2b-redo2.csv'    # cyc2 × 2 台の取り直し (2026-10-26〜)
 NB = 1000
 SVC = ['front-end', 'catalogue', 'carts', 'orders', 'payment', 'shipping', 'user', 'queue-master',
        'catalogue-db', 'carts-db', 'orders-db', 'user-db', 'session-db', 'rabbitmq']
-INCIDENT = ('2', '2')                         # (cycle, replicas)
+INCIDENT = ('2', '2') if OLD else (None, None)   # (cycle, replicas)
 HEAVY = 'b48v240'
 
 
@@ -52,7 +55,7 @@ def pct(xs, q):
 
 
 rows = [r for r in csv.DictReader(open(PATH)) if (r['cycle'], r['replicas']) != INCIDENT]
-has_redo = os.path.exists(REDO)
+has_redo = OLD and os.path.exists(REDO)
 if has_redo:
     redo = list(csv.DictReader(open(REDO)))
     assert {(r['cycle'], r['replicas']) for r in redo} == {INCIDENT}, 'REDO は cycle=2・2 台だけのはず'
@@ -72,7 +75,7 @@ VARIANTS = [
     ('1台 全15点', '1', lambda r: True),
     ('1台 b48v240除く', '1', lambda r: r['point'] != HEAVY),
     ('2台 主', '2', lambda r: True),
-    ('2台 cyc2除く (5サイクル)', '2', lambda r: r['cycle'] != INCIDENT[0]),
+] + ([('2台 cyc2除く (5サイクル)', '2', lambda r: r['cycle'] != INCIDENT[0])] if OLD else []) + [
     ('2台 主 b48v240除く', '2', lambda r: r['point'] != HEAVY),
 ]
 random.seed(20261021)
@@ -94,7 +97,8 @@ for vn, rep, keep in VARIANTS:
         res[(vn, s)] = (c, be, nu, nu / be, pct(bs, .025), pct(bs, .975), sum(len(x) for x in g.values()))
 
 print(f"# Sock Shop の ρ ({PATH}、ブートストラップ {NB} 回、サイクル単位)")
-print(f"cyc2 × 2 台: " + (f"取り直し ({REDO}) に差し替え" if has_redo else "取り直し未実施のため除外 (「2台 主」は 5 サイクル)"))
+if OLD:
+    print(f"cyc2 × 2 台: " + (f"取り直し ({REDO}) に差し替え" if has_redo else "取り直し未実施のため除外 (「2台 主」は 5 サイクル)"))
 print(f"除外 (取りこぼし>1% か 絞り>5%): {nbad} 行")
 print("ρ = 閲覧 1 周の CPU ÷ 購入 1 周の CPU。β = 購入 1 周あたり [m・秒/周]、ν = 閲覧 1 周あたり、c = 切片 [m]\n")
 for vn, rep, _ in VARIANTS:

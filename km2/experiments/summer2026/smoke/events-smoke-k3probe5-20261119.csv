@@ -1,0 +1,11 @@
+cycle,arm,target_rate,limit_x,browse_rate,time,object,message,point,start_replicas
+1,normal,50,2026-11-19T07:13:36Z,currencyservice,New size: 3; reason: All metrics below target,b50v300,1
+1,normal,50,2026-11-19T07:13:36Z,emailservice,New size: 2; reason: All metrics below target,b50v300,1
+1,normal,50,2026-11-19T07:13:37Z,frontend,New size: 2; reason: All metrics below target,b50v300,1
+1,normal,50,2026-11-19T07:13:38Z,paymentservice,New size: 1; reason: All metrics below target,b50v300,1
+1,normal,50,2026-11-19T07:13:39Z,productcatalogservice,New size: 2; reason: All metrics below target,b50v300,1
+2,normal,50,2026-11-19T07:26:36Z,emailservice,New size: 2; reason: All metrics below target,b50v300,1
+2,normal,50,2026-11-19T07:26:36Z,frontend,New size: 3; reason: All metrics below target,b50v300,1
+2,normal,50,2026-11-19T07:26:37Z,paymentservice,New size: 1; reason: All metrics below target,b50v300,1
+2,normal,50,2026-11-19T07:26:38Z,productcatalogservice,New size: 2; reason: All metrics below target,b50v300,1
+3,normal,50,2026-11-19T07:39:36Z,productcatalogservice,New size: 2; reason: All metrics below target,b50v300,1

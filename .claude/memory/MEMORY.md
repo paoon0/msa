@@ -34,9 +34,12 @@
 - [Subagent setup](subagent-setup.md) — 【2026-10-06】サブエージェント3体を .claude/agents/ に定義(役割はCLAUDE.md)。★一覧はセッション開始時固定=作成後は再起動が必要(実測エラー)。paper-refereeはWrite/Edit無し&最優先軸=数値の取得方法の妥当性。査読役は2026-10-06に anubis (アヌビス) へ改名
 - [Memory is in the repo](memory-synced-via-git.md) — メモリ置き場はリポジトリ .claude/memory/ へのシンボリックリンク=コミットしないと消える/2台間はgitで同期
 - [Pair prediction validation](pair-prediction-validation.md) — 【2026-10-08完了・合格】同居ペアの台数・損の予測(θ0.50/基準b50v100)を事前登録で前向き検証→確定セル30/30的中・R1 64%/R2 97%(R2との差は1セル)、損ありは5セルのみ
-- [ρ でペアを選ぶ (焦点)](rho-pair-selection-focus.md) — ユーザの関心は ρ の近さでペアを選ぶとどうなるか。予測的中は不要、P は保留 (2026-10-15)。★10/19 ρ は測る範囲で動く (front 0.35↔0.53)。★10/26 SS の ρ 確定 (front-end 0.287/0.288、cyc2×2台は取り直し)、次=SS HPA 実験の設計
+- [ρ でペアを選ぶ (焦点)](rho-pair-selection-focus.md) — ユーザの関心は ρ の近さでペアを選ぶとどうなるか。予測的中は不要、P は保留 (2026-10-15)。★10/19 ρ は測る範囲で動く (front 0.35↔0.53)。★10/26 SS の ρ 確定 (front-end 0.287/0.288、cyc2×2台は取り直し)、次=SS HPA 実験の設計。★11/07 OB pdist-k3 やり直しで近い 1/48・遠い 39/72 (二値の主張を再現)。★11/18 周波数固定で ρ 測り直し (front/catalog/reco≈0.32 に揃う、範囲依存も縮小)
 - [背景起動は絶対パスで](background-launch-absolute-paths.md) — run_in_background だと cd が効かず exit 127 になることがある。スクリプト・CSV を絶対パスで渡し、起動確認してから報告
-- [周波数は固定しない](cpu-frequency-not-pinned.md) — 2026-10-19 決定。目的は相性の傾向で性能測定でない。DVFS 偏りは記録して限界に書く
+- [周波数は固定 (11/17 16:56 から)](cpu-frequency-not-pinned.md) — ターボ無し P 2.1 / E 1.5 GHz。それ以前の測定は全て非固定なので混ぜない。再起動で戻るので実験前に cpufreq.sh status。枠・ρ は測り直しが要る
 - [MicroK8s 毎晩の再起動](microk8s-nightly-restart.md) — 10/05 以降毎晩 2 回クラスタが自分で再起動 (IPv6 アドレス変化→証明書)。洗い出し済み restart-audit.md。★2026-10-27 13:07 no-cert-reissue 設置→同夜 IPv6 は変わったが再起動なし=停止を確認。最後の再起動 10/26 20:28
 - [自分で精査 (expmain)](self-review-expmain.md) — 2026-10-27〜 ユーザが実験を自分で精査中。mix-cpu2 を読んで見つけた問題 (欠測の報告・VU 未指定・checkout +16% 等)、11/02 に時刻記録 (-times.csv) を入れた (未コミット・実機未検証)、未了一覧
 - [説明は 1 つずつ](explain-one-step-at-a-time.md) — ユーザはコードをほぼ読めない。一度に全部説明せず、1 問 1 答・行番号と小さな例で
+- [DeathStarBench クローン](deathstarbench-local-clone.md) — SN は研究リポジトリの外 ~/ダウンロード/DeathStarBench (socialNetwork だけ、sparse、2024-06-27 版)
+- [k6 → frontend の 1 Pod 偏り](k6-frontend-pod-pinning.md) — 2026-11-20 k6 の接続使い回しで frontend 負荷がほぼ 1 Pod に集中 (分離・同居とも)。front3 b50v300 で p50 1.78 s。CLOSE_EVERY=20 を採用 (11/20)・CPU +0.3〜1.1%・mix-cpu5 で ρ ほぼ不変 (11/21)。過去結果への影響は未調査
+- [rate() の端の過小](prometheus-rate-edge-underestimate.md) — 2026-11-20 rate()/increase() は窓の端の間隔で必ず過小 (mix-cpu4 で最大 −13%)。CPU は -raw.csv の生カウンタ差分で出す。ρ・mc4 作り直しは判断待ち

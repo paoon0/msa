@@ -1,0 +1,13 @@
+================ MEASURE-MIX-CPU START 2026-11-17T16:59:01+09:00 points=[b100v150 b75v150 b25v300 v300] replicas=[1 2] cycles=1 warm=60s meas=180s prewarm=180s@b100 limits=[frontend=3000m productcatalogservice=3000m adservice=1000m] requests=[マニフェスト] grpc_lb=1 rest=60/0/0s cool=70℃ (HPA無し) ================
+################ CYCLE 1 / 1 2026-11-17T16:59:02+09:00 ################
+---- deploy 分離 (固定1台, HPA無し) ----
+  limits 上書き: frontend cpu=3000m (requests はそのまま)
+  limits 上書き: productcatalogservice cpu=3000m (requests はそのまま)
+  limits 上書き: adservice cpu=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  deploy: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+  枠(req/上限lim): adservice=server:300m/1, cartservice=server:560m/960m, checkoutservice=checkout:800m/1200m, currencyservice=server:800m/1600m, emailservice=email:200m/300m, frontend=server:1/3, paymentservice=payment:200m/300m, productcatalogservice=server:600m/3, recommendationservice=server:1200m/1600m, redis-cart=redis:300m/500m, shippingservice=server:320m/560m, 
+  慣らし負荷 180s (b100, 結果は捨てる)

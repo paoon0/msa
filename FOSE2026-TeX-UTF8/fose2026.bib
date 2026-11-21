@@ -654,3 +654,501 @@ year = {2016},
 doi = {10.1145/2856127},
 note = {未引用。書誌は Crossref で確認 2026-10-20 (Crossref の題は subtitle 無しで 『Workload Characterization』、副題は検索結果の表示による)。本文未読。負荷の特徴付けの総説}
 }
+
+% ---- 以下 2026-11-10 追記: Java 起動時 CPU と HPA の誤判断 (詳細は km2/approach/related_work.md 12 節・9.16)。dashtbani2025 は既登録 ----
+@misc{k8shpa,
+author = {{Kubernetes Authors}},
+yomi = {kubernetes},
+title = {Horizontal Pod Autoscaling (Algorithm details; Pod readiness and autoscaling metrics)},
+howpublished = {https://kubernetes.io/docs/concepts/workloads/autoscaling/horizontal-pod-autoscale/},
+year = {2026},
+note = {未引用。公式docのソース(kubernetes/website main, 最終更新2026-08-04)を原文確認 2026-11-10。版により文言が違う可能性あり=引用時に使用K8s版のdocを確認し直すこと。実装 pkg/controller/podautoscaler/replica_calculator.go の groupPods も確認}
+}
+
+@misc{k8sprobes,
+author = {{Kubernetes Authors}},
+yomi = {kubernetes},
+title = {Liveness, Readiness, and Startup Probes},
+howpublished = {https://kubernetes.io/docs/concepts/workloads/pods/probes/},
+year = {2026},
+note = {未引用。公式docのソースを原文確認 2026-11-10: startup probe が成功するまで liveness / readiness は実行されない}
+}
+
+@misc{gkestartupboost,
+author = {Sghiouar, Abdel and Pawełczak, Jakub},
+yomi = {sghiouar},
+title = {GKE CPU startup boost: faster Pod starts, lower costs},
+howpublished = {Google Cloud Blog, https://cloud.google.com/blog/products/containers-kubernetes/gke-cpu-startup-boost-faster-pod-starts-lower-costs},
+year = {2026},
+note = {未引用。ベンダ技術記事(査読なし)。WebFetch で原文確認 2026-11-10 (掲載日 2026-10-03)。Spring Boot の起動 CPU(クラスロード・JIT)と HPA 併用時の注意が書かれている}
+}
+
+@misc{springcrac,
+author = {{Spring Framework contributors}},
+yomi = {spring},
+title = {Checkpoint/Restore Support (Project CRaC), Spring Framework Reference},
+howpublished = {https://docs.spring.io/spring-framework/reference/integration/checkpoint-restore.html},
+year = {2026},
+note = {未引用。公式docの冒頭・制約をWebFetchで確認 2026-11-10。本研究は CRaC を使わない(限界・今後の課題で言及する場合のみ)}
+}
+
+@misc{jep515,
+author = {Veresov, Igor and Rose, John},
+yomi = {veresov},
+title = {JEP 515: Ahead-of-Time Method Profiling},
+howpublished = {https://openjdk.org/jeps/515},
+year = {2025},
+note = {未引用。JDK 25。冒頭(Summary)のみ curl で確認 2026-11-10。JEP 483 (AOT クラスロード・リンク, JDK 24) も同様}
+}
+
+@article{barrett2017warmup,
+author = {Barrett, Edd and Bolz-Tereick, Carl Friedrich and Killick, Rebecca and Mount, Sarah and Tratt, Laurence},
+yomi = {barrett},
+title = {Virtual Machine Warmup Blows Hot and Cold},
+journal = {Proceedings of the ACM on Programming Languages (OOPSLA)},
+volume = {1},
+year = {2017},
+doi = {10.1145/3133876},
+note = {未引用。abstract(検索要約)のみ確認 2026-11-10、DOI未到達=書誌は検索結果の表示による。引用前に本文(arXiv:1602.00602)を読むこと}
+}
+
+@article{buzato2026ijnc,
+author = {Buzato, Fernando H. L. and Goldman, Alfredo},
+yomi = {buzato},
+title = {Extended version of Microservices Performance Optimization Through Horizontal Pod Autoscaling: A Comprehensive Study},
+journal = {International Journal of Networking and Computing},
+volume = {16},
+number = {1},
+pages = {52--75},
+year = {2026},
+doi = {10.15803/ijnc.16.1_52},
+note = {未引用。原典 PDF (J-STAGE, 24頁) を 2026-11-10 に取得し主要節を確認。Sock Shop で束ね方4通り x HPA(150%, 1-4 Pod)、束ねる単位は同一コンテナ内(Pod内ではない)、Locust閉ループ、AWS EKS。今後の課題に Pod 内の束ねを明記。ページ頭は Number 2 と表記、Crossref/J-STAGE は issue 1。会議版は IPDPS 2025 (書誌未確認)。related_work.md 13.4}
+}
+
+@inproceedings{wang2024autothrottle,
+author = {Wang, Zibo and Li, Pinghe and Liang, Chieh-Jan Mike and Wu, Feng and Yan, Francis Y.},
+yomi = {wang},
+title = {Autothrottle: A Practical Bi-Level Approach to Resource Management for SLO-Targeted Microservices},
+booktitle = {21st USENIX Symposium on Networked Systems Design and Implementation (NSDI '24)},
+year = {2024},
+note = {未引用。原典 PDF (USENIX) を 2026-11-10 に grep で確認 (全文精読ではない): TT, Social-Network, Hotel-Reservation、Locust、基準 K8s-CPU と Sinan。リクエスト型の構成は一定のままと明記 (Appendix A)}
+}
+
+@inproceedings{park2021graf,
+author = {Park, Jinwoo and Choi, Byungkwon and Lee, Chunghan and Han, Dongsu},
+yomi = {park},
+title = {GRAF: A Graph Neural Network based Proactive Resource Allocation Framework for SLO-Oriented Microservices},
+booktitle = {Proceedings of the 17th International Conference on emerging Networking EXperiments and Technologies (CoNEXT '21)},
+pages = {154--167},
+year = {2021},
+doi = {10.1145/3485983.3494866},
+note = {未引用。書誌は Crossref で確認 2026-11-10。PDF は途中で切れたものを grep (Social Network=Vegeta, Online Boutique=Locust)。全文未読}
+}
+
+@inproceedings{goli2021waterfall,
+author = {Goli, Alireza and Mahmoudi, Nima and Khazaei, Hamzeh and Ardakanian, Omid},
+yomi = {goli},
+title = {A Holistic Machine Learning-based Autoscaling Approach for Microservice Applications},
+booktitle = {Proceedings of the 11th International Conference on Cloud Computing and Services Science (CLOSER 2021)},
+pages = {190--198},
+year = {2021},
+doi = {10.5220/0010407701900198},
+note = {未引用。原典 PDF (SciTePress) を 2026-11-10 に取得し 6 節を確認: TeaStore、JMeter、基準 K8s HPA、K8s 1+4 ノード}
+}
+
+@inproceedings{horn2022moha,
+author = {Horn, Angelina and Fard, Hamid Mohammadi and Wolf, Felix},
+yomi = {horn},
+title = {Multi-objective Hybrid Autoscaling of Microservices in Kubernetes Clusters},
+booktitle = {Euro-Par 2022: Parallel Processing, LNCS 13440},
+pages = {233--250},
+year = {2022},
+doi = {10.1007/978-3-031-12597-3_15},
+note = {未引用。abstract (検索要約) と TeaStore の README の事例一覧のみ。本文未取得 (サーバ接続不可)。ベンチマークが TeaStore かは著者リポジトリからの間接確認。引用前に読むこと}
+}
+
+@inproceedings{ahmad2024smarthpa,
+author = {Ahmad, Hussain and Treude, Christoph and Wagner, Markus and Szabo, Claudia},
+yomi = {ahmad},
+title = {Smart {HPA}: A Resource-Efficient Horizontal Pod Auto-scaler for Microservice Architectures},
+booktitle = {2024 IEEE 21st International Conference on Software Architecture (ICSA)},
+year = {2024},
+doi = {10.1109/ICSA59870.2024.00013},
+note = {未引用。DOI は Crossref で確認 2026-11-10。arXiv:2403.07909 の評価節 (Online Boutique, Locust, AWS t3.medium x10, 基準 K8s HPA) を読んだ}
+}
+
+@article{xie2024pbscaler,
+author = {Xie, Shuaiyu and Wang, Jian and Li, Bing and Zhang, Zekun and Li, Duantengchuan and Hung, Patrick C. K.},
+yomi = {xie},
+title = {{PBScaler}: A Bottleneck-Aware Autoscaling Framework for Microservice-Based Applications},
+journal = {IEEE Transactions on Services Computing},
+volume = {17},
+number = {2},
+pages = {604--616},
+year = {2024},
+doi = {10.1109/TSC.2024.3376202},
+note = {未引用。書誌は Crossref で確認 2026-11-10。arXiv:2303.14620 を grep: Online Boutique と Train-Ticket、基準 KHPA/MicroScaler/SHOWAR。全文未読}
+}
+
+@inproceedings{meng2023deepscaler,
+author = {Meng, Chunyang and Song, Shijie and Tong, Haogang and Pan, Maolin and Yu, Yang},
+yomi = {meng},
+title = {{DeepScaler}: Holistic Autoscaling for Microservices Based on Spatiotemporal {GNN} with Adaptive Graph Learning},
+booktitle = {2023 38th IEEE/ACM International Conference on Automated Software Engineering (ASE)},
+year = {2023},
+doi = {10.1109/ASE56229.2023.00038},
+note = {未引用。DOI は Crossref で確認 2026-11-10。arXiv:2309.00859 を grep: Train-Ticket, Online Boutique, BookInfo, Locust (開ループ非同期と著者が記述)。全文未読}
+}
+
+@article{wen2025statuscale,
+author = {Wen, Linfeng and Xu, Minxian and Gill, Sukhpal Singh and Hilman, Muhammad Hafizhuddin and Srirama, Satish Narayana and Ye, Kejiang and Xu, Chengzhong},
+yomi = {wen},
+title = {{StatuScale}: Status-aware and Elastic Scaling Strategy for Microservice Applications},
+journal = {ACM Transactions on Autonomous and Adaptive Systems},
+volume = {20},
+number = {1},
+pages = {1--25},
+year = {2025},
+doi = {10.1145/3686253},
+note = {未引用。書誌は Crossref で確認 2026-11-10。arXiv:2407.10173 を grep: Sock Shop と Hotel Reservation、Locust、Alibaba トレース。全文未読}
+}
+
+@inproceedings{xie2026scalereval,
+author = {Xie, Shuaiyu and Luo, Yang and Tan, Yuzhen and Yong, Yunqing and Huang, Xiaosong and Wang, Jian and Li, Bing},
+yomi = {xie},
+title = {{ScalerEval}: Automated and Consistent Evaluation Testbed for Auto-scalers in Microservices},
+booktitle = {Proceedings of the 34th ACM International Conference on the Foundations of Software Engineering (FSE Companion '26)},
+pages = {177--181},
+year = {2026},
+doi = {10.1145/3803437.3806415},
+note = {未引用。著者・ページは Crossref で確認 2026-11-10 (arXiv 版は著者順が異なる)。arXiv:2504.08308 を grep: Online Boutique と Sock Shop、Locust、基準 KHPA/Showar/PBScaler}
+}
+
+@misc{dashtbani2025stalex,
+author = {Dashtbani, Majid and Tahvildari, Ladan},
+yomi = {dashtbani},
+title = {{STaleX}: A Spatiotemporal-Aware Adaptive Auto-scaling Framework for Microservices},
+howpublished = {arXiv:2501.18734},
+year = {2025},
+note = {未引用。arXiv 本文を 2026-11-10 に grep: Sock Shop、Locust + WorldCup98、HPA を動機実験に使用。掲載先は未確認}
+}
+
+@inproceedings{luo2023erms,
+author = {Luo, Shutian and Xu, Huanle and Ye, Kejiang and Xu, Guoyao and Zhang, Liping and He, Jian and Yang, Guodong and Xu, Chengzhong},
+yomi = {luo},
+title = {{Erms}: Efficient Resource Management for Shared Microservices with {SLA} Guarantees},
+booktitle = {Proceedings of the 28th ACM International Conference on Architectural Support for Programming Languages and Operating Systems, Volume 1 (ASPLOS '23)},
+pages = {62--77},
+year = {2023},
+doi = {10.1145/3567955.3567964},
+note = {未引用。書誌は Crossref で確認 2026-11-12。本文は未読 (ACM が 403)。著者の artifact README のみ確認: DeathStarBench の SN・Media・Hotel Reservation、K8s、コンテナ数を決める。引用前に本文を読むこと}
+}
+
+@inproceedings{shi2023nodens,
+author = {Shi, Jiuchen and Zhang, Hang and Tong, Zhixin and Chen, Quan and Fu, Kaihua and Guo, Minyi},
+yomi = {shi},
+title = {{Nodens}: Enabling Resource Efficient and Fast {QoS} Recovery of Dynamic Microservice Applications in Datacenters},
+booktitle = {2023 USENIX Annual Technical Conference (USENIX ATC '23)},
+year = {2023},
+url = {https://www.usenix.org/conference/atc23/presentation/shi},
+note = {未引用。著者は usenix.org の citation メタデータで確認 2026-11-12 (ページ番号は未確認)。PDF を grep: 改変 Hotel Reservation (5 種の呼び出しグラフ、比率を振る)、垂直 (cgroup) + サービス移動、基準 FIRM/ELIS、K8s v1.20.4}
+}
+
+@inproceedings{ghosh2024surgeguard,
+author = {Ghosh, Anyesha and Yadwadkar, Neeraja J. and Erez, Mattan},
+yomi = {ghosh},
+title = {Fast and Efficient Scaling for Microservices with {SurgeGuard}},
+booktitle = {SC24: International Conference for High Performance Computing, Networking, Storage and Analysis},
+pages = {1--15},
+year = {2024},
+doi = {10.1109/SC41406.2024.00103},
+note = {未引用。書誌は Crossref で確認 2026-11-12。par.nsf.gov の PDF (本文の途中から) を grep: SN と Hotel Reservation、wrk2、コア数の割り当て (垂直)、基準 Parties/Caladan。冒頭の節は未読}
+}
+
+@misc{fettes2023reclaimer,
+author = {Fettes, Quintin and Karanth, Avinash and Bunescu, Razvan},
+yomi = {fettes},
+title = {Reclaimer: A Reinforcement Learning Approach to Dynamic Resource Allocation for Cloud Microservices},
+howpublished = {arXiv:2304.07941},
+year = {2023},
+note = {未引用。arXiv 本文を 2026-11-12 に確認: Social Media と Hotel Reservation (15 サービス)、Locust、単一サーバで docker update --cpus (垂直)、基準 AutoScale/Sinan。掲載先は未確認}
+}
+
+@article{alghadban2026driftguard,
+author = {Alghadban, Abdulaziz Jarallah and Ghoneim, Ahmed and Alshemaimri, Bader Khalid},
+yomi = {alghadban},
+title = {{DriftGuard-SLA}: A Paired Multi-Fault Evaluation of Prediction-Triggered Self-Correction in Cloud-Native Service-Oriented Architectures},
+journal = {Computation},
+volume = {14},
+number = {10},
+pages = {229},
+year = {2026},
+doi = {10.3390/computation14100229},
+note = {未引用。書誌と abstract は Crossref で確認 2026-11-12。本文は未読 (MDPI が 403)。Hotel Reservation を K8s で使う故障回復の研究。HPA・水平スケールの有無は未確認}
+}
+
+@misc{ahmad2025securesmart,
+author = {Ahmad, Hussain and Treude, Christoph and Wagner, Markus and Szabo, Claudia},
+yomi = {ahmad},
+title = {Resilient Auto-Scaling of Microservice Architectures with Efficient Resource Management},
+howpublished = {arXiv:2506.05693},
+year = {2025},
+note = {未引用。SecureSmart HPA。arXiv の著者・題・日付を 2026-11-12 に確認。OB、Locust。掲載先は未確認}
+}
+
+@misc{chen2026adascale,
+author = {Chen, Ming and Islam, Muhammed Tawfiqul and Read, Maria Rodriguez and Buyya, Rajkumar},
+yomi = {chen},
+title = {{ADASCALE}: An Adaptive Scaling and Placement Framework for Microservices Under Dynamics},
+howpublished = {arXiv:2607.15681},
+year = {2026},
+note = {未引用。arXiv 本文を 2026-11-12 に grep: DeathStarBench Social Network、基準 K8s HPA と NetMARKS Scale、16 VM (大学研究クラウド)、wrk。掲載先は未確認}
+}
+
+@misc{nguyen2022graphphpa,
+author = {Nguyen, Hoa X. and Zhu, Shaoshu and Liu, Mingming},
+yomi = {nguyen},
+title = {Graph-{PHPA}: Graph-based Proactive Horizontal Pod Autoscaling for Microservices using {LSTM-GNN}},
+howpublished = {arXiv:2209.02551},
+year = {2022},
+note = {未引用。arXiv 本文を 2026-11-12 に grep: Bookinfo、AWS、基準 K8s HPA (ルールベース)。掲載先は未確認}
+}
+
+@inproceedings{baarzi2021showar,
+author = {Baarzi, Ataollah Fatahi and Kesidis, George},
+yomi = {baarzi},
+title = {{SHOWAR}: Right-Sizing And Efficient Scheduling of Microservices},
+booktitle = {Proceedings of the ACM Symposium on Cloud Computing (SoCC '21)},
+pages = {427--441},
+year = {2021},
+doi = {10.1145/3472883.3486999},
+note = {未引用。書誌は Crossref で確認 2026-11-12。par.nsf.gov の PDF を grep: 水平 + 垂直、基準は default Kubernetes autoscalers (HPA/VPA。『HPA』の語は本文に無い) と Autopilot、Social Network 主体、AWS の VM}
+}
+
+@misc{wang2026sloscaler,
+author = {Wang, Shuo and Sun, Xiaoxuan and Huang, Shao-yu and Su, Bencheng and Xu, Shuo and others},
+yomi = {wang},
+title = {{SLO-Scaler}: Uncertainty-Aware {SLO}-Driven Autoscaling for Microservices},
+howpublished = {arXiv:2608.18390},
+year = {2026},
+note = {未引用。arXiv 本文を 2026-11-12 に確認 (実験節): DeathStarBench Social Network 12 サービス、基準 K8s HPA (CPU 目標 60%)・KEDA・LSTM-Pred、ワーカー 5 台、Locust + Alibaba 2022 トレース由来。著者は arXiv 一覧の先頭 6 名を記載し以降は省略。掲載先は未確認}
+}
+
+@misc{habibi2026arbiter,
+author = {Habibi, Pooyan and Leon-Garcia, Alberto},
+yomi = {habibi},
+title = {{ARBITER}: Guarded Agentic Control for {SLO}-Oriented Kubernetes Remediation},
+howpublished = {arXiv:2607.19182},
+year = {2026},
+note = {未引用。arXiv 本文を 2026-11-12 に grep: SN と OB、4 ノード、基準 HPA/資源のみの制御。掲載先は未確認}
+}
+
+@misc{tang2026morphis,
+author = {Tang, Yu and Zhao, Hailiang and Lu, Chuansheng and Zhang, Yifei and Chow, Kingsum and Deng, Shuiguang and others},
+yomi = {tang},
+title = {Morphis: {SLO}-Aware Resource Scheduling for Microservices with Time-Varying Call Graphs},
+howpublished = {arXiv:2602.01044},
+year = {2026},
+note = {未引用。arXiv 本文を 2026-11-12 に grep: Train-Ticket (41 サービス)、物理 3 台、Locust、HPA 比で CPU 最大 38% 減。著者は arXiv 一覧の先頭 6 名のみ。掲載先は未確認}
+}
+
+@misc{hamzeh2026mash2,
+author = {Hamzeh, Hamed and Vahdatian, Parisa},
+yomi = {hamzeh},
+title = {{MAS-H$^2$}: A Hierarchical Multi-Agent System for Holistic Cloud-Native Autoscaling},
+howpublished = {arXiv:2603.07607},
+year = {2026},
+note = {未引用。arXiv 本文を 2026-11-12 に grep: GKE、k6、基準 HPA と Cluster Autoscaler。対象アプリ名は本文に見つからず。掲載先は未確認}
+}
+
+@inproceedings{wanigasooriya2026nimbusguard,
+author = {Wanigasooriya, Chamath and Ekanayake, Indrajith},
+yomi = {wanigasooriya},
+title = {{NimbusGuard}: A Novel Framework for Proactive Kubernetes Autoscaling Using Deep Q-Networks},
+booktitle = {2026 40th International Conference on Information Networking (ICOIN)},
+pages = {726--731},
+year = {2026},
+doi = {10.1109/ICOIN68469.2026.11480646},
+note = {未引用。書誌は Crossref で確認 2026-11-12。arXiv:2604.11017 の本文を確認: KinD (K8s v1.28) を MacBook Pro M4 Pro 1 台、自作 FastAPI アプリ、基準 HPA}
+}
+
+@misc{soule2025karma,
+author = {Soul{\'e}, Julien and Jamont, Jean-Paul and Occello, Michel and Traonouez, Louis-Marie and Th{\'e}ron, Paul},
+yomi = {soule},
+title = {Streamlining Resilient Kubernetes Autoscaling with Multi-Agent Systems via an Automated Online Design Framework},
+howpublished = {arXiv:2505.21559},
+year = {2025},
+note = {未引用。KARMA。arXiv 本文を 2026-11-12 に確認: 基準 KHPA・Gym-HPA・Rlad-core・AWARE、自作の合成サービス、ワーカー 1 台 8 vCPU。掲載先は未確認}
+}
+
+@misc{chaves2026neuroscaler,
+author = {Chaves, Alisson O. and Moreira, Rodrigo and Moreira, Larissa F. Rodrigues and Correia, Joao and Santos, David and Silva, Rui and others},
+yomi = {chaves},
+title = {{NeuroScaler}: Towards Energy-Optimal Autoscaling for Container-Based Services},
+howpublished = {arXiv:2602.08191 (arXiv の journal-ref 欄: IEEE ICC 2026)},
+year = {2026},
+note = {未引用。arXiv 本文を 2026-11-12 に grep: 名前のない Web アプリ 1 つ、k6、基準 K8s HPA。著者は先頭 6 名のみ。会議掲載は arXiv の記載のみで未確認}
+}
+
+@misc{tymoshenko2026platformatic,
+author = {Tymoshenko, Ivan and Maraschi, Luca and Collina, Matteo},
+yomi = {tymoshenko},
+title = {Predictive Autoscaling for {Node.js} on Kubernetes: Lower Latency, Right-Sized Capacity},
+howpublished = {arXiv:2604.19705 (技術報告、Platformatic)},
+year = {2026},
+note = {未引用。arXiv 本文を 2026-11-12 に grep: EKS、m5.2xlarge x4、k6、基準 HPA と KEDA。自社製品のワークロード。査読の有無は未確認}
+}
+
+@misc{punniyamoorthy2025slocost,
+author = {Punniyamoorthy, Vinoth and Kumar, Bikesh and Saha, Sumit and Butra, Lokesh and Palanigounder, Mayilsamy and Agarwal, Akash Kumar and others},
+yomi = {punniyamoorthy},
+title = {An {SLO} Driven and Cost-Aware Autoscaling Framework for Kubernetes},
+howpublished = {arXiv:2512.23415},
+year = {2025},
+note = {未引用。arXiv 本文を 2026-11-12 に grep: 対象アプリ・環境の具体名が本文に無い。引用には不向き}
+}
+
+@misc{shetty2025cpulimits,
+author = {Shetty, Chirag C. and Chakraborty, Sarthak and Franke, Hubertus and Shwartz, Larisa and Narayanaswami, Chandra and Gupta, Indranil and Jha, Saurabh},
+yomi = {shetty},
+title = {{CPU-Limits} kill Performance: Time to rethink Resource Control},
+booktitle = {Proceedings of the 2025 ACM Symposium on Cloud Computing},
+pages = {125--133},
+year = {2025},
+doi = {10.1145/3772052.3772219},
+note = {未引用。書誌は Crossref で確認 2026-11-12 (arXiv:2510.10747)。本文は arXiv v1 を 2026-11-14 に通読 (図の数値は未読)。DeathStarBench の HR と SN を EC2 で、HPA 土台の YAAS、HPA しきい値・requests・limits を掃引。要点は related_work.md §9.23}
+}
+
+@misc{li2026autoslo,
+author = {Li, Jia and Sabetzadeh, Mehrdad and Nejati, Shiva},
+yomi = {li},
+title = {Genetic Programming for Self-Adaptive Auto-Scaling of Microservices},
+howpublished = {arXiv:2605.01533},
+year = {2026},
+note = {未引用。AutoSLO。arXiv 本文を 2026-11-12 に確認 (事例の節): OB と LLM チャットボット、基準 HPA (CPU 80%) と PBScaler、master 1 + ワーカー 2。掲載先は未確認}
+}
+
+@inproceedings{santos2023gymhpa,
+author = {Santos, Jos{\'e} and Wauters, Tim and Volckaert, Bruno and De Turck, Filip},
+yomi = {santos},
+title = {gym-hpa: Efficient Auto-Scaling via Reinforcement Learning for Complex Microservice-based Applications in {Kubernetes}},
+booktitle = {NOMS 2023-2023 IEEE/IFIP Network Operations and Management Symposium},
+pages = {1--9},
+year = {2023},
+doi = {10.1109/NOMS56928.2023.10154298},
+note = {未引用。書誌は Crossref で確認 2026-11-12。imec の公開版 PDF を確認: OB と Redis Cluster、Locust、基準 KHPA。実験クラスタの規模は読んだ範囲に無し}
+}
+
+@article{nguyen2020hpa,
+author = {Nguyen, Thanh-Tung and Yeom, Yu-Jin and Kim, Taehong and Park, Dae-Heon and Kim, Sehan},
+yomi = {nguyen},
+title = {Horizontal Pod Autoscaling in {Kubernetes} for Elastic Container Orchestration},
+journal = {Sensors},
+volume = {20},
+number = {16},
+pages = {4621},
+year = {2020},
+doi = {10.3390/s20164621},
+note = {未引用。書誌は Crossref で確認 2026-11-12。PMC の本文を確認: 自作 CPU 集約アプリ、Gatling、物理 1 台に 5 VM、K8s 1.15.1}
+}
+
+@article{serracanta2025hpastability,
+author = {Serracanta, Berta and Luk{\'a}cs, Andor and Rodriguez-Natal, Alberto and Cabellos, Albert and R{\'e}tv{\'a}ri, G{\'a}bor},
+yomi = {serracanta},
+title = {On the Stability of the {Kubernetes} Horizontal Autoscaler Control Loop},
+journal = {IEEE Access},
+volume = {13},
+pages = {7160--7166},
+year = {2025},
+doi = {10.1109/ACCESS.2025.3526751},
+note = {未引用。書誌は Crossref で確認 2026-11-12。UPC の公開版 PDF を確認: HPA の制御理論モデル、3 サービスのカスケード合成アプリ、k6、HPA v2 で CPU 80% (requests 100m)}
+}
+
+@misc{joyce2024hpaml,
+author = {Joyce, Josephine Eskaline and Sebastian, Shoney},
+yomi = {joyce},
+title = {An Experimental Evaluation of Horizontal Pod Autoscaler for Diverse Machine Learning Workloads in {Kubernetes}},
+howpublished = {Research Square preprint, DOI 10.21203/rs.3.rs-4262320/v1 (査読なし)},
+year = {2024},
+note = {未引用。プレプリント本文を 2026-11-12 に確認: ML 推論 3 アプリ、JMeter、K8s 3 ノード。査読前}
+}
+
+@inproceedings{bhardwaj2023cilantro,
+author = {Bhardwaj, Romil and Kandasamy, Kirthevasan and Biswal, Asim and Guo, Wenshuo and Hindman, Benjamin and Gonzalez, Joseph and Jordan, Michael and Stoica, Ion},
+yomi = {bhardwaj},
+title = {Cilantro: Performance-Aware Resource Allocation for General Objectives via Online Feedback},
+booktitle = {17th USENIX Symposium on Operating Systems Design and Implementation (OSDI 23)},
+year = {2023},
+url = {https://www.usenix.org/conference/osdi23/presentation/bhardwaj},
+note = {未引用。書誌は USENIX の発表ページで確認 2026-11-14 (ページ番号は未確認)。HR を K8s でレプリカ増減。要点は related_work.md §9.24}
+}
+
+@article{casalicchio2019perf,
+author = {Casalicchio, Emiliano},
+yomi = {casalicchio},
+title = {A study on performance measures for auto-scaling {CPU}-intensive containerized applications},
+journal = {Cluster Computing},
+volume = {22},
+number = {3},
+pages = {995--1006},
+year = {2019},
+doi = {10.1007/s10586-018-02890-1},
+note = {未引用。書誌は Crossref で確認 2026-11-17。本文 (Springer OA) を 2026-11-17 に読んだ: Kubernetes HPA の変種 (KHPA-A) を Matlab のシミュレーションで評価 (実機の HPA ではない)。Utarget 75/80/85%、20 回。要点は related_work.md §13.14}
+}
+
+@article{henning2024theodolite,
+author = {Henning, S{\"o}ren and Hasselbring, Wilhelm},
+yomi = {henning},
+title = {Benchmarking scalability of stream processing frameworks deployed as microservices in the cloud},
+journal = {Journal of Systems and Software},
+volume = {208},
+pages = {111879},
+year = {2024},
+doi = {10.1016/j.jss.2023.111879},
+note = {未引用。書誌は Crossref で確認 2026-11-17 (arXiv:2303.11088)。本文を grep: HPA ではなく固定台数を負荷ごとに探す Theodolite 法、warm-up 2 分/4 分、3 回反復。手法本体は ESE 2022 (doi 10.1007/s10664-022-10162-1、未読)。related_work.md §13.14}
+}
+
+@article{podolskiy2019scalex,
+author = {Podolskiy, Vladimir and Jindal, Anshul and Gerndt, Michael},
+yomi = {podolskiy},
+title = {Multilayered autoscaling performance evaluation: Can virtual machines and containers co-scale?},
+journal = {International Journal of Applied Mathematics and Computer Science},
+volume = {29},
+number = {2},
+pages = {227--244},
+year = {2019},
+doi = {10.2478/amcs-2019-0017},
+note = {未引用。書誌は Crossref で確認 2026-11-17。本文を読んだ (§3 指標定義、§5.1 設定): ScaleX、負荷 4 パターン、autoscaling latency の定義 (CAI/DAI)、図は 1 回分のみ。related_work.md §13.14}
+}
+
+@mastersthesis{nilsen2023gke,
+author = {Nilsen, Johanna},
+yomi = {nilsen},
+title = {Performance Evaluation of {Kubernetes} Autoscaling strategies on {GKE} clusters},
+school = {KTH Royal Institute of Technology},
+year = {2023},
+url = {https://www.diva-portal.org/smash/get/diva2:1783247/FULLTEXT01.pdf},
+note = {未引用。修士論文 (TRITA-EECS-EX-2023:510、査読なし)。書誌は PDF の表紙で確認 2026-11-17。要旨・方法・実装節を読んだ (結果の数値は未読): 最大負荷 250/500/750 rps × 立ち上げ 1/2/3 分、HPA/VPA/Hybrid、各 3 回、GKE 6 ノード。related_work.md §13.14}
+}
+
+@misc{wijaya2026hpakeda,
+author = {Wijaya, Ignatius Kevin},
+yomi = {wijaya},
+title = {k8s-autoscaling-hpa-vs-keda: Kubernetes autoscaling experiment on {AKS}},
+howpublished = {GitHub, https://github.com/Ignatius-Kevin-Wijaya/k8s-autoscaling-hpa-vs-keda},
+year = {2026},
+note = {未引用。学部論文の研究リポジトリ (査読の有無不明、書誌の年・著者は README の記述)。README のみ確認 2026-11-17: k6 ramping-arrival-rate、180 run (5 回/条件)、HPA 目標 80%/50%・リクエスト率、AKS 3 ノード。論文としては引用しない (方法の参考)。related_work.md §13.14}
+}
+
+@article{pozdniakova2024slahpa,
+author = {Pozdniakova, Olesia and Ma{\v z}eika, Dalius and Cholomskis, Aurimas},
+yomi = {pozdniakova},
+title = {{SLA}-Adaptive Threshold Adjustment for a {Kubernetes} Horizontal Pod Autoscaler},
+journal = {Electronics},
+volume = {13},
+number = {7},
+pages = {1242},
+year = {2024},
+doi = {10.3390/electronics13071242},
+note = {未引用。書誌は Crossref で確認 2026-11-17。**本文は未読** (MDPI が 403)。検索の要約のみ: HPA の閾値を SLA に合わせて調整、応答時間 20% 改善。引用前に原典を読むこと。related_work.md §13.14}
+}

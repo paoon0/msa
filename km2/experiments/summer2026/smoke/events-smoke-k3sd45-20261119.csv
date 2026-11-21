@@ -1,0 +1,4 @@
+cycle,arm,target_rate,limit_x,browse_rate,time,object,message,point,start_replicas
+2,normal,50,2026-11-19T05:57:12Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,2026-11-19T05:58:27Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,2026-11-19T05:59:57Z,recommendationservice,New size: 1; reason: All metrics below target,b50v300,1

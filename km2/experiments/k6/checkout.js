@@ -27,6 +27,22 @@ const WARMUP   = parseInt(__ENV.WARMUP   || '30');    // 捨てる秒数
 const MEASURE  = parseInt(__ENV.MEASURE  || '180');   // 記録する秒数
 const PRE_VUS  = parseInt(__ENV.PRE_VUS  || '500');
 const MAX_VUS  = parseInt(__ENV.MAX_VUS  || '4000');
+// 2026-11-20 追加: NO_REUSE=1 で要求ごとに TCP 接続を張り直す (k6 の noConnectionReuse)。
+//   既定 (0) は VU ごとに接続を使い回す (keep-alive)。使い回すと ClusterIP の振り分けが接続単位でしか効かず、
+//   慣らし初め (1 台) に張った接続が最初の frontend Pod に張り付いて、後から増えた Pod に負荷が行かない
+//   (smoke-k3f3 で実測: 4 台中 1 台がほぼ全部を処理)。SN (DeathStarBench hpa-k6b) と同じ設定。
+//   k6-job.yaml の __NOREUSE__ を埋めないスクリプトでは '__NOREUSE__' のままなので、使い回し (従来どおり) になる。
+const NO_REUSE = (__ENV.NO_REUSE || '0') === '1';
+// 2026-11-20 追加: CLOSE_EVERY=N (>0) で、VU ごとに要求 N 回に 1 回だけ "Connection: close" を付けて接続を閉じる
+//   (= ときどき張り直す)。次の要求で新しく接続を張るとき Service がその時点の Pod から選び直すので、HPA が増やした Pod にも
+//   少しずつ接続が移る。張り直しの手間は NO_REUSE=1 の約 1/N。既定 0 = 付けない (従来どおり)。
+//   k6-job.yaml の __CLOSEEVERY__ を埋めないスクリプトでは NaN → 0 扱い。
+const CLOSE_EVERY = parseInt(__ENV.CLOSE_EVERY || '0') || 0;
+let nReq = 0;   // VU ごとの要求の通し番号 (k6 は VU ごとに別の JS 実行環境なので、VU ごとに数えられる)
+function prm() {
+  nReq += 1;
+  return (CLOSE_EVERY > 0 && nReq % CLOSE_EVERY === 0) ? { headers: { Connection: 'close' } } : {};
+}
 
 const products = ['0PUK6V6EV0','1YMWWN1N4O','2ZYFJ3GM2N','66VCHSJNUP','6E92ZMYYFZ',
                   '9SIQT8TOJO','L9ECAV7KIM','LS4PSXUNUM','OLJCESPC7Z'];
@@ -48,6 +64,7 @@ const mFail  = new Counter('m_failed');
 
 export const options = {
   discardResponseBodies: true,
+  noConnectionReuse: NO_REUSE,
   summaryTrendStats: ['avg','med','p(90)','p(95)','p(99)','max'],
   scenarios: scenarios(),
 };
@@ -94,15 +111,15 @@ export function checkoutFlow(data) {
   if (measuring) mStart.add(1);            // 開始時点で数える(打ち切られても計上される)
   const p = products[Math.floor(Math.random() * products.length)];
   const rs = [];
-  rs.push(http.get(`${BASE}/product/${p}`));
-  rs.push(http.post(`${BASE}/cart`, { product_id: p, quantity: '1' }));
+  rs.push(http.get(`${BASE}/product/${p}`, prm()));
+  rs.push(http.post(`${BASE}/cart`, { product_id: p, quantity: '1' }, prm()));
   rs.push(http.post(`${BASE}/cart/checkout`, {
     email: 'test@test.com', street_address: 'Tokyo', zip_code: '100000',
     city: 'Tokyo', state: 'Tokyo', country: 'Tokyo',
     credit_card_number: '4111111111111111',
     credit_card_expiration_month: '1', credit_card_expiration_year: '2090',
     credit_card_cvv: '100',
-  }));
+  }, prm()));
   if (measuring) {
     mProd.add(rs[0].timings.duration);
     mCart.add(rs[1].timings.duration);
@@ -121,7 +138,7 @@ export function browseFlow(data) {
   const measuring = (Date.now() - data.start) / 1000 >= WARMUP;
   if (measuring) mbStart.add(1);
   const p = products[Math.floor(Math.random() * products.length)];
-  const r = http.get(`${BASE}/product/${p}`);
+  const r = http.get(`${BASE}/product/${p}`, prm());
   if (measuring) {
     mbDur.add(r.timings.duration);
     if (r.status >= 400 || r.status === 0) mbFail.add(1);
@@ -167,6 +184,8 @@ export function handleSummary(data) {
     // 呼び出し側が Prometheus に問い合わせた区間と突き合わせるために出す
     k6_start_ms: (data.setup_data && data.setup_data.start) || null,
     k6_warmup_s: WARMUP,
+    no_conn_reuse: NO_REUSE,
+    close_every: CLOSE_EVERY,                          // 2026-11-20 追加: 要求 N 回に 1 回接続を閉じる (0 = しない)                           // 2026-11-20 追加: 要求ごとに接続を張り直したか
     k6_summary_ms: Date.now(),
   };
   return { stdout: '\n@@@K6_BEGIN@@@\n' + JSON.stringify(out) + '\n@@@K6_END@@@\n' };
