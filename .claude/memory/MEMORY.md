@@ -43,3 +43,5 @@
 - [DeathStarBench クローン](deathstarbench-local-clone.md) — SN は研究リポジトリの外 ~/ダウンロード/DeathStarBench (socialNetwork だけ、sparse、2024-06-27 版)
 - [k6 → frontend の 1 Pod 偏り](k6-frontend-pod-pinning.md) — 2026-11-20 k6 の接続使い回しで frontend 負荷がほぼ 1 Pod に集中 (分離・同居とも)。front3 b50v300 で p50 1.78 s。CLOSE_EVERY=20 を採用 (11/20)・CPU +0.3〜1.1%・mix-cpu5 で ρ ほぼ不変 (11/21)。過去結果への影響は未調査
 - [rate() の端の過小](prometheus-rate-edge-underestimate.md) — 2026-11-20 rate()/increase() は窓の端の間隔で必ず過小 (mix-cpu4 で最大 −13%)。CPU は -raw.csv の生カウンタ差分で出す。ρ・mc4 作り直しは判断待ち
+- [研究の売り = スケールの親和性](pitch-scale-affinity.md) — 【2026-11-05 ユーザ確定】オートスケール考慮が新しさ。affinityだけでなく必要台数の伸び方が揃う相手でまとめないとHPAで無駄。「同居で安くなる」とは言わない
+- [OneDrive を走査しない](no-search-onedrive.md) — ファイル探しはC:\msa・Downloads・Desktop/読みたい論文に絞る。ホーム全体を走査するとOneDrive(和歌山大学)のファイルを開きダウンロードさせる(2026-11-08に発生)
