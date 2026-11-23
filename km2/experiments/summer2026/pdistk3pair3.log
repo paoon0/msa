@@ -1,0 +1,2006 @@
+================ BUNDLE-VS-LOSS2 START 2026-11-22T06:58:11+09:00 arms=[pairsP1b pairsP2 pairsP3 pairsQ1 pairsQ2 pairsQ3 frontrecocatalog] rates=[200 260] cycles=3 HPA=70%/1-12台 warm=300s meas=300s browse=0周/s sample=15s 様子見=増30s/減30s 開始2台 rightsize=1 limit_x=0 grpc_lb=1 no_reuse=0 close_every=20 k6=sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e probe_timeout=5 vus=600/4000 commit=88db95f no_turbo=1 sha256[driver=d782dbedfb5b checkout.js=b4c48d3f2503 k6-job=28b0a18ad4ad apply_rightsize=6ccbd895b124 rstable=1e3cdb8e7b57] ================
+  点ごとリセット: points=[b100v0 b50v150 b50v300 b75v200 b0v300] starts=[1] shuffle=1(seed 1) rotate_arms=1 settle=35s ready_timeout=300s rs_strict=1 check_frames=1 limit_override=[frontend=3000m productcatalogservice=3000m adservice=1000m] rs_services=[frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice] cool=70℃
+################ CYCLE 1 / 3 2026-11-22T06:58:11+09:00 ################
+  このサイクルのアーム順 (回転): pairsP1b pairsP2 pairsP3 pairsQ1 pairsQ2 pairsQ3 frontrecocatalog
+---- deploy pairsP1b (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: productcatalogservice (recommendation+img)
+  プローブ緩和: productcatalogservice/recommendation timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:230m/960m, checkoutservice=checkout:155m/1200m,shipping:61m/560m, currencyservice=server:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3, paymentservice=payment:38m/300m, productcatalogservice=server:539m/3,recommendation:586m/1600m, redis-cart=redis:300m/500m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 redis-cart=1/1 
+  [cyc1][pairsP1b] 点×開始台数の順番: b50v300:1 b100v0:1 b75v200:1 b0v300:1 b50v150:1
+  冷却待ち 0s → 38℃
+---- 点のリセット [pairsP1b][b50v300] 開始1台 2026-11-22T06:59:43+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 
+==== [cyc1][pairsP1b] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-22T07:00:28+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-4btcp imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795298435 窓 1795298735〜1795299035  Prometheus の区間 1795298745〜1795299025 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.7 s、Prometheus の区間の余裕 始め 14.7 s / 終わり 5.3 s
+     ノード: 周波数=1.766 GHz  最高温度=55.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体231) p50=13 p99=722 | 動作中の枠=12.92コア(Pending分 0.00) Pod=28(Pending 0) | CPU時間=2516秒(うちsoftirq 195秒 / k6 102秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3616.5 コア秒(窓平均 12.916 コア, 19 サンプル) / 使ったCPU: 2516 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:3 currencyservice:5 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 redis-cart:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=727 ms 失敗=0
+  冷却待ち 0s → 44℃
+---- 点のリセット [pairsP1b][b100v0] 開始1台 2026-11-22T07:11:05+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 
+==== [cyc1][pairsP1b] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T07:11:50+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-8dnbl imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795299117 窓 1795299417〜1795299717  Prometheus の区間 1795299427〜1795299707 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.1 s、Prometheus の区間の余裕 始め 15.1 s / 終わり 4.9 s
+     ノード: 周波数=1.774 GHz  最高温度=53.0℃
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=12 p99=763 | 動作中の枠=11.17コア(Pending分 0.00) Pod=32(Pending 0) | CPU時間=2014秒(うちsoftirq 154秒 / k6 74秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 3126.5 コア秒(窓平均 11.166 コア, 19 サンプル) / 使ったCPU: 2014 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:5 currencyservice:4 emailservice:5 frontend:3 paymentservice:6 productcatalogservice:3 redis-cart:1
+  冷却待ち 0s → 44℃
+---- 点のリセット [pairsP1b][b75v200] 開始1台 2026-11-22T07:22:26+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 
+==== [cyc1][pairsP1b] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-22T07:23:11+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-q2m9k imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795299798 窓 1795300098〜1795300398  Prometheus の区間 1795300108〜1795300388 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.7 s、Prometheus の区間の余裕 始め 14.7 s / 終わり 5.3 s
+     ノード: 周波数=1.797 GHz  最高温度=55.0℃
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体74) p50=13 p99=747 | 動作中の枠=13.45コア(Pending分 0.00) Pod=32(Pending 0) | CPU時間=2516秒(うちsoftirq 196秒 / k6 97秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3766.8 コア秒(窓平均 13.453 コア, 19 サンプル) / 使ったCPU: 2516 コア秒
+     台数: adservice:1 cartservice:5 checkoutservice:4 currencyservice:5 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 redis-cart:1
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=10 p99=715 ms 失敗=0
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsP1b][b0v300] 開始1台 2026-11-22T07:33:49+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 
+==== [cyc1][pairsP1b] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-22T07:34:34+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-kw2ml imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795300481 窓 1795300781〜1795301081  Prometheus の区間 1795300791〜1795301071 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.0 s、Prometheus の区間の余裕 始め 15.0 s / 終わり 5.0 s
+     ノード: 周波数=1.782 GHz  最高温度=50.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.07コア(Pending分 0.00) Pod=16(Pending 0) | CPU時間=1502秒(うちsoftirq 118秒 / k6 67秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2540.4 コア秒(窓平均 9.073 コア, 18 サンプル) / 使ったCPU: 1502 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:3 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 redis-cart:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=12 ms 失敗=0
+  冷却待ち 0s → 40℃
+---- 点のリセット [pairsP1b][b50v150] 開始1台 2026-11-22T07:45:12+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 
+==== [cyc1][pairsP1b] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-22T07:45:57+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-hlprz imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795301164 窓 1795301464〜1795301764  Prometheus の区間 1795301474〜1795301754 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.1 s、Prometheus の区間の余裕 始め 15.1 s / 終わり 4.9 s
+     ノード: 周波数=1.763 GHz  最高温度=53.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=12 p99=715 | 動作中の枠=9.92コア(Pending分 0.00) Pod=23(Pending 0) | CPU時間=1748秒(うちsoftirq 134秒 / k6 70秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 2776.8 コア秒(窓平均 9.917 コア, 18 サンプル) / 使ったCPU: 1748 コア秒
+     台数: adservice:1 cartservice:3 checkoutservice:3 currencyservice:3 emailservice:3 frontend:3 paymentservice:3 productcatalogservice:3 redis-cart:1
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=696 ms 失敗=0
+---- deploy pairsP2 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: productcatalogservice (checkout+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  プローブ緩和: recommendationservice/server timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, currencyservice=server:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3,cartservice:230m/960m, paymentservice=payment:38m/300m, productcatalogservice=server:539m/3,checkout:155m/1200m, recommendationservice=server:586m/1600m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc1][pairsP2] 点×開始台数の順番: b50v300:1 b100v0:1 b75v200:1 b0v300:1 b50v150:1
+  冷却待ち 1s → 36℃
+---- 点のリセット [pairsP2][b50v300] 開始1台 2026-11-22T07:58:04+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsP2] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-22T07:58:48+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-k9sgj imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795301936 窓 1795302236〜1795302536  Prometheus の区間 1795302246〜1795302526 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.7 s、Prometheus の区間の余裕 始め 15.7 s / 終わり 4.3 s
+     ノード: 周波数=1.796 GHz  最高温度=55.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体312) p50=12 p99=692 | 動作中の枠=13.07コア(Pending分 0.00) Pod=28(Pending 0) | CPU時間=2506秒(うちsoftirq 198秒 / k6 103秒)
+     種類別p50: 商品10 / カート11 / 購入17 ms
+     確保したCPU: 3659.9 コア秒(窓平均 13.071 コア, 19 サンプル) / 使ったCPU: 2506 コア秒
+     台数: adservice:1 currencyservice:5 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=696 ms 失敗=0
+  冷却待ち 0s → 45℃
+---- 点のリセット [pairsP2][b100v0] 開始1台 2026-11-22T08:09:27+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsP2] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T08:10:11+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-lg2vt imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795302619 窓 1795302919〜1795303219  Prometheus の区間 1795302929〜1795303209 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.2 s、Prometheus の区間の余裕 始め 15.2 s / 終わり 4.8 s
+     ノード: 周波数=1.783 GHz  最高温度=52.0℃
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=12 p99=619 | 動作中の枠=12.75コア(Pending分 0.00) Pod=32(Pending 0) | CPU時間=2028秒(うちsoftirq 159秒 / k6 75秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 3569.7 コア秒(窓平均 12.749 コア, 19 サンプル) / 使ったCPU: 2028 コア秒
+     台数: adservice:1 currencyservice:3 emailservice:5 frontend:4 paymentservice:5 productcatalogservice:5 recommendationservice:3 redis-cart:1 shippingservice:5
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsP2][b75v200] 開始1台 2026-11-22T08:20:48+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsP2] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-22T08:21:33+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-jzjsz imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795303301 窓 1795303601〜1795303901  Prometheus の区間 1795303611〜1795303891 (280s)
+  !! 載らない Pod (FailedScheduling) 3 件 (この点の開始から)
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.4 s、Prometheus の区間の余裕 始め 15.4 s / 終わり 4.6 s
+     ノード: 周波数=1.795 GHz  最高温度=56.0℃
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体89) p50=12 p99=657 | 動作中の枠=13.22コア(Pending分 1.14) Pod=31(Pending 1) | CPU時間=2537秒(うちsoftirq 197秒 / k6 94秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3702.4 コア秒(窓平均 13.223 コア, 19 サンプル) / 使ったCPU: 2537 コア秒
+     台数: adservice:1 currencyservice:5 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=10 p99=629 ms 失敗=0
+  冷却待ち 0s → 45℃
+---- 点のリセット [pairsP2][b0v300] 開始1台 2026-11-22T08:32:11+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsP2] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-22T08:32:56+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-cxbrd imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795303983 窓 1795304283〜1795304583  Prometheus の区間 1795304293〜1795304573 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.3 s、Prometheus の区間の余裕 始め 14.3 s / 終わり 5.7 s
+     ノード: 周波数=1.785 GHz  最高温度=50.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.61コア(Pending分 0.00) Pod=17(Pending 0) | CPU時間=1518秒(うちsoftirq 118秒 / k6 66秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2691.6 コア秒(窓平均 9.613 コア, 18 サンプル) / 使ったCPU: 1518 コア秒
+     台数: adservice:1 currencyservice:3 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=12 ms 失敗=0
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsP2][b50v150] 開始1台 2026-11-22T08:43:30+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsP2] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-22T08:44:15+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-v6zx9 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795304662 窓 1795304962〜1795305262  Prometheus の区間 1795304972〜1795305252 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.9 s、Prometheus の区間の余裕 始め 14.9 s / 終わり 5.1 s
+     ノード: 周波数=1.766 GHz  最高温度=53.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=11 p99=633 | 動作中の枠=9.92コア(Pending分 0.00) Pod=23(Pending 0) | CPU時間=1750秒(うちsoftirq 136秒 / k6 70秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 2775.0 コア秒(窓平均 9.911 コア, 18 サンプル) / 使ったCPU: 1750 コア秒
+     台数: adservice:1 currencyservice:3 emailservice:3 frontend:3 paymentservice:3 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=701 ms 失敗=0
+---- deploy pairsP3 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  プローブ緩和: recommendationservice/server timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:230m/960m, checkoutservice=checkout:155m/1200m,currency:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3,productcatalog:539m/3, paymentservice=payment:38m/300m, recommendationservice=server:586m/1600m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc1][pairsP3] 点×開始台数の順番: b50v300:1 b100v0:1 b75v200:1 b0v300:1 b50v150:1
+  冷却待ち 0s → 38℃
+---- 点のリセット [pairsP3][b50v300] 開始1台 2026-11-22T08:56:22+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsP3] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-22T08:57:35+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-7ffmr imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795305462 窓 1795305762〜1795306062  Prometheus の区間 1795305772〜1795306052 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.1 s、Prometheus の区間の余裕 始め 15.1 s / 終わり 4.9 s
+     ノード: 周波数=1.791 GHz  最高温度=56.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体114) p50=13 p99=752 | 動作中の枠=12.70コア(Pending分 0.00) Pod=27(Pending 0) | CPU時間=2393秒(うちsoftirq 156秒 / k6 101秒)
+     種類別p50: 商品10 / カート12 / 購入16 ms
+     確保したCPU: 3557.1 コア秒(窓平均 12.704 コア, 19 サンプル) / 使ったCPU: 2393 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:4 emailservice:3 frontend:4 paymentservice:3 recommendationservice:4 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=743 ms 失敗=0
+  冷却待ち 0s → 45℃
+---- 点のリセット [pairsP3][b100v0] 開始1台 2026-11-22T09:08:12+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsP3] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T09:09:24+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-fd9lm imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795306171 窓 1795306471〜1795306771  Prometheus の区間 1795306481〜1795306761 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.5 s、Prometheus の区間の余裕 始め 14.5 s / 終わり 5.5 s
+     ノード: 周波数=1.796 GHz  最高温度=52.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 42 系列)
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=12 p99=698 | 動作中の枠=11.49コア(Pending分 0.00) Pod=32(Pending 0) | CPU時間=1945秒(うちsoftirq 129秒 / k6 74秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 3219.7 コア秒(窓平均 11.499 コア, 19 サンプル) / 使ったCPU: 1945 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:5 emailservice:5 frontend:3 paymentservice:5 recommendationservice:3 redis-cart:1 shippingservice:5
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:5 emailservice:5 frontend:3 paymentservice:6 recommendationservice:3 redis-cart:1 shippingservice:5)
+  冷却待ち 0s → 45℃
+---- 点のリセット [pairsP3][b75v200] 開始1台 2026-11-22T09:20:01+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsP3] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-22T09:21:14+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-sxp8z imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795306881 窓 1795307181〜1795307481  Prometheus の区間 1795307191〜1795307471 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.1 s、Prometheus の区間の余裕 始め 15.1 s / 終わり 4.9 s
+     ノード: 周波数=1.796 GHz  最高温度=55.0℃
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体0) p50=13 p99=789 | 動作中の枠=13.09コア(Pending分 0.00) Pod=31(Pending 0) | CPU時間=2420秒(うちsoftirq 158秒 / k6 93秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3669.1 コア秒(窓平均 13.104 コア, 19 サンプル) / 使ったCPU: 2420 コア秒
+     台数: adservice:1 cartservice:5 checkoutservice:4 emailservice:4 frontend:4 paymentservice:4 recommendationservice:4 redis-cart:1 shippingservice:4
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:5 checkoutservice:4 emailservice:4 frontend:4 paymentservice:5 recommendationservice:4 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=10 p99=736 ms 失敗=0
+  冷却待ち 0s → 47℃
+---- 点のリセット [pairsP3][b0v300] 開始1台 2026-11-22T09:31:51+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsP3] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-22T09:33:04+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-nzdv8 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795307590 窓 1795307890〜1795308190  Prometheus の区間 1795307900〜1795308180 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -3.9 s、Prometheus の区間の余裕 始め 13.9 s / 終わり 6.1 s
+     ノード: 周波数=1.768 GHz  最高温度=49.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.38コア(Pending分 0.00) Pod=16(Pending 0) | CPU時間=1439秒(うちsoftirq 90秒 / k6 66秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2627.2 コア秒(窓平均 9.383 コア, 18 サンプル) / 使ったCPU: 1439 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:3 emailservice:1 frontend:3 paymentservice:1 recommendationservice:3 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=11 ms 失敗=0
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsP3][b50v150] 開始1台 2026-11-22T09:43:37+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsP3] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-22T09:44:50+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-r6m7q imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795308297 窓 1795308597〜1795308897  Prometheus の区間 1795308607〜1795308887 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.2 s、Prometheus の区間の余裕 始め 15.2 s / 終わり 4.8 s
+     ノード: 周波数=1.707 GHz  最高温度=51.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 31 系列)
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=11 p99=597 | 動作中の枠=9.92コア(Pending分 0.00) Pod=23(Pending 0) | CPU時間=1677秒(うちsoftirq 108秒 / k6 70秒)
+     種類別p50: 商品10 / カート11 / 購入15 ms
+     確保したCPU: 2776.8 コア秒(窓平均 9.917 コア, 18 サンプル) / 使ったCPU: 1677 コア秒
+     台数: adservice:1 cartservice:3 checkoutservice:3 emailservice:3 frontend:3 paymentservice:3 recommendationservice:3 redis-cart:1 shippingservice:3
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:3 checkoutservice:3 emailservice:3 frontend:3 paymentservice:4 recommendationservice:3 redis-cart:1 shippingservice:3)
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=681 ms 失敗=0
+---- deploy pairsQ1 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  プローブ緩和: recommendationservice/server timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, checkoutservice=checkout:155m/1200m,cartservice:230m/960m, emailservice=email:53m/300m, frontend=server:910m/3,currency:367m/1600m, paymentservice=payment:38m/300m, productcatalogservice=server:539m/3, recommendationservice=server:586m/1600m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 checkoutservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc1][pairsQ1] 点×開始台数の順番: b50v300:1 b100v0:1 b75v200:1 b0v300:1 b50v150:1
+  冷却待ち 0s → 38℃
+---- 点のリセット [pairsQ1][b50v300] 開始1台 2026-11-22T09:56:58+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsQ1] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-22T09:58:10+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-qzqzj imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795309098 窓 1795309398〜1795309698  Prometheus の区間 1795309408〜1795309688 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.2 s、Prometheus の区間の余裕 始め 15.2 s / 終わり 4.8 s
+     ノード: 周波数=1.797 GHz  最高温度=55.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体148) p50=12 p99=426 | 動作中の枠=12.70コア(Pending分 0.00) Pod=27(Pending 0) | CPU時間=2494秒(うちsoftirq 193秒 / k6 105秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3557.1 コア秒(窓平均 12.704 コア, 19 サンプル) / 使ったCPU: 2494 コア秒
+     台数: adservice:1 checkoutservice:4 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=541 ms 失敗=0
+  冷却待ち 0s → 44℃
+---- 点のリセット [pairsQ1][b100v0] 開始1台 2026-11-22T10:08:47+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsQ1] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T10:10:00+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-mjgb2 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795309806 窓 1795310106〜1795310406  Prometheus の区間 1795310116〜1795310396 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.1 s、Prometheus の区間の余裕 始め 14.1 s / 終わり 5.9 s
+     ノード: 周波数=1.794 GHz  最高温度=53.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 43 系列)
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=12 p99=611 | 動作中の枠=12.27コア(Pending分 0.00) Pod=32(Pending 0) | CPU時間=2011秒(うちsoftirq 153秒 / k6 75秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 3436.2 コア秒(窓平均 12.272 コア, 19 サンプル) / 使ったCPU: 2011 コア秒
+     台数: adservice:1 checkoutservice:5 emailservice:5 frontend:4 paymentservice:5 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:5
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 checkoutservice:5 emailservice:5 frontend:4 paymentservice:6 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:5)
+  冷却待ち 0s → 42℃
+---- 点のリセット [pairsQ1][b75v200] 開始1台 2026-11-22T10:20:36+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsQ1] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-22T10:21:48+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-phl85 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795310516 窓 1795310816〜1795311116  Prometheus の区間 1795310826〜1795311106 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.4 s、Prometheus の区間の余裕 始め 15.4 s / 終わり 4.6 s
+     ノード: 周波数=1.796 GHz  最高温度=56.0℃
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体38) p50=14 p99=732 | 動作中の枠=13.24コア(Pending分 0.00) Pod=31(Pending 0) | CPU時間=2501秒(うちsoftirq 191秒 / k6 97秒)
+     種類別p50: 商品11 / カート12 / 購入17 ms
+     確保したCPU: 3712.0 コア秒(窓平均 13.257 コア, 19 サンプル) / 使ったCPU: 2501 コア秒
+     台数: adservice:1 checkoutservice:5 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 checkoutservice:5 emailservice:4 frontend:4 paymentservice:5 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=11 p99=729 ms 失敗=0
+  冷却待ち 0s → 45℃
+---- 点のリセット [pairsQ1][b0v300] 開始1台 2026-11-22T10:32:26+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsQ1] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-22T10:33:39+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-2s7f6 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795311226 窓 1795311526〜1795311826  Prometheus の区間 1795311536〜1795311816 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.7 s、Prometheus の区間の余裕 始め 14.7 s / 終わり 5.3 s
+     ノード: 周波数=1.784 GHz  最高温度=51.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.23コア(Pending分 0.00) Pod=16(Pending 0) | CPU時間=1497秒(うちsoftirq 115秒 / k6 66秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2583.8 コア秒(窓平均 9.228 コア, 18 サンプル) / 使ったCPU: 1497 コア秒
+     台数: adservice:1 checkoutservice:2 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=12 ms 失敗=0
+  冷却待ち 0s → 42℃
+---- 点のリセット [pairsQ1][b50v150] 開始1台 2026-11-22T10:44:13+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsQ1] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-22T10:45:25+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-mzvvb imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795311932 窓 1795312232〜1795312532  Prometheus の区間 1795312242〜1795312522 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.7 s、Prometheus の区間の余裕 始め 14.7 s / 終わり 5.3 s
+     ノード: 周波数=1.785 GHz  最高温度=53.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=11 p99=376 | 動作中の枠=9.92コア(Pending分 0.00) Pod=23(Pending 0) | CPU時間=1739秒(うちsoftirq 133秒 / k6 72秒)
+     種類別p50: 商品10 / カート11 / 購入15 ms
+     確保したCPU: 2776.8 コア秒(窓平均 9.917 コア, 18 サンプル) / 使ったCPU: 1739 コア秒
+     台数: adservice:1 checkoutservice:3 emailservice:3 frontend:3 paymentservice:3 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=517 ms 失敗=0
+---- deploy pairsQ2 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img, recommendation+img)
+  プローブ緩和: frontend/recommendation timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:230m/960m, checkoutservice=checkout:155m/1200m, currencyservice=server:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3,recommendation:586m/1600m, paymentservice=payment:38m/300m, productcatalogservice=server:539m/3, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc1][pairsQ2] 点×開始台数の順番: b50v300:1 b100v0:1 b75v200:1 b0v300:1 b50v150:1
+  冷却待ち 0s → 38℃
+---- 点のリセット [pairsQ2][b50v300] 開始1台 2026-11-22T10:57:37+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsQ2] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-22T10:58:50+09:00 ====
+  HPA作成: k6 Job の apply 直後から 7 秒で完了
+  k6 イメージ: pod=k6load-kztl8 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795312738 窓 1795313038〜1795313338  Prometheus の区間 1795313048〜1795313328 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -6.1 s、Prometheus の区間の余裕 始め 16.1 s / 終わり 3.9 s
+     ノード: 周波数=1.799 GHz  最高温度=56.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体259) p50=13 p99=707 | 動作中の枠=12.55コア(Pending分 0.00) Pod=30(Pending 0) | CPU時間=2516秒(うちsoftirq 200秒 / k6 103秒)
+     種類別p50: 商品11 / カート12 / 購入17 ms
+     確保したCPU: 3513.7 コア秒(窓平均 12.549 コア, 19 サンプル) / 使ったCPU: 2516 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:3 currencyservice:4 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=11 p99=717 ms 失敗=0
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsQ2][b100v0] 開始1台 2026-11-22T11:09:28+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsQ2] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T11:10:40+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-tnlnr imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795313448 窓 1795313748〜1795314048  Prometheus の区間 1795313758〜1795314038 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.3 s、Prometheus の区間の余裕 始め 15.3 s / 終わり 4.7 s
+     ノード: 周波数=1.798 GHz  最高温度=53.0℃
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=13 p99=779 | 動作中の枠=11.13コア(Pending分 0.00) Pod=36(Pending 0) | CPU時間=2020秒(うちsoftirq 161秒 / k6 74秒)
+     種類別p50: 商品10 / カート12 / 購入16 ms
+     確保したCPU: 3122.6 コア秒(窓平均 11.152 コア, 19 サンプル) / 使ったCPU: 2020 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:5 currencyservice:4 emailservice:5 frontend:3 paymentservice:5 productcatalogservice:3 redis-cart:1 shippingservice:5
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:5 currencyservice:4 emailservice:5 frontend:3 paymentservice:6 productcatalogservice:3 redis-cart:1 shippingservice:5)
+  冷却待ち 0s → 44℃
+---- 点のリセット [pairsQ2][b75v200] 開始1台 2026-11-22T11:21:17+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsQ2] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-22T11:22:30+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-fpvp7 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795314158 窓 1795314458〜1795314758  Prometheus の区間 1795314468〜1795314748 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.5 s、Prometheus の区間の余裕 始め 15.5 s / 終わり 4.5 s
+     ノード: 周波数=1.798 GHz  最高温度=56.0℃
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体63) p50=13 p99=718 | 動作中の枠=13.45コア(Pending分 0.00) Pod=36(Pending 0) | CPU時間=2524秒(うちsoftirq 201秒 / k6 98秒)
+     種類別p50: 商品11 / カート12 / 購入17 ms
+     確保したCPU: 3770.8 コア秒(窓平均 13.467 コア, 19 サンプル) / 使ったCPU: 2524 コア秒
+     台数: adservice:1 cartservice:5 checkoutservice:4 currencyservice:5 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 redis-cart:1 shippingservice:4
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:5 checkoutservice:4 currencyservice:5 emailservice:4 frontend:4 paymentservice:5 productcatalogservice:4 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=11 p99=699 ms 失敗=0
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsQ2][b0v300] 開始1台 2026-11-22T11:33:04+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsQ2] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-22T11:34:17+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-788rw imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795314864 窓 1795315164〜1795315464  Prometheus の区間 1795315174〜1795315454 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.7 s、Prometheus の区間の余裕 始め 14.7 s / 終わり 5.3 s
+     ノード: 周波数=1.763 GHz  最高温度=50.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.07コア(Pending分 0.00) Pod=17(Pending 0) | CPU時間=1491秒(うちsoftirq 118秒 / k6 66秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2540.4 コア秒(窓平均 9.073 コア, 18 サンプル) / 使ったCPU: 1491 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:3 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=12 ms 失敗=0
+  冷却待ち 0s → 44℃
+---- 点のリセット [pairsQ2][b50v150] 開始1台 2026-11-22T11:44:51+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsQ2] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-22T11:46:03+09:00 ====
+  HPA作成: k6 Job の apply 直後から 7 秒で完了
+  k6 イメージ: pod=k6load-pht6m imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795315571 窓 1795315871〜1795316171  Prometheus の区間 1795315881〜1795316161 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.3 s、Prometheus の区間の余裕 始め 15.3 s / 終わり 4.7 s
+     ノード: 周波数=1.786 GHz  最高温度=52.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=12 p99=667 | 動作中の枠=9.92コア(Pending分 0.00) Pod=26(Pending 0) | CPU時間=1736秒(うちsoftirq 138秒 / k6 70秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 2776.8 コア秒(窓平均 9.917 コア, 18 サンプル) / 使ったCPU: 1736 コア秒
+     台数: adservice:1 cartservice:3 checkoutservice:3 currencyservice:3 emailservice:3 frontend:3 paymentservice:3 productcatalogservice:3 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=679 ms 失敗=0
+---- deploy pairsQ3 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: frontend (server+img, checkout+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  プローブ緩和: recommendationservice/server timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:230m/960m, currencyservice=server:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3,checkout:155m/1200m, paymentservice=payment:38m/300m, productcatalogservice=server:539m/3, recommendationservice=server:586m/1600m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc1][pairsQ3] 点×開始台数の順番: b50v300:1 b100v0:1 b75v200:1 b0v300:1 b50v150:1
+  冷却待ち 0s → 38℃
+---- 点のリセット [pairsQ3][b50v300] 開始1台 2026-11-22T11:58:21+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsQ3] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-22T11:59:06+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-hnzsk imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795316354 窓 1795316654〜1795316954  Prometheus の区間 1795316664〜1795316944 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -6.1 s、Prometheus の区間の余裕 始め 16.1 s / 終わり 3.9 s
+     ノード: 周波数=1.796 GHz  最高温度=56.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体324) p50=13 p99=804 | 動作中の枠=13.07コア(Pending分 0.00) Pod=32(Pending 0) | CPU時間=2527秒(うちsoftirq 203秒 / k6 105秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3660.4 コア秒(窓平均 13.073 コア, 19 サンプル) / 使ったCPU: 2527 コア秒
+     台数: adservice:1 cartservice:4 currencyservice:5 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 currencyservice:5 emailservice:3 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=760 ms 失敗=0
+  冷却待ち 0s → 46℃
+---- 点のリセット [pairsQ3][b100v0] 開始1台 2026-11-22T12:09:45+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsQ3] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T12:10:30+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-rs96x imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795317038 窓 1795317338〜1795317638  Prometheus の区間 1795317348〜1795317628 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.6 s、Prometheus の区間の余裕 始め 15.6 s / 終わり 4.4 s
+     ノード: 周波数=1.784 GHz  最高温度=54.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 43 系列)
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=13 p99=676 | 動作中の枠=12.95コア(Pending分 0.00) Pod=36(Pending 0) | CPU時間=2039秒(うちsoftirq 163秒 / k6 74秒)
+     種類別p50: 商品10 / カート12 / 購入16 ms
+     確保したCPU: 3627.1 コア秒(窓平均 12.954 コア, 19 サンプル) / 使ったCPU: 2039 コア秒
+     台数: adservice:1 cartservice:4 currencyservice:4 emailservice:5 frontend:5 paymentservice:5 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:5
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 currencyservice:4 emailservice:5 frontend:5 paymentservice:6 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:5)
+  冷却待ち 0s → 42℃
+---- 点のリセット [pairsQ3][b75v200] 開始1台 2026-11-22T12:21:07+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsQ3] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-22T12:21:52+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-rdcpn imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795317720 窓 1795318020〜1795318320  Prometheus の区間 1795318030〜1795318310 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.2 s、Prometheus の区間の余裕 始め 15.2 s / 終わり 4.8 s
+     ノード: 周波数=1.799 GHz  最高温度=56.0℃
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体173) p50=13 p99=753 | 動作中の枠=12.86コア(Pending分 0.00) Pod=34(Pending 0) | CPU時間=2521秒(うちsoftirq 200秒 / k6 98秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3625.3 コア秒(窓平均 12.948 コア, 18 サンプル) / 使ったCPU: 2521 コア秒
+     台数: adservice:1 cartservice:4 currencyservice:4 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:5 currencyservice:4 emailservice:4 frontend:4 paymentservice:5 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=10 p99=710 ms 失敗=0
+  冷却待ち 0s → 44℃
+---- 点のリセット [pairsQ3][b0v300] 開始1台 2026-11-22T12:32:27+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsQ3] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-22T12:33:12+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-sps5l imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795318400 窓 1795318700〜1795319000  Prometheus の区間 1795318710〜1795318990 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.6 s、Prometheus の区間の余裕 始め 15.6 s / 終わり 4.4 s
+     ノード: 周波数=1.77 GHz  最高温度=50.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.38コア(Pending分 0.00) Pod=19(Pending 0) | CPU時間=1499秒(うちsoftirq 120秒 / k6 66秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2627.2 コア秒(窓平均 9.383 コア, 18 サンプル) / 使ったCPU: 1499 コア秒
+     台数: adservice:1 cartservice:2 currencyservice:3 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=12 ms 失敗=0
+  冷却待ち 0s → 42℃
+---- 点のリセット [pairsQ3][b50v150] 開始1台 2026-11-22T12:43:47+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][pairsQ3] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-22T12:44:32+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-9dnfd imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795319079 窓 1795319379〜1795319679  Prometheus の区間 1795319389〜1795319669 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.9 s、Prometheus の区間の余裕 始め 14.9 s / 終わり 5.1 s
+     ノード: 周波数=1.772 GHz  最高温度=53.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=12 p99=643 | 動作中の枠=9.92コア(Pending分 0.00) Pod=26(Pending 0) | CPU時間=1735秒(うちsoftirq 139秒 / k6 70秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 2776.8 コア秒(窓平均 9.917 コア, 18 サンプル) / 使ったCPU: 1735 コア秒
+     台数: adservice:1 cartservice:3 currencyservice:3 emailservice:3 frontend:3 paymentservice:3 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=675 ms 失敗=0
+---- deploy frontrecocatalog (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img, recommendation+img)
+  プローブ緩和: frontend/recommendation timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:230m/960m, checkoutservice=checkout:155m/1200m, currencyservice=server:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3,recommendation:586m/1600m,productcatalog:539m/3, paymentservice=payment:38m/300m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc1][frontrecocatalog] 点×開始台数の順番: b50v300:1 b100v0:1 b75v200:1 b0v300:1 b50v150:1
+  冷却待ち 0s → 40℃
+---- 点のリセット [frontrecocatalog][b50v300] 開始1台 2026-11-22T12:56:41+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][frontrecocatalog] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-22T12:57:54+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-q99v4 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795319881 窓 1795320181〜1795320481  Prometheus の区間 1795320191〜1795320471 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.0 s、Prometheus の区間の余裕 始め 15.0 s / 終わり 5.0 s
+     ノード: 周波数=1.787 GHz  最高温度=55.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体252) p50=13 p99=753 | 動作中の枠=12.92コア(Pending分 0.00) Pod=27(Pending 0) | CPU時間=2406秒(うちsoftirq 145秒 / k6 102秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3616.5 コア秒(窓平均 12.916 コア, 19 サンプル) / 使ったCPU: 2406 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:3 currencyservice:5 emailservice:3 frontend:4 paymentservice:3 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=750 ms 失敗=0
+  冷却待ち 0s → 43℃
+---- 点のリセット [frontrecocatalog][b100v0] 開始1台 2026-11-22T13:08:31+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][frontrecocatalog] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T13:09:43+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-dtdmw imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795320591 窓 1795320891〜1795321191  Prometheus の区間 1795320901〜1795321181 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.3 s、Prometheus の区間の余裕 始め 15.3 s / 終わり 4.7 s
+     ノード: 周波数=1.756 GHz  最高温度=55.0℃
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=12 p99=764 | 動作中の枠=11.13コア(Pending分 0.00) Pod=33(Pending 0) | CPU時間=1954秒(うちsoftirq 123秒 / k6 74秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 3119.2 コア秒(窓平均 11.140 コア, 19 サンプル) / 使ったCPU: 1954 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:5 currencyservice:4 emailservice:5 frontend:3 paymentservice:5 redis-cart:1 shippingservice:5
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:5 currencyservice:4 emailservice:5 frontend:3 paymentservice:6 redis-cart:1 shippingservice:5)
+  冷却待ち 0s → 43℃
+---- 点のリセット [frontrecocatalog][b75v200] 開始1台 2026-11-22T13:20:20+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][frontrecocatalog] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-22T13:21:33+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-vv88r imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795321300 窓 1795321600〜1795321900  Prometheus の区間 1795321610〜1795321890 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.2 s、Prometheus の区間の余裕 始め 15.2 s / 終わり 4.8 s
+     ノード: 周波数=1.796 GHz  最高温度=58.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 41 系列)
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体36) p50=13 p99=742 | 動作中の枠=13.09コア(Pending分 0.00) Pod=31(Pending 0) | CPU時間=2437秒(うちsoftirq 151秒 / k6 98秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3665.2 コア秒(窓平均 13.090 コア, 19 サンプル) / 使ったCPU: 2437 コア秒
+     台数: adservice:1 cartservice:5 checkoutservice:4 currencyservice:4 emailservice:4 frontend:4 paymentservice:4 redis-cart:1 shippingservice:4
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:5 checkoutservice:4 currencyservice:4 emailservice:4 frontend:4 paymentservice:5 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=10 p99=689 ms 失敗=0
+  冷却待ち 0s → 43℃
+---- 点のリセット [frontrecocatalog][b0v300] 開始1台 2026-11-22T13:32:10+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][frontrecocatalog] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-22T13:33:23+09:00 ====
+  HPA作成: k6 Job の apply 直後から 4 秒で完了
+  k6 イメージ: pod=k6load-jb4k2 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795322009 窓 1795322309〜1795322609  Prometheus の区間 1795322319〜1795322599 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.1 s、Prometheus の区間の余裕 始め 14.1 s / 終わり 5.9 s
+     ノード: 周波数=1.772 GHz  最高温度=51.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.07コア(Pending分 0.00) Pod=14(Pending 0) | CPU時間=1441秒(うちsoftirq 81秒 / k6 66秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2540.4 コア秒(窓平均 9.073 コア, 18 サンプル) / 使ったCPU: 1441 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:3 emailservice:1 frontend:3 paymentservice:1 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=11 ms 失敗=0
+  冷却待ち 0s → 41℃
+---- 点のリセット [frontrecocatalog][b50v150] 開始1台 2026-11-22T13:43:56+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc1][frontrecocatalog] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-22T13:45:08+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-twxgq imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795322715 窓 1795323015〜1795323315  Prometheus の区間 1795323025〜1795323305 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.6 s、Prometheus の区間の余裕 始め 14.6 s / 終わり 5.4 s
+     ノード: 周波数=1.772 GHz  最高温度=51.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=12 p99=759 | 動作中の枠=9.92コア(Pending分 0.00) Pod=23(Pending 0) | CPU時間=1687秒(うちsoftirq 101秒 / k6 70秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 2776.8 コア秒(窓平均 9.917 コア, 18 サンプル) / 使ったCPU: 1687 コア秒
+     台数: adservice:1 cartservice:3 checkoutservice:3 currencyservice:3 emailservice:3 frontend:3 paymentservice:3 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=735 ms 失敗=0
+################ CYCLE 2 / 3 2026-11-22T13:55:43+09:00 ################
+  このサイクルのアーム順 (回転): pairsP2 pairsP3 pairsQ1 pairsQ2 pairsQ3 frontrecocatalog pairsP1b
+---- deploy pairsP2 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: productcatalogservice (checkout+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  プローブ緩和: recommendationservice/server timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, currencyservice=server:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3,cartservice:230m/960m, paymentservice=payment:38m/300m, productcatalogservice=server:539m/3,checkout:155m/1200m, recommendationservice=server:586m/1600m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc2][pairsP2] 点×開始台数の順番: b100v0:1 b0v300:1 b50v150:1 b75v200:1 b50v300:1
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsP2][b100v0] 開始1台 2026-11-22T13:57:42+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsP2] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T13:58:27+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-tww4j imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795323514 窓 1795323814〜1795324114  Prometheus の区間 1795323824〜1795324104 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.1 s、Prometheus の区間の余裕 始め 15.1 s / 終わり 4.9 s
+     ノード: 周波数=1.797 GHz  最高温度=54.0℃
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=12 p99=68 | 動作中の枠=13.12コア(Pending分 0.00) Pod=33(Pending 0) | CPU時間=2022秒(うちsoftirq 162秒 / k6 75秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 3674.2 コア秒(窓平均 13.122 コア, 19 サンプル) / 使ったCPU: 2022 コア秒
+     台数: adservice:1 currencyservice:4 emailservice:5 frontend:4 paymentservice:5 productcatalogservice:5 recommendationservice:3 redis-cart:1 shippingservice:5
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 currencyservice:4 emailservice:5 frontend:4 paymentservice:6 productcatalogservice:5 recommendationservice:3 redis-cart:1 shippingservice:5)
+  冷却待ち 0s → 45℃
+---- 点のリセット [pairsP2][b0v300] 開始1台 2026-11-22T14:09:04+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsP2] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-22T14:09:49+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-n2b5m imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795324196 窓 1795324496〜1795324796  Prometheus の区間 1795324506〜1795324786 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.9 s、Prometheus の区間の余裕 始め 14.9 s / 終わり 5.1 s
+     ノード: 周波数=1.776 GHz  最高温度=50.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.61コア(Pending分 0.00) Pod=17(Pending 0) | CPU時間=1490秒(うちsoftirq 119秒 / k6 66秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2691.6 コア秒(窓平均 9.613 コア, 18 サンプル) / 使ったCPU: 1490 コア秒
+     台数: adservice:1 currencyservice:3 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=12 ms 失敗=0
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsP2][b50v150] 開始1台 2026-11-22T14:20:27+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 0s)。gRPC 引き直し待ち 35s: adservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsP2] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-22T14:21:06+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-l84kv imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795324873 窓 1795325173〜1795325473  Prometheus の区間 1795325183〜1795325463 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.5 s、Prometheus の区間の余裕 始め 14.5 s / 終わり 5.5 s
+     ノード: 周波数=1.793 GHz  最高温度=52.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体20) p50=11 p99=633 | 動作中の枠=9.92コア(Pending分 0.00) Pod=23(Pending 0) | CPU時間=1736秒(うちsoftirq 135秒 / k6 70秒)
+     種類別p50: 商品10 / カート11 / 購入15 ms
+     確保したCPU: 2776.8 コア秒(窓平均 9.917 コア, 18 サンプル) / 使ったCPU: 1736 コア秒
+     台数: adservice:1 currencyservice:3 emailservice:3 frontend:3 paymentservice:3 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=699 ms 失敗=0
+  冷却待ち 0s → 42℃
+---- 点のリセット [pairsP2][b75v200] 開始1台 2026-11-22T14:31:41+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsP2] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-22T14:32:26+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-rjpdn imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795325553 窓 1795325853〜1795326153  Prometheus の区間 1795325863〜1795326143 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.6 s、Prometheus の区間の余裕 始め 14.6 s / 終わり 5.4 s
+     ノード: 周波数=1.798 GHz  最高温度=56.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 43 系列)
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体84) p50=12 p99=519 | 動作中の枠=12.86コア(Pending分 0.00) Pod=30(Pending 0) | CPU時間=2551秒(うちsoftirq 202秒 / k6 99秒)
+     種類別p50: 商品11 / カート12 / 購入17 ms
+     確保したCPU: 3870.7 コア秒(窓平均 13.824 コア, 19 サンプル) / 使ったCPU: 2551 コア秒
+     台数: adservice:1 currencyservice:4 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 currencyservice:4 emailservice:4 frontend:4 paymentservice:6 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=10 p99=597 ms 失敗=0
+  冷却待ち 0s → 42℃
+---- 点のリセット [pairsP2][b50v300] 開始1台 2026-11-22T14:43:04+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsP2] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-22T14:43:49+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-wt6rp imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795326236 窓 1795326536〜1795326836  Prometheus の区間 1795326546〜1795326826 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.1 s、Prometheus の区間の余裕 始め 15.1 s / 終わり 4.9 s
+     ノード: 周波数=1.799 GHz  最高温度=56.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体123) p50=12 p99=757 | 動作中の枠=13.07コア(Pending分 0.00) Pod=28(Pending 0) | CPU時間=2500秒(うちsoftirq 197秒 / k6 102秒)
+     種類別p50: 商品10 / カート11 / 購入17 ms
+     確保したCPU: 3659.9 コア秒(窓平均 13.071 コア, 19 サンプル) / 使ったCPU: 2500 コア秒
+     台数: adservice:1 currencyservice:5 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=774 ms 失敗=0
+---- deploy pairsP3 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  プローブ緩和: recommendationservice/server timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:230m/960m, checkoutservice=checkout:155m/1200m,currency:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3,productcatalog:539m/3, paymentservice=payment:38m/300m, recommendationservice=server:586m/1600m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc2][pairsP3] 点×開始台数の順番: b100v0:1 b0v300:1 b50v150:1 b75v200:1 b50v300:1
+  冷却待ち 0s → 37℃
+---- 点のリセット [pairsP3][b100v0] 開始1台 2026-11-22T14:56:12+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsP3] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T14:57:24+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-wgv4l imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795327051 窓 1795327351〜1795327651  Prometheus の区間 1795327361〜1795327641 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.7 s、Prometheus の区間の余裕 始め 14.7 s / 終わり 5.3 s
+     ノード: 周波数=1.759 GHz  最高温度=52.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 42 系列)
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=12 p99=723 | 動作中の枠=11.49コア(Pending分 0.00) Pod=32(Pending 0) | CPU時間=1945秒(うちsoftirq 130秒 / k6 73秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 3219.7 コア秒(窓平均 11.499 コア, 19 サンプル) / 使ったCPU: 1945 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:5 emailservice:5 frontend:3 paymentservice:5 recommendationservice:3 redis-cart:1 shippingservice:5
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:5 emailservice:5 frontend:3 paymentservice:6 recommendationservice:3 redis-cart:1 shippingservice:5)
+  冷却待ち 0s → 44℃
+---- 点のリセット [pairsP3][b0v300] 開始1台 2026-11-22T15:08:01+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsP3] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-22T15:09:13+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-bzg49 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795327760 窓 1795328060〜1795328360  Prometheus の区間 1795328070〜1795328350 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.7 s、Prometheus の区間の余裕 始め 14.7 s / 終わり 5.3 s
+     ノード: 周波数=1.789 GHz  最高温度=50.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.38コア(Pending分 0.00) Pod=16(Pending 0) | CPU時間=1448秒(うちsoftirq 91秒 / k6 66秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2627.2 コア秒(窓平均 9.383 コア, 18 サンプル) / 使ったCPU: 1448 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:3 emailservice:1 frontend:3 paymentservice:1 recommendationservice:3 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=11 ms 失敗=0
+  冷却待ち 0s → 41℃
+---- 点のリセット [pairsP3][b50v150] 開始1台 2026-11-22T15:19:46+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsP3] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-22T15:20:59+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-s44n8 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795328466 窓 1795328766〜1795329066  Prometheus の区間 1795328776〜1795329056 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.0 s、Prometheus の区間の余裕 始め 15.0 s / 終わり 5.0 s
+     ノード: 周波数=1.757 GHz  最高温度=52.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=11 p99=659 | 動作中の枠=9.92コア(Pending分 0.00) Pod=23(Pending 0) | CPU時間=1678秒(うちsoftirq 108秒 / k6 70秒)
+     種類別p50: 商品10 / カート11 / 購入15 ms
+     確保したCPU: 2776.8 コア秒(窓平均 9.917 コア, 18 サンプル) / 使ったCPU: 1678 コア秒
+     台数: adservice:1 cartservice:3 checkoutservice:3 emailservice:3 frontend:3 paymentservice:3 recommendationservice:3 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=664 ms 失敗=0
+  冷却待ち 0s → 42℃
+---- 点のリセット [pairsP3][b75v200] 開始1台 2026-11-22T15:31:33+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsP3] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-22T15:32:46+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-bh4x2 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795329173 窓 1795329473〜1795329773  Prometheus の区間 1795329483〜1795329763 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.0 s、Prometheus の区間の余裕 始め 15.0 s / 終わり 5.0 s
+     ノード: 周波数=1.781 GHz  最高温度=55.0℃
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体36) p50=14 p99=840 | 動作中の枠=12.86コア(Pending分 0.00) Pod=30(Pending 0) | CPU時間=2389秒(うちsoftirq 156秒 / k6 97秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3349.0 コア秒(窓平均 11.961 コア, 19 サンプル) / 使ったCPU: 2389 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:4 emailservice:4 frontend:4 paymentservice:4 recommendationservice:4 redis-cart:1 shippingservice:4
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:4 emailservice:4 frontend:3 paymentservice:5 recommendationservice:4 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=10 p99=782 ms 失敗=0
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsP3][b50v300] 開始1台 2026-11-22T15:43:23+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsP3] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-22T15:44:35+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-kltdz imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795329883 窓 1795330183〜1795330483  Prometheus の区間 1795330193〜1795330473 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.3 s、Prometheus の区間の余裕 始め 15.3 s / 終わり 4.7 s
+     ノード: 周波数=1.788 GHz  最高温度=55.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 39 系列)
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体76) p50=13 p99=743 | 動作中の枠=13.23コア(Pending分 0.00) Pod=28(Pending 0) | CPU時間=2415秒(うちsoftirq 157秒 / k6 101秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3704.4 コア秒(窓平均 13.230 コア, 19 サンプル) / 使ったCPU: 2415 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:5 emailservice:3 frontend:4 paymentservice:3 recommendationservice:4 redis-cart:1 shippingservice:3
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:5 emailservice:3 frontend:4 paymentservice:4 recommendationservice:4 redis-cart:1 shippingservice:3)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=730 ms 失敗=0
+---- deploy pairsQ1 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  プローブ緩和: recommendationservice/server timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, checkoutservice=checkout:155m/1200m,cartservice:230m/960m, emailservice=email:53m/300m, frontend=server:910m/3,currency:367m/1600m, paymentservice=payment:38m/300m, productcatalogservice=server:539m/3, recommendationservice=server:586m/1600m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 checkoutservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc2][pairsQ1] 点×開始台数の順番: b100v0:1 b0v300:1 b50v150:1 b75v200:1 b50v300:1
+  冷却待ち 0s → 37℃
+---- 点のリセット [pairsQ1][b100v0] 開始1台 2026-11-22T15:56:48+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsQ1] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T15:58:01+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-7mq54 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795330688 窓 1795330988〜1795331288  Prometheus の区間 1795330998〜1795331278 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.1 s、Prometheus の区間の余裕 始め 15.1 s / 終わり 4.9 s
+     ノード: 周波数=1.783 GHz  最高温度=53.0℃
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=12 p99=510 | 動作中の枠=12.27コア(Pending分 0.00) Pod=32(Pending 0) | CPU時間=2003秒(うちsoftirq 153秒 / k6 75秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 3435.0 コア秒(窓平均 12.268 コア, 18 サンプル) / 使ったCPU: 2003 コア秒
+     台数: adservice:1 checkoutservice:5 emailservice:5 frontend:4 paymentservice:5 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:5
+  冷却待ち 0s → 45℃
+---- 点のリセット [pairsQ1][b0v300] 開始1台 2026-11-22T16:08:37+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsQ1] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-22T16:09:49+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-f59ht imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795331396 窓 1795331696〜1795331996  Prometheus の区間 1795331706〜1795331986 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.2 s、Prometheus の区間の余裕 始め 14.2 s / 終わり 5.8 s
+     ノード: 周波数=1.762 GHz  最高温度=50.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.23コア(Pending分 0.00) Pod=16(Pending 0) | CPU時間=1491秒(うちsoftirq 114秒 / k6 66秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2583.8 コア秒(窓平均 9.228 コア, 18 サンプル) / 使ったCPU: 1491 コア秒
+     台数: adservice:1 checkoutservice:2 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=12 ms 失敗=0
+  冷却待ち 0s → 40℃
+---- 点のリセット [pairsQ1][b50v150] 開始1台 2026-11-22T16:20:23+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsQ1] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-22T16:21:35+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-qvmv5 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795332102 窓 1795332402〜1795332702  Prometheus の区間 1795332412〜1795332692 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.3 s、Prometheus の区間の余裕 始め 14.3 s / 終わり 5.7 s
+     ノード: 周波数=1.764 GHz  最高温度=50.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=11 p99=412 | 動作中の枠=9.92コア(Pending分 0.00) Pod=23(Pending 0) | CPU時間=1761秒(うちsoftirq 133秒 / k6 70秒)
+     種類別p50: 商品10 / カート11 / 購入15 ms
+     確保したCPU: 2776.8 コア秒(窓平均 9.917 コア, 19 サンプル) / 使ったCPU: 1761 コア秒
+     台数: adservice:1 checkoutservice:3 emailservice:3 frontend:3 paymentservice:3 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=543 ms 失敗=0
+  冷却待ち 1s → 42℃
+---- 点のリセット [pairsQ1][b75v200] 開始1台 2026-11-22T16:32:11+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsQ1] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-22T16:33:23+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-9qtx7 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795332810 窓 1795333110〜1795333410  Prometheus の区間 1795333120〜1795333400 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.8 s、Prometheus の区間の余裕 始め 14.8 s / 終わり 5.2 s
+     ノード: 周波数=1.793 GHz  最高温度=55.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 43 系列)
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体25) p50=13 p99=695 | 動作中の枠=13.24コア(Pending分 0.00) Pod=31(Pending 0) | CPU時間=2516秒(うちsoftirq 194秒 / k6 97秒)
+     種類別p50: 商品11 / カート12 / 購入17 ms
+     確保したCPU: 3717.0 コア秒(窓平均 13.275 コア, 19 サンプル) / 使ったCPU: 2516 コア秒
+     台数: adservice:1 checkoutservice:5 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 checkoutservice:5 emailservice:4 frontend:4 paymentservice:6 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=10 p99=696 ms 失敗=0
+  冷却待ち 0s → 42℃
+---- 点のリセット [pairsQ1][b50v300] 開始1台 2026-11-22T16:44:01+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsQ1] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-22T16:45:14+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-9jjsk imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795333521 窓 1795333821〜1795334121  Prometheus の区間 1795333831〜1795334111 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.9 s、Prometheus の区間の余裕 始め 14.9 s / 終わり 5.1 s
+     ノード: 周波数=1.78 GHz  最高温度=55.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体95) p50=13 p99=709 | 動作中の枠=12.70コア(Pending分 0.00) Pod=27(Pending 0) | CPU時間=2485秒(うちsoftirq 190秒 / k6 103秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3557.7 コア秒(窓平均 12.706 コア, 19 サンプル) / 使ったCPU: 2485 コア秒
+     台数: adservice:1 checkoutservice:4 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 checkoutservice:4 emailservice:3 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=732 ms 失敗=0
+---- deploy pairsQ2 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img, recommendation+img)
+  プローブ緩和: frontend/recommendation timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:230m/960m, checkoutservice=checkout:155m/1200m, currencyservice=server:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3,recommendation:586m/1600m, paymentservice=payment:38m/300m, productcatalogservice=server:539m/3, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc2][pairsQ2] 点×開始台数の順番: b100v0:1 b0v300:1 b50v150:1 b75v200:1 b50v300:1
+  冷却待ち 0s → 38℃
+---- 点のリセット [pairsQ2][b100v0] 開始1台 2026-11-22T16:57:42+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsQ2] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T16:58:54+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-flwh5 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795334342 窓 1795334642〜1795334942  Prometheus の区間 1795334652〜1795334932 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.3 s、Prometheus の区間の余裕 始め 15.3 s / 終わり 4.7 s
+     ノード: 周波数=1.785 GHz  最高温度=54.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 41 系列)
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=13 p99=662 | 動作中の枠=11.13コア(Pending分 0.00) Pod=36(Pending 0) | CPU時間=2017秒(うちsoftirq 160秒 / k6 74秒)
+     種類別p50: 商品10 / カート12 / 購入16 ms
+     確保したCPU: 3116.4 コア秒(窓平均 11.130 コア, 19 サンプル) / 使ったCPU: 2017 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:5 currencyservice:4 emailservice:5 frontend:3 paymentservice:5 productcatalogservice:3 redis-cart:1 shippingservice:5
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:5 currencyservice:4 emailservice:5 frontend:3 paymentservice:6 productcatalogservice:3 redis-cart:1 shippingservice:5)
+  冷却待ち 0s → 42℃
+---- 点のリセット [pairsQ2][b0v300] 開始1台 2026-11-22T17:09:32+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsQ2] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-22T17:10:45+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-8hw7c imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795335053 窓 1795335353〜1795335653  Prometheus の区間 1795335363〜1795335643 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.4 s、Prometheus の区間の余裕 始め 15.4 s / 終わり 4.6 s
+     ノード: 周波数=1.782 GHz  最高温度=50.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.07コア(Pending分 0.00) Pod=17(Pending 0) | CPU時間=1496秒(うちsoftirq 118秒 / k6 64秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2540.4 コア秒(窓平均 9.073 コア, 18 サンプル) / 使ったCPU: 1496 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:3 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=12 ms 失敗=0
+  冷却待ち 0s → 42℃
+---- 点のリセット [pairsQ2][b50v150] 開始1台 2026-11-22T17:21:20+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsQ2] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-22T17:22:32+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-vkbn8 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795335760 窓 1795336060〜1795336360  Prometheus の区間 1795336070〜1795336350 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.2 s、Prometheus の区間の余裕 始め 15.2 s / 終わり 4.8 s
+     ノード: 周波数=1.77 GHz  最高温度=52.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=12 p99=658 | 動作中の枠=9.92コア(Pending分 0.00) Pod=26(Pending 0) | CPU時間=1750秒(うちsoftirq 138秒 / k6 70秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 2776.8 コア秒(窓平均 9.917 コア, 18 サンプル) / 使ったCPU: 1750 コア秒
+     台数: adservice:1 cartservice:3 checkoutservice:3 currencyservice:3 emailservice:3 frontend:3 paymentservice:3 productcatalogservice:3 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=696 ms 失敗=0
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsQ2][b75v200] 開始1台 2026-11-22T17:33:08+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsQ2] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-22T17:34:21+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-bkn8c imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795336469 窓 1795336769〜1795337069  Prometheus の区間 1795336779〜1795337059 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -6.0 s、Prometheus の区間の余裕 始め 16.0 s / 終わり 4.0 s
+     ノード: 周波数=1.769 GHz  最高温度=54.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 42 系列)
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体105) p50=14 p99=763 | 動作中の枠=13.45コア(Pending分 0.00) Pod=36(Pending 0) | CPU時間=2546秒(うちsoftirq 198秒 / k6 98秒)
+     種類別p50: 商品11 / カート12 / 購入18 ms
+     確保したCPU: 3768.0 コア秒(窓平均 13.457 コア, 19 サンプル) / 使ったCPU: 2546 コア秒
+     台数: adservice:1 cartservice:5 checkoutservice:4 currencyservice:5 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 redis-cart:1 shippingservice:4
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:5 checkoutservice:4 currencyservice:5 emailservice:4 frontend:4 paymentservice:5 productcatalogservice:4 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=11 p99=735 ms 失敗=0
+  冷却待ち 0s → 44℃
+---- 点のリセット [pairsQ2][b50v300] 開始1台 2026-11-22T17:45:00+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsQ2] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-22T17:46:13+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-xbvp9 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795337181 窓 1795337481〜1795337781  Prometheus の区間 1795337491〜1795337771 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.8 s、Prometheus の区間の余裕 始め 15.8 s / 終わり 4.2 s
+     ノード: 周波数=1.783 GHz  最高温度=55.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体67) p50=14 p99=732 | 動作中の枠=12.92コア(Pending分 0.00) Pod=31(Pending 0) | CPU時間=2530秒(うちsoftirq 199秒 / k6 102秒)
+     種類別p50: 商品11 / カート12 / 購入17 ms
+     確保したCPU: 3618.2 コア秒(窓平均 12.922 コア, 19 サンプル) / 使ったCPU: 2530 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:3 currencyservice:5 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 redis-cart:1 shippingservice:3
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:3 currencyservice:5 emailservice:3 frontend:4 paymentservice:4 productcatalogservice:4 redis-cart:1 shippingservice:3)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=11 p99=735 ms 失敗=0
+---- deploy pairsQ3 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: frontend (server+img, checkout+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  プローブ緩和: recommendationservice/server timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:230m/960m, currencyservice=server:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3,checkout:155m/1200m, paymentservice=payment:38m/300m, productcatalogservice=server:539m/3, recommendationservice=server:586m/1600m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc2][pairsQ3] 点×開始台数の順番: b100v0:1 b0v300:1 b50v150:1 b75v200:1 b50v300:1
+  冷却待ち 0s → 37℃
+---- 点のリセット [pairsQ3][b100v0] 開始1台 2026-11-22T17:58:46+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsQ3] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T17:59:31+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-bq7mh imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795337978 窓 1795338278〜1795338578  Prometheus の区間 1795338288〜1795338568 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.1 s、Prometheus の区間の余裕 始め 15.1 s / 終わり 4.9 s
+     ノード: 周波数=1.784 GHz  最高温度=54.0℃
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=13 p99=744 | 動作中の枠=12.95コア(Pending分 0.00) Pod=36(Pending 0) | CPU時間=2054秒(うちsoftirq 162秒 / k6 75秒)
+     種類別p50: 商品10 / カート12 / 購入16 ms
+     確保したCPU: 3634.4 コア秒(窓平均 12.980 コア, 19 サンプル) / 使ったCPU: 2054 コア秒
+     台数: adservice:1 cartservice:4 currencyservice:4 emailservice:5 frontend:5 paymentservice:5 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:5
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 currencyservice:4 emailservice:5 frontend:5 paymentservice:6 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:5)
+  冷却待ち 0s → 45℃
+---- 点のリセット [pairsQ3][b0v300] 開始1台 2026-11-22T18:10:09+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsQ3] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-22T18:10:54+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-vt528 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795338661 窓 1795338961〜1795339261  Prometheus の区間 1795338971〜1795339251 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.5 s、Prometheus の区間の余裕 始め 14.5 s / 終わり 5.5 s
+     ノード: 周波数=1.79 GHz  最高温度=49.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.38コア(Pending分 0.00) Pod=19(Pending 0) | CPU時間=1518秒(うちsoftirq 121秒 / k6 67秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2627.2 コア秒(窓平均 9.383 コア, 18 サンプル) / 使ったCPU: 1518 コア秒
+     台数: adservice:1 cartservice:2 currencyservice:3 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=12 ms 失敗=0
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsQ3][b50v150] 開始1台 2026-11-22T18:21:28+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsQ3] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-22T18:22:13+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-gc8v4 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795339341 窓 1795339641〜1795339941  Prometheus の区間 1795339651〜1795339931 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.4 s、Prometheus の区間の余裕 始め 15.4 s / 終わり 4.6 s
+     ノード: 周波数=1.766 GHz  最高温度=50.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=11 p99=434 | 動作中の枠=9.92コア(Pending分 0.00) Pod=26(Pending 0) | CPU時間=1759秒(うちsoftirq 139秒 / k6 70秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 2776.8 コア秒(窓平均 9.917 コア, 18 サンプル) / 使ったCPU: 1759 コア秒
+     台数: adservice:1 cartservice:3 currencyservice:3 emailservice:3 frontend:3 paymentservice:3 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=532 ms 失敗=0
+  冷却待ち 0s → 40℃
+---- 点のリセット [pairsQ3][b75v200] 開始1台 2026-11-22T18:32:49+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsQ3] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-22T18:33:34+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-4q4cf imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795340022 窓 1795340322〜1795340622  Prometheus の区間 1795340332〜1795340612 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.4 s、Prometheus の区間の余裕 始め 15.4 s / 終わり 4.6 s
+     ノード: 周波数=1.767 GHz  最高温度=55.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 43 系列)
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体119) p50=13 p99=845 | 動作中の枠=13.45コア(Pending分 0.00) Pod=36(Pending 0) | CPU時間=2553秒(うちsoftirq 203秒 / k6 98秒)
+     種類別p50: 商品11 / カート12 / 購入17 ms
+     確保したCPU: 3769.2 コア秒(窓平均 13.461 コア, 18 サンプル) / 使ったCPU: 2553 コア秒
+     台数: adservice:1 cartservice:5 currencyservice:5 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:5 currencyservice:5 emailservice:4 frontend:4 paymentservice:6 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=11 p99=780 ms 失敗=0
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsQ3][b50v300] 開始1台 2026-11-22T18:44:10+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][pairsQ3] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-22T18:44:55+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-tnjjd imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795340703 窓 1795341003〜1795341303  Prometheus の区間 1795341013〜1795341293 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.6 s、Prometheus の区間の余裕 始め 15.6 s / 終わり 4.4 s
+     ノード: 周波数=1.799 GHz  最高温度=55.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体80) p50=13 p99=742 | 動作中の枠=13.07コア(Pending分 0.00) Pod=32(Pending 0) | CPU時間=2519秒(うちsoftirq 202秒 / k6 102秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3660.4 コア秒(窓平均 13.073 コア, 19 サンプル) / 使ったCPU: 2519 コア秒
+     台数: adservice:1 cartservice:4 currencyservice:5 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 currencyservice:5 emailservice:3 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=730 ms 失敗=0
+---- deploy frontrecocatalog (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img, recommendation+img)
+  プローブ緩和: frontend/recommendation timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:230m/960m, checkoutservice=checkout:155m/1200m, currencyservice=server:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3,recommendation:586m/1600m,productcatalog:539m/3, paymentservice=payment:38m/300m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc2][frontrecocatalog] 点×開始台数の順番: b100v0:1 b0v300:1 b50v150:1 b75v200:1 b50v300:1
+  冷却待ち 0s → 37℃
+---- 点のリセット [frontrecocatalog][b100v0] 開始1台 2026-11-22T18:57:08+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][frontrecocatalog] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T18:58:21+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-7vc6m imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795341508 窓 1795341808〜1795342108  Prometheus の区間 1795341818〜1795342098 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.9 s、Prometheus の区間の余裕 始め 14.9 s / 終わり 5.1 s
+     ノード: 周波数=1.764 GHz  最高温度=53.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 42 系列)
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=12 p99=691 | 動作中の枠=11.17コア(Pending分 0.00) Pod=34(Pending 0) | CPU時間=1971秒(うちsoftirq 125秒 / k6 69秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 3127.0 コア秒(窓平均 11.168 コア, 19 サンプル) / 使ったCPU: 1971 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:5 currencyservice:4 emailservice:5 frontend:3 paymentservice:6 redis-cart:1 shippingservice:5
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:5 currencyservice:4 emailservice:5 frontend:3 paymentservice:7 redis-cart:1 shippingservice:5)
+  冷却待ち 0s → 42℃
+---- 点のリセット [frontrecocatalog][b0v300] 開始1台 2026-11-22T19:08:57+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][frontrecocatalog] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-22T19:10:09+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-wfgbs imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795342216 窓 1795342516〜1795342816  Prometheus の区間 1795342526〜1795342806 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.2 s、Prometheus の区間の余裕 始め 14.2 s / 終わり 5.8 s
+     ノード: 周波数=1.729 GHz  最高温度=49.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.07コア(Pending分 0.00) Pod=14(Pending 0) | CPU時間=1440秒(うちsoftirq 80秒 / k6 66秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2540.4 コア秒(窓平均 9.073 コア, 18 サンプル) / 使ったCPU: 1440 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:3 emailservice:1 frontend:3 paymentservice:1 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=11 ms 失敗=0
+  冷却待ち 0s → 40℃
+---- 点のリセット [frontrecocatalog][b50v150] 開始1台 2026-11-22T19:20:43+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][frontrecocatalog] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-22T19:21:55+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-5qrzp imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795342922 窓 1795343222〜1795343522  Prometheus の区間 1795343232〜1795343512 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.8 s、Prometheus の区間の余裕 始め 14.8 s / 終わり 5.2 s
+     ノード: 周波数=1.784 GHz  最高温度=50.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=11 p99=610 | 動作中の枠=9.92コア(Pending分 0.00) Pod=23(Pending 0) | CPU時間=1690秒(うちsoftirq 101秒 / k6 70秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 2776.8 コア秒(窓平均 9.917 コア, 18 サンプル) / 使ったCPU: 1690 コア秒
+     台数: adservice:1 cartservice:3 checkoutservice:3 currencyservice:3 emailservice:3 frontend:3 paymentservice:3 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=680 ms 失敗=0
+  冷却待ち 0s → 40℃
+---- 点のリセット [frontrecocatalog][b75v200] 開始1台 2026-11-22T19:32:29+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][frontrecocatalog] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-22T19:33:42+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-h4wll imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795343629 窓 1795343929〜1795344229  Prometheus の区間 1795343939〜1795344219 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.8 s、Prometheus の区間の余裕 始め 14.8 s / 終わり 5.2 s
+     ノード: 周波数=1.795 GHz  最高温度=55.0℃
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体59) p50=13 p99=779 | 動作中の枠=13.09コア(Pending分 0.00) Pod=31(Pending 0) | CPU時間=2433秒(うちsoftirq 149秒 / k6 97秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3665.8 コア秒(窓平均 13.092 コア, 19 サンプル) / 使ったCPU: 2433 コア秒
+     台数: adservice:1 cartservice:5 checkoutservice:4 currencyservice:4 emailservice:4 frontend:4 paymentservice:4 redis-cart:1 shippingservice:4
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:5 checkoutservice:4 currencyservice:4 emailservice:4 frontend:4 paymentservice:5 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=10 p99=736 ms 失敗=0
+  冷却待ち 0s → 40℃
+---- 点のリセット [frontrecocatalog][b50v300] 開始1台 2026-11-22T19:44:19+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc2][frontrecocatalog] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-22T19:45:32+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-djkdc imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795344339 窓 1795344639〜1795344939  Prometheus の区間 1795344649〜1795344929 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.8 s、Prometheus の区間の余裕 始め 14.8 s / 終わり 5.2 s
+     ノード: 周波数=1.774 GHz  最高温度=54.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体151) p50=13 p99=809 | 動作中の枠=12.55コア(Pending分 0.00) Pod=26(Pending 0) | CPU時間=2402秒(うちsoftirq 144秒 / k6 101秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3514.3 コア秒(窓平均 12.551 コア, 19 サンプル) / 使ったCPU: 2402 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:3 currencyservice:4 emailservice:3 frontend:4 paymentservice:3 redis-cart:1 shippingservice:3
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:3 currencyservice:4 emailservice:3 frontend:4 paymentservice:4 redis-cart:1 shippingservice:3)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=770 ms 失敗=0
+---- deploy pairsP1b (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: productcatalogservice (recommendation+img)
+  プローブ緩和: productcatalogservice/recommendation timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:230m/960m, checkoutservice=checkout:155m/1200m,shipping:61m/560m, currencyservice=server:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3, paymentservice=payment:38m/300m, productcatalogservice=server:539m/3,recommendation:586m/1600m, redis-cart=redis:300m/500m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 redis-cart=1/1 
+  [cyc2][pairsP1b] 点×開始台数の順番: b100v0:1 b0v300:1 b50v150:1 b75v200:1 b50v300:1
+  冷却待ち 0s → 38℃
+---- 点のリセット [pairsP1b][b100v0] 開始1台 2026-11-22T19:57:59+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 
+==== [cyc2][pairsP1b] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T19:58:44+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-vtvcf imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795345131 窓 1795345431〜1795345731  Prometheus の区間 1795345441〜1795345721 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.8 s、Prometheus の区間の余裕 始め 14.8 s / 終わり 5.2 s
+     ノード: 周波数=1.747 GHz  最高温度=51.0℃
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=12 p99=765 | 動作中の枠=11.13コア(Pending分 0.00) Pod=31(Pending 0) | CPU時間=1986秒(うちsoftirq 154秒 / k6 74秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 3122.6 コア秒(窓平均 11.152 コア, 19 サンプル) / 使ったCPU: 1986 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:5 currencyservice:4 emailservice:5 frontend:3 paymentservice:5 productcatalogservice:3 redis-cart:1
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:5 currencyservice:4 emailservice:5 frontend:3 paymentservice:6 productcatalogservice:3 redis-cart:1)
+  冷却待ち 0s → 42℃
+---- 点のリセット [pairsP1b][b0v300] 開始1台 2026-11-22T20:09:22+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 
+==== [cyc2][pairsP1b] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-22T20:10:06+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-nbtv7 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795345813 窓 1795346113〜1795346413  Prometheus の区間 1795346123〜1795346403 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.3 s、Prometheus の区間の余裕 始め 14.3 s / 終わり 5.7 s
+     ノード: 周波数=1.764 GHz  最高温度=49.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.07コア(Pending分 0.00) Pod=16(Pending 0) | CPU時間=1481秒(うちsoftirq 116秒 / k6 66秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2540.4 コア秒(窓平均 9.073 コア, 18 サンプル) / 使ったCPU: 1481 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:3 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 redis-cart:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=12 ms 失敗=0
+  冷却待ち 0s → 44℃
+---- 点のリセット [pairsP1b][b50v150] 開始1台 2026-11-22T20:20:40+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 
+==== [cyc2][pairsP1b] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-22T20:21:25+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-x7z7b imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795346491 窓 1795346791〜1795347091  Prometheus の区間 1795346801〜1795347081 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.2 s、Prometheus の区間の余裕 始め 14.2 s / 終わり 5.8 s
+     ノード: 周波数=1.757 GHz  最高温度=50.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=11 p99=38 | 動作中の枠=9.92コア(Pending分 0.00) Pod=23(Pending 0) | CPU時間=1724秒(うちsoftirq 136秒 / k6 72秒)
+     種類別p50: 商品10 / カート11 / 購入15 ms
+     確保したCPU: 2776.8 コア秒(窓平均 9.917 コア, 19 サンプル) / 使ったCPU: 1724 コア秒
+     台数: adservice:1 cartservice:3 checkoutservice:3 currencyservice:3 emailservice:3 frontend:3 paymentservice:3 productcatalogservice:3 redis-cart:1
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=19 ms 失敗=0
+  冷却待ち 0s → 44℃
+---- 点のリセット [pairsP1b][b75v200] 開始1台 2026-11-22T20:31:59+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 
+==== [cyc2][pairsP1b] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-22T20:32:44+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-8hw5x imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795347171 窓 1795347471〜1795347771  Prometheus の区間 1795347481〜1795347761 (280s)
+  !! 載らない Pod (FailedScheduling) 1 件 (この点の開始から)
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.6 s、Prometheus の区間の余裕 始め 14.6 s / 終わり 5.4 s
+     ノード: 周波数=1.785 GHz  最高温度=55.0℃
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体122) p50=14 p99=754 | 動作中の枠=13.22コア(Pending分 0.00) Pod=31(Pending 0) | CPU時間=2505秒(うちsoftirq 194秒 / k6 93秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3704.7 コア秒(窓平均 13.231 コア, 19 サンプル) / 使ったCPU: 2505 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:4 currencyservice:5 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 redis-cart:1
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:4 currencyservice:5 emailservice:4 frontend:4 paymentservice:6 productcatalogservice:4 redis-cart:1)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=10 p99=731 ms 失敗=0
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsP1b][b50v300] 開始1台 2026-11-22T20:43:17+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 
+==== [cyc2][pairsP1b] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-22T20:44:02+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-rc895 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795347850 窓 1795348150〜1795348450  Prometheus の区間 1795348160〜1795348440 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.3 s、Prometheus の区間の余裕 始め 15.3 s / 終わり 4.7 s
+     ノード: 周波数=1.793 GHz  最高温度=54.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 37 系列)
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体78) p50=13 p99=736 | 動作中の枠=12.92コア(Pending分 0.00) Pod=28(Pending 0) | CPU時間=2508秒(うちsoftirq 196秒 / k6 104秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3617.6 コア秒(窓平均 12.920 コア, 19 サンプル) / 使ったCPU: 2508 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:3 currencyservice:5 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 redis-cart:1
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:3 currencyservice:5 emailservice:3 frontend:4 paymentservice:4 productcatalogservice:4 redis-cart:1)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=726 ms 失敗=0
+################ CYCLE 3 / 3 2026-11-22T20:54:40+09:00 ################
+  このサイクルのアーム順 (回転): pairsP3 pairsQ1 pairsQ2 pairsQ3 frontrecocatalog pairsP1b pairsP2
+---- deploy pairsP3 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  プローブ緩和: recommendationservice/server timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:230m/960m, checkoutservice=checkout:155m/1200m,currency:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3,productcatalog:539m/3, paymentservice=payment:38m/300m, recommendationservice=server:586m/1600m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc3][pairsP3] 点×開始台数の順番: b100v0:1 b0v300:1 b50v150:1 b75v200:1 b50v300:1
+  冷却待ち 0s → 37℃
+---- 点のリセット [pairsP3][b100v0] 開始1台 2026-11-22T20:56:13+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsP3] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T20:57:25+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-v7mwx imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795348652 窓 1795348952〜1795349252  Prometheus の区間 1795348962〜1795349242 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.4 s、Prometheus の区間の余裕 始め 14.4 s / 終わり 5.6 s
+     ノード: 周波数=1.795 GHz  最高温度=52.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 42 系列)
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=12 p99=712 | 動作中の枠=11.49コア(Pending分 0.00) Pod=32(Pending 0) | CPU時間=1965秒(うちsoftirq 130秒 / k6 71秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 3219.7 コア秒(窓平均 11.499 コア, 19 サンプル) / 使ったCPU: 1965 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:5 emailservice:5 frontend:3 paymentservice:5 recommendationservice:3 redis-cart:1 shippingservice:5
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:5 emailservice:5 frontend:3 paymentservice:6 recommendationservice:3 redis-cart:1 shippingservice:5)
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsP3][b0v300] 開始1台 2026-11-22T21:08:01+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsP3] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-22T21:09:14+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-fxhrk imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795349361 窓 1795349661〜1795349961  Prometheus の区間 1795349671〜1795349951 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.9 s、Prometheus の区間の余裕 始め 14.9 s / 終わり 5.1 s
+     ノード: 周波数=1.76 GHz  最高温度=49.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.38コア(Pending分 0.00) Pod=16(Pending 0) | CPU時間=1461秒(うちsoftirq 92秒 / k6 66秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2627.2 コア秒(窓平均 9.383 コア, 18 サンプル) / 使ったCPU: 1461 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:3 emailservice:1 frontend:3 paymentservice:1 recommendationservice:3 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=12 ms 失敗=0
+  冷却待ち 0s → 39℃
+---- 点のリセット [pairsP3][b50v150] 開始1台 2026-11-22T21:19:52+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsP3] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-22T21:21:04+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-bwh8n imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795350072 窓 1795350372〜1795350672  Prometheus の区間 1795350382〜1795350662 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.5 s、Prometheus の区間の余裕 始め 15.5 s / 終わり 4.5 s
+     ノード: 周波数=1.761 GHz  最高温度=51.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=11 p99=626 | 動作中の枠=9.92コア(Pending分 0.00) Pod=23(Pending 0) | CPU時間=1693秒(うちsoftirq 109秒 / k6 70秒)
+     種類別p50: 商品10 / カート11 / 購入15 ms
+     確保したCPU: 2776.8 コア秒(窓平均 9.917 コア, 18 サンプル) / 使ったCPU: 1693 コア秒
+     台数: adservice:1 cartservice:3 checkoutservice:3 emailservice:3 frontend:3 paymentservice:3 recommendationservice:3 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=664 ms 失敗=0
+  冷却待ち 0s → 45℃
+---- 点のリセット [pairsP3][b75v200] 開始1台 2026-11-22T21:31:40+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsP3] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-22T21:32:52+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-gdngb imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795350779 窓 1795351079〜1795351379  Prometheus の区間 1795351089〜1795351369 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.6 s、Prometheus の区間の余裕 始め 14.6 s / 終わり 5.4 s
+     ノード: 周波数=1.78 GHz  最高温度=54.0℃
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体25) p50=13 p99=758 | 動作中の枠=12.89コア(Pending分 0.00) Pod=31(Pending 0) | CPU時間=2439秒(うちsoftirq 157秒 / k6 97秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3587.3 コア秒(窓平均 12.812 コア, 19 サンプル) / 使ったCPU: 2439 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:4 emailservice:4 frontend:4 paymentservice:5 recommendationservice:4 redis-cart:1 shippingservice:4
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:4 emailservice:4 frontend:3 paymentservice:6 recommendationservice:4 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=10 p99=745 ms 失敗=0
+  冷却待ち 0s → 42℃
+---- 点のリセット [pairsP3][b50v300] 開始1台 2026-11-22T21:43:30+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsP3] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-22T21:44:42+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-v84sr imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795351490 窓 1795351790〜1795352090  Prometheus の区間 1795351800〜1795352080 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.6 s、Prometheus の区間の余裕 始め 15.6 s / 終わり 4.4 s
+     ノード: 周波数=1.785 GHz  最高温度=54.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体41) p50=14 p99=817 | 動作中の枠=12.70コア(Pending分 0.00) Pod=27(Pending 0) | CPU時間=2400秒(うちsoftirq 157秒 / k6 100秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3561.0 コア秒(窓平均 12.718 コア, 19 サンプル) / 使ったCPU: 2400 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:4 emailservice:3 frontend:4 paymentservice:3 recommendationservice:4 redis-cart:1 shippingservice:3
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:4 emailservice:3 frontend:4 paymentservice:4 recommendationservice:4 redis-cart:1 shippingservice:3)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=795 ms 失敗=0
+---- deploy pairsQ1 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  プローブ緩和: recommendationservice/server timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, checkoutservice=checkout:155m/1200m,cartservice:230m/960m, emailservice=email:53m/300m, frontend=server:910m/3,currency:367m/1600m, paymentservice=payment:38m/300m, productcatalogservice=server:539m/3, recommendationservice=server:586m/1600m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 checkoutservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc3][pairsQ1] 点×開始台数の順番: b100v0:1 b0v300:1 b50v150:1 b75v200:1 b50v300:1
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsQ1][b100v0] 開始1台 2026-11-22T21:56:54+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsQ1] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T21:58:06+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-b487g imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795352293 窓 1795352593〜1795352893  Prometheus の区間 1795352603〜1795352883 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.5 s、Prometheus の区間の余裕 始め 14.5 s / 終わり 5.5 s
+     ノード: 周波数=1.793 GHz  最高温度=53.0℃
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=12 p99=425 | 動作中の枠=10.99コア(Pending分 0.00) Pod=31(Pending 0) | CPU時間=1993秒(うちsoftirq 152秒 / k6 74秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 3082.0 コア秒(窓平均 11.007 コア, 19 サンプル) / 使ったCPU: 1993 コア秒
+     台数: adservice:1 checkoutservice:5 emailservice:5 frontend:3 paymentservice:5 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:5
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 checkoutservice:5 emailservice:5 frontend:3 paymentservice:6 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:5)
+  冷却待ち 0s → 44℃
+---- 点のリセット [pairsQ1][b0v300] 開始1台 2026-11-22T22:08:43+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsQ1] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-22T22:09:55+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-8d2kj imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795353002 窓 1795353302〜1795353602  Prometheus の区間 1795353312〜1795353592 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.3 s、Prometheus の区間の余裕 始め 14.3 s / 終わり 5.7 s
+     ノード: 周波数=1.77 GHz  最高温度=48.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.23コア(Pending分 0.00) Pod=16(Pending 0) | CPU時間=1480秒(うちsoftirq 114秒 / k6 66秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2583.8 コア秒(窓平均 9.228 コア, 18 サンプル) / 使ったCPU: 1480 コア秒
+     台数: adservice:1 checkoutservice:2 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=12 ms 失敗=0
+  冷却待ち 0s → 41℃
+---- 点のリセット [pairsQ1][b50v150] 開始1台 2026-11-22T22:20:29+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsQ1] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-22T22:21:41+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-tqgxf imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795353708 窓 1795354008〜1795354308  Prometheus の区間 1795354018〜1795354298 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.9 s、Prometheus の区間の余裕 始め 14.9 s / 終わり 5.1 s
+     ノード: 周波数=1.783 GHz  最高温度=51.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体16) p50=12 p99=602 | 動作中の枠=9.92コア(Pending分 0.00) Pod=23(Pending 0) | CPU時間=1726秒(うちsoftirq 132秒 / k6 70秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 2777.9 コア秒(窓平均 9.921 コア, 18 サンプル) / 使ったCPU: 1726 コア秒
+     台数: adservice:1 checkoutservice:3 emailservice:3 frontend:3 paymentservice:3 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:3
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 checkoutservice:3 emailservice:3 frontend:3 paymentservice:4 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:3)
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=659 ms 失敗=0
+  冷却待ち 0s → 39℃
+---- 点のリセット [pairsQ1][b75v200] 開始1台 2026-11-22T22:32:16+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsQ1] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-22T22:33:28+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-lgzpx imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795354416 窓 1795354716〜1795355016  Prometheus の区間 1795354726〜1795355006 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.3 s、Prometheus の区間の余裕 始め 15.3 s / 終わり 4.7 s
+     ノード: 周波数=1.792 GHz  最高温度=55.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 43 系列)
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体55) p50=13 p99=786 | 動作中の枠=13.24コア(Pending分 0.00) Pod=31(Pending 0) | CPU時間=2495秒(うちsoftirq 191秒 / k6 97秒)
+     種類別p50: 商品11 / カート12 / 購入17 ms
+     確保したCPU: 3710.8 コア秒(窓平均 13.253 コア, 19 サンプル) / 使ったCPU: 2495 コア秒
+     台数: adservice:1 checkoutservice:5 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 checkoutservice:5 emailservice:4 frontend:4 paymentservice:6 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=10 p99=762 ms 失敗=0
+  冷却待ち 0s → 39℃
+---- 点のリセット [pairsQ1][b50v300] 開始1台 2026-11-22T22:44:06+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 checkoutservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsQ1] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-22T22:45:19+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-tkv7v imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795355126 窓 1795355426〜1795355726  Prometheus の区間 1795355436〜1795355716 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.9 s、Prometheus の区間の余裕 始め 14.9 s / 終わり 5.1 s
+     ノード: 周波数=1.789 GHz  最高温度=55.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体132) p50=14 p99=720 | 動作中の枠=12.70コア(Pending分 0.00) Pod=27(Pending 0) | CPU時間=2474秒(うちsoftirq 189秒 / k6 101秒)
+     種類別p50: 商品11 / カート12 / 購入17 ms
+     確保したCPU: 3559.9 コア秒(窓平均 12.714 コア, 19 サンプル) / 使ったCPU: 2474 コア秒
+     台数: adservice:1 checkoutservice:4 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 checkoutservice:4 emailservice:3 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=768 ms 失敗=0
+---- deploy pairsQ2 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img, recommendation+img)
+  プローブ緩和: frontend/recommendation timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:230m/960m, checkoutservice=checkout:155m/1200m, currencyservice=server:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3,recommendation:586m/1600m, paymentservice=payment:38m/300m, productcatalogservice=server:539m/3, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc3][pairsQ2] 点×開始台数の順番: b100v0:1 b0v300:1 b50v150:1 b75v200:1 b50v300:1
+  冷却待ち 0s → 37℃
+---- 点のリセット [pairsQ2][b100v0] 開始1台 2026-11-22T22:57:47+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsQ2] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T22:59:00+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-54tv4 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795355947 窓 1795356247〜1795356547  Prometheus の区間 1795356257〜1795356537 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.0 s、Prometheus の区間の余裕 始め 15.0 s / 終わり 5.0 s
+     ノード: 周波数=1.756 GHz  最高温度=55.0℃
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=13 p99=801 | 動作中の枠=11.17コア(Pending分 0.00) Pod=37(Pending 0) | CPU時間=2030秒(うちsoftirq 159秒 / k6 72秒)
+     種類別p50: 商品10 / カート12 / 購入16 ms
+     確保したCPU: 3126.5 コア秒(窓平均 11.166 コア, 19 サンプル) / 使ったCPU: 2030 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:5 currencyservice:4 emailservice:5 frontend:3 paymentservice:6 productcatalogservice:3 redis-cart:1 shippingservice:5
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsQ2][b0v300] 開始1台 2026-11-22T23:09:37+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsQ2] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-22T23:10:50+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-2mwmb imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795356658 窓 1795356958〜1795357258  Prometheus の区間 1795356968〜1795357248 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.7 s、Prometheus の区間の余裕 始め 15.7 s / 終わり 4.3 s
+     ノード: 周波数=1.763 GHz  最高温度=49.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.07コア(Pending分 0.00) Pod=17(Pending 0) | CPU時間=1503秒(うちsoftirq 118秒 / k6 66秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2540.4 コア秒(窓平均 9.073 コア, 18 サンプル) / 使ったCPU: 1503 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:3 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=12 ms 失敗=0
+  冷却待ち 0s → 40℃
+---- 点のリセット [pairsQ2][b50v150] 開始1台 2026-11-22T23:21:24+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsQ2] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-22T23:22:37+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-6hdnb imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795357365 窓 1795357665〜1795357965  Prometheus の区間 1795357675〜1795357955 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.7 s、Prometheus の区間の余裕 始め 15.7 s / 終わり 4.3 s
+     ノード: 周波数=1.757 GHz  最高温度=50.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 31 系列)
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=11 p99=554 | 動作中の枠=9.92コア(Pending分 0.00) Pod=26(Pending 0) | CPU時間=1757秒(うちsoftirq 138秒 / k6 70秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 2777.4 コア秒(窓平均 9.919 コア, 18 サンプル) / 使ったCPU: 1757 コア秒
+     台数: adservice:1 cartservice:3 checkoutservice:3 currencyservice:3 emailservice:3 frontend:3 paymentservice:3 productcatalogservice:3 redis-cart:1 shippingservice:3
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:3 checkoutservice:3 currencyservice:3 emailservice:3 frontend:3 paymentservice:4 productcatalogservice:3 redis-cart:1 shippingservice:3)
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=559 ms 失敗=0
+  冷却待ち 0s → 42℃
+---- 点のリセット [pairsQ2][b75v200] 開始1台 2026-11-22T23:33:13+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsQ2] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-22T23:34:26+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-664p9 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795358074 窓 1795358374〜1795358674  Prometheus の区間 1795358384〜1795358664 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -6.0 s、Prometheus の区間の余裕 始め 16.0 s / 終わり 4.0 s
+     ノード: 周波数=1.796 GHz  最高温度=55.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 41 系列)
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体36) p50=14 p99=706 | 動作中の枠=12.86コア(Pending分 0.00) Pod=34(Pending 0) | CPU時間=2546秒(うちsoftirq 199秒 / k6 97秒)
+     種類別p50: 商品11 / カート12 / 購入18 ms
+     確保したCPU: 3606.4 コア秒(窓平均 12.880 コア, 19 サンプル) / 使ったCPU: 2546 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:4 currencyservice:4 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 redis-cart:1 shippingservice:4
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:4 currencyservice:4 emailservice:4 frontend:4 paymentservice:6 productcatalogservice:4 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=11 p99=719 ms 失敗=0
+  冷却待ち 0s → 41℃
+---- 点のリセット [pairsQ2][b50v300] 開始1台 2026-11-22T23:45:05+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsQ2] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-22T23:46:18+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-fh7ds imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795358786 窓 1795359086〜1795359386  Prometheus の区間 1795359096〜1795359376 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -6.0 s、Prometheus の区間の余裕 始め 16.0 s / 終わり 4.0 s
+     ノード: 周波数=1.794 GHz  最高温度=56.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体90) p50=14 p99=722 | 動作中の枠=12.92コア(Pending分 0.00) Pod=31(Pending 0) | CPU時間=2533秒(うちsoftirq 199秒 / k6 103秒)
+     種類別p50: 商品11 / カート12 / 購入18 ms
+     確保したCPU: 3622.6 コア秒(窓平均 12.938 コア, 19 サンプル) / 使ったCPU: 2533 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:3 currencyservice:5 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 redis-cart:1 shippingservice:3
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:3 currencyservice:5 emailservice:3 frontend:4 paymentservice:4 productcatalogservice:4 redis-cart:1 shippingservice:3)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=11 p99=730 ms 失敗=0
+---- deploy pairsQ3 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: frontend (server+img, checkout+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  プローブ緩和: recommendationservice/server timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:230m/960m, currencyservice=server:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3,checkout:155m/1200m, paymentservice=payment:38m/300m, productcatalogservice=server:539m/3, recommendationservice=server:586m/1600m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc3][pairsQ3] 点×開始台数の順番: b100v0:1 b0v300:1 b50v150:1 b75v200:1 b50v300:1
+  冷却待ち 0s → 37℃
+---- 点のリセット [pairsQ3][b100v0] 開始1台 2026-11-22T23:58:48+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsQ3] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-22T23:59:33+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-6ff4w imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795359581 窓 1795359881〜1795360181  Prometheus の区間 1795359891〜1795360171 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.7 s、Prometheus の区間の余裕 始め 15.7 s / 終わり 4.3 s
+     ノード: 周波数=1.748 GHz  最高温度=54.0℃
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=13 p99=750 | 動作中の枠=12.95コア(Pending分 0.00) Pod=36(Pending 0) | CPU時間=2050秒(うちsoftirq 163秒 / k6 74秒)
+     種類別p50: 商品10 / カート12 / 購入16 ms
+     確保したCPU: 3632.2 コア秒(窓平均 12.972 コア, 19 サンプル) / 使ったCPU: 2050 コア秒
+     台数: adservice:1 cartservice:4 currencyservice:4 emailservice:5 frontend:5 paymentservice:5 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:5
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 currencyservice:4 emailservice:5 frontend:5 paymentservice:6 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:5)
+  冷却待ち 0s → 45℃
+---- 点のリセット [pairsQ3][b0v300] 開始1台 2026-11-23T00:10:11+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsQ3] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-23T00:10:57+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-q6ws9 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795360264 窓 1795360564〜1795360864  Prometheus の区間 1795360574〜1795360854 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.1 s、Prometheus の区間の余裕 始め 15.1 s / 終わり 4.9 s
+     ノード: 周波数=1.77 GHz  最高温度=53.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.38コア(Pending分 0.00) Pod=19(Pending 0) | CPU時間=1513秒(うちsoftirq 121秒 / k6 66秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2627.2 コア秒(窓平均 9.383 コア, 18 サンプル) / 使ったCPU: 1513 コア秒
+     台数: adservice:1 cartservice:2 currencyservice:3 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=12 ms 失敗=0
+  冷却待ち 0s → 42℃
+---- 点のリセット [pairsQ3][b50v150] 開始1台 2026-11-23T00:21:31+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsQ3] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-23T00:22:16+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-2jp6j imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795360944 窓 1795361244〜1795361544  Prometheus の区間 1795361254〜1795361534 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.3 s、Prometheus の区間の余裕 始め 15.3 s / 終わり 4.7 s
+     ノード: 周波数=1.766 GHz  最高温度=54.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=11 p99=442 | 動作中の枠=9.92コア(Pending分 0.00) Pod=26(Pending 0) | CPU時間=1768秒(うちsoftirq 141秒 / k6 72秒)
+     種類別p50: 商品10 / カート11 / 購入15 ms
+     確保したCPU: 2776.8 コア秒(窓平均 9.917 コア, 18 サンプル) / 使ったCPU: 1768 コア秒
+     台数: adservice:1 cartservice:3 currencyservice:3 emailservice:3 frontend:3 paymentservice:3 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=513 ms 失敗=0
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsQ3][b75v200] 開始1台 2026-11-23T00:32:52+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsQ3] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-23T00:33:37+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-q7c2c imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795361625 窓 1795361925〜1795362225  Prometheus の区間 1795361935〜1795362215 (280s)
+  !! 載らない Pod (FailedScheduling) 1 件 (この点の開始から)
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.6 s、Prometheus の区間の余裕 始め 15.6 s / 終わり 4.4 s
+     ノード: 周波数=1.797 GHz  最高温度=57.0℃
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体91) p50=14 p99=838 | 動作中の枠=13.45コア(Pending分 0.00) Pod=36(Pending 0) | CPU時間=2536秒(うちsoftirq 203秒 / k6 98秒)
+     種類別p50: 商品11 / カート12 / 購入17 ms
+     確保したCPU: 3767.4 コア秒(窓平均 13.455 コア, 19 サンプル) / 使ったCPU: 2536 コア秒
+     台数: adservice:1 cartservice:5 currencyservice:5 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:5 currencyservice:5 emailservice:4 frontend:4 paymentservice:5 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=11 p99=779 ms 失敗=0
+  冷却待ち 1s → 43℃
+---- 点のリセット [pairsQ3][b50v300] 開始1台 2026-11-23T00:44:12+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsQ3] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-23T00:44:57+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-b4hs7 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795362305 窓 1795362605〜1795362905  Prometheus の区間 1795362615〜1795362895 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.8 s、Prometheus の区間の余裕 始め 15.8 s / 終わり 4.2 s
+     ノード: 周波数=1.798 GHz  最高温度=59.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体135) p50=13 p99=777 | 動作中の枠=13.07コア(Pending分 0.00) Pod=32(Pending 0) | CPU時間=2535秒(うちsoftirq 201秒 / k6 102秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3661.6 コア秒(窓平均 13.077 コア, 19 サンプル) / 使ったCPU: 2535 コア秒
+     台数: adservice:1 cartservice:4 currencyservice:5 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 currencyservice:5 emailservice:3 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=761 ms 失敗=0
+---- deploy frontrecocatalog (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img, recommendation+img)
+  プローブ緩和: frontend/recommendation timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:230m/960m, checkoutservice=checkout:155m/1200m, currencyservice=server:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3,recommendation:586m/1600m,productcatalog:539m/3, paymentservice=payment:38m/300m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc3][frontrecocatalog] 点×開始台数の順番: b100v0:1 b0v300:1 b50v150:1 b75v200:1 b50v300:1
+  冷却待ち 0s → 40℃
+---- 点のリセット [frontrecocatalog][b100v0] 開始1台 2026-11-23T00:57:07+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][frontrecocatalog] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-23T00:58:19+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-fjd2g imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795363106 窓 1795363406〜1795363706  Prometheus の区間 1795363416〜1795363696 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.3 s、Prometheus の区間の余裕 始め 14.3 s / 終わり 5.7 s
+     ノード: 周波数=1.751 GHz  最高温度=54.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 41 系列)
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=12 p99=748 | 動作中の枠=11.13コア(Pending分 0.00) Pod=33(Pending 0) | CPU時間=1954秒(うちsoftirq 125秒 / k6 75秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 3116.4 コア秒(窓平均 11.130 コア, 19 サンプル) / 使ったCPU: 1954 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:5 currencyservice:4 emailservice:5 frontend:3 paymentservice:5 redis-cart:1 shippingservice:5
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:5 currencyservice:4 emailservice:5 frontend:3 paymentservice:6 redis-cart:1 shippingservice:5)
+  冷却待ち 0s → 44℃
+---- 点のリセット [frontrecocatalog][b0v300] 開始1台 2026-11-23T01:08:56+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][frontrecocatalog] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-23T01:10:09+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-75s6s imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795363816 窓 1795364116〜1795364416  Prometheus の区間 1795364126〜1795364406 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.9 s、Prometheus の区間の余裕 始め 14.9 s / 終わり 5.1 s
+     ノード: 周波数=1.778 GHz  最高温度=51.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.07コア(Pending分 0.00) Pod=14(Pending 0) | CPU時間=1430秒(うちsoftirq 80秒 / k6 66秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2540.4 コア秒(窓平均 9.073 コア, 18 サンプル) / 使ったCPU: 1430 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:3 emailservice:1 frontend:3 paymentservice:1 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=11 ms 失敗=0
+  冷却待ち 0s → 43℃
+---- 点のリセット [frontrecocatalog][b50v150] 開始1台 2026-11-23T01:20:47+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][frontrecocatalog] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-23T01:22:00+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-9gfrp imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795364527 窓 1795364827〜1795365127  Prometheus の区間 1795364837〜1795365117 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.1 s、Prometheus の区間の余裕 始め 15.1 s / 終わり 4.9 s
+     ノード: 周波数=1.762 GHz  最高温度=55.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=11 p99=551 | 動作中の枠=9.92コア(Pending分 0.00) Pod=23(Pending 0) | CPU時間=1665秒(うちsoftirq 101秒 / k6 70秒)
+     種類別p50: 商品10 / カート11 / 購入15 ms
+     確保したCPU: 2776.8 コア秒(窓平均 9.917 コア, 18 サンプル) / 使ったCPU: 1665 コア秒
+     台数: adservice:1 cartservice:3 checkoutservice:3 currencyservice:3 emailservice:3 frontend:3 paymentservice:3 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=640 ms 失敗=0
+  冷却待ち 0s → 45℃
+---- 点のリセット [frontrecocatalog][b75v200] 開始1台 2026-11-23T01:32:34+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][frontrecocatalog] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-23T01:33:47+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-gc7mf imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795365234 窓 1795365534〜1795365834  Prometheus の区間 1795365544〜1795365824 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.9 s、Prometheus の区間の余裕 始め 14.9 s / 終わり 5.1 s
+     ノード: 周波数=1.799 GHz  最高温度=58.0℃
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体98) p50=13 p99=736 | 動作中の枠=13.22コア(Pending分 0.00) Pod=31(Pending 0) | CPU時間=2402秒(うちsoftirq 150秒 / k6 97秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3705.2 コア秒(窓平均 13.233 コア, 19 サンプル) / 使ったCPU: 2402 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:4 currencyservice:5 emailservice:4 frontend:4 paymentservice:4 redis-cart:1 shippingservice:4
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:4 currencyservice:5 emailservice:4 frontend:4 paymentservice:5 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=10 p99=713 ms 失敗=0
+  冷却待ち 0s → 47℃
+---- 点のリセット [frontrecocatalog][b50v300] 開始1台 2026-11-23T01:44:20+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 30s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][frontrecocatalog] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-23T01:45:33+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-2r9nf imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795365940 窓 1795366240〜1795366540  Prometheus の区間 1795366250〜1795366530 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.6 s、Prometheus の区間の余裕 始め 14.6 s / 終わり 5.4 s
+     ノード: 周波数=1.8 GHz  最高温度=59.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体60) p50=12 p99=783 | 動作中の枠=12.92コア(Pending分 0.00) Pod=27(Pending 0) | CPU時間=2398秒(うちsoftirq 146秒 / k6 101秒)
+     種類別p50: 商品10 / カート11 / 購入17 ms
+     確保したCPU: 3647.5 コア秒(窓平均 13.027 コア, 19 サンプル) / 使ったCPU: 2398 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:3 currencyservice:5 emailservice:3 frontend:4 paymentservice:3 redis-cart:1 shippingservice:3
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:5 checkoutservice:3 currencyservice:5 emailservice:3 frontend:4 paymentservice:4 redis-cart:1 shippingservice:3)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=683 ms 失敗=0
+---- deploy pairsP1b (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: checkoutservice (checkout+img)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: productcatalogservice (recommendation+img)
+  プローブ緩和: productcatalogservice/recommendation timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, cartservice=server:230m/960m, checkoutservice=checkout:155m/1200m,shipping:61m/560m, currencyservice=server:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3, paymentservice=payment:38m/300m, productcatalogservice=server:539m/3,recommendation:586m/1600m, redis-cart=redis:300m/500m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 cartservice=2/2 checkoutservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 redis-cart=1/1 
+  [cyc3][pairsP1b] 点×開始台数の順番: b100v0:1 b0v300:1 b50v150:1 b75v200:1 b50v300:1
+  冷却待ち 0s → 40℃
+---- 点のリセット [pairsP1b][b100v0] 開始1台 2026-11-23T01:58:01+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 
+==== [cyc3][pairsP1b] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-23T01:58:45+09:00 ====
+  HPA作成: k6 Job の apply 直後から 6 秒で完了
+  k6 イメージ: pod=k6load-2vlmb imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795366733 窓 1795367033〜1795367333  Prometheus の区間 1795367043〜1795367323 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.5 s、Prometheus の区間の余裕 始め 15.5 s / 終わり 4.5 s
+     ノード: 周波数=1.787 GHz  最高温度=57.0℃
+     !! 生の記録: 記録が 2 つ未満の Pod 1 個 (全 41 系列)
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=12 p99=694 | 動作中の枠=11.13コア(Pending分 0.00) Pod=31(Pending 0) | CPU時間=2008秒(うちsoftirq 153秒 / k6 74秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 3066.0 コア秒(窓平均 10.950 コア, 18 サンプル) / 使ったCPU: 2008 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:5 currencyservice:4 emailservice:5 frontend:3 paymentservice:5 productcatalogservice:3 redis-cart:1
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:4 currencyservice:4 emailservice:5 frontend:3 paymentservice:6 productcatalogservice:3 redis-cart:1)
+  冷却待ち 0s → 44℃
+---- 点のリセット [pairsP1b][b0v300] 開始1台 2026-11-23T02:09:22+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 
+==== [cyc3][pairsP1b] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-23T02:10:07+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-ncnlj imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795367414 窓 1795367714〜1795368014  Prometheus の区間 1795367724〜1795368004 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.5 s、Prometheus の区間の余裕 始め 14.5 s / 終わり 5.5 s
+     ノード: 周波数=1.763 GHz  最高温度=54.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.07コア(Pending分 0.00) Pod=16(Pending 0) | CPU時間=1498秒(うちsoftirq 117秒 / k6 66秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2540.4 コア秒(窓平均 9.073 コア, 18 サンプル) / 使ったCPU: 1498 コア秒
+     台数: adservice:1 cartservice:2 checkoutservice:1 currencyservice:3 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 redis-cart:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=12 ms 失敗=0
+  冷却待ち 0s → 44℃
+---- 点のリセット [pairsP1b][b50v150] 開始1台 2026-11-23T02:20:41+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 
+==== [cyc3][pairsP1b] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-23T02:21:26+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-zqpgs imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795368093 窓 1795368393〜1795368693  Prometheus の区間 1795368403〜1795368683 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.8 s、Prometheus の区間の余裕 始め 14.8 s / 終わり 5.2 s
+     ノード: 周波数=1.789 GHz  最高温度=54.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体0) p50=11 p99=581 | 動作中の枠=9.92コア(Pending分 0.00) Pod=23(Pending 0) | CPU時間=1735秒(うちsoftirq 134秒 / k6 70秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 2778.5 コア秒(窓平均 9.923 コア, 18 サンプル) / 使ったCPU: 1735 コア秒
+     台数: adservice:1 cartservice:3 checkoutservice:3 currencyservice:3 emailservice:3 frontend:3 paymentservice:3 productcatalogservice:3 redis-cart:1
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:3 checkoutservice:3 currencyservice:3 emailservice:3 frontend:3 paymentservice:4 productcatalogservice:3 redis-cart:1)
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=617 ms 失敗=0
+  冷却待ち 0s → 44℃
+---- 点のリセット [pairsP1b][b75v200] 開始1台 2026-11-23T02:32:01+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 
+==== [cyc3][pairsP1b] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-23T02:32:46+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-2m565 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795368773 窓 1795369073〜1795369373  Prometheus の区間 1795369083〜1795369363 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.8 s、Prometheus の区間の余裕 始め 14.8 s / 終わり 5.2 s
+     ノード: 周波数=1.791 GHz  最高温度=57.0℃
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体0) p50=14 p99=762 | 動作中の枠=13.22コア(Pending分 0.00) Pod=31(Pending 0) | CPU時間=2510秒(うちsoftirq 196秒 / k6 97秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3706.9 コア秒(窓平均 13.239 コア, 19 サンプル) / 使ったCPU: 2510 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:4 currencyservice:5 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 redis-cart:1
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:4 currencyservice:5 emailservice:4 frontend:4 paymentservice:5 productcatalogservice:4 redis-cart:1)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=11 p99=745 ms 失敗=0
+  冷却待ち 0s → 48℃
+---- 点のリセット [pairsP1b][b50v300] 開始1台 2026-11-23T02:43:24+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 cartservice=1/1 checkoutservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 redis-cart=1/1 
+==== [cyc3][pairsP1b] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-23T02:44:09+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-wkwpb imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795369456 窓 1795369756〜1795370056  Prometheus の区間 1795369766〜1795370046 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.8 s、Prometheus の区間の余裕 始め 14.8 s / 終わり 5.2 s
+     ノード: 周波数=1.796 GHz  最高温度=57.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体58) p50=13 p99=762 | 動作中の枠=12.55コア(Pending分 0.00) Pod=27(Pending 0) | CPU時間=2493秒(うちsoftirq 194秒 / k6 102秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3515.4 コア秒(窓平均 12.555 コア, 19 サンプル) / 使ったCPU: 2493 コア秒
+     台数: adservice:1 cartservice:4 checkoutservice:3 currencyservice:4 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 redis-cart:1
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 cartservice:4 checkoutservice:3 currencyservice:4 emailservice:3 frontend:4 paymentservice:4 productcatalogservice:4 redis-cart:1)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=738 ms 失敗=0
+---- deploy pairsP2 (HPA 70% コンテナ別, 1-12台, 枠は変更しない) ----
+  枠を適正化テーブルで置換: /home/mizuki/ダウンロード/msa/km2/experiments/rightsizing/rightsize-pdist-k3-mc5.csv (対象: frontend checkoutservice cartservice productcatalogservice currencyservice paymentservice shippingservice emailservice recommendationservice adservice, 倍率 req×1 lim×0)
+  limits をコンテナ単位で上書き: frontend=3000m productcatalogservice=3000m adservice=1000m (requests はそのまま)
+  gRPC 負荷分散: round_robin + headless Service (引き直し 30s)
+  gRPC負荷分散: frontend (server+img)
+  gRPC負荷分散: productcatalogservice (checkout+img)
+  gRPC負荷分散: recommendationservice (server+img)
+  プローブ緩和: recommendationservice/server timeoutSeconds=5 (読み返し readiness/liveness=5/5)
+  枠(req/上限lim): adservice=server:800m/1, currencyservice=server:367m/1600m, emailservice=email:53m/300m, frontend=server:910m/3,cartservice:230m/960m, paymentservice=payment:38m/300m, productcatalogservice=server:539m/3,checkout:155m/1200m, recommendationservice=server:586m/1600m, redis-cart=redis:300m/500m, shippingservice=server:61m/560m, 
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  HPAは作らない (RESET_EACH_POINT=1: 各点で k6 開始の直後に作る)
+  deploy: adservice=2/2 currencyservice=2/2 emailservice=2/2 frontend=2/2 paymentservice=2/2 productcatalogservice=2/2 recommendationservice=2/2 redis-cart=1/1 shippingservice=2/2 
+  [cyc3][pairsP2] 点×開始台数の順番: b100v0:1 b0v300:1 b50v150:1 b75v200:1 b50v300:1
+  冷却待ち 0s → 40℃
+---- 点のリセット [pairsP2][b100v0] 開始1台 2026-11-23T02:56:19+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsP2] 購入=100周/秒 閲覧=0周/秒 点=b100v0 開始1台 2026-11-23T02:57:03+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-6v98q imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795370230 窓 1795370530〜1795370830  Prometheus の区間 1795370540〜1795370820 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.5 s、Prometheus の区間の余裕 始め 14.5 s / 終わり 5.5 s
+     ノード: 周波数=1.795 GHz  最高温度=55.0℃
+  -> 捌けた=100.0/100 取りこぼし(窓)=0 (全体0) p50=12 p99=598 | 動作中の枠=13.12コア(Pending分 0.00) Pod=33(Pending 0) | CPU時間=2038秒(うちsoftirq 161秒 / k6 76秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 3677.5 コア秒(窓平均 13.134 コア, 19 サンプル) / 使ったCPU: 2038 コア秒
+     台数: adservice:1 currencyservice:4 emailservice:5 frontend:4 paymentservice:5 productcatalogservice:5 recommendationservice:3 redis-cart:1 shippingservice:5
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 currencyservice:4 emailservice:5 frontend:4 paymentservice:6 productcatalogservice:5 recommendationservice:3 redis-cart:1 shippingservice:5)
+  冷却待ち 0s → 48℃
+---- 点のリセット [pairsP2][b0v300] 開始1台 2026-11-23T03:07:40+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsP2] 購入=0周/秒 閲覧=300周/秒 点=b0v300 開始1台 2026-11-23T03:08:25+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-8ntc6 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795370912 窓 1795371212〜1795371512  Prometheus の区間 1795371222〜1795371502 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.7 s、Prometheus の区間の余裕 始め 14.7 s / 終わり 5.3 s
+     ノード: 周波数=1.773 GHz  最高温度=52.0℃
+  -> 捌けた=0.0/0 取りこぼし(窓)=0 (全体0) p50=0 p99=0 | 動作中の枠=9.61コア(Pending分 0.00) Pod=17(Pending 0) | CPU時間=1508秒(うちsoftirq 119秒 / k6 64秒)
+     種類別p50: 商品0 / カート0 / 購入0 ms
+     確保したCPU: 2691.6 コア秒(窓平均 9.613 コア, 18 サンプル) / 使ったCPU: 1508 コア秒
+     台数: adservice:1 currencyservice:3 emailservice:1 frontend:3 paymentservice:1 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:1
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=9 p99=12 ms 失敗=0
+  冷却待ち 0s → 42℃
+---- 点のリセット [pairsP2][b50v150] 開始1台 2026-11-23T03:19:00+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsP2] 購入=50周/秒 閲覧=150周/秒 点=b50v150 開始1台 2026-11-23T03:19:44+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-llbj5 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795371592 窓 1795371892〜1795372192  Prometheus の区間 1795371902〜1795372182 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -5.2 s、Prometheus の区間の余裕 始め 15.2 s / 終わり 4.8 s
+     ノード: 周波数=1.773 GHz  最高温度=53.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体1) p50=11 p99=706 | 動作中の枠=9.92コア(Pending分 0.00) Pod=23(Pending 0) | CPU時間=1733秒(うちsoftirq 135秒 / k6 67秒)
+     種類別p50: 商品10 / カート11 / 購入16 ms
+     確保したCPU: 2774.4 コア秒(窓平均 9.909 コア, 18 サンプル) / 使ったCPU: 1733 コア秒
+     台数: adservice:1 currencyservice:3 emailservice:3 frontend:3 paymentservice:3 productcatalogservice:3 recommendationservice:3 redis-cart:1 shippingservice:3
+     閲覧型: 捌けた=150.0/150 取りこぼし(窓)=0 p50=10 p99=738 ms 失敗=0
+  冷却待ち 0s → 43℃
+---- 点のリセット [pairsP2][b75v200] 開始1台 2026-11-23T03:30:19+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsP2] 購入=75周/秒 閲覧=200周/秒 点=b75v200 開始1台 2026-11-23T03:31:04+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-h8zq8 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795372271 窓 1795372571〜1795372871  Prometheus の区間 1795372581〜1795372861 (280s)
+  !! 載らない Pod (FailedScheduling) 1 件 (この点の開始から)
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.5 s、Prometheus の区間の余裕 始め 14.5 s / 終わり 5.5 s
+     ノード: 周波数=1.79 GHz  最高温度=55.0℃
+  -> 捌けた=75.0/75 取りこぼし(窓)=0 (全体81) p50=12 p99=697 | 動作中の枠=13.22コア(Pending分 1.14) Pod=31(Pending 1) | CPU時間=2511秒(うちsoftirq 199秒 / k6 98秒)
+     種類別p50: 商品10 / カート12 / 購入17 ms
+     確保したCPU: 3710.8 コア秒(窓平均 13.253 コア, 19 サンプル) / 使ったCPU: 2511 コア秒
+     台数: adservice:1 currencyservice:5 emailservice:4 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 currencyservice:5 emailservice:4 frontend:4 paymentservice:6 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:4)
+     閲覧型: 捌けた=200.0/200 取りこぼし(窓)=0 p50=10 p99=742 ms 失敗=0
+  冷却待ち 0s → 44℃
+---- 点のリセット [pairsP2][b50v300] 開始1台 2026-11-23T03:41:42+09:00 ----
+  枠検査 OK: 全コンテナの requests が表どおり (limits 上書き=[frontend=3000m productcatalogservice=3000m adservice=1000m], requests<=limits)
+  リセット完了 (全台Ready待ち 5s)。gRPC 引き直し待ち 35s: adservice=1/1 currencyservice=1/1 emailservice=1/1 frontend=1/1 paymentservice=1/1 productcatalogservice=1/1 recommendationservice=1/1 redis-cart=1/1 shippingservice=1/1 
+==== [cyc3][pairsP2] 購入=50周/秒 閲覧=300周/秒 点=b50v300 開始1台 2026-11-23T03:42:27+09:00 ====
+  HPA作成: k6 Job の apply 直後から 5 秒で完了
+  k6 イメージ: pod=k6load-kl972 imageID=docker.io/grafana/k6@sha256:3d8e5c7f1d53ec59408c2ffbd9943602a0985ffcbd4a2430ec00f3ffca89796e
+  時刻: t_run=1795372954 窓 1795373254〜1795373554  Prometheus の区間 1795373264〜1795373544 (280s)
+  載らない Pod (FailedScheduling): 0 件
+     時刻 (k6 の開始=summary から): k6 の窓は t_beg より -4.8 s、Prometheus の区間の余裕 始め 14.8 s / 終わり 5.2 s
+     ノード: 周波数=1.791 GHz  最高温度=57.0℃
+  -> 捌けた=50.0/50 取りこぼし(窓)=0 (全体82) p50=12 p99=541 | 動作中の枠=12.70コア(Pending分 0.00) Pod=27(Pending 0) | CPU時間=2500秒(うちsoftirq 199秒 / k6 103秒)
+     種類別p50: 商品10 / カート11 / 購入17 ms
+     確保したCPU: 3558.8 コア秒(窓平均 12.710 コア, 19 サンプル) / 使ったCPU: 2500 コア秒
+     台数: adservice:1 currencyservice:4 emailservice:3 frontend:4 paymentservice:3 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3
+     !! 計測窓の中で台数が変わった(窓の始め: adservice:1 currencyservice:4 emailservice:3 frontend:4 paymentservice:4 productcatalogservice:4 recommendationservice:4 redis-cart:1 shippingservice:3)
+     閲覧型: 捌けた=300.0/300 取りこぼし(窓)=0 p50=10 p99=589 ms 失敗=0
+================ BUNDLE-VS-LOSS2 DONE 2026-11-23T03:53:05+09:00 ================
