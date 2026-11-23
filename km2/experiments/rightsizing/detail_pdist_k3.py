@@ -82,6 +82,12 @@ for e in csv.DictReader(open(S + f'events-{PAIR}.csv')):
     dep = re.sub(r'-[0-9a-f]{8,10}-[0-9a-z]{5}$', '', e['object'])
     fs[k].append((round(t), dep))
 
+def split3(name, v):
+    """'5/4' → {name_1: 5, name_2: 4, name_3: ''} (3 つ同居まで。数として書く)"""
+    p = str(v).split('/')
+    return {f'{name}_{i + 1}': (int(p[i]) if i < len(p) and p[i].isdigit() else (p[i] if i < len(p) else '')) for i in range(3)}
+
+
 rows = []
 for pair, (arm, dep, cont) in HOST.items():
     members = pair.split('+')
@@ -108,9 +114,11 @@ for pair, (arm, dep, cont) in HOST.items():
             inwin = [t for t, d in ev if d == dep and LO <= t <= HI]
             rows.append({
                 '組': pair, 'Δρ': rho.get(pair, ''), '配合': mix, '周': cyc,
-                '分離の台数(最頻)': j['sep_mode'],
-                '分離12回の分布': ' / '.join(f'{m}:{sepdist[m][MIXES.index(mix)]}' for m in members if m in sepdist),
-                '分離の同じ番号の周': j['sep_samecycle'],
+                # 「5/5」のように / でつなぐと Excel が日付 (2026/5/5) に変えるので、メンバーごとに列を分ける (2026-11-23)
+                'メンバー(順)': '・'.join(members),
+                **split3('分離の台数(最頻)', j['sep_mode']),
+                '分離12回の分布': ' ; '.join(f'{m}:{sepdist[m][MIXES.index(mix)]}' for m in members if m in sepdist),
+                **split3('同じ番号の周の分離', j['sep_samecycle']),
                 '同居の台数(判定)': j['n_st'],
                 '窓の始め': w[0][1] if w else '', '窓の終わり': w[-1][1] if w else '',
                 '台数ごとのサンプル数': ' '.join(f'{n}台×{c}' for n, c in sorted(stay.items())),
@@ -118,7 +126,7 @@ for pair, (arm, dep, cont) in HOST.items():
                 'HPAが今より多く望んだ時刻': ', '.join(want),
                 'Ready不足の時刻': ', '.join(short),
                 '引きずられた側': j['dragged'], 'Δn': j['dn'], '損[m]': j['loss_m'],
-                '窓平均の利用率%(メンバー順)': j['util'],
+                **split3('窓平均の利用率%', j['util']),
                 '同居Podが載らない(t_rel)': ', '.join(own), 'うち窓の中': 'あり' if inwin else '',
                 '他のPodが載らない': ', '.join(oth),
                 '解析の印': j['marks'],

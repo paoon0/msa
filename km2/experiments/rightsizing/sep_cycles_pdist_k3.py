@@ -81,8 +81,10 @@ for cyc in cycles:
         off += len(miss); moved += len(mvp)
         d.update({'最頻値と違う(ペアの7サービス)': ', '.join(miss), '窓内の台数変化': ' / '.join(mv),
                   '予約枠の平均[コア]': f"{float(r['reserved_avg_cores']):.3f}",
-                  '購入p50/p99[ms]': f"{float(r['p50']):.0f}/{float(r['p99']):.0f}",
-                  '閲覧p50/p99[ms]': f"{float(r['browse_p50']):.0f}/{float(r['browse_p99']):.0f}" if r['browse_p50'] else '',
+                  # p50 と p99 を / でつなぐと Excel が日付に変えることがあるので列を分ける (2026-11-23)
+                  '購入p50[ms]': f"{float(r['p50']):.0f}", '購入p99[ms]': f"{float(r['p99']):.0f}",
+                  '閲覧p50[ms]': f"{float(r['browse_p50']):.0f}" if r['browse_p50'] else '',
+                  '閲覧p99[ms]': f"{float(r['browse_p99']):.0f}" if r['browse_p50'] else '',
                   '取りこぼし(窓)': r['dropped_win'], '失敗率': r['failed_rate'],
                   '載らないPod(t_rel)': ', '.join(fs.get((cyc, mix), []))})
         rows.append(d)

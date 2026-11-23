@@ -2,170 +2,170 @@
 
 生成: `python3 detail_pdist_k3.py analysis-pdistk3-3.txt pdistk3pair3 detail-pdistk3-3` (入力 `analysis-pdistk3-3.txt`、`../summer2026/timeline-pdistk3pair3.csv`、`../summer2026/events-pdistk3pair3.csv`、`../summer2026/results-pdistk3pair3-times.csv`)。計測窓 = t_rel 310–590 s (15 s ごとのサンプル)。台数・損・利用率は解析出力と同じ値。
 
-| 組 | Δρ | 配合 | 周 | 分離の台数(最頻) | 分離12回の分布 | 分離の同じ番号の周 | 同居の台数(判定) | 窓の始め | 窓の終わり | 台数ごとのサンプル数 | 窓内の台数変化 | HPAが今より多く望んだ時刻 | Ready不足の時刻 | 引きずられた側 | Δn | 損[m] | 窓平均の利用率%(メンバー順) | 同居Podが載らない(t_rel) | うち窓の中 | 他のPodが載らない | 解析の印 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| checkout+shipping | 0.005 | b100v0 | 1 | 5/5 | checkout:5×12 / shipping:5×12 | 5/5 | 5 | 5 | 5 | 5台×19 |  |  |  |  | 0 | 0 | 61/60 |  |  |  |  |
-| checkout+shipping | 0.005 | b100v0 | 2 | 5/5 | checkout:5×12 / shipping:5×12 | 5/5 | 5 | 5 | 5 | 5台×19 |  |  |  |  | 0 | 0 | 61/60 |  |  |  |  |
-| checkout+shipping | 0.005 | b100v0 | 3 | 5/5 | checkout:5×12 / shipping:5×12 | 5/5 | 4 | 4 | 5 | 4台×16 5台×2 | 573s 4→5 | 557s→5 |  |  | 0 | -216 | 76/74 |  |  |  |  |
-| checkout+shipping | 0.005 | b50v150 | 1 | 3/3 | checkout:3×12 / shipping:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 51/51 |  |  |  |  |
-| checkout+shipping | 0.005 | b50v150 | 2 | 3/3 | checkout:3×12 / shipping:3×12 | 3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 52/51 |  |  |  |  |
-| checkout+shipping | 0.005 | b50v150 | 3 | 3/3 | checkout:3×12 / shipping:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 51/51 |  |  |  |  |
-| checkout+shipping | 0.005 | b50v300 | 1 | 3/3 | checkout:3×12 / shipping:3×12 | 3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 55/54 |  |  |  |  |
-| checkout+shipping | 0.005 | b50v300 | 2 | 3/3 | checkout:3×12 / shipping:3×12 | 3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 55/54 |  |  |  |  |
-| checkout+shipping | 0.005 | b50v300 | 3 | 3/3 | checkout:3×12 / shipping:3×12 | 3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 54/54 |  |  |  |  |
-| checkout+shipping | 0.005 | b75v200 | 1 | 4/4 | checkout:4×12 / shipping:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 60/59 |  |  |  |  |
-| checkout+shipping | 0.005 | b75v200 | 2 | 4/4 | checkout:4×12 / shipping:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 60/59 |  |  | frontend@119s | 載らない |
-| checkout+shipping | 0.005 | b75v200 | 3 | 4/4 | checkout:4×12 / shipping:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 60/59 |  |  |  |  |
-| checkout+shipping | 0.005 | b0v300 | 1 | 1/1 | checkout:1×12 / shipping:1×12 | 1/1 | 1 | 1 | 1 | 1台×18 |  |  |  |  | 0 | 0 | 0/1 |  |  |  |  |
-| checkout+shipping | 0.005 | b0v300 | 2 | 1/1 | checkout:1×12 / shipping:1×12 | 1/1 | 1 | 1 | 1 | 1台×18 |  |  |  |  | 0 | 0 | 0/1 |  |  |  |  |
-| checkout+shipping | 0.005 | b0v300 | 3 | 1/1 | checkout:1×12 / shipping:1×12 | 1/1 | 1 | 1 | 1 | 1台×18 |  |  |  |  | 0 | 0 | 1/1 |  |  |  |  |
-| catalog+reco | 0.013 | b100v0 | 1 | 3/3 | catalog:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 60/53 |  |  |  |  |
-| catalog+reco | 0.013 | b100v0 | 2 | 3/3 | catalog:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 60/53 |  |  |  |  |
-| catalog+reco | 0.013 | b100v0 | 3 | 3/3 | catalog:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 60/54 |  |  |  |  |
-| catalog+reco | 0.013 | b50v150 | 1 | 3/3 | catalog:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 58/52 |  |  |  |  |
-| catalog+reco | 0.013 | b50v150 | 2 | 3/3 | catalog:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 60/51 |  |  |  |  |
-| catalog+reco | 0.013 | b50v150 | 3 | 3/3 | catalog:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 59/52 |  |  |  |  |
-| catalog+reco | 0.013 | b50v300 | 1 | 4/4 | catalog:4×12 / reco:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 66/61 |  |  |  |  |
-| catalog+reco | 0.013 | b50v300 | 2 | 4/4 | catalog:4×12 / reco:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 66/61 |  |  |  |  |
-| catalog+reco | 0.013 | b50v300 | 3 | 4/4 | catalog:4×12 / reco:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 66/61 |  |  |  |  |
-| catalog+reco | 0.013 | b75v200 | 1 | 4/4 | catalog:4×12 / reco:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 63/58 |  |  |  |  |
-| catalog+reco | 0.013 | b75v200 | 2 | 4/4 | catalog:4×12 / reco:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 63/58 |  |  | frontend@119s | 載らない |
-| catalog+reco | 0.013 | b75v200 | 3 | 4/4 | catalog:4×12 / reco:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 63/59 |  |  |  |  |
-| catalog+reco | 0.013 | b0v300 | 1 | 3/3 | catalog:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 58/50 |  |  |  |  |
-| catalog+reco | 0.013 | b0v300 | 2 | 3/3 | catalog:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 58/50 |  |  |  |  |
-| catalog+reco | 0.013 | b0v300 | 3 | 3/3 | catalog:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 58/50 |  |  |  |  |
-| front+cart | 0.131 | b100v0 | 1 | 3/4 | front:3×12 / cart:4×12 | 3/4 | 4 | 4 | 4 | 4台×19 |  |  |  | front | 1 | 910 | 45/61 |  |  |  |  |
-| front+cart | 0.131 | b100v0 | 2 | 3/4 | front:3×12 / cart:4×12 | 3/4 | 4 | 4 | 4 | 4台×19 |  |  |  | front | 1 | 910 | 46/59 |  |  |  |  |
-| front+cart | 0.131 | b100v0 | 3 | 3/4 | front:3×12 / cart:4×12 | 3/4 | 4 | 4 | 4 | 4台×19 |  |  |  | front | 1 | 910 | 45/60 |  |  |  |  |
-| front+cart | 0.131 | b50v150 | 1 | 3/3 | front:3×12 / cart:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 56/60 |  |  |  |  |
-| front+cart | 0.131 | b50v150 | 2 | 3/3 | front:3×12 / cart:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 57/62 |  |  |  |  |
-| front+cart | 0.131 | b50v150 | 3 | 3/3 | front:3×12 / cart:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 56/60 |  |  |  |  |
-| front+cart | 0.131 | b50v300 | 1 | 4/4 | front:4×12 / cart:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 64/69 |  |  |  |  |
-| front+cart | 0.131 | b50v300 | 2 | 4/4 | front:4×12 / cart:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 64/67 |  |  |  |  |
-| front+cart | 0.131 | b50v300 | 3 | 4/4 | front:4×12 / cart:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 65/69 |  |  |  |  |
-| front+cart | 0.131 | b75v200 | 1 | 4/5 | front:4×12 / cart:4×3,5×9 | 4/5 | 4 | 4 | 5 | 4台×13 5台×6 | 310s 5→4, 512s 4→5 | 497s→5 | 512s, 528s, 543s, 559s, 574s, 590s |  | 0 | -230 | 61/73 | 492s | あり | recommendationservice@119s, recommendationservice@273s | W:512s:4→5 *載らない,Pending,Ready落ち |
-| front+cart | 0.131 | b75v200 | 2 | 4/5 | front:4×12 / cart:4×3,5×9 | 4/4 | 5 | 5 | 4 | 4台×2 5台×17 | 311s 4→5, 574s 5→4 |  | 559s | front | 1 | 910 | 53/60 |  |  |  |  |
-| front+cart | 0.131 | b75v200 | 3 | 4/5 | front:4×12 / cart:4×3,5×9 | 4/5 | 4 | 4 | 4 | 4台×19 |  | 590s→5 |  |  | 0 | -230 | 62/72 | 583s | あり |  | 載らない,Pending |
-| front+cart | 0.131 | b0v300 | 1 | 3/2 | front:3×12 / cart:2×12 | 3/2 | 3 | 3 | 3 | 3台×18 |  |  |  | cart | 1 | 230 | 56/43 |  |  |  |  |
-| front+cart | 0.131 | b0v300 | 2 | 3/2 | front:3×12 / cart:2×12 | 3/2 | 3 | 3 | 3 | 3台×18 |  |  |  | cart | 1 | 230 | 56/42 |  |  |  |  |
-| front+cart | 0.131 | b0v300 | 3 | 3/2 | front:3×12 / cart:2×12 | 3/2 | 3 | 3 | 3 | 3台×18 |  |  |  | cart | 1 | 230 | 56/43 |  |  |  |  |
-| catalog+checkout | 0.304 | b100v0 | 1 | 3/5 | catalog:3×12 / checkout:5×12 | 3/5 | 5 | 5 | 5 | 5台×19 |  |  |  | catalog | 2 | 1078 | 39/62 |  |  |  |  |
-| catalog+checkout | 0.304 | b100v0 | 2 | 3/5 | catalog:3×12 / checkout:5×12 | 3/5 | 5 | 5 | 5 | 5台×19 |  |  |  | catalog | 2 | 1078 | 39/62 |  |  |  |  |
-| catalog+checkout | 0.304 | b100v0 | 3 | 3/5 | catalog:3×12 / checkout:5×12 | 3/5 | 5 | 5 | 5 | 5台×19 |  |  |  | catalog | 2 | 1078 | 39/62 |  |  |  |  |
-| catalog+checkout | 0.304 | b50v150 | 1 | 3/3 | catalog:3×12 / checkout:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 59/52 |  |  |  |  |
-| catalog+checkout | 0.304 | b50v150 | 2 | 3/3 | catalog:3×12 / checkout:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 59/52 |  |  |  |  |
-| catalog+checkout | 0.304 | b50v150 | 3 | 3/3 | catalog:3×12 / checkout:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 59/52 |  |  |  |  |
-| catalog+checkout | 0.304 | b50v300 | 1 | 4/3 | catalog:4×12 / checkout:3×12 | 4/3 | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | 155 | 68/41 |  |  |  |  |
-| catalog+checkout | 0.304 | b50v300 | 2 | 4/3 | catalog:4×12 / checkout:3×12 | 4/3 | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | 155 | 67/41 |  |  |  |  |
-| catalog+checkout | 0.304 | b50v300 | 3 | 4/3 | catalog:4×12 / checkout:3×12 | 4/3 | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | 155 | 68/41 |  |  |  |  |
-| catalog+checkout | 0.304 | b75v200 | 1 | 4/4 | catalog:4×12 / checkout:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 65/61 |  |  | recommendationservice@119s, recommendationservice@273s, frontend@492s | 載らない,Pending(他) |
-| catalog+checkout | 0.304 | b75v200 | 2 | 4/4 | catalog:4×12 / checkout:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 66/62 |  |  |  |  |
-| catalog+checkout | 0.304 | b75v200 | 3 | 4/4 | catalog:4×12 / checkout:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 64/61 |  |  | frontend@583s | 載らない,Pending(他) |
-| catalog+checkout | 0.304 | b0v300 | 1 | 3/1 | catalog:3×12 / checkout:1×12 | 3/1 | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 58/0 |  |  |  |  |
-| catalog+checkout | 0.304 | b0v300 | 2 | 3/1 | catalog:3×12 / checkout:1×12 | 3/1 | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 58/1 |  |  |  |  |
-| catalog+checkout | 0.304 | b0v300 | 3 | 3/1 | catalog:3×12 / checkout:1×12 | 3/1 | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 58/1 |  |  |  |  |
-| front+catalog | 0.006 | b100v0 | 1 | 3/3 | front:3×12 / catalog:3×12 | 3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 56/53 |  |  |  |  |
-| front+catalog | 0.006 | b100v0 | 2 | 3/3 | front:3×12 / catalog:3×12 | 3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 56/52 |  |  |  |  |
-| front+catalog | 0.006 | b100v0 | 3 | 3/3 | front:3×12 / catalog:3×12 | 3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 56/52 |  |  |  |  |
-| front+catalog | 0.006 | b50v150 | 1 | 3/3 | front:3×12 / catalog:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 54/50 |  |  |  |  |
-| front+catalog | 0.006 | b50v150 | 2 | 3/3 | front:3×12 / catalog:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 54/51 |  |  |  |  |
-| front+catalog | 0.006 | b50v150 | 3 | 3/3 | front:3×12 / catalog:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 54/51 |  |  |  |  |
-| front+catalog | 0.006 | b50v300 | 1 | 4/4 | front:4×12 / catalog:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 61/57 |  |  |  |  |
-| front+catalog | 0.006 | b50v300 | 2 | 4/4 | front:4×12 / catalog:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 61/57 |  |  |  |  |
-| front+catalog | 0.006 | b50v300 | 3 | 4/4 | front:4×12 / catalog:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 61/56 |  |  |  |  |
-| front+catalog | 0.006 | b75v200 | 1 | 4/4 | front:4×12 / catalog:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 59/54 |  |  |  |  |
-| front+catalog | 0.006 | b75v200 | 2 | 4/4 | front:4×12 / catalog:4×12 | 4/4 | 3 | 3 | 4 | 3台×12 4台×7 | 496s 3→4 | 480s→4 |  |  | 0 | -1449 | 71/66 |  |  |  | W:496s:3→4 *Pending |
-| front+catalog | 0.006 | b75v200 | 3 | 4/4 | front:4×12 / catalog:4×12 | 4/4 | 4 | 3 | 4 | 3台×2 4台×17 | 341s 3→4 | 326s→4 |  |  | 0 | 0 | 63/58 |  |  |  |  |
-| front+catalog | 0.006 | b0v300 | 1 | 3/3 | front:3×12 / catalog:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 53/50 |  |  |  |  |
-| front+catalog | 0.006 | b0v300 | 2 | 3/3 | front:3×12 / catalog:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 54/50 |  |  |  |  |
-| front+catalog | 0.006 | b0v300 | 3 | 3/3 | front:3×12 / catalog:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 54/50 |  |  |  |  |
-| currency+checkout | 0.26 | b100v0 | 1 | 4/5 | currency:4×12 / checkout:5×12 | 4/5 | 5 | 5 | 5 | 5台×19 |  |  |  | currency | 1 | 367 | 45/61 |  |  |  |  |
-| currency+checkout | 0.26 | b100v0 | 2 | 4/5 | currency:4×12 / checkout:5×12 | 4/5 | 5 | 5 | 5 | 5台×19 |  |  |  | currency | 1 | 367 | 46/62 |  |  |  |  |
-| currency+checkout | 0.26 | b100v0 | 3 | 4/5 | currency:4×12 / checkout:5×12 | 4/5 | 5 | 5 | 5 | 5台×19 |  |  |  | currency | 1 | 367 | 45/61 |  |  |  |  |
-| currency+checkout | 0.26 | b50v150 | 1 | 3/3 | currency:3×12 / checkout:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 63/51 |  |  |  |  |
-| currency+checkout | 0.26 | b50v150 | 2 | 3/3 | currency:3×12 / checkout:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 63/51 |  |  |  |  |
-| currency+checkout | 0.26 | b50v150 | 3 | 3/3 | currency:3×12 / checkout:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 63/52 |  |  |  |  |
-| currency+checkout | 0.26 | b50v300 | 1 | 5/3 | currency:4×1,5×11 / checkout:3×12 | 5/3 | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | -212 | 69/41 |  |  |  |  |
-| currency+checkout | 0.26 | b50v300 | 2 | 5/3 | currency:4×1,5×11 / checkout:3×12 | 5/3 | 5 | 5 | 5 | 5台×19 |  |  |  | checkout | 2 | 310 | 57/33 |  |  |  |  |
-| currency+checkout | 0.26 | b50v300 | 3 | 5/3 | currency:4×1,5×11 / checkout:3×12 | 5/3 | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | -212 | 71/41 |  |  |  |  |
-| currency+checkout | 0.26 | b75v200 | 1 | 5/4 | currency:4×2,5×10 / checkout:4×12 | 5/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 71/60 |  |  |  |  |
-| currency+checkout | 0.26 | b75v200 | 2 | 5/4 | currency:4×2,5×10 / checkout:4×12 | 5/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 71/61 |  |  |  | Pending(他) |
-| currency+checkout | 0.26 | b75v200 | 3 | 5/4 | currency:4×2,5×10 / checkout:4×12 | 5/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 70/61 |  |  |  |  |
-| currency+checkout | 0.26 | b0v300 | 1 | 3/1 | currency:3×12 / checkout:1×12 | 3/1 | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 55/0 |  |  |  |  |
-| currency+checkout | 0.26 | b0v300 | 2 | 3/1 | currency:3×12 / checkout:1×12 | 3/1 | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 55/0 |  |  |  |  |
-| currency+checkout | 0.26 | b0v300 | 3 | 3/1 | currency:3×12 / checkout:1×12 | 3/1 | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 55/1 |  |  |  |  |
-| front+currency | 0.05 | b100v0 | 1 | 3/4 | front:3×12 / currency:4×12 | 3/4 | 4 | 4 | 4 | 4台×19 |  |  |  | front | 1 | 910 | 45/54 |  |  |  |  |
-| front+currency | 0.05 | b100v0 | 2 | 3/4 | front:3×12 / currency:4×12 | 3/4 | 4 | 4 | 4 | 4台×18 |  |  |  | front | 1 | 910 | 45/54 |  |  |  |  |
-| front+currency | 0.05 | b100v0 | 3 | 3/4 | front:3×12 / currency:4×12 | 3/4 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | -367 | 59/69 |  |  |  |  |
-| front+currency | 0.05 | b50v150 | 1 | 3/3 | front:3×12 / currency:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 57/59 |  |  |  |  |
-| front+currency | 0.05 | b50v150 | 2 | 3/3 | front:3×12 / currency:3×12 | 3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 57/59 |  |  |  |  |
-| front+currency | 0.05 | b50v150 | 3 | 3/3 | front:3×12 / currency:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 57/59 |  |  |  |  |
-| front+currency | 0.05 | b50v300 | 1 | 4/5 | front:4×12 / currency:4×1,5×11 | 4/5 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 65/67 |  |  |  |  |
-| front+currency | 0.05 | b50v300 | 2 | 4/5 | front:4×12 / currency:4×1,5×11 | 4/5 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 64/66 |  |  |  |  |
-| front+currency | 0.05 | b50v300 | 3 | 4/5 | front:4×12 / currency:4×1,5×11 | 4/5 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 64/66 |  |  |  |  |
-| front+currency | 0.05 | b75v200 | 1 | 4/5 | front:4×12 / currency:4×2,5×10 | 4/5 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 61/67 |  |  |  |  |
-| front+currency | 0.05 | b75v200 | 2 | 4/5 | front:4×12 / currency:4×2,5×10 | 4/5 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 62/67 |  |  |  |  |
-| front+currency | 0.05 | b75v200 | 3 | 4/5 | front:4×12 / currency:4×2,5×10 | 4/5 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 61/67 |  |  |  |  |
-| front+currency | 0.05 | b0v300 | 1 | 3/3 | front:3×12 / currency:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 56/51 |  |  |  |  |
-| front+currency | 0.05 | b0v300 | 2 | 3/3 | front:3×12 / currency:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 56/51 |  |  |  |  |
-| front+currency | 0.05 | b0v300 | 3 | 3/3 | front:3×12 / currency:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 56/50 |  |  |  |  |
-| checkout+cart | 0.179 | b100v0 | 1 | 5/4 | checkout:5×12 / cart:4×12 | 5/4 | 5 | 5 | 5 | 5台×19 |  |  |  | cart | 1 | 230 | 61/51 |  |  |  |  |
-| checkout+cart | 0.179 | b100v0 | 2 | 5/4 | checkout:5×12 / cart:4×12 | 5/4 | 5 | 5 | 5 | 5台×18 |  |  |  | cart | 1 | 230 | 61/51 |  |  |  |  |
-| checkout+cart | 0.179 | b100v0 | 3 | 5/4 | checkout:5×12 / cart:4×12 | 5/4 | 5 | 5 | 5 | 5台×19 |  |  |  | cart | 1 | 230 | 61/51 |  |  |  |  |
-| checkout+cart | 0.179 | b50v150 | 1 | 3/3 | checkout:3×12 / cart:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 52/64 |  |  |  |  |
-| checkout+cart | 0.179 | b50v150 | 2 | 3/3 | checkout:3×12 / cart:3×12 | 3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 52/62 |  |  |  |  |
-| checkout+cart | 0.179 | b50v150 | 3 | 3/3 | checkout:3×12 / cart:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 52/64 |  |  |  |  |
-| checkout+cart | 0.179 | b50v300 | 1 | 3/4 | checkout:3×12 / cart:4×12 | 3/4 | 4 | 4 | 4 | 4台×19 | 310s 5→4 |  |  | checkout | 1 | 155 | 41/69 |  |  |  |  |
-| checkout+cart | 0.179 | b50v300 | 2 | 3/4 | checkout:3×12 / cart:4×12 | 3/4 | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | 155 | 41/68 |  |  |  |  |
-| checkout+cart | 0.179 | b50v300 | 3 | 3/4 | checkout:3×12 / cart:4×12 | 3/4 | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | 155 | 41/69 |  |  |  |  |
-| checkout+cart | 0.179 | b75v200 | 1 | 4/5 | checkout:4×12 / cart:4×3,5×9 | 4/5 | 5 | 5 | 5 | 5台×19 |  |  |  | checkout | 1 | 155 | 49/60 |  |  |  |  |
-| checkout+cart | 0.179 | b75v200 | 2 | 4/5 | checkout:4×12 / cart:4×3,5×9 | 4/4 | 5 | 5 | 5 | 5台×19 |  |  |  | checkout | 1 | 155 | 49/60 |  |  |  |  |
-| checkout+cart | 0.179 | b75v200 | 3 | 4/5 | checkout:4×12 / cart:4×3,5×9 | 4/5 | 5 | 5 | 5 | 5台×19 |  |  |  | checkout | 1 | 155 | 48/60 |  |  |  |  |
-| checkout+cart | 0.179 | b0v300 | 1 | 1/2 | checkout:1×12 / cart:2×12 | 1/2 | 2 | 2 | 2 | 2台×18 |  |  |  | checkout | 1 | 155 | 0/68 |  |  |  |  |
-| checkout+cart | 0.179 | b0v300 | 2 | 1/2 | checkout:1×12 / cart:2×12 | 1/2 | 2 | 2 | 2 | 2台×18 |  |  |  | checkout | 1 | 155 | 0/67 |  |  |  |  |
-| checkout+cart | 0.179 | b0v300 | 3 | 1/2 | checkout:1×12 / cart:2×12 | 1/2 | 2 | 2 | 2 | 2台×18 |  |  |  | checkout | 1 | 155 | 0/67 |  |  |  |  |
-| front+reco | 0.007 | b100v0 | 1 | 3/3 | front:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 59/55 |  |  |  |  |
-| front+reco | 0.007 | b100v0 | 2 | 3/3 | front:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 59/55 |  |  |  |  |
-| front+reco | 0.007 | b100v0 | 3 | 3/3 | front:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 59/55 |  |  |  |  |
-| front+reco | 0.007 | b50v150 | 1 | 3/3 | front:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 57/54 |  |  |  |  |
-| front+reco | 0.007 | b50v150 | 2 | 3/3 | front:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 58/54 |  |  |  |  |
-| front+reco | 0.007 | b50v150 | 3 | 3/3 | front:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 57/53 |  |  |  |  |
-| front+reco | 0.007 | b50v300 | 1 | 4/4 | front:4×12 / reco:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 65/62 |  |  |  |  |
-| front+reco | 0.007 | b50v300 | 2 | 4/4 | front:4×12 / reco:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 65/63 |  |  |  |  |
-| front+reco | 0.007 | b50v300 | 3 | 4/4 | front:4×12 / reco:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 65/63 |  |  |  |  |
-| front+reco | 0.007 | b75v200 | 1 | 4/4 | front:4×12 / reco:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 62/60 |  |  |  |  |
-| front+reco | 0.007 | b75v200 | 2 | 4/4 | front:4×12 / reco:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 62/60 |  |  |  |  |
-| front+reco | 0.007 | b75v200 | 3 | 4/4 | front:4×12 / reco:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 62/60 |  |  |  |  |
-| front+reco | 0.007 | b0v300 | 1 | 3/3 | front:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 56/52 |  |  |  |  |
-| front+reco | 0.007 | b0v300 | 2 | 3/3 | front:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 56/52 |  |  |  |  |
-| front+reco | 0.007 | b0v300 | 3 | 3/3 | front:3×12 / reco:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 56/52 |  |  |  |  |
-| checkout+front | 0.31 | b100v0 | 1 | 5/3 | checkout:5×12 / front:3×12 | 5/3 | 5 | 5 | 5 | 5台×19 |  |  |  | front | 2 | 1820 | 61/37 |  |  |  |  |
-| checkout+front | 0.31 | b100v0 | 2 | 5/3 | checkout:5×12 / front:3×12 | 5/3 | 5 | 5 | 5 | 5台×19 |  |  |  | front | 2 | 1820 | 61/37 |  |  |  |  |
-| checkout+front | 0.31 | b100v0 | 3 | 5/3 | checkout:5×12 / front:3×12 | 5/3 | 5 | 5 | 5 | 5台×19 |  |  |  | front | 2 | 1820 | 61/37 |  |  |  |  |
-| checkout+front | 0.31 | b50v150 | 1 | 3/3 | checkout:3×12 / front:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 51/57 |  |  |  |  |
-| checkout+front | 0.31 | b50v150 | 2 | 3/3 | checkout:3×12 / front:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 52/57 |  |  |  |  |
-| checkout+front | 0.31 | b50v150 | 3 | 3/3 | checkout:3×12 / front:3×12 | 3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 52/58 |  |  |  |  |
-| checkout+front | 0.31 | b50v300 | 1 | 3/4 | checkout:3×12 / front:4×12 | 3/4 | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | 155 | 41/65 |  |  |  |  |
-| checkout+front | 0.31 | b50v300 | 2 | 3/4 | checkout:3×12 / front:4×12 | 3/4 | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | 155 | 41/65 |  |  |  |  |
-| checkout+front | 0.31 | b50v300 | 3 | 3/4 | checkout:3×12 / front:4×12 | 3/4 | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | 155 | 41/65 |  |  |  |  |
-| checkout+front | 0.31 | b75v200 | 1 | 4/4 | checkout:4×12 / front:4×12 | 4/4 | 4 | 4 | 4 | 4台×18 |  |  |  |  | 0 | 0 | 61/62 |  |  |  |  |
-| checkout+front | 0.31 | b75v200 | 2 | 4/4 | checkout:4×12 / front:4×12 | 4/4 | 4 | 4 | 4 | 4台×18 |  |  |  |  | 0 | 0 | 60/62 |  |  |  |  |
-| checkout+front | 0.31 | b75v200 | 3 | 4/4 | checkout:4×12 / front:4×12 | 4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 60/62 |  |  | recommendationservice@119s | 載らない |
-| checkout+front | 0.31 | b0v300 | 1 | 1/3 | checkout:1×12 / front:3×12 | 1/3 | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 1/56 |  |  |  |  |
-| checkout+front | 0.31 | b0v300 | 2 | 1/3 | checkout:1×12 / front:3×12 | 1/3 | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 1/56 |  |  |  |  |
-| checkout+front | 0.31 | b0v300 | 3 | 1/3 | checkout:1×12 / front:3×12 | 1/3 | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 1/56 |  |  |  |  |
-| front+catalog+reco | 0.013 | b100v0 | 1 | 3/3/3 | front:3×12 / catalog:3×12 / reco:3×12 | 3/3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 56/52/54 |  |  |  |  |
-| front+catalog+reco | 0.013 | b100v0 | 2 | 3/3/3 | front:3×12 / catalog:3×12 / reco:3×12 | 3/3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 56/53/53 |  |  |  |  |
-| front+catalog+reco | 0.013 | b100v0 | 3 | 3/3/3 | front:3×12 / catalog:3×12 / reco:3×12 | 3/3/3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 56/52/53 |  |  |  |  |
-| front+catalog+reco | 0.013 | b50v150 | 1 | 3/3/3 | front:3×12 / catalog:3×12 / reco:3×12 | 3/3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 54/50/52 |  |  |  |  |
-| front+catalog+reco | 0.013 | b50v150 | 2 | 3/3/3 | front:3×12 / catalog:3×12 / reco:3×12 | 3/3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 54/50/51 |  |  |  |  |
-| front+catalog+reco | 0.013 | b50v150 | 3 | 3/3/3 | front:3×12 / catalog:3×12 / reco:3×12 | 3/3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 55/51/51 |  |  |  |  |
-| front+catalog+reco | 0.013 | b50v300 | 1 | 4/4/4 | front:4×12 / catalog:4×12 / reco:4×12 | 4/4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 61/56/61 |  |  |  |  |
-| front+catalog+reco | 0.013 | b50v300 | 2 | 4/4/4 | front:4×12 / catalog:4×12 / reco:4×12 | 4/4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 62/57/60 |  |  |  |  |
-| front+catalog+reco | 0.013 | b50v300 | 3 | 4/4/4 | front:4×12 / catalog:4×12 / reco:4×12 | 4/4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 62/57/60 |  |  |  |  |
-| front+catalog+reco | 0.013 | b75v200 | 1 | 4/4/4 | front:4×12 / catalog:4×12 / reco:4×12 | 4/4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 59/54/58 |  |  |  |  |
-| front+catalog+reco | 0.013 | b75v200 | 2 | 4/4/4 | front:4×12 / catalog:4×12 / reco:4×12 | 4/4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 59/54/58 |  |  |  |  |
-| front+catalog+reco | 0.013 | b75v200 | 3 | 4/4/4 | front:4×12 / catalog:4×12 / reco:4×12 | 4/4/4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 59/54/58 |  |  |  |  |
-| front+catalog+reco | 0.013 | b0v300 | 1 | 3/3/3 | front:3×12 / catalog:3×12 / reco:3×12 | 3/3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 53/49/50 |  |  |  |  |
-| front+catalog+reco | 0.013 | b0v300 | 2 | 3/3/3 | front:3×12 / catalog:3×12 / reco:3×12 | 3/3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 53/49/50 |  |  |  |  |
-| front+catalog+reco | 0.013 | b0v300 | 3 | 3/3/3 | front:3×12 / catalog:3×12 / reco:3×12 | 3/3/3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 53/49/50 |  |  |  |  |
+| 組 | Δρ | 配合 | 周 | メンバー(順) | 分離の台数(最頻)_1 | 分離の台数(最頻)_2 | 分離の台数(最頻)_3 | 分離12回の分布 | 同じ番号の周の分離_1 | 同じ番号の周の分離_2 | 同じ番号の周の分離_3 | 同居の台数(判定) | 窓の始め | 窓の終わり | 台数ごとのサンプル数 | 窓内の台数変化 | HPAが今より多く望んだ時刻 | Ready不足の時刻 | 引きずられた側 | Δn | 損[m] | 窓平均の利用率%_1 | 窓平均の利用率%_2 | 窓平均の利用率%_3 | 同居Podが載らない(t_rel) | うち窓の中 | 他のPodが載らない | 解析の印 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| checkout+shipping | 0.005 | b100v0 | 1 | checkout・shipping | 5 | 5 |  | checkout:5×12 ; shipping:5×12 | 5 | 5 |  | 5 | 5 | 5 | 5台×19 |  |  |  |  | 0 | 0 | 61 | 60 |  |  |  |  |  |
+| checkout+shipping | 0.005 | b100v0 | 2 | checkout・shipping | 5 | 5 |  | checkout:5×12 ; shipping:5×12 | 5 | 5 |  | 5 | 5 | 5 | 5台×19 |  |  |  |  | 0 | 0 | 61 | 60 |  |  |  |  |  |
+| checkout+shipping | 0.005 | b100v0 | 3 | checkout・shipping | 5 | 5 |  | checkout:5×12 ; shipping:5×12 | 5 | 5 |  | 4 | 4 | 5 | 4台×16 5台×2 | 573s 4→5 | 557s→5 |  |  | 0 | -216 | 76 | 74 |  |  |  |  |  |
+| checkout+shipping | 0.005 | b50v150 | 1 | checkout・shipping | 3 | 3 |  | checkout:3×12 ; shipping:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 51 | 51 |  |  |  |  |  |
+| checkout+shipping | 0.005 | b50v150 | 2 | checkout・shipping | 3 | 3 |  | checkout:3×12 ; shipping:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 52 | 51 |  |  |  |  |  |
+| checkout+shipping | 0.005 | b50v150 | 3 | checkout・shipping | 3 | 3 |  | checkout:3×12 ; shipping:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 51 | 51 |  |  |  |  |  |
+| checkout+shipping | 0.005 | b50v300 | 1 | checkout・shipping | 3 | 3 |  | checkout:3×12 ; shipping:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 55 | 54 |  |  |  |  |  |
+| checkout+shipping | 0.005 | b50v300 | 2 | checkout・shipping | 3 | 3 |  | checkout:3×12 ; shipping:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 55 | 54 |  |  |  |  |  |
+| checkout+shipping | 0.005 | b50v300 | 3 | checkout・shipping | 3 | 3 |  | checkout:3×12 ; shipping:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 54 | 54 |  |  |  |  |  |
+| checkout+shipping | 0.005 | b75v200 | 1 | checkout・shipping | 4 | 4 |  | checkout:4×12 ; shipping:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 60 | 59 |  |  |  |  |  |
+| checkout+shipping | 0.005 | b75v200 | 2 | checkout・shipping | 4 | 4 |  | checkout:4×12 ; shipping:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 60 | 59 |  |  |  | frontend@119s | 載らない |
+| checkout+shipping | 0.005 | b75v200 | 3 | checkout・shipping | 4 | 4 |  | checkout:4×12 ; shipping:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 60 | 59 |  |  |  |  |  |
+| checkout+shipping | 0.005 | b0v300 | 1 | checkout・shipping | 1 | 1 |  | checkout:1×12 ; shipping:1×12 | 1 | 1 |  | 1 | 1 | 1 | 1台×18 |  |  |  |  | 0 | 0 | 0 | 1 |  |  |  |  |  |
+| checkout+shipping | 0.005 | b0v300 | 2 | checkout・shipping | 1 | 1 |  | checkout:1×12 ; shipping:1×12 | 1 | 1 |  | 1 | 1 | 1 | 1台×18 |  |  |  |  | 0 | 0 | 0 | 1 |  |  |  |  |  |
+| checkout+shipping | 0.005 | b0v300 | 3 | checkout・shipping | 1 | 1 |  | checkout:1×12 ; shipping:1×12 | 1 | 1 |  | 1 | 1 | 1 | 1台×18 |  |  |  |  | 0 | 0 | 1 | 1 |  |  |  |  |  |
+| catalog+reco | 0.013 | b100v0 | 1 | catalog・reco | 3 | 3 |  | catalog:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 60 | 53 |  |  |  |  |  |
+| catalog+reco | 0.013 | b100v0 | 2 | catalog・reco | 3 | 3 |  | catalog:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 60 | 53 |  |  |  |  |  |
+| catalog+reco | 0.013 | b100v0 | 3 | catalog・reco | 3 | 3 |  | catalog:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 60 | 54 |  |  |  |  |  |
+| catalog+reco | 0.013 | b50v150 | 1 | catalog・reco | 3 | 3 |  | catalog:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 58 | 52 |  |  |  |  |  |
+| catalog+reco | 0.013 | b50v150 | 2 | catalog・reco | 3 | 3 |  | catalog:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 60 | 51 |  |  |  |  |  |
+| catalog+reco | 0.013 | b50v150 | 3 | catalog・reco | 3 | 3 |  | catalog:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 59 | 52 |  |  |  |  |  |
+| catalog+reco | 0.013 | b50v300 | 1 | catalog・reco | 4 | 4 |  | catalog:4×12 ; reco:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 66 | 61 |  |  |  |  |  |
+| catalog+reco | 0.013 | b50v300 | 2 | catalog・reco | 4 | 4 |  | catalog:4×12 ; reco:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 66 | 61 |  |  |  |  |  |
+| catalog+reco | 0.013 | b50v300 | 3 | catalog・reco | 4 | 4 |  | catalog:4×12 ; reco:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 66 | 61 |  |  |  |  |  |
+| catalog+reco | 0.013 | b75v200 | 1 | catalog・reco | 4 | 4 |  | catalog:4×12 ; reco:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 63 | 58 |  |  |  |  |  |
+| catalog+reco | 0.013 | b75v200 | 2 | catalog・reco | 4 | 4 |  | catalog:4×12 ; reco:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 63 | 58 |  |  |  | frontend@119s | 載らない |
+| catalog+reco | 0.013 | b75v200 | 3 | catalog・reco | 4 | 4 |  | catalog:4×12 ; reco:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 63 | 59 |  |  |  |  |  |
+| catalog+reco | 0.013 | b0v300 | 1 | catalog・reco | 3 | 3 |  | catalog:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 58 | 50 |  |  |  |  |  |
+| catalog+reco | 0.013 | b0v300 | 2 | catalog・reco | 3 | 3 |  | catalog:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 58 | 50 |  |  |  |  |  |
+| catalog+reco | 0.013 | b0v300 | 3 | catalog・reco | 3 | 3 |  | catalog:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 58 | 50 |  |  |  |  |  |
+| front+cart | 0.131 | b100v0 | 1 | front・cart | 3 | 4 |  | front:3×12 ; cart:4×12 | 3 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  | front | 1 | 910 | 45 | 61 |  |  |  |  |  |
+| front+cart | 0.131 | b100v0 | 2 | front・cart | 3 | 4 |  | front:3×12 ; cart:4×12 | 3 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  | front | 1 | 910 | 46 | 59 |  |  |  |  |  |
+| front+cart | 0.131 | b100v0 | 3 | front・cart | 3 | 4 |  | front:3×12 ; cart:4×12 | 3 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  | front | 1 | 910 | 45 | 60 |  |  |  |  |  |
+| front+cart | 0.131 | b50v150 | 1 | front・cart | 3 | 3 |  | front:3×12 ; cart:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 56 | 60 |  |  |  |  |  |
+| front+cart | 0.131 | b50v150 | 2 | front・cart | 3 | 3 |  | front:3×12 ; cart:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 57 | 62 |  |  |  |  |  |
+| front+cart | 0.131 | b50v150 | 3 | front・cart | 3 | 3 |  | front:3×12 ; cart:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 56 | 60 |  |  |  |  |  |
+| front+cart | 0.131 | b50v300 | 1 | front・cart | 4 | 4 |  | front:4×12 ; cart:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 64 | 69 |  |  |  |  |  |
+| front+cart | 0.131 | b50v300 | 2 | front・cart | 4 | 4 |  | front:4×12 ; cart:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 64 | 67 |  |  |  |  |  |
+| front+cart | 0.131 | b50v300 | 3 | front・cart | 4 | 4 |  | front:4×12 ; cart:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 65 | 69 |  |  |  |  |  |
+| front+cart | 0.131 | b75v200 | 1 | front・cart | 4 | 5 |  | front:4×12 ; cart:4×3,5×9 | 4 | 5 |  | 4 | 4 | 5 | 4台×13 5台×6 | 310s 5→4, 512s 4→5 | 497s→5 | 512s, 528s, 543s, 559s, 574s, 590s |  | 0 | -230 | 61 | 73 |  | 492s | あり | recommendationservice@119s, recommendationservice@273s | W:512s:4→5 *載らない,Pending,Ready落ち |
+| front+cart | 0.131 | b75v200 | 2 | front・cart | 4 | 5 |  | front:4×12 ; cart:4×3,5×9 | 4 | 4 |  | 5 | 5 | 4 | 4台×2 5台×17 | 311s 4→5, 574s 5→4 |  | 559s | front | 1 | 910 | 53 | 60 |  |  |  |  |  |
+| front+cart | 0.131 | b75v200 | 3 | front・cart | 4 | 5 |  | front:4×12 ; cart:4×3,5×9 | 4 | 5 |  | 4 | 4 | 4 | 4台×19 |  | 590s→5 |  |  | 0 | -230 | 62 | 72 |  | 583s | あり |  | 載らない,Pending |
+| front+cart | 0.131 | b0v300 | 1 | front・cart | 3 | 2 |  | front:3×12 ; cart:2×12 | 3 | 2 |  | 3 | 3 | 3 | 3台×18 |  |  |  | cart | 1 | 230 | 56 | 43 |  |  |  |  |  |
+| front+cart | 0.131 | b0v300 | 2 | front・cart | 3 | 2 |  | front:3×12 ; cart:2×12 | 3 | 2 |  | 3 | 3 | 3 | 3台×18 |  |  |  | cart | 1 | 230 | 56 | 42 |  |  |  |  |  |
+| front+cart | 0.131 | b0v300 | 3 | front・cart | 3 | 2 |  | front:3×12 ; cart:2×12 | 3 | 2 |  | 3 | 3 | 3 | 3台×18 |  |  |  | cart | 1 | 230 | 56 | 43 |  |  |  |  |  |
+| catalog+checkout | 0.304 | b100v0 | 1 | catalog・checkout | 3 | 5 |  | catalog:3×12 ; checkout:5×12 | 3 | 5 |  | 5 | 5 | 5 | 5台×19 |  |  |  | catalog | 2 | 1078 | 39 | 62 |  |  |  |  |  |
+| catalog+checkout | 0.304 | b100v0 | 2 | catalog・checkout | 3 | 5 |  | catalog:3×12 ; checkout:5×12 | 3 | 5 |  | 5 | 5 | 5 | 5台×19 |  |  |  | catalog | 2 | 1078 | 39 | 62 |  |  |  |  |  |
+| catalog+checkout | 0.304 | b100v0 | 3 | catalog・checkout | 3 | 5 |  | catalog:3×12 ; checkout:5×12 | 3 | 5 |  | 5 | 5 | 5 | 5台×19 |  |  |  | catalog | 2 | 1078 | 39 | 62 |  |  |  |  |  |
+| catalog+checkout | 0.304 | b50v150 | 1 | catalog・checkout | 3 | 3 |  | catalog:3×12 ; checkout:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 59 | 52 |  |  |  |  |  |
+| catalog+checkout | 0.304 | b50v150 | 2 | catalog・checkout | 3 | 3 |  | catalog:3×12 ; checkout:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 59 | 52 |  |  |  |  |  |
+| catalog+checkout | 0.304 | b50v150 | 3 | catalog・checkout | 3 | 3 |  | catalog:3×12 ; checkout:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 59 | 52 |  |  |  |  |  |
+| catalog+checkout | 0.304 | b50v300 | 1 | catalog・checkout | 4 | 3 |  | catalog:4×12 ; checkout:3×12 | 4 | 3 |  | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | 155 | 68 | 41 |  |  |  |  |  |
+| catalog+checkout | 0.304 | b50v300 | 2 | catalog・checkout | 4 | 3 |  | catalog:4×12 ; checkout:3×12 | 4 | 3 |  | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | 155 | 67 | 41 |  |  |  |  |  |
+| catalog+checkout | 0.304 | b50v300 | 3 | catalog・checkout | 4 | 3 |  | catalog:4×12 ; checkout:3×12 | 4 | 3 |  | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | 155 | 68 | 41 |  |  |  |  |  |
+| catalog+checkout | 0.304 | b75v200 | 1 | catalog・checkout | 4 | 4 |  | catalog:4×12 ; checkout:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 65 | 61 |  |  |  | recommendationservice@119s, recommendationservice@273s, frontend@492s | 載らない,Pending(他) |
+| catalog+checkout | 0.304 | b75v200 | 2 | catalog・checkout | 4 | 4 |  | catalog:4×12 ; checkout:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 66 | 62 |  |  |  |  |  |
+| catalog+checkout | 0.304 | b75v200 | 3 | catalog・checkout | 4 | 4 |  | catalog:4×12 ; checkout:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 64 | 61 |  |  |  | frontend@583s | 載らない,Pending(他) |
+| catalog+checkout | 0.304 | b0v300 | 1 | catalog・checkout | 3 | 1 |  | catalog:3×12 ; checkout:1×12 | 3 | 1 |  | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 58 | 0 |  |  |  |  |  |
+| catalog+checkout | 0.304 | b0v300 | 2 | catalog・checkout | 3 | 1 |  | catalog:3×12 ; checkout:1×12 | 3 | 1 |  | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 58 | 1 |  |  |  |  |  |
+| catalog+checkout | 0.304 | b0v300 | 3 | catalog・checkout | 3 | 1 |  | catalog:3×12 ; checkout:1×12 | 3 | 1 |  | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 58 | 1 |  |  |  |  |  |
+| front+catalog | 0.006 | b100v0 | 1 | front・catalog | 3 | 3 |  | front:3×12 ; catalog:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 56 | 53 |  |  |  |  |  |
+| front+catalog | 0.006 | b100v0 | 2 | front・catalog | 3 | 3 |  | front:3×12 ; catalog:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 56 | 52 |  |  |  |  |  |
+| front+catalog | 0.006 | b100v0 | 3 | front・catalog | 3 | 3 |  | front:3×12 ; catalog:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 56 | 52 |  |  |  |  |  |
+| front+catalog | 0.006 | b50v150 | 1 | front・catalog | 3 | 3 |  | front:3×12 ; catalog:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 54 | 50 |  |  |  |  |  |
+| front+catalog | 0.006 | b50v150 | 2 | front・catalog | 3 | 3 |  | front:3×12 ; catalog:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 54 | 51 |  |  |  |  |  |
+| front+catalog | 0.006 | b50v150 | 3 | front・catalog | 3 | 3 |  | front:3×12 ; catalog:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 54 | 51 |  |  |  |  |  |
+| front+catalog | 0.006 | b50v300 | 1 | front・catalog | 4 | 4 |  | front:4×12 ; catalog:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 61 | 57 |  |  |  |  |  |
+| front+catalog | 0.006 | b50v300 | 2 | front・catalog | 4 | 4 |  | front:4×12 ; catalog:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 61 | 57 |  |  |  |  |  |
+| front+catalog | 0.006 | b50v300 | 3 | front・catalog | 4 | 4 |  | front:4×12 ; catalog:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 61 | 56 |  |  |  |  |  |
+| front+catalog | 0.006 | b75v200 | 1 | front・catalog | 4 | 4 |  | front:4×12 ; catalog:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 59 | 54 |  |  |  |  |  |
+| front+catalog | 0.006 | b75v200 | 2 | front・catalog | 4 | 4 |  | front:4×12 ; catalog:4×12 | 4 | 4 |  | 3 | 3 | 4 | 3台×12 4台×7 | 496s 3→4 | 480s→4 |  |  | 0 | -1449 | 71 | 66 |  |  |  |  | W:496s:3→4 *Pending |
+| front+catalog | 0.006 | b75v200 | 3 | front・catalog | 4 | 4 |  | front:4×12 ; catalog:4×12 | 4 | 4 |  | 4 | 3 | 4 | 3台×2 4台×17 | 341s 3→4 | 326s→4 |  |  | 0 | 0 | 63 | 58 |  |  |  |  |  |
+| front+catalog | 0.006 | b0v300 | 1 | front・catalog | 3 | 3 |  | front:3×12 ; catalog:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 53 | 50 |  |  |  |  |  |
+| front+catalog | 0.006 | b0v300 | 2 | front・catalog | 3 | 3 |  | front:3×12 ; catalog:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 54 | 50 |  |  |  |  |  |
+| front+catalog | 0.006 | b0v300 | 3 | front・catalog | 3 | 3 |  | front:3×12 ; catalog:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 54 | 50 |  |  |  |  |  |
+| currency+checkout | 0.26 | b100v0 | 1 | currency・checkout | 4 | 5 |  | currency:4×12 ; checkout:5×12 | 4 | 5 |  | 5 | 5 | 5 | 5台×19 |  |  |  | currency | 1 | 367 | 45 | 61 |  |  |  |  |  |
+| currency+checkout | 0.26 | b100v0 | 2 | currency・checkout | 4 | 5 |  | currency:4×12 ; checkout:5×12 | 4 | 5 |  | 5 | 5 | 5 | 5台×19 |  |  |  | currency | 1 | 367 | 46 | 62 |  |  |  |  |  |
+| currency+checkout | 0.26 | b100v0 | 3 | currency・checkout | 4 | 5 |  | currency:4×12 ; checkout:5×12 | 4 | 5 |  | 5 | 5 | 5 | 5台×19 |  |  |  | currency | 1 | 367 | 45 | 61 |  |  |  |  |  |
+| currency+checkout | 0.26 | b50v150 | 1 | currency・checkout | 3 | 3 |  | currency:3×12 ; checkout:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 63 | 51 |  |  |  |  |  |
+| currency+checkout | 0.26 | b50v150 | 2 | currency・checkout | 3 | 3 |  | currency:3×12 ; checkout:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 63 | 51 |  |  |  |  |  |
+| currency+checkout | 0.26 | b50v150 | 3 | currency・checkout | 3 | 3 |  | currency:3×12 ; checkout:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 63 | 52 |  |  |  |  |  |
+| currency+checkout | 0.26 | b50v300 | 1 | currency・checkout | 5 | 3 |  | currency:4×1,5×11 ; checkout:3×12 | 5 | 3 |  | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | -212 | 69 | 41 |  |  |  |  |  |
+| currency+checkout | 0.26 | b50v300 | 2 | currency・checkout | 5 | 3 |  | currency:4×1,5×11 ; checkout:3×12 | 5 | 3 |  | 5 | 5 | 5 | 5台×19 |  |  |  | checkout | 2 | 310 | 57 | 33 |  |  |  |  |  |
+| currency+checkout | 0.26 | b50v300 | 3 | currency・checkout | 5 | 3 |  | currency:4×1,5×11 ; checkout:3×12 | 5 | 3 |  | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | -212 | 71 | 41 |  |  |  |  |  |
+| currency+checkout | 0.26 | b75v200 | 1 | currency・checkout | 5 | 4 |  | currency:4×2,5×10 ; checkout:4×12 | 5 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 71 | 60 |  |  |  |  |  |
+| currency+checkout | 0.26 | b75v200 | 2 | currency・checkout | 5 | 4 |  | currency:4×2,5×10 ; checkout:4×12 | 5 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 71 | 61 |  |  |  |  | Pending(他) |
+| currency+checkout | 0.26 | b75v200 | 3 | currency・checkout | 5 | 4 |  | currency:4×2,5×10 ; checkout:4×12 | 5 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 70 | 61 |  |  |  |  |  |
+| currency+checkout | 0.26 | b0v300 | 1 | currency・checkout | 3 | 1 |  | currency:3×12 ; checkout:1×12 | 3 | 1 |  | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 55 | 0 |  |  |  |  |  |
+| currency+checkout | 0.26 | b0v300 | 2 | currency・checkout | 3 | 1 |  | currency:3×12 ; checkout:1×12 | 3 | 1 |  | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 55 | 0 |  |  |  |  |  |
+| currency+checkout | 0.26 | b0v300 | 3 | currency・checkout | 3 | 1 |  | currency:3×12 ; checkout:1×12 | 3 | 1 |  | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 55 | 1 |  |  |  |  |  |
+| front+currency | 0.05 | b100v0 | 1 | front・currency | 3 | 4 |  | front:3×12 ; currency:4×12 | 3 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  | front | 1 | 910 | 45 | 54 |  |  |  |  |  |
+| front+currency | 0.05 | b100v0 | 2 | front・currency | 3 | 4 |  | front:3×12 ; currency:4×12 | 3 | 4 |  | 4 | 4 | 4 | 4台×18 |  |  |  | front | 1 | 910 | 45 | 54 |  |  |  |  |  |
+| front+currency | 0.05 | b100v0 | 3 | front・currency | 3 | 4 |  | front:3×12 ; currency:4×12 | 3 | 4 |  | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | -367 | 59 | 69 |  |  |  |  |  |
+| front+currency | 0.05 | b50v150 | 1 | front・currency | 3 | 3 |  | front:3×12 ; currency:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 57 | 59 |  |  |  |  |  |
+| front+currency | 0.05 | b50v150 | 2 | front・currency | 3 | 3 |  | front:3×12 ; currency:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 57 | 59 |  |  |  |  |  |
+| front+currency | 0.05 | b50v150 | 3 | front・currency | 3 | 3 |  | front:3×12 ; currency:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 57 | 59 |  |  |  |  |  |
+| front+currency | 0.05 | b50v300 | 1 | front・currency | 4 | 5 |  | front:4×12 ; currency:4×1,5×11 | 4 | 5 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 65 | 67 |  |  |  |  |  |
+| front+currency | 0.05 | b50v300 | 2 | front・currency | 4 | 5 |  | front:4×12 ; currency:4×1,5×11 | 4 | 5 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 64 | 66 |  |  |  |  |  |
+| front+currency | 0.05 | b50v300 | 3 | front・currency | 4 | 5 |  | front:4×12 ; currency:4×1,5×11 | 4 | 5 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 64 | 66 |  |  |  |  |  |
+| front+currency | 0.05 | b75v200 | 1 | front・currency | 4 | 5 |  | front:4×12 ; currency:4×2,5×10 | 4 | 5 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 61 | 67 |  |  |  |  |  |
+| front+currency | 0.05 | b75v200 | 2 | front・currency | 4 | 5 |  | front:4×12 ; currency:4×2,5×10 | 4 | 5 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 62 | 67 |  |  |  |  |  |
+| front+currency | 0.05 | b75v200 | 3 | front・currency | 4 | 5 |  | front:4×12 ; currency:4×2,5×10 | 4 | 5 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | -367 | 61 | 67 |  |  |  |  |  |
+| front+currency | 0.05 | b0v300 | 1 | front・currency | 3 | 3 |  | front:3×12 ; currency:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 56 | 51 |  |  |  |  |  |
+| front+currency | 0.05 | b0v300 | 2 | front・currency | 3 | 3 |  | front:3×12 ; currency:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 56 | 51 |  |  |  |  |  |
+| front+currency | 0.05 | b0v300 | 3 | front・currency | 3 | 3 |  | front:3×12 ; currency:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 56 | 50 |  |  |  |  |  |
+| checkout+cart | 0.179 | b100v0 | 1 | checkout・cart | 5 | 4 |  | checkout:5×12 ; cart:4×12 | 5 | 4 |  | 5 | 5 | 5 | 5台×19 |  |  |  | cart | 1 | 230 | 61 | 51 |  |  |  |  |  |
+| checkout+cart | 0.179 | b100v0 | 2 | checkout・cart | 5 | 4 |  | checkout:5×12 ; cart:4×12 | 5 | 4 |  | 5 | 5 | 5 | 5台×18 |  |  |  | cart | 1 | 230 | 61 | 51 |  |  |  |  |  |
+| checkout+cart | 0.179 | b100v0 | 3 | checkout・cart | 5 | 4 |  | checkout:5×12 ; cart:4×12 | 5 | 4 |  | 5 | 5 | 5 | 5台×19 |  |  |  | cart | 1 | 230 | 61 | 51 |  |  |  |  |  |
+| checkout+cart | 0.179 | b50v150 | 1 | checkout・cart | 3 | 3 |  | checkout:3×12 ; cart:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 52 | 64 |  |  |  |  |  |
+| checkout+cart | 0.179 | b50v150 | 2 | checkout・cart | 3 | 3 |  | checkout:3×12 ; cart:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 52 | 62 |  |  |  |  |  |
+| checkout+cart | 0.179 | b50v150 | 3 | checkout・cart | 3 | 3 |  | checkout:3×12 ; cart:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 52 | 64 |  |  |  |  |  |
+| checkout+cart | 0.179 | b50v300 | 1 | checkout・cart | 3 | 4 |  | checkout:3×12 ; cart:4×12 | 3 | 4 |  | 4 | 4 | 4 | 4台×19 | 310s 5→4 |  |  | checkout | 1 | 155 | 41 | 69 |  |  |  |  |  |
+| checkout+cart | 0.179 | b50v300 | 2 | checkout・cart | 3 | 4 |  | checkout:3×12 ; cart:4×12 | 3 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | 155 | 41 | 68 |  |  |  |  |  |
+| checkout+cart | 0.179 | b50v300 | 3 | checkout・cart | 3 | 4 |  | checkout:3×12 ; cart:4×12 | 3 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | 155 | 41 | 69 |  |  |  |  |  |
+| checkout+cart | 0.179 | b75v200 | 1 | checkout・cart | 4 | 5 |  | checkout:4×12 ; cart:4×3,5×9 | 4 | 5 |  | 5 | 5 | 5 | 5台×19 |  |  |  | checkout | 1 | 155 | 49 | 60 |  |  |  |  |  |
+| checkout+cart | 0.179 | b75v200 | 2 | checkout・cart | 4 | 5 |  | checkout:4×12 ; cart:4×3,5×9 | 4 | 4 |  | 5 | 5 | 5 | 5台×19 |  |  |  | checkout | 1 | 155 | 49 | 60 |  |  |  |  |  |
+| checkout+cart | 0.179 | b75v200 | 3 | checkout・cart | 4 | 5 |  | checkout:4×12 ; cart:4×3,5×9 | 4 | 5 |  | 5 | 5 | 5 | 5台×19 |  |  |  | checkout | 1 | 155 | 48 | 60 |  |  |  |  |  |
+| checkout+cart | 0.179 | b0v300 | 1 | checkout・cart | 1 | 2 |  | checkout:1×12 ; cart:2×12 | 1 | 2 |  | 2 | 2 | 2 | 2台×18 |  |  |  | checkout | 1 | 155 | 0 | 68 |  |  |  |  |  |
+| checkout+cart | 0.179 | b0v300 | 2 | checkout・cart | 1 | 2 |  | checkout:1×12 ; cart:2×12 | 1 | 2 |  | 2 | 2 | 2 | 2台×18 |  |  |  | checkout | 1 | 155 | 0 | 67 |  |  |  |  |  |
+| checkout+cart | 0.179 | b0v300 | 3 | checkout・cart | 1 | 2 |  | checkout:1×12 ; cart:2×12 | 1 | 2 |  | 2 | 2 | 2 | 2台×18 |  |  |  | checkout | 1 | 155 | 0 | 67 |  |  |  |  |  |
+| front+reco | 0.007 | b100v0 | 1 | front・reco | 3 | 3 |  | front:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 59 | 55 |  |  |  |  |  |
+| front+reco | 0.007 | b100v0 | 2 | front・reco | 3 | 3 |  | front:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 59 | 55 |  |  |  |  |  |
+| front+reco | 0.007 | b100v0 | 3 | front・reco | 3 | 3 |  | front:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 59 | 55 |  |  |  |  |  |
+| front+reco | 0.007 | b50v150 | 1 | front・reco | 3 | 3 |  | front:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 57 | 54 |  |  |  |  |  |
+| front+reco | 0.007 | b50v150 | 2 | front・reco | 3 | 3 |  | front:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 58 | 54 |  |  |  |  |  |
+| front+reco | 0.007 | b50v150 | 3 | front・reco | 3 | 3 |  | front:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 57 | 53 |  |  |  |  |  |
+| front+reco | 0.007 | b50v300 | 1 | front・reco | 4 | 4 |  | front:4×12 ; reco:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 65 | 62 |  |  |  |  |  |
+| front+reco | 0.007 | b50v300 | 2 | front・reco | 4 | 4 |  | front:4×12 ; reco:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 65 | 63 |  |  |  |  |  |
+| front+reco | 0.007 | b50v300 | 3 | front・reco | 4 | 4 |  | front:4×12 ; reco:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 65 | 63 |  |  |  |  |  |
+| front+reco | 0.007 | b75v200 | 1 | front・reco | 4 | 4 |  | front:4×12 ; reco:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 62 | 60 |  |  |  |  |  |
+| front+reco | 0.007 | b75v200 | 2 | front・reco | 4 | 4 |  | front:4×12 ; reco:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 62 | 60 |  |  |  |  |  |
+| front+reco | 0.007 | b75v200 | 3 | front・reco | 4 | 4 |  | front:4×12 ; reco:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 62 | 60 |  |  |  |  |  |
+| front+reco | 0.007 | b0v300 | 1 | front・reco | 3 | 3 |  | front:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 56 | 52 |  |  |  |  |  |
+| front+reco | 0.007 | b0v300 | 2 | front・reco | 3 | 3 |  | front:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 56 | 52 |  |  |  |  |  |
+| front+reco | 0.007 | b0v300 | 3 | front・reco | 3 | 3 |  | front:3×12 ; reco:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 56 | 52 |  |  |  |  |  |
+| checkout+front | 0.31 | b100v0 | 1 | checkout・front | 5 | 3 |  | checkout:5×12 ; front:3×12 | 5 | 3 |  | 5 | 5 | 5 | 5台×19 |  |  |  | front | 2 | 1820 | 61 | 37 |  |  |  |  |  |
+| checkout+front | 0.31 | b100v0 | 2 | checkout・front | 5 | 3 |  | checkout:5×12 ; front:3×12 | 5 | 3 |  | 5 | 5 | 5 | 5台×19 |  |  |  | front | 2 | 1820 | 61 | 37 |  |  |  |  |  |
+| checkout+front | 0.31 | b100v0 | 3 | checkout・front | 5 | 3 |  | checkout:5×12 ; front:3×12 | 5 | 3 |  | 5 | 5 | 5 | 5台×19 |  |  |  | front | 2 | 1820 | 61 | 37 |  |  |  |  |  |
+| checkout+front | 0.31 | b50v150 | 1 | checkout・front | 3 | 3 |  | checkout:3×12 ; front:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 51 | 57 |  |  |  |  |  |
+| checkout+front | 0.31 | b50v150 | 2 | checkout・front | 3 | 3 |  | checkout:3×12 ; front:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 52 | 57 |  |  |  |  |  |
+| checkout+front | 0.31 | b50v150 | 3 | checkout・front | 3 | 3 |  | checkout:3×12 ; front:3×12 | 3 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 52 | 58 |  |  |  |  |  |
+| checkout+front | 0.31 | b50v300 | 1 | checkout・front | 3 | 4 |  | checkout:3×12 ; front:4×12 | 3 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | 155 | 41 | 65 |  |  |  |  |  |
+| checkout+front | 0.31 | b50v300 | 2 | checkout・front | 3 | 4 |  | checkout:3×12 ; front:4×12 | 3 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | 155 | 41 | 65 |  |  |  |  |  |
+| checkout+front | 0.31 | b50v300 | 3 | checkout・front | 3 | 4 |  | checkout:3×12 ; front:4×12 | 3 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  | checkout | 1 | 155 | 41 | 65 |  |  |  |  |  |
+| checkout+front | 0.31 | b75v200 | 1 | checkout・front | 4 | 4 |  | checkout:4×12 ; front:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×18 |  |  |  |  | 0 | 0 | 61 | 62 |  |  |  |  |  |
+| checkout+front | 0.31 | b75v200 | 2 | checkout・front | 4 | 4 |  | checkout:4×12 ; front:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×18 |  |  |  |  | 0 | 0 | 60 | 62 |  |  |  |  |  |
+| checkout+front | 0.31 | b75v200 | 3 | checkout・front | 4 | 4 |  | checkout:4×12 ; front:4×12 | 4 | 4 |  | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 60 | 62 |  |  |  | recommendationservice@119s | 載らない |
+| checkout+front | 0.31 | b0v300 | 1 | checkout・front | 1 | 3 |  | checkout:1×12 ; front:3×12 | 1 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 1 | 56 |  |  |  |  |  |
+| checkout+front | 0.31 | b0v300 | 2 | checkout・front | 1 | 3 |  | checkout:1×12 ; front:3×12 | 1 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 1 | 56 |  |  |  |  |  |
+| checkout+front | 0.31 | b0v300 | 3 | checkout・front | 1 | 3 |  | checkout:1×12 ; front:3×12 | 1 | 3 |  | 3 | 3 | 3 | 3台×18 |  |  |  | checkout | 2 | 310 | 1 | 56 |  |  |  |  |  |
+| front+catalog+reco | 0.013 | b100v0 | 1 | front・catalog・reco | 3 | 3 | 3 | front:3×12 ; catalog:3×12 ; reco:3×12 | 3 | 3 | 3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 56 | 52 | 54 |  |  |  |  |
+| front+catalog+reco | 0.013 | b100v0 | 2 | front・catalog・reco | 3 | 3 | 3 | front:3×12 ; catalog:3×12 ; reco:3×12 | 3 | 3 | 3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 56 | 53 | 53 |  |  |  |  |
+| front+catalog+reco | 0.013 | b100v0 | 3 | front・catalog・reco | 3 | 3 | 3 | front:3×12 ; catalog:3×12 ; reco:3×12 | 3 | 3 | 3 | 3 | 3 | 3 | 3台×19 |  |  |  |  | 0 | 0 | 56 | 52 | 53 |  |  |  |  |
+| front+catalog+reco | 0.013 | b50v150 | 1 | front・catalog・reco | 3 | 3 | 3 | front:3×12 ; catalog:3×12 ; reco:3×12 | 3 | 3 | 3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 54 | 50 | 52 |  |  |  |  |
+| front+catalog+reco | 0.013 | b50v150 | 2 | front・catalog・reco | 3 | 3 | 3 | front:3×12 ; catalog:3×12 ; reco:3×12 | 3 | 3 | 3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 54 | 50 | 51 |  |  |  |  |
+| front+catalog+reco | 0.013 | b50v150 | 3 | front・catalog・reco | 3 | 3 | 3 | front:3×12 ; catalog:3×12 ; reco:3×12 | 3 | 3 | 3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 55 | 51 | 51 |  |  |  |  |
+| front+catalog+reco | 0.013 | b50v300 | 1 | front・catalog・reco | 4 | 4 | 4 | front:4×12 ; catalog:4×12 ; reco:4×12 | 4 | 4 | 4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 61 | 56 | 61 |  |  |  |  |
+| front+catalog+reco | 0.013 | b50v300 | 2 | front・catalog・reco | 4 | 4 | 4 | front:4×12 ; catalog:4×12 ; reco:4×12 | 4 | 4 | 4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 62 | 57 | 60 |  |  |  |  |
+| front+catalog+reco | 0.013 | b50v300 | 3 | front・catalog・reco | 4 | 4 | 4 | front:4×12 ; catalog:4×12 ; reco:4×12 | 4 | 4 | 4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 62 | 57 | 60 |  |  |  |  |
+| front+catalog+reco | 0.013 | b75v200 | 1 | front・catalog・reco | 4 | 4 | 4 | front:4×12 ; catalog:4×12 ; reco:4×12 | 4 | 4 | 4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 59 | 54 | 58 |  |  |  |  |
+| front+catalog+reco | 0.013 | b75v200 | 2 | front・catalog・reco | 4 | 4 | 4 | front:4×12 ; catalog:4×12 ; reco:4×12 | 4 | 4 | 4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 59 | 54 | 58 |  |  |  |  |
+| front+catalog+reco | 0.013 | b75v200 | 3 | front・catalog・reco | 4 | 4 | 4 | front:4×12 ; catalog:4×12 ; reco:4×12 | 4 | 4 | 4 | 4 | 4 | 4 | 4台×19 |  |  |  |  | 0 | 0 | 59 | 54 | 58 |  |  |  |  |
+| front+catalog+reco | 0.013 | b0v300 | 1 | front・catalog・reco | 3 | 3 | 3 | front:3×12 ; catalog:3×12 ; reco:3×12 | 3 | 3 | 3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 53 | 49 | 50 |  |  |  |  |
+| front+catalog+reco | 0.013 | b0v300 | 2 | front・catalog・reco | 3 | 3 | 3 | front:3×12 ; catalog:3×12 ; reco:3×12 | 3 | 3 | 3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 53 | 49 | 50 |  |  |  |  |
+| front+catalog+reco | 0.013 | b0v300 | 3 | front・catalog・reco | 3 | 3 | 3 | front:3×12 ; catalog:3×12 ; reco:3×12 | 3 | 3 | 3 | 3 | 3 | 3 | 3台×18 |  |  |  |  | 0 | 0 | 53 | 49 | 50 |  |  |  |  |
