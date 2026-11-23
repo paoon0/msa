@@ -125,7 +125,7 @@ for pair, (arm, dep, cont) in HOST.items():
             })
 
 cols = list(rows[0].keys())
-with open(OUT + '.csv', 'w', newline='') as f:
+with open(OUT + '.csv', 'w', newline='', encoding='utf-8-sig') as f:   # BOM 付き = Excel で文字化けしない
     wr = csv.DictWriter(f, fieldnames=cols); wr.writeheader(); wr.writerows(rows)
 with open(OUT + '.md', 'w') as f:
     f.write(f'# pdist-k3 3 回目 同居の全サイクル詳細\n\n生成: `python3 detail_pdist_k3.py {ANA} {PAIR} {OUT}` (入力 `{ANA}`、'
