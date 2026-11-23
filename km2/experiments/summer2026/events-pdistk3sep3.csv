@@ -1,0 +1,1091 @@
+cycle,arm,target_rate,limit_x,browse_rate,time,object,message,point,start_replicas
+1,normal,50,0,300,2026-11-21T10:19:55Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:19:56Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:19:56Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:19:57Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:19:58Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:19:58Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:19:59Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:20:00Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:20:00Z,shippingservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:20:41Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:20:45Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:20:56Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:21:00Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:21:10Z,cartservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:21:11Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:21:13Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:21:28Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:21:29Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:22:40Z,cartservice,New size: 5; reason: All metrics below target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:23:10Z,cartservice,New size: 4; reason: All metrics below target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:26:29Z,paymentservice,New size: 3; reason: All metrics below target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:29:41Z,checkoutservice,New size: 2; reason: All metrics below target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:29:42Z,currencyservice,New size: 4; reason: All metrics below target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:29:43Z,emailservice,New size: 2; reason: All metrics below target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:29:43Z,frontend,New size: 3; reason: All metrics below target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:29:44Z,paymentservice,New size: 2; reason: All metrics below target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:29:45Z,productcatalogservice,New size: 3; reason: All metrics below target,b50v300,1
+1,normal,50,0,300,2026-11-21T10:29:45Z,recommendationservice,New size: 3; reason: All metrics below target,b50v300,1
+1,normal,100,0,0,2026-11-21T10:31:20Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:31:21Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:31:22Z,emailservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:31:22Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:31:23Z,paymentservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:31:24Z,productcatalogservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:31:24Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:31:25Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:31:35Z,checkoutservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:31:39Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:32:06Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:32:23Z,paymentservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:32:40Z,shippingservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:32:50Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:35:38Z,paymentservice,New size: 6; reason: All metrics below target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:41:06Z,checkoutservice,New size: 3; reason: All metrics below target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:41:07Z,currencyservice,New size: 2; reason: All metrics below target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:41:07Z,emailservice,New size: 3; reason: All metrics below target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:41:08Z,frontend,New size: 2; reason: All metrics below target,b100v0,1
+1,normal,100,0,0,2026-11-21T10:41:09Z,paymentservice,New size: 4; reason: All metrics below target,b100v0,1
+1,normal,75,0,200,2026-11-21T10:42:44Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:42:44Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:42:45Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:42:45Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:42:46Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:42:47Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:42:48Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:42:48Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:42:49Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:42:59Z,checkoutservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:43:04Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:43:29Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:43:30Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:43:45Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:43:46Z,emailservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:43:46Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:43:47Z,paymentservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:43:59Z,cartservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:44:03Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:44:18Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:45:01Z,emailservice,New size: 4; reason: All metrics below target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:46:17Z,paymentservice,New size: 5; reason: All metrics below target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:49:02Z,paymentservice,New size: 4; reason: All metrics below target,b75v200,1
+1,normal,75,0,200,2026-11-21T10:52:29Z,cartservice,New size: 4; reason: All metrics below target,b75v200,1
+1,normal,0,0,300,2026-11-21T10:54:06Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+1,normal,0,0,300,2026-11-21T10:54:07Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+1,normal,0,0,300,2026-11-21T10:54:08Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+1,normal,0,0,300,2026-11-21T10:54:09Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+1,normal,0,0,300,2026-11-21T10:54:19Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+1,normal,0,0,300,2026-11-21T10:55:21Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+1,normal,0,0,300,2026-11-21T11:03:51Z,currencyservice,New size: 1; reason: All metrics below target,b0v300,1
+1,normal,50,0,150,2026-11-21T11:05:25Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+1,normal,50,0,150,2026-11-21T11:05:26Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+1,normal,50,0,150,2026-11-21T11:05:26Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+1,normal,50,0,150,2026-11-21T11:05:27Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+1,normal,50,0,150,2026-11-21T11:05:28Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+1,normal,50,0,150,2026-11-21T11:05:28Z,paymentservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+1,normal,50,0,150,2026-11-21T11:05:29Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+1,normal,50,0,150,2026-11-21T11:05:30Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+1,normal,50,0,150,2026-11-21T11:05:30Z,shippingservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+1,normal,50,0,150,2026-11-21T11:05:45Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+1,normal,50,0,150,2026-11-21T11:06:14Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+1,normal,50,0,150,2026-11-21T11:07:14Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+1,normal,50,0,150,2026-11-21T11:09:59Z,paymentservice,New size: 3; reason: All metrics below target,b50v150,1
+1,normal,50,0,150,2026-11-21T11:15:11Z,cartservice,New size: 2; reason: All metrics below target,b50v150,1
+1,normal,50,0,150,2026-11-21T11:15:11Z,checkoutservice,New size: 2; reason: All metrics below target,b50v150,1
+1,normal,50,0,150,2026-11-21T11:15:13Z,emailservice,New size: 2; reason: All metrics below target,b50v150,1
+2,normal,100,0,0,2026-11-21T11:18:22Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:18:23Z,checkoutservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:18:23Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:18:24Z,emailservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:18:25Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:18:25Z,paymentservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:18:26Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:18:27Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:18:27Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:18:42Z,shippingservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:19:08Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:19:10Z,paymentservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:19:37Z,cartservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:19:38Z,checkoutservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:19:55Z,paymentservice,New size: 9; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:20:56Z,paymentservice,New size: 8; reason: All metrics below target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:21:07Z,cartservice,New size: 4; reason: All metrics below target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:21:26Z,paymentservice,New size: 7; reason: All metrics below target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:22:26Z,paymentservice,New size: 6; reason: All metrics below target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:23:41Z,paymentservice,New size: 5; reason: All metrics below target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:28:08Z,cartservice,New size: 2; reason: All metrics below target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:28:08Z,checkoutservice,New size: 3; reason: All metrics below target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:28:09Z,currencyservice,New size: 2; reason: All metrics below target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:28:10Z,emailservice,New size: 3; reason: All metrics below target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:28:10Z,frontend,New size: 2; reason: All metrics below target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:28:11Z,paymentservice,New size: 4; reason: All metrics below target,b100v0,1
+2,normal,100,0,0,2026-11-21T11:28:12Z,productcatalogservice,New size: 2; reason: All metrics below target,b100v0,1
+2,normal,0,0,300,2026-11-21T11:29:47Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+2,normal,0,0,300,2026-11-21T11:29:48Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+2,normal,0,0,300,2026-11-21T11:29:49Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+2,normal,0,0,300,2026-11-21T11:29:51Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+2,normal,0,0,300,2026-11-21T11:30:05Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+2,normal,0,0,300,2026-11-21T11:30:36Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+2,normal,0,0,300,2026-11-21T11:30:48Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+2,normal,0,0,300,2026-11-21T11:31:02Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+2,normal,0,0,300,2026-11-21T11:31:04Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+2,normal,0,0,300,2026-11-21T11:32:47Z,cartservice,New size: 2; reason: All metrics below target,b0v300,1
+2,normal,50,0,150,2026-11-21T11:41:07Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+2,normal,50,0,150,2026-11-21T11:41:08Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+2,normal,50,0,150,2026-11-21T11:41:08Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+2,normal,50,0,150,2026-11-21T11:41:09Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+2,normal,50,0,150,2026-11-21T11:41:09Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+2,normal,50,0,150,2026-11-21T11:41:10Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+2,normal,50,0,150,2026-11-21T11:41:11Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+2,normal,50,0,150,2026-11-21T11:41:11Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+2,normal,50,0,150,2026-11-21T11:41:12Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+2,normal,50,0,150,2026-11-21T11:42:25Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+2,normal,50,0,150,2026-11-21T11:44:40Z,paymentservice,New size: 3; reason: All metrics below target,b50v150,1
+2,normal,50,0,150,2026-11-21T11:50:52Z,cartservice,New size: 2; reason: All metrics below target,b50v150,1
+2,normal,50,0,150,2026-11-21T11:50:53Z,checkoutservice,New size: 2; reason: All metrics below target,b50v150,1
+2,normal,50,0,150,2026-11-21T11:50:54Z,currencyservice,New size: 2; reason: All metrics below target,b50v150,1
+2,normal,50,0,150,2026-11-21T11:50:54Z,emailservice,New size: 2; reason: All metrics below target,b50v150,1
+2,normal,75,0,200,2026-11-21T11:52:29Z,cartservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:52:29Z,checkoutservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:52:30Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:52:31Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:52:31Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:52:32Z,paymentservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:52:33Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:52:34Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:52:46Z,emailservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:52:47Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:52:48Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:53:44Z,cartservice,New size: 8; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:53:45Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:53:47Z,paymentservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:53:48Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:54:02Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:54:03Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:55:29Z,cartservice,New size: 7; reason: All metrics below target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:55:44Z,cartservice,New size: 5; reason: All metrics below target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:55:59Z,cartservice,New size: 4; reason: All metrics below target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:57:17Z,paymentservice,New size: 5; reason: All metrics below target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:57:47Z,paymentservice,New size: 4; reason: All metrics below target,b75v200,1
+2,normal,75,0,200,2026-11-21T12:00:30Z,cartservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+2,normal,75,0,200,2026-11-21T12:02:15Z,cartservice,New size: 4; reason: All metrics below target,b75v200,1
+2,normal,75,0,200,2026-11-21T11:54:03.954813Z,recommendationservice-5d8968b544-qmlxj,FailedScheduling: 0/1 nodes are available: 1 Insufficient cpu. preemption: 0/1 nodes are available: 1 No preemption victims found for incoming pod.,b75v200,1
+2,normal,50,0,300,2026-11-21T12:03:50Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:03:51Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:03:52Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:03:52Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:03:53Z,paymentservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:03:54Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:03:54Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:03:55Z,shippingservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:04:05Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:04:51Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:04:52Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:04:53Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:04:54Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:04:55Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:05:05Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:05:05Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:05:20Z,cartservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:05:38Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:06:50Z,cartservice,New size: 4; reason: All metrics below target,b50v300,1
+2,normal,50,0,300,2026-11-21T12:09:38Z,paymentservice,New size: 3; reason: All metrics below target,b50v300,1
+3,normal,100,0,0,2026-11-21T12:16:45Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:16:46Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:16:46Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:16:47Z,emailservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:16:47Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:16:48Z,paymentservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:16:49Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:16:49Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:16:50Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:17:01Z,checkoutservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:17:45Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:17:46Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:17:48Z,paymentservice,New size: 9; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:17:50Z,shippingservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:18:00Z,cartservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:19:30Z,cartservice,New size: 4; reason: All metrics below target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:19:33Z,paymentservice,New size: 8; reason: All metrics below target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:19:48Z,paymentservice,New size: 7; reason: All metrics below target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:20:03Z,paymentservice,New size: 6; reason: All metrics below target,b100v0,1
+3,normal,100,0,0,2026-11-21T12:20:18Z,paymentservice,New size: 5; reason: All metrics below target,b100v0,1
+3,normal,0,0,300,2026-11-21T12:28:10Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+3,normal,0,0,300,2026-11-21T12:28:11Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+3,normal,0,0,300,2026-11-21T12:28:12Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+3,normal,0,0,300,2026-11-21T12:28:13Z,productcatalogservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+3,normal,0,0,300,2026-11-21T12:28:14Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+3,normal,0,0,300,2026-11-21T12:29:13Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+3,normal,0,0,300,2026-11-21T12:30:25Z,cartservice,New size: 2; reason: All metrics below target,b0v300,1
+3,normal,50,0,150,2026-11-21T12:39:30Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:39:30Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:39:31Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:39:31Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:39:32Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:39:33Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:39:33Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:39:34Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:39:35Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:40:15Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:40:16Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:40:19Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:40:30Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:40:45Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:40:47Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:41:03Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:42:15Z,cartservice,New size: 3; reason: All metrics below target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:44:18Z,paymentservice,New size: 3; reason: All metrics below target,b50v150,1
+3,normal,50,0,150,2026-11-21T12:49:16Z,checkoutservice,New size: 2; reason: All metrics below target,b50v150,1
+3,normal,75,0,200,2026-11-21T12:50:52Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:50:52Z,checkoutservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:50:53Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:50:54Z,emailservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:50:54Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:50:55Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:50:56Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:50:56Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:50:57Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:51:38Z,currencyservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:51:56Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:51:56Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:52:07Z,cartservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:52:09Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:52:10Z,paymentservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:52:53Z,currencyservice,New size: 5; reason: All metrics below target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:53:10Z,paymentservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:53:37Z,cartservice,New size: 5; reason: All metrics below target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:53:55Z,paymentservice,New size: 6; reason: All metrics below target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:54:25Z,paymentservice,New size: 5; reason: All metrics below target,b75v200,1
+3,normal,75,0,200,2026-11-21T12:56:25Z,paymentservice,New size: 4; reason: All metrics below target,b75v200,1
+3,normal,75,0,200,2026-11-21T13:00:37Z,cartservice,New size: 2; reason: All metrics below target,b75v200,1
+3,normal,75,0,200,2026-11-21T13:00:38Z,checkoutservice,New size: 2; reason: All metrics below target,b75v200,1
+3,normal,75,0,200,2026-11-21T13:00:39Z,currencyservice,New size: 3; reason: All metrics below target,b75v200,1
+3,normal,50,0,300,2026-11-21T13:02:13Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:02:14Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:02:14Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:02:15Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:02:16Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:02:16Z,paymentservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:02:17Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:02:17Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:02:18Z,shippingservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:03:14Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:03:17Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:03:28Z,cartservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:03:31Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:03:31Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:03:32Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:03:33Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:03:44Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:04:00Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:05:28Z,cartservice,New size: 4; reason: All metrics below target,b50v300,1
+3,normal,50,0,300,2026-11-21T13:12:00Z,currencyservice,New size: 4; reason: All metrics below target,b50v300,1
+4,normal,50,0,150,2026-11-21T13:15:12Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+4,normal,50,0,150,2026-11-21T13:15:13Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+4,normal,50,0,150,2026-11-21T13:15:14Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+4,normal,50,0,150,2026-11-21T13:15:14Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+4,normal,50,0,150,2026-11-21T13:15:15Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+4,normal,50,0,150,2026-11-21T13:15:16Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+4,normal,50,0,150,2026-11-21T13:15:16Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+4,normal,50,0,150,2026-11-21T13:15:17Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+4,normal,50,0,150,2026-11-21T13:15:18Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+4,normal,50,0,150,2026-11-21T13:18:46Z,paymentservice,New size: 3; reason: All metrics below target,b50v150,1
+4,normal,75,0,200,2026-11-21T13:26:35Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:26:36Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:26:37Z,emailservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:26:37Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:26:38Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:26:38Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:26:39Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:26:40Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:26:50Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:26:52Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:27:36Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:27:37Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:27:38Z,paymentservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:27:39Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:27:40Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:27:50Z,checkoutservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:27:54Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:28:05Z,cartservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:30:53Z,paymentservice,New size: 5; reason: All metrics below target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:31:23Z,paymentservice,New size: 4; reason: All metrics below target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:36:21Z,checkoutservice,New size: 1; reason: All metrics below target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:36:22Z,currencyservice,New size: 2; reason: All metrics below target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:36:22Z,emailservice,New size: 3; reason: All metrics below target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:36:23Z,frontend,New size: 2; reason: All metrics below target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:36:24Z,paymentservice,New size: 2; reason: All metrics below target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:36:24Z,productcatalogservice,New size: 2; reason: All metrics below target,b75v200,1
+4,normal,75,0,200,2026-11-21T13:36:25Z,recommendationservice,New size: 3; reason: All metrics below target,b75v200,1
+4,normal,0,0,300,2026-11-21T13:38:00Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+4,normal,0,0,300,2026-11-21T13:38:01Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+4,normal,0,0,300,2026-11-21T13:38:02Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+4,normal,0,0,300,2026-11-21T13:38:03Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+4,normal,0,0,300,2026-11-21T13:38:04Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+4,normal,0,0,300,2026-11-21T13:39:15Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+4,normal,0,0,300,2026-11-21T13:39:17Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+4,normal,0,0,300,2026-11-21T13:41:00Z,cartservice,New size: 2; reason: All metrics below target,b0v300,1
+4,normal,100,0,0,2026-11-21T13:49:20Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:49:21Z,checkoutservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:49:21Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:49:22Z,emailservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:49:23Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:49:23Z,paymentservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:49:24Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:49:25Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:49:25Z,shippingservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:50:06Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:50:08Z,paymentservice,New size: 8; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:51:53Z,paymentservice,New size: 7; reason: All metrics below target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:53:24Z,paymentservice,New size: 6; reason: All metrics below target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:57:09Z,paymentservice,New size: 5; reason: All metrics below target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:59:06Z,cartservice,New size: 2; reason: All metrics below target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:59:06Z,checkoutservice,New size: 2; reason: All metrics below target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:59:07Z,currencyservice,New size: 2; reason: All metrics below target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:59:08Z,emailservice,New size: 4; reason: All metrics below target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:59:08Z,frontend,New size: 1; reason: All metrics below target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:59:09Z,paymentservice,New size: 1; reason: All metrics below target,b100v0,1
+4,normal,100,0,0,2026-11-21T13:59:10Z,productcatalogservice,New size: 2; reason: All metrics below target,b100v0,1
+4,normal,50,0,300,2026-11-21T14:00:45Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:00:46Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:00:46Z,emailservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:00:47Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:00:48Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:00:49Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:00:50Z,shippingservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:00:59Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:01:00Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:01:01Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:01:02Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:01:03Z,paymentservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:01:04Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:01:46Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:01:47Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:01:47Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:02:03Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:02:04Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:02:04Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:02:05Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:02:14Z,cartservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:02:46Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:03:44Z,cartservice,New size: 4; reason: All metrics below target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:05:48Z,paymentservice,New size: 3; reason: All metrics below target,b50v300,1
+4,normal,50,0,300,2026-11-21T14:10:32Z,emailservice,New size: 2; reason: All metrics below target,b50v300,1
+5,normal,75,0,200,2026-11-21T14:13:44Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:13:45Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:13:45Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:13:46Z,emailservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:13:47Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:13:47Z,paymentservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:13:48Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:13:49Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:14:04Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:14:04Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:14:30Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:14:59Z,cartservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:15:02Z,paymentservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:15:17Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:15:18Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:15:19Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:15:30Z,checkoutservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:16:44Z,cartservice,New size: 5; reason: All metrics below target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:16:48Z,paymentservice,New size: 6; reason: All metrics below target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:17:03Z,paymentservice,New size: 5; reason: All metrics below target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:17:33Z,paymentservice,New size: 4; reason: All metrics below target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:23:30Z,cartservice,New size: 4; reason: All metrics below target,b75v200,1
+5,normal,75,0,200,2026-11-21T14:23:31Z,currencyservice,New size: 4; reason: All metrics below target,b75v200,1
+5,normal,0,0,300,2026-11-21T14:25:07Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+5,normal,0,0,300,2026-11-21T14:25:08Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+5,normal,0,0,300,2026-11-21T14:25:09Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+5,normal,0,0,300,2026-11-21T14:25:10Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+5,normal,0,0,300,2026-11-21T14:25:20Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+5,normal,0,0,300,2026-11-21T14:34:52Z,currencyservice,New size: 1; reason: All metrics below target,b0v300,1
+5,normal,100,0,0,2026-11-21T14:36:26Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:36:27Z,checkoutservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:36:27Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:36:28Z,emailservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:36:28Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:36:29Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:36:30Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:36:30Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:36:31Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:36:44Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:36:46Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:37:13Z,emailservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:37:16Z,shippingservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:37:27Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:37:29Z,paymentservice,New size: 8; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:37:41Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:37:57Z,checkoutservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:39:29Z,paymentservice,New size: 7; reason: All metrics below target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:44:00Z,paymentservice,New size: 5; reason: All metrics below target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:46:12Z,cartservice,New size: 3; reason: All metrics below target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:46:12Z,checkoutservice,New size: 4; reason: All metrics below target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:46:13Z,currencyservice,New size: 3; reason: All metrics below target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:46:14Z,frontend,New size: 2; reason: All metrics below target,b100v0,1
+5,normal,100,0,0,2026-11-21T14:46:15Z,paymentservice,New size: 4; reason: All metrics below target,b100v0,1
+5,normal,50,0,300,2026-11-21T14:47:50Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:47:51Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:47:51Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:47:52Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:47:53Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:47:53Z,paymentservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:47:54Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:47:54Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:47:55Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:48:36Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:48:51Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:48:53Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:49:08Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:49:20Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:52:39Z,paymentservice,New size: 3; reason: All metrics below target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:57:36Z,cartservice,New size: 3; reason: All metrics below target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:57:36Z,checkoutservice,New size: 2; reason: All metrics below target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:57:37Z,currencyservice,New size: 3; reason: All metrics below target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:57:38Z,emailservice,New size: 2; reason: All metrics below target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:57:38Z,frontend,New size: 2; reason: All metrics below target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:57:39Z,paymentservice,New size: 2; reason: All metrics below target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:57:40Z,productcatalogservice,New size: 2; reason: All metrics below target,b50v300,1
+5,normal,50,0,300,2026-11-21T14:57:40Z,recommendationservice,New size: 1; reason: All metrics below target,b50v300,1
+5,normal,50,0,150,2026-11-21T14:59:15Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+5,normal,50,0,150,2026-11-21T14:59:15Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+5,normal,50,0,150,2026-11-21T14:59:16Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+5,normal,50,0,150,2026-11-21T14:59:16Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+5,normal,50,0,150,2026-11-21T14:59:17Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+5,normal,50,0,150,2026-11-21T14:59:18Z,paymentservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+5,normal,50,0,150,2026-11-21T14:59:18Z,productcatalogservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+5,normal,50,0,150,2026-11-21T14:59:19Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+5,normal,50,0,150,2026-11-21T14:59:19Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+5,normal,50,0,150,2026-11-21T15:00:03Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+5,normal,50,0,150,2026-11-21T15:00:03Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+5,normal,50,0,150,2026-11-21T15:00:30Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+5,normal,50,0,150,2026-11-21T15:00:32Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+5,normal,50,0,150,2026-11-21T15:01:03Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+5,normal,50,0,150,2026-11-21T15:02:00Z,cartservice,New size: 3; reason: All metrics below target,b50v150,1
+5,normal,50,0,150,2026-11-21T15:03:03Z,paymentservice,New size: 3; reason: All metrics below target,b50v150,1
+6,normal,50,0,300,2026-11-21T15:12:12Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:12:13Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:12:14Z,emailservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:12:14Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:12:15Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:12:16Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:12:16Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:12:27Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:12:29Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:12:30Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:12:32Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:13:13Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:13:17Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:13:27Z,cartservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:13:28Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:13:28Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:13:29Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:14:57Z,cartservice,New size: 5; reason: All metrics below target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:15:27Z,cartservice,New size: 4; reason: All metrics below target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:16:30Z,paymentservice,New size: 3; reason: All metrics below target,b50v300,1
+6,normal,50,0,300,2026-11-21T15:21:58Z,checkoutservice,New size: 2; reason: All metrics below target,b50v300,1
+6,normal,100,0,0,2026-11-21T15:23:33Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:23:33Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:23:34Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:23:35Z,emailservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:23:35Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:23:36Z,paymentservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:23:36Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:23:37Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:23:38Z,shippingservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:23:48Z,checkoutservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:24:34Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:24:48Z,cartservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:24:51Z,paymentservice,New size: 8; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:25:03Z,checkoutservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:25:36Z,paymentservice,New size: 9; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:26:18Z,cartservice,New size: 5; reason: All metrics below target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:26:21Z,paymentservice,New size: 7; reason: All metrics below target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:26:48Z,cartservice,New size: 4; reason: All metrics below target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:26:51Z,paymentservice,New size: 6; reason: All metrics below target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:33:21Z,frontend,New size: 1; reason: All metrics below target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:33:22Z,paymentservice,New size: 4; reason: All metrics below target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:33:22Z,productcatalogservice,New size: 2; reason: All metrics below target,b100v0,1
+6,normal,100,0,0,2026-11-21T15:33:23Z,recommendationservice,New size: 1; reason: All metrics below target,b100v0,1
+6,normal,75,0,200,2026-11-21T15:34:57Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:34:58Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:34:59Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:34:59Z,emailservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:35:00Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:35:01Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:35:01Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:35:02Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:35:02Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:35:14Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:35:17Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:35:58Z,checkoutservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:35:59Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:36:01Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:36:12Z,cartservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:36:14Z,emailservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:36:30Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:36:31Z,paymentservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:36:32Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:37:29Z,emailservice,New size: 4; reason: All metrics below target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:37:43Z,cartservice,New size: 5; reason: All metrics below target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:38:13Z,cartservice,New size: 4; reason: All metrics below target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:40:01Z,paymentservice,New size: 5; reason: All metrics below target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:40:31Z,paymentservice,New size: 4; reason: All metrics below target,b75v200,1
+6,normal,75,0,200,2026-11-21T15:44:44Z,currencyservice,New size: 4; reason: All metrics below target,b75v200,1
+6,normal,0,0,300,2026-11-21T15:46:21Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+6,normal,0,0,300,2026-11-21T15:46:22Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+6,normal,0,0,300,2026-11-21T15:46:23Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+6,normal,0,0,300,2026-11-21T15:46:34Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+6,normal,0,0,300,2026-11-21T15:46:35Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+6,normal,0,0,300,2026-11-21T15:48:49Z,cartservice,New size: 2; reason: All metrics below target,b0v300,1
+6,normal,50,0,150,2026-11-21T15:57:39Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+6,normal,50,0,150,2026-11-21T15:57:40Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+6,normal,50,0,150,2026-11-21T15:57:40Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+6,normal,50,0,150,2026-11-21T15:57:41Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+6,normal,50,0,150,2026-11-21T15:57:41Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+6,normal,50,0,150,2026-11-21T15:57:42Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+6,normal,50,0,150,2026-11-21T15:57:43Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+6,normal,50,0,150,2026-11-21T15:57:43Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+6,normal,50,0,150,2026-11-21T15:57:44Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+6,normal,50,0,150,2026-11-21T15:58:57Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+6,normal,50,0,150,2026-11-21T16:01:57Z,paymentservice,New size: 3; reason: All metrics below target,b50v150,1
+6,normal,50,0,150,2026-11-21T16:02:27Z,paymentservice,New size: 2; reason: All metrics below target,b50v150,1
+6,normal,50,0,150,2026-11-21T16:03:27Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+6,normal,50,0,150,2026-11-21T16:07:25Z,cartservice,New size: 2; reason: All metrics below target,b50v150,1
+6,normal,50,0,150,2026-11-21T16:07:25Z,checkoutservice,New size: 2; reason: All metrics below target,b50v150,1
+6,normal,50,0,150,2026-11-21T16:07:26Z,emailservice,New size: 2; reason: All metrics below target,b50v150,1
+7,normal,50,0,300,2026-11-21T16:10:35Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:10:37Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:10:38Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:10:38Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:10:39Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:10:40Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:10:40Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:10:41Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:10:50Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:10:51Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:11:36Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:11:37Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:11:39Z,paymentservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:11:40Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:11:51Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:11:53Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:13:06Z,cartservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:13:54Z,paymentservice,New size: 4; reason: All metrics below target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:14:54Z,paymentservice,New size: 3; reason: All metrics below target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:16:06Z,cartservice,New size: 4; reason: All metrics below target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:20:21Z,cartservice,New size: 2; reason: All metrics below target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:20:22Z,checkoutservice,New size: 1; reason: All metrics below target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:20:22Z,currencyservice,New size: 2; reason: All metrics below target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:20:24Z,frontend,New size: 3; reason: All metrics below target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:20:25Z,paymentservice,New size: 2; reason: All metrics below target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:20:25Z,productcatalogservice,New size: 3; reason: All metrics below target,b50v300,1
+7,normal,50,0,300,2026-11-21T16:20:26Z,recommendationservice,New size: 2; reason: All metrics below target,b50v300,1
+7,normal,100,0,0,2026-11-21T16:22:01Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:22:01Z,checkoutservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:22:02Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:22:02Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:22:03Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:22:04Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:22:04Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:22:05Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:22:05Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:22:16Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:22:17Z,emailservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:22:47Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:23:04Z,paymentservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:23:16Z,cartservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:23:19Z,paymentservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:23:34Z,paymentservice,New size: 8; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:23:36Z,shippingservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:24:02Z,currencyservice,New size: 4; reason: All metrics below target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:25:01Z,cartservice,New size: 4; reason: All metrics below target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:25:34Z,paymentservice,New size: 7; reason: All metrics below target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:26:04Z,paymentservice,New size: 6; reason: All metrics below target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:28:34Z,paymentservice,New size: 5; reason: All metrics below target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:31:36Z,shippingservice,New size: 4; reason: All metrics below target,b100v0,1
+7,normal,100,0,0,2026-11-21T16:31:47Z,currencyservice,New size: 3; reason: All metrics below target,b100v0,1
+7,normal,0,0,300,2026-11-21T16:33:24Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+7,normal,0,0,300,2026-11-21T16:33:26Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+7,normal,0,0,300,2026-11-21T16:33:27Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+7,normal,0,0,300,2026-11-21T16:33:28Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+7,normal,0,0,300,2026-11-21T16:33:29Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+7,normal,50,0,150,2026-11-21T16:44:45Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+7,normal,50,0,150,2026-11-21T16:44:45Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+7,normal,50,0,150,2026-11-21T16:44:46Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+7,normal,50,0,150,2026-11-21T16:44:47Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+7,normal,50,0,150,2026-11-21T16:44:47Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+7,normal,50,0,150,2026-11-21T16:44:48Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+7,normal,50,0,150,2026-11-21T16:44:48Z,productcatalogservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+7,normal,50,0,150,2026-11-21T16:44:49Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+7,normal,50,0,150,2026-11-21T16:44:50Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+7,normal,50,0,150,2026-11-21T16:45:00Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+7,normal,50,0,150,2026-11-21T16:46:00Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+7,normal,50,0,150,2026-11-21T16:46:04Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+7,normal,50,0,150,2026-11-21T16:46:04Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+7,normal,50,0,150,2026-11-21T16:46:16Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+7,normal,50,0,150,2026-11-21T16:46:33Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+7,normal,50,0,150,2026-11-21T16:47:45Z,cartservice,New size: 3; reason: All metrics below target,b50v150,1
+7,normal,50,0,150,2026-11-21T16:49:18Z,paymentservice,New size: 3; reason: All metrics below target,b50v150,1
+7,normal,75,0,200,2026-11-21T16:56:07Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:56:08Z,checkoutservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:56:09Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:56:09Z,emailservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:56:10Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:56:11Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:56:11Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:56:12Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:56:13Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:56:57Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:56:58Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:57:07Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:57:09Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:57:10Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:57:26Z,paymentservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:57:26Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:58:22Z,cartservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:58:26Z,paymentservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:59:11Z,paymentservice,New size: 6; reason: All metrics below target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:59:23Z,cartservice,New size: 4; reason: All metrics below target,b75v200,1
+7,normal,75,0,200,2026-11-21T16:59:41Z,paymentservice,New size: 5; reason: All metrics below target,b75v200,1
+7,normal,75,0,200,2026-11-21T17:02:41Z,paymentservice,New size: 4; reason: All metrics below target,b75v200,1
+7,normal,75,0,200,2026-11-21T17:05:53Z,cartservice,New size: 3; reason: All metrics below target,b75v200,1
+7,normal,75,0,200,2026-11-21T17:05:54Z,checkoutservice,New size: 3; reason: All metrics below target,b75v200,1
+8,normal,50,0,150,2026-11-21T17:09:06Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+8,normal,50,0,150,2026-11-21T17:09:06Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+8,normal,50,0,150,2026-11-21T17:09:07Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+8,normal,50,0,150,2026-11-21T17:09:08Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+8,normal,50,0,150,2026-11-21T17:09:08Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+8,normal,50,0,150,2026-11-21T17:09:09Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+8,normal,50,0,150,2026-11-21T17:09:10Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+8,normal,50,0,150,2026-11-21T17:09:20Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+8,normal,50,0,150,2026-11-21T17:09:20Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+8,normal,50,0,150,2026-11-21T17:12:23Z,paymentservice,New size: 3; reason: All metrics below target,b50v150,1
+8,normal,50,0,150,2026-11-21T17:18:51Z,checkoutservice,New size: 1; reason: All metrics below target,b50v150,1
+8,normal,50,0,150,2026-11-21T17:18:51Z,currencyservice,New size: 1; reason: All metrics below target,b50v150,1
+8,normal,50,0,150,2026-11-21T17:18:52Z,emailservice,New size: 2; reason: All metrics below target,b50v150,1
+8,normal,100,0,0,2026-11-21T17:20:27Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:20:27Z,checkoutservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:20:28Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:20:29Z,emailservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:20:29Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:20:30Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:20:30Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:20:32Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:20:44Z,emailservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:20:46Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:21:12Z,checkoutservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:21:13Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:21:30Z,paymentservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:21:42Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:21:47Z,shippingservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:22:15Z,paymentservice,New size: 8; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:23:15Z,paymentservice,New size: 7; reason: All metrics below target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:23:45Z,paymentservice,New size: 6; reason: All metrics below target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:26:15Z,paymentservice,New size: 5; reason: All metrics below target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:30:13Z,checkoutservice,New size: 4; reason: All metrics below target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:30:13Z,currencyservice,New size: 2; reason: All metrics below target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:30:14Z,emailservice,New size: 4; reason: All metrics below target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:30:15Z,frontend,New size: 2; reason: All metrics below target,b100v0,1
+8,normal,100,0,0,2026-11-21T17:30:15Z,paymentservice,New size: 4; reason: All metrics below target,b100v0,1
+8,normal,50,0,300,2026-11-21T17:31:51Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:31:51Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:31:52Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:31:53Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:31:53Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:31:54Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:31:55Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:31:55Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:32:05Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:32:51Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:32:55Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:33:08Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:36:39Z,paymentservice,New size: 3; reason: All metrics below target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:41:36Z,cartservice,New size: 2; reason: All metrics below target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:41:36Z,checkoutservice,New size: 2; reason: All metrics below target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:41:37Z,currencyservice,New size: 4; reason: All metrics below target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:41:38Z,emailservice,New size: 2; reason: All metrics below target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:41:38Z,frontend,New size: 2; reason: All metrics below target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:41:39Z,paymentservice,New size: 2; reason: All metrics below target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:41:40Z,productcatalogservice,New size: 2; reason: All metrics below target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:41:40Z,recommendationservice,New size: 2; reason: All metrics below target,b50v300,1
+8,normal,50,0,300,2026-11-21T17:41:41Z,shippingservice,New size: 1; reason: All metrics below target,b50v300,1
+8,normal,75,0,200,2026-11-21T17:43:15Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:43:16Z,checkoutservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:43:16Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:43:17Z,emailservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:43:18Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:43:18Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:43:19Z,productcatalogservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:43:20Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:43:20Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:43:34Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:43:35Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:44:18Z,paymentservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:44:19Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:44:20Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:44:30Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:44:48Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:44:50Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:45:18Z,paymentservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:45:45Z,cartservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:46:34Z,paymentservice,New size: 6; reason: All metrics below target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:47:49Z,paymentservice,New size: 5; reason: All metrics below target,b75v200,1
+8,normal,75,0,200,2026-11-21T17:51:34Z,paymentservice,New size: 4; reason: All metrics below target,b75v200,1
+8,normal,0,0,300,2026-11-21T17:54:35Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+8,normal,0,0,300,2026-11-21T17:54:37Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+8,normal,0,0,300,2026-11-21T17:54:38Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+8,normal,0,0,300,2026-11-21T17:54:39Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+8,normal,0,0,300,2026-11-21T17:54:40Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+8,normal,0,0,300,2026-11-21T18:04:21Z,cartservice,New size: 1; reason: All metrics below target,b0v300,1
+9,normal,50,0,300,2026-11-21T18:07:32Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:07:32Z,emailservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:07:33Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:07:34Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:07:35Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:07:36Z,shippingservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:07:45Z,cartservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:07:46Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:07:47Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:07:48Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:07:49Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:07:50Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:07:51Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:08:32Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:08:33Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:08:34Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:09:45Z,cartservice,New size: 4; reason: All metrics below target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:11:49Z,paymentservice,New size: 3; reason: All metrics below target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:17:17Z,currencyservice,New size: 4; reason: All metrics below target,b50v300,1
+9,normal,50,0,300,2026-11-21T18:17:21Z,shippingservice,New size: 1; reason: All metrics below target,b50v300,1
+9,normal,50,0,150,2026-11-21T18:18:56Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+9,normal,50,0,150,2026-11-21T18:18:57Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+9,normal,50,0,150,2026-11-21T18:18:58Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+9,normal,50,0,150,2026-11-21T18:18:59Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+9,normal,50,0,150,2026-11-21T18:18:59Z,paymentservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+9,normal,50,0,150,2026-11-21T18:19:00Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+9,normal,50,0,150,2026-11-21T18:19:01Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+9,normal,50,0,150,2026-11-21T18:19:01Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+9,normal,50,0,150,2026-11-21T18:19:13Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+9,normal,50,0,150,2026-11-21T18:20:00Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+9,normal,50,0,150,2026-11-21T18:20:12Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+9,normal,50,0,150,2026-11-21T18:21:00Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+9,normal,50,0,150,2026-11-21T18:24:15Z,paymentservice,New size: 3; reason: All metrics below target,b50v150,1
+9,normal,50,0,150,2026-11-21T18:28:42Z,cartservice,New size: 2; reason: All metrics below target,b50v150,1
+9,normal,50,0,150,2026-11-21T18:28:43Z,checkoutservice,New size: 2; reason: All metrics below target,b50v150,1
+9,normal,100,0,0,2026-11-21T18:30:18Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:30:19Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:30:20Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:30:20Z,emailservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:30:21Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:30:21Z,paymentservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:30:22Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:30:23Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:30:23Z,shippingservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:30:34Z,checkoutservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:30:35Z,emailservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:31:22Z,paymentservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:31:33Z,cartservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:31:35Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:32:37Z,paymentservice,New size: 8; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:33:22Z,paymentservice,New size: 7; reason: All metrics below target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:33:34Z,cartservice,New size: 4; reason: All metrics below target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:34:22Z,paymentservice,New size: 6; reason: All metrics below target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:37:52Z,paymentservice,New size: 5; reason: All metrics below target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:40:06Z,emailservice,New size: 2; reason: All metrics below target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:40:06Z,frontend,New size: 1; reason: All metrics below target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:40:07Z,paymentservice,New size: 3; reason: All metrics below target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:40:08Z,productcatalogservice,New size: 1; reason: All metrics below target,b100v0,1
+9,normal,100,0,0,2026-11-21T18:40:08Z,recommendationservice,New size: 2; reason: All metrics below target,b100v0,1
+9,normal,75,0,200,2026-11-21T18:41:43Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:41:43Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:41:44Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:41:45Z,emailservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:41:45Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:41:46Z,paymentservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:41:47Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:41:47Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:41:48Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:41:58Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:41:59Z,checkoutservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:42:00Z,emailservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:42:01Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:42:01Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:42:29Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:42:31Z,paymentservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:42:46Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:42:47Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:42:48Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:42:58Z,cartservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:43:02Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:43:31Z,paymentservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:44:16Z,paymentservice,New size: 6; reason: All metrics below target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:44:28Z,cartservice,New size: 5; reason: All metrics below target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:46:16Z,paymentservice,New size: 5; reason: All metrics below target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:49:17Z,paymentservice,New size: 4; reason: All metrics below target,b75v200,1
+9,normal,75,0,200,2026-11-21T18:51:29Z,cartservice,New size: 4; reason: All metrics below target,b75v200,1
+9,normal,0,0,300,2026-11-21T18:53:03Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+9,normal,0,0,300,2026-11-21T18:53:05Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+9,normal,0,0,300,2026-11-21T18:53:06Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+9,normal,0,0,300,2026-11-21T18:53:07Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+9,normal,0,0,300,2026-11-21T18:53:08Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+9,normal,0,0,300,2026-11-21T18:54:18Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+9,normal,0,0,300,2026-11-21T18:54:20Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+9,normal,0,0,300,2026-11-21T18:56:19Z,cartservice,New size: 2; reason: All metrics below target,b0v300,1
+10,normal,100,0,0,2026-11-21T19:05:59Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:05:59Z,checkoutservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:06:00Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:06:01Z,emailservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:06:01Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:06:02Z,paymentservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:06:03Z,productcatalogservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:06:04Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:06:15Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:06:18Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:06:18Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:07:00Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:07:14Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:07:17Z,paymentservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:07:34Z,shippingservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:08:02Z,paymentservice,New size: 8; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:09:02Z,paymentservice,New size: 7; reason: All metrics below target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:09:32Z,paymentservice,New size: 6; reason: All metrics below target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:11:02Z,paymentservice,New size: 5; reason: All metrics below target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:15:44Z,cartservice,New size: 3; reason: All metrics below target,b100v0,1
+10,normal,100,0,0,2026-11-21T19:15:45Z,checkoutservice,New size: 4; reason: All metrics below target,b100v0,1
+10,normal,75,0,200,2026-11-21T19:17:23Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:17:24Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:17:25Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:17:25Z,emailservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:17:26Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:17:27Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:17:27Z,productcatalogservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:17:28Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:17:28Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:17:39Z,checkoutservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:17:42Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:18:25Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:18:26Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:18:27Z,paymentservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:18:28Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:18:38Z,cartservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:18:57Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:20:08Z,cartservice,New size: 6; reason: All metrics below target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:20:23Z,cartservice,New size: 5; reason: All metrics below target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:20:42Z,paymentservice,New size: 5; reason: All metrics below target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:21:57Z,paymentservice,New size: 4; reason: All metrics below target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:27:09Z,cartservice,New size: 3; reason: All metrics below target,b75v200,1
+10,normal,75,0,200,2026-11-21T19:27:09Z,checkoutservice,New size: 3; reason: All metrics below target,b75v200,1
+10,normal,50,0,150,2026-11-21T19:28:45Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+10,normal,50,0,150,2026-11-21T19:28:46Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+10,normal,50,0,150,2026-11-21T19:28:47Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+10,normal,50,0,150,2026-11-21T19:28:48Z,paymentservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+10,normal,50,0,150,2026-11-21T19:28:49Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+10,normal,50,0,150,2026-11-21T19:28:49Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+10,normal,50,0,150,2026-11-21T19:28:50Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+10,normal,50,0,150,2026-11-21T19:29:00Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+10,normal,50,0,150,2026-11-21T19:29:02Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+10,normal,50,0,150,2026-11-21T19:29:33Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+10,normal,50,0,150,2026-11-21T19:29:34Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+10,normal,50,0,150,2026-11-21T19:30:33Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+10,normal,50,0,150,2026-11-21T19:32:48Z,paymentservice,New size: 3; reason: All metrics below target,b50v150,1
+10,normal,0,0,300,2026-11-21T19:40:07Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+10,normal,0,0,300,2026-11-21T19:40:08Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+10,normal,0,0,300,2026-11-21T19:40:09Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+10,normal,0,0,300,2026-11-21T19:40:11Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+10,normal,0,0,300,2026-11-21T19:40:11Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+10,normal,50,0,300,2026-11-21T19:51:27Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:51:28Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:51:28Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:51:29Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:51:30Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:51:30Z,paymentservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:51:31Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:51:32Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:51:32Z,shippingservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:51:47Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:52:28Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:52:30Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:52:30Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:52:31Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:52:42Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:52:47Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:53:02Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:53:30Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:54:12Z,cartservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:56:12Z,cartservice,New size: 4; reason: All metrics below target,b50v300,1
+10,normal,50,0,300,2026-11-21T19:57:01Z,paymentservice,New size: 3; reason: All metrics below target,b50v300,1
+10,normal,50,0,300,2026-11-21T20:01:14Z,currencyservice,New size: 4; reason: All metrics below target,b50v300,1
+10,normal,50,0,300,2026-11-21T20:01:17Z,productcatalogservice,New size: 3; reason: All metrics below target,b50v300,1
+11,normal,0,0,300,2026-11-21T20:04:27Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+11,normal,0,0,300,2026-11-21T20:04:28Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+11,normal,0,0,300,2026-11-21T20:04:30Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+11,normal,0,0,300,2026-11-21T20:04:31Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+11,normal,0,0,300,2026-11-21T20:04:31Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+11,normal,0,0,300,2026-11-21T20:05:57Z,cartservice,New size: 2; reason: All metrics below target,b0v300,1
+11,normal,100,0,0,2026-11-21T20:15:48Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+11,normal,100,0,0,2026-11-21T20:15:48Z,checkoutservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+11,normal,100,0,0,2026-11-21T20:15:49Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+11,normal,100,0,0,2026-11-21T20:15:50Z,emailservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+11,normal,100,0,0,2026-11-21T20:15:51Z,paymentservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+11,normal,100,0,0,2026-11-21T20:15:52Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+11,normal,100,0,0,2026-11-21T20:15:52Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+11,normal,100,0,0,2026-11-21T20:15:53Z,shippingservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+11,normal,100,0,0,2026-11-21T20:16:03Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+11,normal,100,0,0,2026-11-21T20:16:05Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+11,normal,100,0,0,2026-11-21T20:16:49Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+11,normal,100,0,0,2026-11-21T20:16:51Z,paymentservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+11,normal,100,0,0,2026-11-21T20:17:06Z,paymentservice,New size: 8; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+11,normal,100,0,0,2026-11-21T20:19:21Z,paymentservice,New size: 7; reason: All metrics below target,b100v0,1
+11,normal,100,0,0,2026-11-21T20:21:36Z,paymentservice,New size: 5; reason: All metrics below target,b100v0,1
+11,normal,100,0,0,2026-11-21T20:25:36Z,frontend,New size: 1; reason: All metrics below target,b100v0,1
+11,normal,100,0,0,2026-11-21T20:25:37Z,paymentservice,New size: 2; reason: All metrics below target,b100v0,1
+11,normal,100,0,0,2026-11-21T20:25:37Z,productcatalogservice,New size: 2; reason: All metrics below target,b100v0,1
+11,normal,50,0,300,2026-11-21T20:27:12Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:27:13Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:27:13Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:27:14Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:27:15Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:27:16Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:27:17Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:27:17Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:27:30Z,paymentservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:28:13Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:28:27Z,cartservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:28:30Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:28:30Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:28:45Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:29:57Z,cartservice,New size: 6; reason: All metrics below target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:30:12Z,cartservice,New size: 5; reason: All metrics below target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:30:27Z,cartservice,New size: 4; reason: All metrics below target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:32:46Z,paymentservice,New size: 3; reason: All metrics below target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:36:58Z,cartservice,New size: 3; reason: All metrics below target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:36:59Z,currencyservice,New size: 4; reason: All metrics below target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:36:59Z,emailservice,New size: 2; reason: All metrics below target,b50v300,1
+11,normal,50,0,300,2026-11-21T20:37:02Z,recommendationservice,New size: 3; reason: All metrics below target,b50v300,1
+11,normal,50,0,150,2026-11-21T20:38:37Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+11,normal,50,0,150,2026-11-21T20:38:38Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+11,normal,50,0,150,2026-11-21T20:38:38Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+11,normal,50,0,150,2026-11-21T20:38:39Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+11,normal,50,0,150,2026-11-21T20:38:39Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+11,normal,50,0,150,2026-11-21T20:38:40Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+11,normal,50,0,150,2026-11-21T20:38:41Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+11,normal,50,0,150,2026-11-21T20:38:41Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+11,normal,50,0,150,2026-11-21T20:38:42Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+11,normal,50,0,150,2026-11-21T20:39:55Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+11,normal,50,0,150,2026-11-21T20:42:10Z,paymentservice,New size: 3; reason: All metrics below target,b50v150,1
+11,normal,50,0,150,2026-11-21T20:48:23Z,cartservice,New size: 2; reason: All metrics below target,b50v150,1
+11,normal,50,0,150,2026-11-21T20:48:23Z,checkoutservice,New size: 2; reason: All metrics below target,b50v150,1
+11,normal,75,0,200,2026-11-21T20:49:59Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:49:59Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:50:00Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:50:01Z,emailservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:50:02Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:50:03Z,productcatalogservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:50:03Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:50:04Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:50:14Z,checkoutservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:50:16Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:50:18Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:51:00Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:51:02Z,paymentservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:51:03Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:51:34Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:51:45Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:51:46Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:51:47Z,paymentservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:51:48Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:54:17Z,paymentservice,New size: 5; reason: All metrics below target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:54:47Z,paymentservice,New size: 4; reason: All metrics below target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:55:29Z,cartservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+11,normal,75,0,200,2026-11-21T20:59:44Z,cartservice,New size: 4; reason: All metrics below target,b75v200,1
+12,normal,0,0,300,2026-11-21T21:02:55Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+12,normal,0,0,300,2026-11-21T21:02:56Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+12,normal,0,0,300,2026-11-21T21:02:58Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+12,normal,0,0,300,2026-11-21T21:02:59Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+12,normal,0,0,300,2026-11-21T21:02:59Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+12,normal,0,0,300,2026-11-21T21:03:13Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+12,normal,0,0,300,2026-11-21T21:03:44Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b0v300,1
+12,normal,50,0,300,2026-11-21T21:14:15Z,cartservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:14:16Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:14:17Z,emailservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:14:18Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:14:19Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:14:19Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:14:20Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:14:21Z,shippingservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:14:30Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:14:32Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:14:32Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:14:35Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:15:18Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:15:31Z,cartservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:15:32Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:15:36Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:15:49Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:17:16Z,cartservice,New size: 5; reason: All metrics below target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:17:31Z,cartservice,New size: 4; reason: All metrics below target,b50v300,1
+12,normal,50,0,300,2026-11-21T21:18:19Z,paymentservice,New size: 3; reason: All metrics below target,b50v300,1
+12,normal,100,0,0,2026-11-21T21:25:36Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:25:36Z,checkoutservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:25:37Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:25:38Z,emailservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:25:38Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:25:39Z,paymentservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:25:40Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:25:40Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:25:41Z,shippingservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:26:22Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:26:24Z,paymentservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:26:39Z,paymentservice,New size: 7; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:27:24Z,paymentservice,New size: 8; reason: cpu container resource utilization (percentage of request) above target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:28:54Z,paymentservice,New size: 7; reason: All metrics below target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:29:24Z,paymentservice,New size: 6; reason: All metrics below target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:31:55Z,paymentservice,New size: 5; reason: All metrics below target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:35:21Z,cartservice,New size: 2; reason: All metrics below target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:35:22Z,checkoutservice,New size: 3; reason: All metrics below target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:35:23Z,currencyservice,New size: 2; reason: All metrics below target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:35:23Z,emailservice,New size: 4; reason: All metrics below target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:35:24Z,frontend,New size: 1; reason: All metrics below target,b100v0,1
+12,normal,100,0,0,2026-11-21T21:35:25Z,paymentservice,New size: 4; reason: All metrics below target,b100v0,1
+12,normal,50,0,150,2026-11-21T21:36:59Z,cartservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+12,normal,50,0,150,2026-11-21T21:37:00Z,checkoutservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+12,normal,50,0,150,2026-11-21T21:37:00Z,currencyservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+12,normal,50,0,150,2026-11-21T21:37:01Z,emailservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+12,normal,50,0,150,2026-11-21T21:37:01Z,frontend,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+12,normal,50,0,150,2026-11-21T21:37:02Z,paymentservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+12,normal,50,0,150,2026-11-21T21:37:03Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+12,normal,50,0,150,2026-11-21T21:37:03Z,recommendationservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+12,normal,50,0,150,2026-11-21T21:37:04Z,shippingservice,New size: 2; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+12,normal,50,0,150,2026-11-21T21:37:18Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+12,normal,50,0,150,2026-11-21T21:37:32Z,paymentservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+12,normal,50,0,150,2026-11-21T21:37:45Z,checkoutservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+12,normal,50,0,150,2026-11-21T21:37:45Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+12,normal,50,0,150,2026-11-21T21:37:49Z,shippingservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+12,normal,50,0,150,2026-11-21T21:38:02Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+12,normal,50,0,150,2026-11-21T21:38:16Z,emailservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+12,normal,50,0,150,2026-11-21T21:38:17Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b50v150,1
+12,normal,50,0,150,2026-11-21T21:41:32Z,paymentservice,New size: 3; reason: All metrics below target,b50v150,1
+12,normal,75,0,200,2026-11-21T21:48:21Z,cartservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:48:22Z,checkoutservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:48:23Z,currencyservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:48:23Z,emailservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:48:24Z,frontend,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:48:25Z,paymentservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:48:25Z,productcatalogservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:48:26Z,recommendationservice,New size: 3; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:48:27Z,shippingservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:49:21Z,cartservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:49:23Z,currencyservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:49:25Z,paymentservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:49:25Z,productcatalogservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:49:39Z,frontend,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:49:40Z,paymentservice,New size: 6; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:49:41Z,recommendationservice,New size: 4; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:50:23Z,currencyservice,New size: 5; reason: cpu container resource utilization (percentage of request) above target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:52:40Z,paymentservice,New size: 5; reason: All metrics below target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:53:10Z,paymentservice,New size: 4; reason: All metrics below target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:58:07Z,cartservice,New size: 2; reason: All metrics below target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:58:08Z,checkoutservice,New size: 3; reason: All metrics below target,b75v200,1
+12,normal,75,0,200,2026-11-21T21:58:08Z,currencyservice,New size: 3; reason: All metrics below target,b75v200,1

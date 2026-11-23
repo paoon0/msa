@@ -1,0 +1,18 @@
+driver=intel_pstate  intel_pstate=active  no_turbo=1
+cpu    governor     epp                         base       min       max   now_MHz
+cpu0   performance  performance                 2100      2100      2100       583
+cpu1   performance  performance                 2100      2100      2100      1897
+cpu10  performance  performance                 1500      1500      1500      1503
+cpu11  performance  performance                 1500      1500      1500      1499
+cpu12  performance  performance                 1500      1500      1500      1354
+cpu13  performance  performance                 1500      1500      1500      1499
+cpu14  performance  performance                 1500      1500      1500      1419
+cpu15  performance  performance                 1500      1500      1500      1499
+cpu2   performance  performance                 2100      2100      2100      1243
+cpu3   performance  performance                 2100      2100      2100      1173
+cpu4   performance  performance                 2100      2100      2100      1910
+cpu5   performance  performance                 2100      2100      2100       399
+cpu6   performance  performance                 2100      2100      2100      1557
+cpu7   performance  performance                 2100      2100      2100       492
+cpu8   performance  performance                 1500      1500      1500      1516
+cpu9   performance  performance                 1500      1500      1500      1502
