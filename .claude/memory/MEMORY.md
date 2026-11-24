@@ -35,6 +35,8 @@
 - [Memory is in the repo](memory-synced-via-git.md) — メモリ置き場はリポジトリ .claude/memory/ へのシンボリックリンク=コミットしないと消える/2台間はgitで同期
 - [Pair prediction validation](pair-prediction-validation.md) — 【2026-10-08完了・合格】同居ペアの台数・損の予測(θ0.50/基準b50v100)を事前登録で前向き検証→確定セル30/30的中・R1 64%/R2 97%(R2との差は1セル)、損ありは5セルのみ
 - [ρ でペアを選ぶ (焦点)](rho-pair-selection-focus.md) — ユーザの関心は ρ の近さでペアを選ぶとどうなるか。予測的中は不要、P は保留 (2026-10-15)。★10/19 ρ は測る範囲で動く (front 0.35↔0.53)。★10/26 SS の ρ 確定 (front-end 0.287/0.288、cyc2×2台は取り直し)、次=SS HPA 実験の設計。★11/07 OB pdist-k3 やり直しで近い 1/48・遠い 39/72 (二値の主張を再現)。★11/18 周波数固定で ρ 測り直し (front/catalog/reco≈0.32 に揃う、範囲依存も縮小)
+- [損の数え方 = 時間平均の台数](loss-counting-time-average.md) — 2026-11-17 決定。台数は窓の時間平均 (小数)、分離は 12 回平均 + 分かれ方・sd、損 = 同居台数×Σ枠 − Σ分離台数×枠、内訳のプラス側 = 引きずられた側。★引きずりの有無は最頻値で数え、揺れた回は「議論の余地あり」 (11/23)
+- [スライドの表は外すペアを尋ねる](slide-table-ask-exclusions.md) — pdist-k3 の ρ の差・affinity・引きずり表 (rightsizing/slide-table-pdistk3-3.md) を出す前に、外すペアを本文で尋ねる
 - [背景起動は絶対パスで](background-launch-absolute-paths.md) — run_in_background だと cd が効かず exit 127 になることがある。スクリプト・CSV を絶対パスで渡し、起動確認してから報告
 - [周波数は固定 (11/17 16:56 から)](cpu-frequency-not-pinned.md) — ターボ無し P 2.1 / E 1.5 GHz。それ以前の測定は全て非固定なので混ぜない。再起動で戻るので実験前に cpufreq.sh status。枠・ρ は測り直しが要る
 - [MicroK8s 毎晩の再起動](microk8s-nightly-restart.md) — 10/05 以降毎晩 2 回クラスタが自分で再起動 (IPv6 アドレス変化→証明書)。洗い出し済み restart-audit.md。★2026-10-27 13:07 no-cert-reissue 設置→同夜 IPv6 は変わったが再起動なし=停止を確認。最後の再起動 10/26 20:28

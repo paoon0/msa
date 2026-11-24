@@ -15,13 +15,22 @@ set -u
 NS=exp
 REPO=/home/mizuki/ダウンロード/msa
 DIR=$REPO/km2/experiments/edge-traffic
-K6DIR=$DIR/k6
+K6DIR=$REPO/km2/experiments/k6   # 2026-11-23 修正: 9/18 の整理で k6/ は km2/experiments/k6 へ移った (旧 $DIR/k6 は存在しない)
 PROBE_IMG=${PROBE_IMG:-nicolaka/netshoot}
 CASES=${CASES:-"100:0 0:200"}
 WARM=${WARM:-30}
 MEAS=${MEAS:-180}
 PRE_VUS=${PRE_VUS:-300}
 MAX_VUS=${MAX_VUS:-3000}
+# 2026-11-23 追加 (ρ を測った mix-cpu5 と同じ条件で測り直すため)。既定は 9/08 の測定と同じ (何もしない)
+NO_REUSE=${NO_REUSE:-0}            # k6/checkout.js の NO_REUSE
+CLOSE_EVERY=${CLOSE_EVERY:-0}      # k6/checkout.js の CLOSE_EVERY (要求 N 回に 1 回接続を閉じる)。mix-cpu5 は 20
+LIMIT_OVERRIDE=${LIMIT_OVERRIDE-""}  # 例 "frontend=3000m productcatalogservice=3000m adservice=1000m" (mix-cpu5 と同じ)。requests はマニフェストのまま
+GRPC_LB=${GRPC_LB:-0}              # 1 = round_robin + headless (mix-cpu5 と同じ、measure-mix-cpu.sh と同じ処理)。0 = 9/08 と同じ
+GRPC_RESOLVE_EVERY=${GRPC_RESOLVE_EVERY:-30}
+LB_IMG_FRONTEND=${LB_IMG_FRONTEND:-mizuki0118/mygo:frontend-lb}
+LB_IMG_CHECKOUT=${LB_IMG_CHECKOUT:-mizuki0118/mygo:checkout-lb}
+LB_IMG_RECO=${LB_IMG_RECO:-mizuki0118/mygo:reco-lb}
 CSV=${CSV:-$DIR/results-edge-pairs.csv}
 LOG=${LOG:-$DIR/edge-pairs.log}
 WORK=${WORK:-/tmp/edge-pairs-$$}
@@ -29,7 +38,7 @@ NORMAL=(frontend checkoutservice cartservice productcatalogservice currencyservi
         paymentservice shippingservice emailservice recommendationservice adservice)
 mkdir -p "$WORK"
 exec > >(tee -a "$LOG") 2>&1
-echo "================ EDGE-PAIRS START $(date -Is) cases=[$CASES] warm=${WARM}s meas=${MEAS}s ================"
+echo "================ EDGE-PAIRS START $(date -Is) cases=[$CASES] warm=${WARM}s meas=${MEAS}s no_reuse=$NO_REUSE close_every=$CLOSE_EVERY limits=[${LIMIT_OVERRIDE:-マニフェスト}] grpc_lb=$GRPC_LB ================"
 [ -s "$CSV" ] || echo "case,src,dst,bytes_sent,bytes_received,segs_out,segs_in,rtt_ms,minrtt_ms,conns" > "$CSV"
 
 deploy(){
@@ -42,8 +51,23 @@ deploy(){
   for d in $(kubectl get deploy -n $NS -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}'); do
     kubectl patch deploy/$d -n $NS --type=merge -p '{"spec":{"template":{"metadata":{"annotations":{"sidecar.istio.io/inject":"false"}}}}}' >/dev/null 2>&1||true
     kubectl scale deploy/$d -n $NS --replicas=1 >/dev/null 2>&1||true; done
+  # 2026-11-23 追加: limits の上書きと gRPC 振り分け (measure-mix-cpu.sh の deploy と同じ処理)
+  for kv in $LIMIT_OVERRIDE; do
+    kubectl set resources deploy/${kv%%=*} -n $NS --limits=cpu=${kv#*=} >/dev/null && echo "  limits 上書き: ${kv%%=*} cpu=${kv#*=} (requests はそのまま)"
+  done
+  if [ "$GRPC_LB" = 1 ]; then
+    echo "  gRPC 負荷分散: round_robin + headless Service (引き直し ${GRPC_RESOLVE_EVERY}s)"
+    { printf '{"deploy":'; kubectl get deploy -n $NS -o json; printf ',"svc":'; kubectl get svc -n $NS -o json; printf '}'; } \
+      | NS="$NS" GRPC_RESOLVE_EVERY="$GRPC_RESOLVE_EVERY" LB_IMG_FRONTEND="$LB_IMG_FRONTEND" \
+        LB_IMG_CHECKOUT="$LB_IMG_CHECKOUT" LB_IMG_RECO="$LB_IMG_RECO" LB_IMAGES_ONLY=0 \
+        python3 "$REPO/km2/experiments/summer2026/grpc_lb_patch.py" > "$WORK/lb.sh"
+    bash "$WORK/lb.sh"
+  fi
   for d in $(kubectl get deploy -n $NS -o jsonpath='{range .items[*]}{.metadata.name}{" "}{end}'); do
     kubectl rollout status deploy/$d -n $NS --timeout=300s >/dev/null 2>&1||echo "  !! rollout 未完了: $d"; done
+  # 2026-11-23 追加: 振り分けの差し替えで古い Pod が Terminating のまま残ると、観測コンテナの追加対象に混ざるので消えるまで待つ
+  for i in $(seq 1 60); do kubectl get pods -n $NS --no-headers 2>/dev/null | grep -q Terminating || break; sleep 5; done
+  echo "  枠(req/上限lim): $(kubectl get deploy -n $NS -o jsonpath='{range .items[*]}{.metadata.name}={range .spec.template.spec.containers[*]}{.name}:{.resources.requests.cpu}/{.resources.limits.cpu}{","}{end}{" "}{end}')"
 }
 
 # IP → サービス名の対応表(Pod IP と ClusterIP の両方)
@@ -92,7 +116,7 @@ run_case(){ local rate=$1 brw=$2
   kubectl create configmap k6-script -n $NS --from-file=checkout.js=$K6DIR/checkout.js --dry-run=client -o yaml | kubectl apply -f - >/dev/null 2>&1
   kubectl delete job k6load -n $NS --ignore-not-found --wait=true >/dev/null 2>&1
   sed -e "s/__RATE__/$rate/" -e "s/__BROWSE__/$brw/" -e "s/__WARM__/$WARM/" -e "s/__MEAS__/$MEAS/" \
-      -e "s/__PRE__/$PRE_VUS/" -e "s/__MAX__/$MAX_VUS/" "$K6DIR/k6-job.yaml" | kubectl apply -f - -n $NS >/dev/null
+      -e "s/__PRE__/$PRE_VUS/" -e "s/__MAX__/$MAX_VUS/" -e "s/__NOREUSE__/$NO_REUSE/" -e "s/__CLOSEEVERY__/$CLOSE_EVERY/" "$K6DIR/k6-job.yaml" | kubectl apply -f - -n $NS >/dev/null
   local pod=""
   for i in $(seq 1 40);do pod=$(kubectl get pods -n $NS -l app=k6load --sort-by=.metadata.creationTimestamp -o jsonpath='{.items[-1].metadata.name}' 2>/dev/null)
     [ -n "$pod" ]&&[ "$(kubectl get pod $pod -n $NS -o jsonpath='{.status.phase}' 2>/dev/null)" = Running ]&&break; sleep 3;done

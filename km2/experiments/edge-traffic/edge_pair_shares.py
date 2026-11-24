@@ -13,14 +13,18 @@ results-edge-pairs.csv (2026-09-08, edge-pairs.sh: 各 Pod にエフェメラル
     (Ethernet 14 + IPv4 20 + TCP 32 (タイムスタンプ付き) = 66 B/セグメント)
   - 分母はサービス間エッジ 15 本の合計
 
-使い方: python3 edge_pair_shares.py   (km2/experiments/ で実行)
+使い方: python3 edge_pair_shares.py [CSV] [ラベル]   (edge-traffic/ で実行。既定 = results-edge-pairs.csv 購入100_閲覧0)
+  2026-11-23: CSV とラベルを引数で渡せるようにした (mix-cpu5 条件での測り直し用)
 """
-import csv, re, collections
+import csv, re, collections, sys
+
+CSV = sys.argv[1] if len(sys.argv) > 1 else 'results-edge-pairs.csv'
+LABEL = sys.argv[2] if len(sys.argv) > 2 else '購入100_閲覧0'
 
 HDR = 66
 H = collections.Counter(); B = collections.Counter(); S = collections.Counter(); seen = set()
-for r in csv.reader(open('results-edge-pairs.csv', encoding='utf-8')):
-    if r[0] != '購入100_閲覧0':
+for r in csv.reader(open(CSV, encoding='utf-8')):
+    if r[0] != LABEL:
         continue
     pod = re.sub(r'-[0-9a-f]+-[0-9a-z]+$', '', r[1]); peer = r[2]
     if re.match(r'^\d', peer):

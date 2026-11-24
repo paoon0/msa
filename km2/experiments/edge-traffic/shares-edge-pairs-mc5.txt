@@ -1,0 +1,24 @@
+edge                                             ヘッダ込    ペイロード    セグメント
+frontend|productcatalogservice                  41.7%    36.1%    47.4%
+productcatalogservice|recommendationservice     18.5%    28.9%     8.1%
+currencyservice|frontend                         8.6%     8.0%     9.1%
+frontend|recommendationservice                   4.9%     4.5%     5.3%
+cartservice|redis-cart                           4.6%     4.7%     4.4%
+cartservice|frontend                             4.1%     3.2%     4.9%
+checkoutservice|shippingservice                  3.1%     2.2%     3.9%
+adservice|frontend                               2.4%     2.2%     2.6%
+checkoutservice|currencyservice                  2.2%     1.5%     2.9%
+cartservice|checkoutservice                      2.2%     1.7%     2.6%
+checkoutservice|frontend                         2.0%     2.0%     1.9%
+checkoutservice|productcatalogservice            1.8%     1.6%     2.1%
+frontend|shippingservice                         1.4%     0.9%     1.9%
+checkoutservice|emailservice                     1.4%     1.4%     1.3%
+checkoutservice|paymentservice                   1.2%     1.0%     1.4%
+
+論文 §5 の6組 (ヘッダ込みバイト量の割合):
+  frontend+catalog    41.7%
+  frontend+reco        4.9%
+  frontend+cart        4.1%
+  frontend+checkout    2.0%
+  checkout+email       1.4%
+  frontend+email       0.0%   (エッジなし)
